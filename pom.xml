@@ -75,6 +75,17 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!--Multiselect Combobox-->
+		<dependency>
+			<groupId>org.vaadin.gatanaso</groupId>
+			<artifactId>multiselect-combo-box-flow</artifactId>
+			<version>3.0.2</version> <!-- use appropriate version -->
+		</dependency>
+		<dependency>
+			<groupId>org.xmlunit</groupId>
+			<artifactId>xmlunit-core</artifactId>
+		</dependency>
+
 
 	</dependencies>
 	<dependencyManagement>
