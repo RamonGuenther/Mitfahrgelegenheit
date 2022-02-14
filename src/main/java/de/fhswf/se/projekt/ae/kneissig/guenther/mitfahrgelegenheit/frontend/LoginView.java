@@ -5,7 +5,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 
-@RouteAlias(value = "")
 @Route("login")
 @PageTitle("R & I Onlineshop | Login")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {

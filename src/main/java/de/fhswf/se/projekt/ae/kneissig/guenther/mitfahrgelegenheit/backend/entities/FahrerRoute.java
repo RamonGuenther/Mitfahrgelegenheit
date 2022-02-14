@@ -95,4 +95,8 @@ public class FahrerRoute {
     public DriveType getFahrtenTyp() {
         return fahrtenTyp;
     }
+
+    public Benutzer getBenutzer() {
+        return benutzer;
+    }
 }

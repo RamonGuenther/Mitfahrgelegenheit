@@ -1,0 +1,15 @@
+#driverRating{
+    display: block;
+    font-size: 2em;
+    --star-size: 25px;
+    --star-color: #000080;
+    margin-bottom: -15px;
+}
+
+#passengerRating{
+     display: block;
+     font-size: 2em;
+     --star-size: 25px;
+     --star-color: #000080;
+    margin-top: -15px;
+ }

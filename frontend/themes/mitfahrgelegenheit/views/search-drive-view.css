@@ -1,0 +1,24 @@
+#radioGeschlecht{
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+#formSearchDrive{
+    width: 1000px;
+    margin:auto;
+}
+
+
+#formOfferDriveQuestion{
+    width: 200px;
+    margin:auto;
+    margin-top: 80px;
+
+}
+
+#buttonSearch{
+    width: 200px;
+    margin: auto;
+    margin-top: 30px;
+}
+

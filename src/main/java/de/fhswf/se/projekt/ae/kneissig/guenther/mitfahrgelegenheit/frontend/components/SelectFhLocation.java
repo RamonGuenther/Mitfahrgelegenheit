@@ -1,0 +1,72 @@
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components;
+
+import com.vaadin.flow.component.select.Select;
+
+/**
+ * Die Klasse SelectSubjectArea erstellt ein Auswahlfeld für
+ * die Wahl des Fachbereiches.
+ *
+ * @author Ivonne Kneißig
+ */
+
+public class SelectFhLocation extends Select<String> {
+
+    private String locationAddress;
+    /**
+     * Der Konstruktor setzt das Label und die Items der Auswahl zusammen.
+     */
+
+    public SelectFhLocation(){
+        setLabel("FH Standort");
+        setItems("Hagen", "Iserlohn", "Lüdenscheid", "Meschede", "Soest");
+        setPlaceholder("Standort wählen");
+    }
+
+    /**
+     * Die Methode setFhLocationAddress legt die Adresse des vom
+     * Benutzer gewählten FH-Standorts fest.
+     *
+     * @param fhLocation        Standort der vom Benutzer gewählten
+     *                          Fachhochschule
+     */
+    public void setFhLocationAddress(String fhLocation){
+        try{
+            switch(fhLocation) {
+                case "Hagen":
+                    locationAddress = "Haldener Str. 182, 58095 Hagen, Deutschland";
+                    break;
+                case "Iserlohn":
+                    locationAddress = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
+                    break;
+                case "Lüdenscheid":
+                    locationAddress = "Bahnhofsallee 5, 58507 Lüdenscheid, Deutschland";
+                    break;
+                case "Meschede":
+                    locationAddress = "Lindenstraße 53, 59872 Meschede, Deutschland";
+                    break;
+                case "Soest":
+                    locationAddress = "Lübecker Ring 2, 59494 Soest, Deutschland";
+                    break;
+                default:
+                    locationAddress = "";
+                    break;
+            }
+        }
+        catch(Exception e){
+            locationAddress = " ";
+        }
+
+
+    }
+
+    /**
+     * Die Methode getFhLocationAddress gibt die Adresse des
+     * vom Benutzer ausgewählten FH-Standortes zurück.
+     *
+     * @return          Adresse des gewählten FH-Standortes
+     */
+    public String getFhLocationAddress(){
+        return locationAddress;
+    }
+
+}

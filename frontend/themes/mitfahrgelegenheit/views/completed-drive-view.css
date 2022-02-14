@@ -1,0 +1,72 @@
+#completeDriveContent{
+    margin: auto;
+}
+
+.gridCompletedDrive{
+    height: 400px;
+    width:500px;
+}
+
+#contentRightCompletedDrive{
+    width: 500px;
+    height: 500px;
+    margin-top: 200px;
+}
+
+
+#buttonLayoutCompletedDrive{
+    margin: auto;
+    margin-top: -150px;
+}
+
+.buttonsCompletedDrive{
+    width: 160px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#buttonGoogleMapsCompletedDrive{
+    width: 500px;
+
+}
+
+#anchorGoogleMapsCompletedDrive{
+    padding-left: 0px;
+}
+
+
+#buttonLayoutRating{
+    margin: auto;
+    margin-left: 50px;
+    margin-top: 30px;
+}
+
+.buttonsRating{
+    width: 150px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#ratingCompletedDrive{
+    margin-top: -20px;
+    font-size: 2em;
+    --star-size: 25px;
+    --star-color: #ff9f00;
+}
+
+#buttonLayoutReport{
+    margin: auto;
+    margin-left: 50px;
+    margin-top: 30px;
+}
+
+.buttonsReport{
+    width: 150px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#textAreaCompletedDrive{
+    width: 450px;
+    height: 222px;
+}

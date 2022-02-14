@@ -1,6 +1,7 @@
 import 'construct-style-sheets-polyfill';
 import { DomModule } from "@polymer/polymer/lib/elements/dom-module";
 import { stylesFromTemplate } from "@polymer/polymer/lib/utils/style-gather";
+import { css, unsafeCSS, registerStyles } from '@vaadin/vaadin-themable-mixin/register-styles';
 
 const createLinkReferences = (css, target) => {
   // Unresolved urls are written as '@import url(text);' to the css
@@ -68,6 +69,12 @@ const getStyleModule = (id) => {
 import stylesCss from './styles.css';
 import '@vaadin/vaadin-lumo-styles/color.js';
 import '@vaadin/vaadin-lumo-styles/typography.js';
+import averageRatingsCss from './components/average-ratings.css';
+import button_switch_themeCss from './components/button_switch_theme.css';
+import menuBarButtonCss from './components/menu-bar-button.css';
+import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
+import profileDoubleRatingsCss from './components/profile-double-ratings.css';
+import searchDriveResultViewDialogCss from './components/search-drive-result-view-dialog.css';
 
 window.Vaadin = window.Vaadin || {};
 window.Vaadin.Flow = window.Vaadin.Flow || {};
@@ -81,6 +88,42 @@ export const applyTheme = (target) => {
     window.Vaadin.Flow['_vaadintheme_mitfahrgelegenheit_globalCss'].push(target);
   }
   if (!document['_vaadintheme_mitfahrgelegenheit_componentCss']) {
+    registerStyles(
+      'average-ratings',
+      css`
+        ${unsafeCSS(averageRatingsCss.toString())}
+      `
+    );
+    registerStyles(
+      'button_switch_theme',
+      css`
+        ${unsafeCSS(button_switch_themeCss.toString())}
+      `
+    );
+    registerStyles(
+      'menu-bar-button',
+      css`
+        ${unsafeCSS(menuBarButtonCss.toString())}
+      `
+    );
+    registerStyles(
+      'own-drive-offers-edit-dialog',
+      css`
+        ${unsafeCSS(ownDriveOffersEditDialogCss.toString())}
+      `
+    );
+    registerStyles(
+      'profile-double-ratings',
+      css`
+        ${unsafeCSS(profileDoubleRatingsCss.toString())}
+      `
+    );
+    registerStyles(
+      'search-drive-result-view-dialog',
+      css`
+        ${unsafeCSS(searchDriveResultViewDialogCss.toString())}
+      `
+    );
     
     document['_vaadintheme_mitfahrgelegenheit_componentCss'] = true;
   }

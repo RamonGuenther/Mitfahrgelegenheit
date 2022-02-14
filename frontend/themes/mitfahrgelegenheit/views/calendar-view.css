@@ -1,0 +1,46 @@
+.driveCalendarView{
+    width: 1000px;
+    margin: 0 auto;
+}
+
+#calendarViewTitle{
+    font-size: xx-large;
+    margin-top: 50px;
+    padding-left: 30px;
+}
+
+.calendarViewLeft{
+    width: 300px;
+}
+
+.calendarViewRight{
+    width: 700px;
+}
+
+.calendarViewButtons{
+    width: 350px;
+}
+
+#calenderViewRoute{
+    padding-left: 0;
+    margin-left: 200px;
+}
+
+#calenderViewRouteButton{
+    width: 700px;
+}
+
+#calendarViewRightTitle{
+    margin-top: 15px;
+    font-size: x-large;
+}
+
+#calendarViewGrid{
+    height: 195px;
+    border-radius: 10px;
+}
+
+#calendarViewGasoline{
+    margin-left: 60px;
+}
+

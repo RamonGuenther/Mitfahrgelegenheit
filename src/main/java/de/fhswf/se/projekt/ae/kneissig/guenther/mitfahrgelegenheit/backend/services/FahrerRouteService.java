@@ -4,9 +4,11 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.FahrerRouteRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class FahrerRouteService {
 
     private final FahrerRouteRepository repository;

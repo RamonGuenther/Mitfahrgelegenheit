@@ -1,0 +1,23 @@
+#ratingsForm{
+    width: 400px;
+}
+
+#ratingPunctuality{
+    --star-size: 25px;
+    --star-color: #000080;
+}
+
+#ratingReliability{
+    --star-size: 25px;
+    --star-color: #000080;
+}
+
+#ratingDrivingstyle{
+    --star-size: 25px;
+    --star-color: #000080;
+}
+
+#ratingCleanliness{
+    --star-size: 25px;
+    --star-color: #000080;
+}

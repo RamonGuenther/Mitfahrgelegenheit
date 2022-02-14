@@ -1,0 +1,41 @@
+#containerOfferDrive{
+    margin: auto;
+}
+
+
+#formLayoutOfferDriveTop{
+    width: 1000px;
+    margin:auto;
+}
+
+#formLayoutOfferDriveBottom{
+    width: 1000px;
+    margin:auto;
+}
+
+#buttonLayoutOfferDrive{
+    margin:auto;
+}
+
+#createButtonOfferDrive{
+    margin-right: 5%;
+}
+
+#cancelButtonOfferDrive{
+    margin-left: 5%;
+}
+
+.operationButtonOfferDrive{
+    width: 200px;
+    margin: auto;
+    margin-top: 30px;
+}
+
+#anchorGoogleMapsOfferDrive{
+    padding-left: 0px;
+}
+
+#buttonGoogleMapsOfferDrive{
+    width: 490px;
+}
+

@@ -1,0 +1,26 @@
+#horizontalLayoutMenuBar{
+    background-color: #e5e7e9;
+    width: -moz-available;
+    margin-top: -30px;
+}
+
+
+#logoFH{
+    height: 80px;
+    margin-right: 20%;
+    margin-top: 40px;
+    cursor: pointer;
+}
+
+
+#menuBar{
+    margin-top: 60px;
+    margin-left: 8%;
+    background-color: #e5e7e9;
+}
+
+
+#app{
+    background-color: white;
+}
+

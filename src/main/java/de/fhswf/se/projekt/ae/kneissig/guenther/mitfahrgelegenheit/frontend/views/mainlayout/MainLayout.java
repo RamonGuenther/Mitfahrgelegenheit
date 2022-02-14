@@ -1,9 +1,8 @@
-package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend;
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -12,9 +11,20 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
+
+/**
+ * Die MainView dient dem Erstellen einer MenuBar zum Navigieren in
+ * der Appilkation.
+ *
+ * @author Ivonne Kneißig und Ramon Günther
+ */
 
 @PWA(name = "Mitfahrgelegenheiten", shortName = "Mitfahrgelegenheiten", enableInstallPrompt = false)
 @Theme(themeFolder = "mitfahrgelegenheit")
+@CssImport("/themes/mitfahrgelegenheit/views/main-view.css")
+@CssImport(value = "/themes/mitfahrgelegenheit/components/menu-bar-button.css", themeFor = "vaadin-menu-bar-button")
 public class MainLayout extends AppLayout {
 
     /**
@@ -34,23 +44,23 @@ public class MainLayout extends AppLayout {
 
     private void createMenuBar(){
 
-//        StreamResource streamResource = new StreamResource("LogoMitfahrgelegenheit.png",
-//                () -> MainView.class.getClassLoader().
-//                        getResourceAsStream("images/LogoMitfahrgelegenheit.png"));
-//
-//        Image logoFH = new Image (streamResource, "FH SWF");
-//        logoFH.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
-//
-//        logoFH.setId("logoFH");
-//
-//        MenuBar menuBar = new MenuBar();
-//        menuBar.setId("menuBar");
-//        menuBar.setOpenOnHover(true);
-//
-//        // Haupt-MenuItems
-//        MenuItem fahrtSuchen = menuBar.addItem("Fahrt suchen");
-//        fahrtSuchen.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
-//
+        StreamResource streamResource = new StreamResource("LogoMitfahrgelegenheit.png",
+                () -> MainLayout.class.getClassLoader().
+                        getResourceAsStream("images/LogoMitfahrgelegenheit.png"));
+
+        Image logoFH = new Image (streamResource, "FH SWF");
+        logoFH.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
+
+        logoFH.setId("logoFH");
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.setId("menuBar");
+        menuBar.setOpenOnHover(true);
+
+        // Haupt-MenuItems
+        MenuItem fahrtSuchen = menuBar.addItem("Fahrt suchen");
+        fahrtSuchen.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
+
 //        MenuItem fahrtAnbieten = menuBar.addItem(" Fahrt anbieten");
 //        fahrtAnbieten.addClickListener(e -> UI.getCurrent().navigate(OfferDriveView.class));
 //
@@ -95,20 +105,19 @@ public class MainLayout extends AppLayout {
 //
 //        abmelden.addClickListener(e -> UI.getCurrent().getPage().setLocation("/logout"));
 //
-//        //Button für dunkel/hellen Modus
-//        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme();
-//
-//        HorizontalLayout header = new HorizontalLayout();
-//        header.add(logoFH, menuBar, themeChangeButton);
-//        header.setId("horizontalLayoutMenuBar");
-//
-//        //die zwei Zeilen sorgen dafür das es Zentriert ist.
-//        header.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-//        header.setAlignItems(FlexComponent.Alignment.CENTER);
-//
-//        addToNavbar(header);
-//        setId("testi");
+        //Button für dunkel/hellen Modus
+        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme();
+
+        HorizontalLayout header = new HorizontalLayout();
+        header.add(logoFH, menuBar, themeChangeButton);
+        header.setId("horizontalLayoutMenuBar");
+
+        //die zwei Zeilen sorgen dafür das es Zentriert ist.
+        header.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        addToNavbar(header);
+        setId("testi");
 
     }
 }
-

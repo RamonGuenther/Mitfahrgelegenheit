@@ -1,0 +1,24 @@
+.logoLayout{
+    width: 250px;
+}
+
+a{
+    padding-left: 105px;
+    padding-top:10px;
+}
+
+#rememberUsername {
+    padding-bottom: 10px;
+    padding-top:10px;
+}
+
+.loginTitle{
+    padding-left: 95px;
+    font-size: xx-large;
+}
+
+#loginLayout{
+    width: 350px;
+    margin: 0 auto;
+    margin-top: 5%;
+}

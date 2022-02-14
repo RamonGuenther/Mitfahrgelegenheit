@@ -1,0 +1,15 @@
+#titleRegistrationForm{
+    font-size: xx-large;
+    padding-left: 0px;
+}
+
+#registrationForm{
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.buttonsProfile{
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 200px;
+}

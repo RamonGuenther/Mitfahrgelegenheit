@@ -1,0 +1,66 @@
+/*
+Betrifft Bookmark und SearchdriveResultView
+- neuer Name für diese Css ? Und keine extra Bookmark.css
+ */
+
+#titleSearchDriveResultBookMark{
+    margin-left: 51px;
+}
+
+#gridSearchDriveResult{
+    width: 700px;
+    margin-top: 45px;
+    margin-left: 50px;
+}
+
+#searchDriveResultFormLayout{ /*formLayoutSearchDriveResult*/
+    margin-top: 30px;
+    width: 650px;
+    height: 500px;
+}
+
+#searchDriveRightSide{
+    margin-top: 100px;
+}
+
+
+#titleSearchDriveResult{
+    font-size: xx-large;
+    margin-left: 50px;
+}
+
+#searchDriveResultContent{
+    margin: auto;
+}
+
+#buttonLayoutSearchDriveResultView{
+    margin-top: 30px;
+}
+
+.operationButtonBookmarkSearchDriveResult{
+    width: 150px;
+
+}
+
+#ratingSearchDriveResult{
+    padding-top:17px;
+    font-size: 2em;
+    --star-size: 25px;
+    --star-color: #ff9f00;
+}
+
+#mapsSearchDriveResult{
+    margin-top: 30px;
+}
+
+#anchorGoogleMapsSearchDrive{
+    padding-left: 0px;
+}
+
+#buttonGoogleMapsSearchDrive{
+    width: 480px;
+}
+
+#search-drive-result-view-content-div{
+    margin: auto;
+}

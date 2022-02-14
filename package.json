@@ -41,7 +41,8 @@
       "@vaadin/vaadin-radio-button": "1.5.1",
       "@vaadin/vaadin-tabs": "3.2.0",
       "@vaadin/vaadin-lumo-styles": "1.6.0",
-      "@vaadin/vaadin-material-styles": "1.3.2"
+      "@vaadin/vaadin-material-styles": "1.3.2",
+      "@vaadin-component-factory/vcf-autocomplete": "1.2.8"
     },
     "devDependencies": {
       "compression-webpack-plugin": "4.0.1",
@@ -61,7 +62,7 @@
       "webpack-dev-server": "3.11.0",
       "extract-loader": "5.1.0"
     },
-    "hash": "8dbe766e3a7cf2e1bc3888102b2134d31a0128d21e86201e17bf1347d8128704"
+    "hash": "5ec9b39a3ae309f046ab2c1005b8146a737f76df8cb00fb91cb56fdbbe75ca84"
   },
   "dependencies": {
     "lit-element": "2.5.1",
@@ -102,7 +103,8 @@
     "@vaadin/vaadin-radio-button": "1.5.1",
     "@vaadin/vaadin-tabs": "3.2.0",
     "@vaadin/vaadin-lumo-styles": "1.6.0",
-    "@vaadin/vaadin-material-styles": "1.3.2"
+    "@vaadin/vaadin-material-styles": "1.3.2",
+    "@vaadin-component-factory/vcf-autocomplete": "1.2.8"
   },
   "devDependencies": {
     "compression-webpack-plugin": "4.0.1",

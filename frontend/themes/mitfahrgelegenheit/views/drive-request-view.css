@@ -1,0 +1,60 @@
+#titleDriveRequest{
+    font-size: xx-large;
+}
+
+#driveRequestView{
+    width: 1000px;
+}
+
+#requestLayoutRoute{
+    width: 450px;
+}
+
+#layoutRequestForm{
+    margin-top: 105px;
+}
+
+#checkboxRegularDrive{
+    width: 200px;
+}
+
+#textAreaMessage{
+    width: 450px;
+    height: 222px;
+    margin-top: 125px;
+}
+
+#dateTo{
+    margin-left: 65px;
+}
+
+#layoutRequestFormFull{
+    margin: auto;
+}
+
+#layoutButtons{
+    margin: auto;
+}
+
+.buttonRequest{
+    margin-left: 150px;
+    margin-right: 150px;
+    margin-top: 50px;
+    width: 200px;
+}
+
+.requestTextfields{
+    width: 450px;
+}
+
+.requestMapLinks{
+    width: 450px;
+}
+
+.requestRouteLinks{
+    padding-left: 0px;
+}
+
+.requestTextFieldsPlace{
+    width: 217px;
+}
