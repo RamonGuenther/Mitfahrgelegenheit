@@ -12,9 +12,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Benutzer;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Adresse;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Ziel;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BenutzerService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.FahrerRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
@@ -22,8 +26,10 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
@@ -50,6 +56,8 @@ public class OfferDriveView extends VerticalLayout{
 
     private final FahrerRouteService fahrerRouteService;
 
+    private final BenutzerService benutzerService;
+
     private FormLayoutBottomOfferDrive formLayoutBottom;
 
     private FormLayoutTopOfferDrive formLayoutTop;
@@ -62,8 +70,9 @@ public class OfferDriveView extends VerticalLayout{
      * Der Konstruktor ist für das Erstellen der View und den zugehörigen
      * Listener zuständig.
      */
-    public OfferDriveView(FahrerRouteService fahrerRouteService) {
+    public OfferDriveView(FahrerRouteService fahrerRouteService, BenutzerService benutzerService) {
         this.fahrerRouteService = fahrerRouteService;
+        this.benutzerService = benutzerService;
 
         setId("searchDriveResultView");
         createOfferDriveView();
@@ -73,16 +82,16 @@ public class OfferDriveView extends VerticalLayout{
 
             switch (layoutOption.getValue()) {
                 case "Hinfahrt" -> {
-//                    saveFormLayoutTop();
+                    saveFormLayoutTop();
                     formLayoutTop.clearFields();
                 }
                 case "Rückfahrt" -> {
-//                    saveFormLayoutBottom();
+                    saveFormLayoutBottom();
                     formLayoutBottom.clearFields();
                 }
                 case "Hin- & Rückfahrt" -> {
-//                    saveFormLayoutTop();
-//                    saveFormLayoutBottom();
+                    saveFormLayoutTop();
+                    saveFormLayoutBottom();
                     formLayoutTop.clearFields();
                     formLayoutBottom.clearFields();
                 }
@@ -146,44 +155,36 @@ public class OfferDriveView extends VerticalLayout{
         add(div);
     }
 
-//    private void saveFormLayoutTop() {
-//        saveDrive(formLayoutTop.getAddress(), formLayoutTop.getFhLocation(), formLayoutTop.getDriveTime(), formLayoutTop.getCarSeatCount(), FahrtenTyp.HINFAHRT, formLayoutTop.getDriveDateStart());
-//    }
-//
-//    private void saveFormLayoutBottom() {
-//        saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCarSeatCount(), FahrtenTyp.RUECKFAHRT,formLayoutBottom.getDriveDateStart());
-//    }
+    private void saveFormLayoutTop() {
+        saveDrive(formLayoutTop.getAddress(), formLayoutTop.getFhLocation(), formLayoutTop.getDriveTime(), formLayoutTop.getCarSeatCount(), DriveType.HINFAHRT, formLayoutTop.getDriveDateStart());
+    }
 
-//    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Integer carSeatCount, FahrtenTyp fahrtenTyp, LocalDate driveDate) {
-//        try{
-//            AddressConverter converter = new AddressConverter(address);
-//            Adresse firstAddress = new Adresse(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
-//
-//            converter = new AddressConverter(fhLocation);
-//            Adresse secondAddress = new Adresse(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
-//
-//            Result<Void, CreateFahrerRouteError> result = interactor.createFahrerRoute(new CreateFahrerRouteInput(
-//                    new Start(firstAddress, driveTime.atDate(driveDate)),
-//                    new Ziel(secondAddress, driveTime.atDate(driveDate)),
-//                    carSeatCount, fahrtenTyp));
-//
-//            result.either(ignored -> System.out.println("ok"), this::handleError);
-//
-//            result.getFailure().ifPresent(this::handleError);
-//
-//            if (result.isFailure()) {
-//                System.out.println("nicht ok");
-//            }
-//
-//            NotificationSuccess.show("Fahrt wurde erstellt!");
-//        }
-//        catch(Exception e){
-//            NotificationError.show(e.getMessage());
-//        }
-//    }
-//
-//    void handleError(CreateFahrerRouteError error) {
-//
-//    }
+    private void saveFormLayoutBottom() {
+        saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCarSeatCount(), DriveType.RUECKFAHRT,formLayoutBottom.getDriveDateStart());
+    }
+
+    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
+        try{
+            AddressConverter converter = new AddressConverter(address);
+            Adresse firstAddress = new Adresse(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+
+            converter = new AddressConverter(fhLocation);
+            Adresse secondAddress = new Adresse(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+
+            Benutzer benutzer = benutzerService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            fahrerRouteService.save(new FahrerRoute(
+                    new Start(firstAddress, driveTime.atDate(driveDate)),
+                    new Ziel(secondAddress, driveTime.atDate(driveDate)),
+                    carSeatCount, benutzer, LocalDateTime.now(),fahrtenTyp
+            ));
+
+
+            NotificationSuccess.show("Fahrt wurde erstellt!");
+        }
+        catch(Exception e){
+            NotificationError.show(e.getMessage());
+        }
+    }
 
 }

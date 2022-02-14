@@ -9,6 +9,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.FahrerRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.OwnDriveOffersEditDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.SearchDriveResultViewDialog;
 
 import java.time.format.DateTimeFormatter;
@@ -69,7 +70,7 @@ public class GridOwnDriveOffersView extends Grid<FahrerRoute> {
         button.addClickListener(e->{
 
             if(UI.getCurrent().getId().get().equals(OWN_DRIVE_OFFERS_VIEW)) {
-//                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(fahrerRoute, interactor);
+                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(fahrerRoute, fahrerRouteService);
             }
             else if(UI.getCurrent().getId().get().equals(SEARCH_DRIVE_RESULT_VIEW)){
                 SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(fahrerRoute);

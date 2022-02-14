@@ -18,8 +18,7 @@ public class BenutzerService {
         repository.save(benutzer);
     }
 
-    public void findBenutzerById(Long id){
-        repository.getById(id);
+    public Benutzer findBenutzerByUsername(String username){
+        return repository.findBenutzerByUsername(username);
     }
-
 }

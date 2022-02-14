@@ -6,8 +6,10 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Benutzer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BenutzerService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.FahrerRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
@@ -15,6 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
 import java.util.List;
+
+/**
+ * TODO: Wieder so machen, dass man wenn keine Orte gefunden wurden die anderen angezeigt werden
+ */
 
 /**
  * Die Klasse SearchDriveResultView erstellt eine View für die Suchergebnisse
@@ -31,6 +37,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private static final String TITEL_GRID = "Suchergebnisse";
 
     private final FahrerRouteService fahrerRouteService;
+    private final BenutzerService benutzerService;
 
     private List<FahrerRoute> driveList;
     private DriveType fahrtenTyp;
@@ -41,8 +48,9 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    public SearchDriveResultView(FahrerRouteService fahrerRouteService) {
+    public SearchDriveResultView(FahrerRouteService fahrerRouteService, BenutzerService benutzerService) {
         this.fahrerRouteService = fahrerRouteService;
+        this.benutzerService = benutzerService;
         UI.getCurrent().setId(PAGE_ID);
         setId("searchDriveResultView");
     }
@@ -91,19 +99,17 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Benutzer benutzer = benutzerService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         switch (typ) {
             case "Hinfahrt" ->{
                 fahrtenTyp = DriveType.HINFAHRT;
-                driveList = fahrerRouteService.findAllByFahrtenTypAndZiel_Adresse_OrtAndBenutzerUsernameNot(fahrtenTyp,adresse, username);
-//                interactor.displaySearchFahrerRouten(fahrtenTyp, adresse, fhStandort).getSuccess().ifPresent(d -> driveList = d.fahrten());
             }
             case "Rückfahrt" -> {
                 fahrtenTyp = DriveType.RUECKFAHRT;
-                driveList = fahrerRouteService.findAllByFahrtenTypAndStart_Adresse_OrtAndBenutzerUsernameNot(fahrtenTyp,fhStandort,username);
-//                interactor.displaySearchFahrerRouten(fahrtenTyp, fhStandort, adresse).getSuccess().ifPresent(d -> driveList = d.fahrten());
             }
         }
+        driveList = fahrerRouteService.findRouten(benutzer,fahrtenTyp,adresse,fhStandort);
+
 
         //If fahrten leer notification und zur Searchdrive zurück
 

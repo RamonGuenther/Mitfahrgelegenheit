@@ -7,11 +7,12 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class FahrerRoute {
     @Id
-    private final Integer id;
+    private Integer id;
 
     @Embedded
     @AttributeOverrides({
@@ -21,7 +22,7 @@ public class FahrerRoute {
             @AttributeOverride(name = "adresse.ort", column = @Column(name = "start_ort")),
             @AttributeOverride(name = "adresse.hausnummer", column = @Column(name = "start_hausnummer"))
     })
-    private final Start start;
+    private Start start;
 
     @Embedded
     @AttributeOverrides({
@@ -31,25 +32,40 @@ public class FahrerRoute {
             @AttributeOverride(name = "adresse.ort", column = @Column(name = "ziel_ort")),
             @AttributeOverride(name = "adresse.hausnummer", column = @Column(name = "ziel_hausnummer"))
     })
-    private final Ziel ziel;
+    private Ziel ziel;
 
-    private final String cronstring;
-
-    private final Integer sitzplaetze;
+    private Integer sitzplaetze;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private final Benutzer benutzer;
+    private Benutzer benutzer;
 
-    private final LocalDateTime erstellungsDatum;
+    private LocalDateTime erstellungsDatum;
 
-    private final DriveType fahrtenTyp;
+    private DriveType fahrtenTyp;
 
 
-    public FahrerRoute(Integer id, Start start, Ziel ziel, String cronstring, Integer sitzplaetze, Benutzer benutzer, LocalDateTime erstellungsDatum, DriveType fahrtenTyp) {
+    public FahrerRoute(Start start, Ziel ziel, Integer sitzplaetze, Benutzer benutzer, LocalDateTime erstellungsDatum, DriveType fahrtenTyp) {
+        this.start = start;
+        this.ziel = ziel;
+        this.sitzplaetze = sitzplaetze;
+        this.benutzer = benutzer;
+        this.erstellungsDatum = erstellungsDatum;
+        this.fahrtenTyp = fahrtenTyp;
+        id=hashCode();
+    }
+
+    public FahrerRoute(
+            Integer id,
+            Start start,
+            Ziel ziel,
+            Integer sitzplaetze,
+            Benutzer benutzer,
+            LocalDateTime erstellungsDatum,
+            DriveType fahrtenTyp
+    ) {
         this.id = id;
         this.start = start;
         this.ziel = ziel;
-        this.cronstring = cronstring;
         this.sitzplaetze = sitzplaetze;
         this.benutzer = benutzer;
         this.erstellungsDatum = erstellungsDatum;
@@ -61,7 +77,6 @@ public class FahrerRoute {
         this.id = null;
         this.start = null;
         this.ziel = null;
-        this.cronstring = null;
         this.sitzplaetze = null;
         this.benutzer = null;
         this.erstellungsDatum = null;
@@ -80,8 +95,10 @@ public class FahrerRoute {
         return ziel;
     }
 
-    public String getCronstring() {
-        return cronstring;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, ziel, sitzplaetze, benutzer.getId());
     }
 
     public Integer getSitzplaetze() {

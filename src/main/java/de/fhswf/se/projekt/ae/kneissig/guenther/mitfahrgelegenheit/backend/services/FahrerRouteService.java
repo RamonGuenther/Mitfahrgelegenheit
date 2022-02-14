@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * TODO: Andere Namen für die Methoden ausdenken und Validieren in Searchdrive ob es überhaupt funktioniert also findRouten
+ */
 @Service
 public class FahrerRouteService {
 
@@ -15,6 +18,10 @@ public class FahrerRouteService {
 
     public FahrerRouteService(FahrerRouteRepository repository) {
         this.repository = repository;
+    }
+
+    public void save(FahrerRoute fahrerRoute){
+        repository.save(fahrerRoute);
     }
 
     public List<FahrerRoute> findAllFahrerRoutenByBenutzer(Benutzer benutzer) {
@@ -35,6 +42,15 @@ public class FahrerRouteService {
 
     public List<FahrerRoute> findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String destinationPlace, String startPlace, String benutzerUsername) {
         return repository.findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(driveType, destinationPlace, startPlace, benutzerUsername);
+    }
+
+    public List<FahrerRoute> findRouten(Benutzer benutzer, DriveType driveType, String destinationPlace, String startPlace) {
+        List<FahrerRoute> routen = findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(driveType, startPlace, destinationPlace, benutzer.getUsername());
+
+        return routen.size() > 0 ? routen : switch (driveType) {
+            case HINFAHRT -> findAllByFahrtenTypAndStart_Adresse_OrtAndBenutzerUsernameNot(driveType, destinationPlace, benutzer.getUsername());
+            case RUECKFAHRT -> findAllByFahrtenTypAndZiel_Adresse_OrtAndBenutzerUsernameNot(driveType, startPlace, benutzer.getUsername());
+        };
     }
 
 }

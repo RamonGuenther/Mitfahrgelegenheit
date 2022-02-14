@@ -1,6 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive;
 
 
+import com.sun.xml.bind.v2.TODO;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
@@ -11,10 +12,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Benutzer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BenutzerService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.FahrerRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -52,43 +55,42 @@ public class OwnDriveOffersView extends VerticalLayout {
     /**
      * In der Methode createGrids werden die Tabellen für die
      * Hin-& Rückfahrt erstellt.
-     *
      */
     private void createGrids() {
         H1 title = new H1("Eigene Fahrtangebote");
 
         UI.getCurrent().setId(PAGE_ID);
 
-        //TODO BENUTZER IN POST KONSTRUKT EINFÜGEN!!!!!
-//        Benutzer benutzer = benutzerService.
-//       List<FahrerRoute> driveList = fahrerRouteService.findAllFahrerRoutenByBenutzer();
-//
-//        driveList.getSuccess().ifPresent(d -> {
-//
-//            RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
-//            radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
-//            radioButtonGroup.setValue("Hinfahrt");
-//
-//            GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", d.hinfahrten(), interactor);
-//            GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit",d.rueckfahrten(), interactor);
-//            Div div = new Div(title, radioButtonGroup, gridHinfahrt);
-//            div.setId("contentOwnDriveOffers");
-//            add(div);
-//
-//            radioButtonGroup.addValueChangeListener(e -> {
-//               switch(e.getValue()){
-//                   case "Hinfahrt":
-//                       div.remove(gridRueckfahrt);
-//                       div.add(gridHinfahrt);
-//                       break;
-//
-//                   case "Rückfahrt":
-//                       div.remove(gridHinfahrt);
-//                       div.add(gridRueckfahrt);
-//                       break;
-//               }
-//            });
-//        });
+        Benutzer benutzer = benutzerService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        List<FahrerRoute> driveListTo = fahrerRouteService.findAllByBenutzerAndFahrtenTyp(benutzer, DriveType.HINFAHRT);
+        List<FahrerRoute> driveListBack = fahrerRouteService.findAllByBenutzerAndFahrtenTyp(benutzer, DriveType.RUECKFAHRT);
+
+
+
+        RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
+        radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
+        radioButtonGroup.setValue("Hinfahrt");
+
+        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, fahrerRouteService);
+        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, fahrerRouteService);
+        Div div = new Div(title, radioButtonGroup, gridHinfahrt);
+        div.setId("contentOwnDriveOffers");
+        add(div);
+
+        radioButtonGroup.addValueChangeListener(e -> {
+            switch (e.getValue()) {
+                case "Hinfahrt":
+                    div.remove(gridRueckfahrt);
+                    div.add(gridHinfahrt);
+                    break;
+
+                case "Rückfahrt":
+                    div.remove(gridHinfahrt);
+                    div.add(gridRueckfahrt);
+                    break;
+            }
+        });
 
     }
 

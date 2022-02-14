@@ -67,7 +67,6 @@
 			<version>2.3.2</version>
 		</dependency>
 
-
 		<!-- Autoreload -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
