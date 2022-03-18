@@ -2,18 +2,18 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import java.time.LocalDateTime;
 
-public class Buchung  {
+public class Booking {
     private final Long id;
 
-    private final FahrerRoute route;
+    private final Route route;
 
-    private final Benutzer mitfahrer;
+    private final User mitfahrer;
 
     private final Boolean bestaetigt;
 
     private final LocalDateTime buchungsDatum;
 
-    public Buchung(Long id, FahrerRoute route, Benutzer mitfahrer, Boolean bestaetigt, LocalDateTime buchungsDatum)
+    public Booking(Long id, Route route, User mitfahrer, Boolean bestaetigt, LocalDateTime buchungsDatum)
     {
         this.id = id;
         this.route = route;
@@ -27,12 +27,12 @@ public class Buchung  {
         return id;
     }
 
-    public FahrerRoute getRoute()
+    public Route getRoute()
     {
         return route;
     }
 
-    public Benutzer getMitfahrer()
+    public User getMitfahrer()
     {
         return mitfahrer;
     }

@@ -17,8 +17,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.RatingButton;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.ReportButton;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.Role;
@@ -38,7 +37,7 @@ import java.util.List;
  *
  * @author Ramon Günther
  */
-@Route(value = "abgeschlosseneFahrten", layout = MainLayout.class)
+@com.vaadin.flow.router.Route(value = "abgeschlosseneFahrten", layout = MainLayout.class)
 @PageTitle("Abgeschlossene Fahrten")
 @CssImport("/themes/mitfahrgelegenheit/views/completed-drive-view.css")
 public class CompletedDriveView extends VerticalLayout {
@@ -87,16 +86,16 @@ public class CompletedDriveView extends VerticalLayout {
         H1 title = new H1("Abgeschlossene Fahrten");
         title.setId("titleCompletedDrive");
 
-        List<FahrerRoute> driveList = new ArrayList<>();
+        List<Route> driveList = new ArrayList<>();
 
 
-        Grid<FahrerRoute> gridUp = new Grid<>(FahrerRoute.class);
+        Grid<Route> gridUp = new Grid<>(Route.class);
         gridUp.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         gridUp.setClassName("gridCompletedDrive");
 
 
 
-        Grid<FahrerRoute> gridDown = new Grid<>(FahrerRoute.class);
+        Grid<Route> gridDown = new Grid<>(Route.class);
         gridDown.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         gridDown.setClassName("gridCompletedDrive");
 

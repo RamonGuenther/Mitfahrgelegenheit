@@ -4,14 +4,14 @@ import javax.persistence.Embeddable;
 import java.time.LocalDateTime;
 
 @Embeddable
-public class Ziel extends Wegpunkt
+public class Destination extends Waypoint
 {
-    public Ziel(Adresse adresse, LocalDateTime zeit)
+    public Destination(Address address, LocalDateTime time)
     {
-        super(adresse, zeit);
+        super(address, time);
     }
 
-    protected Ziel()
+    protected Destination()
     {
         super(null, null);
     }

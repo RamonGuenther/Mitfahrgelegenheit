@@ -11,8 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.MultiSelectLanguage;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectFhLocation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectLanguage;
@@ -32,7 +31,7 @@ import java.util.List;
  * @author Ivonne Kneißig
  */
 
-@Route(value = "profil", layout = MainLayout.class)
+@com.vaadin.flow.router.Route(value = "profil", layout = MainLayout.class)
 @PageTitle("Profil")
 @CssImport("/themes/mitfahrgelegenheit/views/profile-view.css")
 public class ProfileView extends VerticalLayout {
@@ -140,14 +139,14 @@ public class ProfileView extends VerticalLayout {
      * zusammengefügt.
      */
     private void createOwnOffersGrid(){
-        List<FahrerRoute> driveList = new ArrayList<>();
+        List<Route> driveList = new ArrayList<>();
         LocalDateTime test = LocalDateTime.of(2017, 12, 10, 10, 0);
         //personList.add(new FahrerRoute(10L, "Sundernallee 75", "FH Iserlohn", test, null, test, null, null, null, null));
 
         H2 labelProfileGrid = new H2("Fahrtangebote von ...");
         labelProfileGrid.addClassName("profilegrid");
 
-        Grid<FahrerRoute> grid = new Grid<>();
+        Grid<Route> grid = new Grid<>();
         grid.addClassName("profilegrid");
         grid.setItems(driveList);
         grid.removeColumnByKey("id");

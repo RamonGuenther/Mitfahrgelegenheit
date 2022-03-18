@@ -8,7 +8,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.StarsRating;
@@ -21,12 +21,12 @@ public class SearchDriveResultViewDialog extends Dialog {
 
     private final Icon PROFILE_ICON = new Icon(VaadinIcon.USER);
 
-    private FahrerRoute fahrerRoute;
+    private Route route;
     private FormLayoutTopOfferDrive formLayoutHinfahrt;
     private FormLayoutBottomOfferDrive formLayoutRueckfahrt;
     private VerticalLayout verticalLayout;
 
-    public SearchDriveResultViewDialog(FahrerRoute fahrerRoute){
+    public SearchDriveResultViewDialog(Route route){
 
 //        this.fahrerRoute = fahrerRoute;
 
@@ -47,8 +47,8 @@ public class SearchDriveResultViewDialog extends Dialog {
         driverRating.setManual(true);
         add(driverRating);
 
-        switch (fahrerRoute.getFahrtenTyp()) {
-            case HINFAHRT -> {
+        switch (route.getDriveType()) {
+            case OUTWARD_TRIP -> {
                 formLayoutHinfahrt = new FormLayoutTopOfferDrive();
 
                 formLayoutHinfahrt.getFlexButton().setVisible(true);
@@ -64,19 +64,19 @@ public class SearchDriveResultViewDialog extends Dialog {
                 });
 
                 formLayoutHinfahrt.setReadOnly(true);
-                formLayoutHinfahrt.setTitle("Hinfahrt von " + fahrerRoute.getBenutzer().getUsername());
-                formLayoutHinfahrt.setSitzplaetze(fahrerRoute.getSitzplaetze().toString());
-                formLayoutHinfahrt.setFhLocation(fahrerRoute.getZiel().getAdresse().getOrt());
-                formLayoutHinfahrt.setDriveTime(fahrerRoute.getZiel().getZeit().toLocalTime());
-                formLayoutHinfahrt.setDriveDateStart(fahrerRoute.getZiel().getZeit().toLocalDate());
-                formLayoutHinfahrt.setAddress(fahrerRoute.getStart().getAdresse().getStrasse() + " "
-                        + fahrerRoute.getStart().getAdresse().getHausnummer() + ", "
-                        + fahrerRoute.getStart().getAdresse().getPlz() + " "
-                        + fahrerRoute.getStart().getAdresse().getOrt() + ", "
+                formLayoutHinfahrt.setTitle("Hinfahrt von " + route.getBenutzer().getUsername());
+                formLayoutHinfahrt.setSitzplaetze(route.getSeatCount().toString());
+                formLayoutHinfahrt.setFhLocation(route.getZiel().getAdresse().getPlace());
+                formLayoutHinfahrt.setDriveTime(route.getZiel().getTime().toLocalTime());
+                formLayoutHinfahrt.setDriveDateStart(route.getZiel().getTime().toLocalDate());
+                formLayoutHinfahrt.setAddress(route.getStart().getAdresse().getStreet() + " "
+                        + route.getStart().getAdresse().getHouseNumber() + ", "
+                        + route.getStart().getAdresse().getPostal() + " "
+                        + route.getStart().getAdresse().getPlace() + ", "
                         + "Deutschland");
                 verticalLayout.add(formLayoutHinfahrt);
             }
-            case RUECKFAHRT -> {
+            case RETURN_TRIP -> {
                 formLayoutRueckfahrt = new FormLayoutBottomOfferDrive();
 
                 formLayoutRueckfahrt.getFlexButton().setVisible(true);
@@ -93,15 +93,15 @@ public class SearchDriveResultViewDialog extends Dialog {
 
 
                 formLayoutRueckfahrt.setReadOnly(true);
-                formLayoutRueckfahrt.setTitle("Rückfahrt von " + fahrerRoute.getBenutzer().getUsername());
-                formLayoutRueckfahrt.setSitzplaetze(fahrerRoute.getSitzplaetze().toString());
-                formLayoutRueckfahrt.setFhLocation(fahrerRoute.getStart().getAdresse().getOrt());
-                formLayoutRueckfahrt.setDriveTime(fahrerRoute.getStart().getZeit().toLocalTime());
-                formLayoutRueckfahrt.setDriveDateStart(fahrerRoute.getStart().getZeit().toLocalDate());
-                formLayoutRueckfahrt.setAddress(fahrerRoute.getZiel().getAdresse().getStrasse() + " "
-                        + fahrerRoute.getZiel().getAdresse().getHausnummer() + ", "
-                        + fahrerRoute.getZiel().getAdresse().getPlz() + " "
-                        + fahrerRoute.getZiel().getAdresse().getOrt() + ", "
+                formLayoutRueckfahrt.setTitle("Rückfahrt von " + route.getBenutzer().getUsername());
+                formLayoutRueckfahrt.setSitzplaetze(route.getSeatCount().toString());
+                formLayoutRueckfahrt.setFhLocation(route.getStart().getAdresse().getPlace());
+                formLayoutRueckfahrt.setDriveTime(route.getStart().getTime().toLocalTime());
+                formLayoutRueckfahrt.setDriveDateStart(route.getStart().getTime().toLocalDate());
+                formLayoutRueckfahrt.setAddress(route.getZiel().getAdresse().getStreet() + " "
+                        + route.getZiel().getAdresse().getHouseNumber() + ", "
+                        + route.getZiel().getAdresse().getPostal() + " "
+                        + route.getZiel().getAdresse().getPlace() + ", "
                         + "Deutschland");
                 verticalLayout.add(formLayoutRueckfahrt);
             }

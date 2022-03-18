@@ -6,16 +6,15 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Benutzer;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.DriveType;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BenutzerService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.FahrerRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.RouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ import java.util.List;
  *
  * @author Ramon Günther
  */
-@Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/search", layout = MainLayout.class)
+@com.vaadin.flow.router.Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/search", layout = MainLayout.class)
 @PageTitle("Ergebnis Fahrtensuche")
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-result-view.css")
 public class SearchDriveResultView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver{
@@ -36,10 +35,10 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private static final String PAGE_ID = "SearchDriveResultView";
     private static final String TITEL_GRID = "Suchergebnisse";
 
-    private final FahrerRouteService fahrerRouteService;
-    private final BenutzerService benutzerService;
+    private final RouteService routeService;
+    private final UserService userService;
 
-    private List<FahrerRoute> driveList;
+    private List<Route> driveList;
     private DriveType fahrtenTyp;
     private String typ;
     private String fhStandort;
@@ -48,9 +47,9 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    public SearchDriveResultView(FahrerRouteService fahrerRouteService, BenutzerService benutzerService) {
-        this.fahrerRouteService = fahrerRouteService;
-        this.benutzerService = benutzerService;
+    public SearchDriveResultView(RouteService routeService, UserService userService) {
+        this.routeService = routeService;
+        this.userService = userService;
         UI.getCurrent().setId(PAGE_ID);
         setId("searchDriveResultView");
     }
@@ -74,7 +73,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
         H1 title = new H1(TITEL_GRID);
 //        GridBookmarkSearchDriveResult grid = new GridBookmarkSearchDriveResult(TITEL_GRID, driveList);
-        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList,fahrerRouteService);
+        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, routeService);
         div.add(title,grid);
         add(div);
     }
@@ -99,16 +98,16 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
-        Benutzer benutzer = benutzerService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         switch (typ) {
             case "Hinfahrt" ->{
-                fahrtenTyp = DriveType.HINFAHRT;
+                fahrtenTyp = DriveType.OUTWARD_TRIP;
             }
             case "Rückfahrt" -> {
-                fahrtenTyp = DriveType.RUECKFAHRT;
+                fahrtenTyp = DriveType.RETURN_TRIP;
             }
         }
-        driveList = fahrerRouteService.findRouten(benutzer,fahrtenTyp,adresse,fhStandort);
+        driveList = routeService.findRouten(user,fahrtenTyp,adresse,fhStandort);
 
 
         //If fahrten leer notification und zur Searchdrive zurück

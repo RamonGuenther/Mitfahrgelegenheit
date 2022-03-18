@@ -1,22 +1,22 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Benutzer;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Adresse;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Sprachen;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BenutzerService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.Collections;
 
 @SpringBootApplication
 public class MitfahrgelegenheitApplication {
 
 	@Autowired
-	private BenutzerService benutzerService;
+	private UserService userService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MitfahrgelegenheitApplication.class, args);
@@ -24,14 +24,14 @@ public class MitfahrgelegenheitApplication {
 
 	@PostConstruct
 	public void initData(){
-		Benutzer benutzer1 = new Benutzer(1L,"user",new Adresse("58636","Iserlohn","Sundernallee","75"),new Sprachen("deutsch"), LocalDateTime.now());
-		benutzerService.save(benutzer1);
+		User user1 = new User(1L,"user",new Address("58636","Iserlohn","Sundernallee","75"),new Languages("deutsch"), LocalDateTime.now(), new UserRating());
+		userService.save(user1);
 
-		Benutzer benutzer2 = new Benutzer(2L,"user2",new Adresse("58636","Iserlohn","Sundernallee","75"),new Sprachen("deutsch"), LocalDateTime.now());
-		benutzerService.save(benutzer2);
+		User user2 = new User(2L,"user2",new Address("58636","Iserlohn","Sundernallee","75"),new Languages("deutsch"), LocalDateTime.now(), new UserRating());
+		userService.save(user2);
 
-		Benutzer benutzer3 = new Benutzer(3L,"user3",new Adresse("58636","Iserlohn","Sundernallee","75"),new Sprachen("deutsch"), LocalDateTime.now());
-		benutzerService.save(benutzer3);
+		User user3 = new User(3L,"user3",new Address("58636","Iserlohn","Sundernallee","75"),new Languages("deutsch"), LocalDateTime.now(), new UserRating());
+		userService.save(user3);
 
 	}
 

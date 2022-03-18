@@ -15,7 +15,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Buchung;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.CheckboxRegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
@@ -29,7 +29,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 public class PlannedDriveView extends VerticalLayout {
 
     private DatePicker datePicker;
-    private Grid<Buchung> calendarGrid;
+    private Grid<Booking> calendarGrid;
     private TextField date;
     private TextField time;
     private TextField driver;
@@ -54,7 +54,7 @@ public class PlannedDriveView extends VerticalLayout {
         datePicker = new DatePicker();
         datePicker.addClassName("calendarViewLeft");
 
-        calendarGrid = new Grid<>(Buchung.class);
+        calendarGrid = new Grid<>(Booking.class);
         calendarGrid.setColumns("id");
         calendarGrid.addClassName("calendarViewLeft");
         calendarGrid.setId("calendarViewGrid");

@@ -1,7 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive;
 
 
-import com.sun.xml.bind.v2.TODO;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
@@ -9,12 +8,11 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Benutzer;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.DriveType;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BenutzerService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.FahrerRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.RouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,22 +31,22 @@ import java.util.List;
  *
  * @author Ramon Günther
  */
-@Route(value = "eigeneFahrtangebote", layout = MainLayout.class)
+@com.vaadin.flow.router.Route(value = "eigeneFahrtangebote", layout = MainLayout.class)
 @PageTitle("Eigene Fahrtangebote")
 @CssImport("/themes/mitfahrgelegenheit/views/own-drive-offers-view.css")
 public class OwnDriveOffersView extends VerticalLayout {
 
     private static final String PAGE_ID = "OwnDriveOffersView";
 
-    private final FahrerRouteService fahrerRouteService;
-    private final BenutzerService benutzerService;
+    private final RouteService routeService;
+    private final UserService userService;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    OwnDriveOffersView(FahrerRouteService fahrerRouteService, BenutzerService benutzerService) {
-        this.fahrerRouteService = fahrerRouteService;
-        this.benutzerService = benutzerService;
+    OwnDriveOffersView(RouteService routeService, UserService userService) {
+        this.routeService = routeService;
+        this.userService = userService;
         createGrids();
     }
 
@@ -61,10 +59,10 @@ public class OwnDriveOffersView extends VerticalLayout {
 
         UI.getCurrent().setId(PAGE_ID);
 
-        Benutzer benutzer = benutzerService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        List<FahrerRoute> driveListTo = fahrerRouteService.findAllByBenutzerAndFahrtenTyp(benutzer, DriveType.HINFAHRT);
-        List<FahrerRoute> driveListBack = fahrerRouteService.findAllByBenutzerAndFahrtenTyp(benutzer, DriveType.RUECKFAHRT);
+        List<Route> driveListTo = routeService.findAllByBenutzerAndFahrtenTyp(user, DriveType.OUTWARD_TRIP);
+        List<Route> driveListBack = routeService.findAllByBenutzerAndFahrtenTyp(user, DriveType.RETURN_TRIP);
 
 
 
@@ -72,8 +70,8 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, fahrerRouteService);
-        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, fahrerRouteService);
+        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, routeService);
+        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, routeService);
         Div div = new Div(title, radioButtonGroup, gridHinfahrt);
         div.setId("contentOwnDriveOffers");
         add(div);

@@ -11,15 +11,14 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Benutzer;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.FahrerRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Adresse;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Ziel;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BenutzerService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.FahrerRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.RouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
@@ -49,14 +48,14 @@ import java.time.LocalTime;
  *
  * @author Ramon Günther
  */
-@Route(value = "fahrtAnbieten", layout = MainLayout.class)
+@com.vaadin.flow.router.Route(value = "fahrtAnbieten", layout = MainLayout.class)
 @PageTitle("Fahrt Anbieten")
 @CssImport("/themes/mitfahrgelegenheit/views/offer-drive-view.css")
 public class OfferDriveView extends VerticalLayout{
 
-    private final FahrerRouteService fahrerRouteService;
+    private final RouteService routeService;
 
-    private final BenutzerService benutzerService;
+    private final UserService userService;
 
     private FormLayoutBottomOfferDrive formLayoutBottom;
 
@@ -70,9 +69,9 @@ public class OfferDriveView extends VerticalLayout{
      * Der Konstruktor ist für das Erstellen der View und den zugehörigen
      * Listener zuständig.
      */
-    public OfferDriveView(FahrerRouteService fahrerRouteService, BenutzerService benutzerService) {
-        this.fahrerRouteService = fahrerRouteService;
-        this.benutzerService = benutzerService;
+    public OfferDriveView(RouteService routeService, UserService userService) {
+        this.routeService = routeService;
+        this.userService = userService;
 
         setId("searchDriveResultView");
         createOfferDriveView();
@@ -156,27 +155,27 @@ public class OfferDriveView extends VerticalLayout{
     }
 
     private void saveFormLayoutTop() {
-        saveDrive(formLayoutTop.getAddress(), formLayoutTop.getFhLocation(), formLayoutTop.getDriveTime(), formLayoutTop.getCarSeatCount(), DriveType.HINFAHRT, formLayoutTop.getDriveDateStart());
+        saveDrive(formLayoutTop.getAddress(), formLayoutTop.getFhLocation(), formLayoutTop.getDriveTime(), formLayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formLayoutTop.getDriveDateStart());
     }
 
     private void saveFormLayoutBottom() {
-        saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCarSeatCount(), DriveType.RUECKFAHRT,formLayoutBottom.getDriveDateStart());
+        saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP,formLayoutBottom.getDriveDateStart());
     }
 
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
         try{
             AddressConverter converter = new AddressConverter(address);
-            Adresse firstAddress = new Adresse(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+            Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
 
             converter = new AddressConverter(fhLocation);
-            Adresse secondAddress = new Adresse(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+            Address secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
 
-            Benutzer benutzer = benutzerService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-            fahrerRouteService.save(new FahrerRoute(
+            routeService.save(new Route(
                     new Start(firstAddress, driveTime.atDate(driveDate)),
-                    new Ziel(secondAddress, driveTime.atDate(driveDate)),
-                    carSeatCount, benutzer, LocalDateTime.now(),fahrtenTyp
+                    new Destination(secondAddress, driveTime.atDate(driveDate)),
+                    carSeatCount, user, LocalDateTime.now(),fahrtenTyp
             ));
 
 
