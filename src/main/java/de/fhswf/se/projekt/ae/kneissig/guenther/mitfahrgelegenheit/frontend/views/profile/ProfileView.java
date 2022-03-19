@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -22,16 +21,14 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.MultiSelectLanguage;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectFhLocation;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectLanguage;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectSubjectArea;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectFaculty;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.AverageProfileRatings;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,10 +97,10 @@ public class ProfileView extends VerticalLayout {
         TextField gender = new TextField("Geschlecht");
         gender.setReadOnly(true);
 
-        SelectFhLocation selectFhLocation = new SelectFhLocation();
-        selectFhLocation.setReadOnly(true);
-        SelectSubjectArea selectSubjectArea = new SelectSubjectArea();
-        selectSubjectArea.setReadOnly(true);
+        SelectUniversityLocation selectUniversityLocation = new SelectUniversityLocation();
+        selectUniversityLocation.setReadOnly(true);
+        SelectFaculty selectFaculty = new SelectFaculty();
+        selectFaculty.setReadOnly(true);
 
         SelectLanguage selectLanguage = new SelectLanguage();
         selectLanguage.setReadOnly(true);
@@ -127,7 +124,7 @@ public class ProfileView extends VerticalLayout {
 
         // Zusammenbauen der Profilangaben mit der Buttonleiste
         FormLayout registrationForm = new FormLayout(header, firstname, address, lastname, plz, location, gender,
-                selectFhLocation, email, selectSubjectArea, selectLanguage, multiSelectLanguage, horizontalLayout);
+                selectUniversityLocation, email, selectFaculty, selectLanguage, multiSelectLanguage, horizontalLayout);
         registrationForm.setId("profileForm");
 
         registrationForm.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1, FormLayout.ResponsiveStep.LabelsPosition.TOP),
@@ -140,8 +137,8 @@ public class ProfileView extends VerticalLayout {
         registrationForm.setColspan(email, 2);
         registrationForm.setColspan(plz, 1);
         registrationForm.setColspan(location, 1);
-        registrationForm.setColspan(selectFhLocation, 2);
-        registrationForm.setColspan(selectSubjectArea, 2);
+        registrationForm.setColspan(selectUniversityLocation, 2);
+        registrationForm.setColspan(selectFaculty, 2);
         registrationForm.setColspan(address, 2);
         registrationForm.setColspan(selectLanguage, 2);
         registrationForm.setColspan(multiSelectLanguage, 2);

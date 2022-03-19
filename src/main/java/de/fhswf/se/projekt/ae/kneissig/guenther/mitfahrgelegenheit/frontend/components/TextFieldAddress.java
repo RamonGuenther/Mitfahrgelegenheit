@@ -94,4 +94,8 @@ public class TextFieldAddress extends Autocomplete implements GoogleApiKey {
     public String getPostal() {
         return postal;
     }
+
+    public String getNumber() {
+        return number;
+    }
 }

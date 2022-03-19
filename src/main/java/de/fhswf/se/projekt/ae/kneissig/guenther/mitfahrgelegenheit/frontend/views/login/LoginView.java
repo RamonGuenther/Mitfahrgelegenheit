@@ -4,15 +4,16 @@ import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 
 @Route("login")
 @PageTitle("Mitfahrgelegenheit | Login")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+public class LoginView extends VerticalLayout implements BeforeEnterObserver{
 
     private LoginForm login;
 
-
     public LoginView() {
+
         getElement().getStyle().set("background", "hsl(0, 36%, 39%)");
 
         setSizeFull();
@@ -22,7 +23,6 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         login = new LoginForm();
         login.setAction("login");
-
 
         add(login);
     }

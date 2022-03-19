@@ -24,15 +24,47 @@ public class MitfahrgelegenheitApplication {
 
 	@PostConstruct
 	public void initData(){
-		User user1 = new User(1L,"user",new Address("58636","Iserlohn","Sundernallee","75"),new Languages("deutsch"), LocalDateTime.now(), new UserRating());
+		User user1 = new User(
+				1L,
+				"rague002",
+				new Address("58636","Iserlohn","Sundernalle 47","75"),
+				new Languages("deutsch"),
+				"Iserlohn",
+				"Informatik und Naturwissenschaften",
+				"guenther.ramonantonio@fh-swf.de",
+				new UserRating(),
+				LocalDateTime.now(),
+				true
+				);
 		userService.save(user1);
 
-		User user2 = new User(2L,"user2",new Address("58636","Iserlohn","Sundernallee","75"),new Languages("deutsch"), LocalDateTime.now(), new UserRating());
+		User user2 = new User(
+				2L,
+				"ivkne001",
+				new Address("58097","Hagen","Diesterwegstraße","6"),
+				new Languages("deutsch"),
+				"Iserlohn",
+				"Informatik und Naturwissenschaften",
+				"kneissig.ivonne@fh-swf.de",
+				new UserRating(),
+				LocalDateTime.now(),
+				true
+		);
 		userService.save(user2);
 
-		User user3 = new User(3L,"user3",new Address("58636","Iserlohn","Sundernallee","75"),new Languages("deutsch"), LocalDateTime.now(), new UserRating());
+		User user3 = new User(
+				3L,
+				"user3",
+				new Address("58636","Iserlohn","Sundernallee","75"),
+				new Languages("deutsch"),
+				null,
+				null,
+				null,
+				new UserRating(),
+				LocalDateTime.now(),
+				false
+		);
 		userService.save(user3);
-
 	}
 
 }

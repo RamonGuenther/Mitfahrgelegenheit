@@ -13,8 +13,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.AddressConverter;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectFhLocation;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
@@ -38,7 +39,7 @@ public class SearchDriveView extends VerticalLayout {
     private RadioButtonGroup<String> radioDriveDirection;
     private TextFieldAddress address;
     private DatePicker date;
-    private SelectFhLocation fhLocation;
+    private SelectUniversityLocation fhLocation;
     private TimePicker time;
 
     /**
@@ -46,7 +47,7 @@ public class SearchDriveView extends VerticalLayout {
      * einer Mitfahrgelegenheit zuständig.
      */
 
-    public SearchDriveView() {
+    public SearchDriveView(UserService userService) {
         setId("searchView");
         createSearchView();
 //        GoogleDistanceCalculation distance = new GoogleDistanceCalculation();
@@ -76,10 +77,10 @@ public class SearchDriveView extends VerticalLayout {
         date = new DatePicker("Datum");
         date.setId("datepicker");
 
-        fhLocation = new SelectFhLocation();
+        fhLocation = new SelectUniversityLocation();
         fhLocation.setId("textfieldDestination");
         fhLocation.addValueChangeListener(event ->
-                fhLocation.setFhLocationAddress(fhLocation.getValue()));
+                fhLocation.setUniversityLocationAddress(fhLocation.getValue()));
 
         time = new TimePicker("Ankunftzeit");
         time.setId("timepicker");
@@ -151,7 +152,7 @@ public class SearchDriveView extends VerticalLayout {
      * @param routeDirection Wert des ausgwählten RadioButtons für die Fahrtrichtung
      */
     private void setAddressFields(FormLayout layout, TextFieldAddress address,
-                                  SelectFhLocation fhLocation, TimePicker time, String routeDirection) {
+                                  SelectUniversityLocation fhLocation, TimePicker time, String routeDirection) {
         if (layout == null) {
             throw new IllegalArgumentException("SearchDriveView: FormLayout is null");
         }

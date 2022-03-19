@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
 @Configuration
@@ -19,7 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_FAILURE_URL = "/login?error";
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
-    private static final String DEFAULT_SUCCESS_URL = "/fahrtSuchen";
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
@@ -35,11 +36,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage(LOGIN_URL).permitAll()
                 .loginProcessingUrl(LOGIN_PROCESSING_URL)
-                .defaultSuccessUrl(DEFAULT_SUCCESS_URL)
+                .successHandler(ApplicationUrlAuthenticationSuccessHandler())
                 .failureUrl(LOGIN_FAILURE_URL)
                 .and()
                 .logout()
                 .logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler ApplicationUrlAuthenticationSuccessHandler(){
+        return new ApplicationUrlAuthenticationSuccessHandler();
     }
 
     // TESTUSER -> Kann mit Ldap-Verbindung nicht mehr verwendet werden!

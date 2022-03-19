@@ -32,7 +32,7 @@ public class FormLayoutTopOfferDrive extends FormLayout {
 
     private final H2 title;
     private final TextFieldAddress address;
-    private final SelectFhLocation fhLocation;
+    private final SelectUniversityLocation fhLocation;
     private final TimePicker driveTime;
     private final Select<String> carSeatCount;
     private final DatePicker driveDateStart;
@@ -66,7 +66,7 @@ public class FormLayoutTopOfferDrive extends FormLayout {
 
         address = new TextFieldAddress("Von");
 
-        fhLocation = new SelectFhLocation();
+        fhLocation = new SelectUniversityLocation();
 
         driveDateStart = new DatePicker("Tag der Fahrt");
 
@@ -117,7 +117,7 @@ public class FormLayoutTopOfferDrive extends FormLayout {
 
         /* Listener*/
 
-        fhLocation.addValueChangeListener(e -> fhLocation.setFhLocationAddress(e.getValue()));
+        fhLocation.addValueChangeListener(e -> fhLocation.setUniversityLocationAddress(e.getValue()));
 
         checkboxRegularDrive.addValueChangeListener(event -> {
             boolean checked = !event.getValue();
@@ -134,7 +134,7 @@ public class FormLayoutTopOfferDrive extends FormLayout {
         buttonDetourRoute.addClickListener(e -> {
             if(!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")){
                 AddressConverter converterStart = new AddressConverter(address.getValue());
-                AddressConverter converterZiel = new AddressConverter(fhLocation.getFhLocationAddress());
+                AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
                 RouteString routeString = new RouteString(converterStart.getStreet(), converterStart.getNumber(), converterStart.getPostalCode(), converterStart.getPlace(),
                         converterZiel.getStreet(), converterZiel.getNumber(), converterZiel.getPostalCode(), converterZiel.getPlace());
 
@@ -161,7 +161,7 @@ public class FormLayoutTopOfferDrive extends FormLayout {
     }
 
     public String getFhLocation() {
-        return fhLocation.getFhLocationAddress();
+        return fhLocation.getUniversityLocationAddress();
     }
 
     public LocalTime getDriveTime() {
