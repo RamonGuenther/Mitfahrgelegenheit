@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-public class Route {
+public class DriveRoute {
     @Id
     private Integer id;
 
@@ -51,7 +51,7 @@ public class Route {
     private String note;
 
 
-    public Route(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType) {
+    public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType) {
         this.start = start;
         this.destination = destination;
         this.seatCount = seatCount;
@@ -61,7 +61,7 @@ public class Route {
         id = hashCode();
     }
 
-    public Route(
+    public DriveRoute(
             Integer id,
             Start start,
             Destination destination,
@@ -80,7 +80,7 @@ public class Route {
     }
 
     @PersistenceConstructor
-    public Route() {
+    public DriveRoute() {
         this.id = null;
         this.start = null;
         this.destination = null;

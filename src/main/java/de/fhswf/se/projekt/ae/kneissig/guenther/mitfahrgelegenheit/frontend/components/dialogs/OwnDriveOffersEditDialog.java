@@ -9,12 +9,12 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.RouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
@@ -44,8 +44,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     private final Icon EDIT_ICON = new Icon(VaadinIcon.PENCIL);
 
-    private final RouteService routeService;
-    private Route route;
+    private final DriveRouteService driveRouteService;
+    private DriveRoute driveRoute;
     private FormLayoutTopOfferDrive formLayoutHinfahrt;
     private FormLayoutBottomOfferDrive formLayoutRueckfahrt;
     private Notification notification;
@@ -53,14 +53,14 @@ public class OwnDriveOffersEditDialog extends Dialog {
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    public OwnDriveOffersEditDialog(Route route, RouteService routeService) {
+    public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService) {
 
         setId("own-drive-offers-edit-dialog");
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
 
-        this.routeService = routeService;
-        this.route = route;
+        this.driveRouteService = driveRouteService;
+        this.driveRoute = driveRoute;
 
         Icon icon = new Icon(VaadinIcon.CLOSE_CIRCLE);
         Button closeButton = new Button();
@@ -69,7 +69,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
         closeButton.addClickListener(e -> close());
         add(closeButton);
 
-        switch (route.getDriveType()) {
+        switch (driveRoute.getDriveType()) {
             case OUTWARD_TRIP -> {
                 formLayoutHinfahrt = new FormLayoutTopOfferDrive();
 
@@ -90,14 +90,14 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 });
 
                 formLayoutHinfahrt.setTitle("Hinfahrt bearbeiten");
-                formLayoutHinfahrt.setSitzplaetze(route.getSeatCount().toString());
-                formLayoutHinfahrt.setFhLocation(route.getZiel().getAdresse().getPlace());
-                formLayoutHinfahrt.setDriveTime(route.getZiel().getTime().toLocalTime());
-                formLayoutHinfahrt.setDriveDateStart(route.getZiel().getTime().toLocalDate());
-                formLayoutHinfahrt.setAddress(route.getStart().getAdresse().getStreet() + " "
-                        + route.getStart().getAdresse().getHouseNumber() + ", "
-                        + route.getStart().getAdresse().getPostal() + " "
-                        + route.getStart().getAdresse().getPlace() + ", "
+                formLayoutHinfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
+                formLayoutHinfahrt.setFhLocation(driveRoute.getZiel().getAdresse().getPlace());
+                formLayoutHinfahrt.setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
+                formLayoutHinfahrt.setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
+                formLayoutHinfahrt.setAddress(driveRoute.getStart().getAdresse().getStreet() + " "
+                        + driveRoute.getStart().getAdresse().getHouseNumber() + ", "
+                        + driveRoute.getStart().getAdresse().getPostal() + " "
+                        + driveRoute.getStart().getAdresse().getPlace() + ", "
                         + "Deutschland");
                 add(formLayoutHinfahrt);
             }
@@ -122,14 +122,14 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 });
 
                 formLayoutRueckfahrt.setTitle("Rückfahrt bearbeiten");
-                formLayoutRueckfahrt.setSitzplaetze(route.getSeatCount().toString());
-                formLayoutRueckfahrt.setFhLocation(route.getStart().getAdresse().getPlace());
-                formLayoutRueckfahrt.setDriveTime(route.getStart().getTime().toLocalTime());
-                formLayoutRueckfahrt.setDriveDateStart(route.getStart().getTime().toLocalDate());
-                formLayoutRueckfahrt.setAddress(route.getZiel().getAdresse().getStreet() + " "
-                        + route.getZiel().getAdresse().getHouseNumber() + ", "
-                        + route.getZiel().getAdresse().getPostal() + " "
-                        + route.getZiel().getAdresse().getPlace() + ", "
+                formLayoutRueckfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
+                formLayoutRueckfahrt.setFhLocation(driveRoute.getStart().getAdresse().getPlace());
+                formLayoutRueckfahrt.setDriveTime(driveRoute.getStart().getTime().toLocalTime());
+                formLayoutRueckfahrt.setDriveDateStart(driveRoute.getStart().getTime().toLocalDate());
+                formLayoutRueckfahrt.setAddress(driveRoute.getZiel().getAdresse().getStreet() + " "
+                        + driveRoute.getZiel().getAdresse().getHouseNumber() + ", "
+                        + driveRoute.getZiel().getAdresse().getPostal() + " "
+                        + driveRoute.getZiel().getAdresse().getPlace() + ", "
                         + "Deutschland");
                 add(formLayoutRueckfahrt);
             }
@@ -202,15 +202,15 @@ public class OwnDriveOffersEditDialog extends Dialog {
             converter = new AddressConverter(fhLocation);
             Address secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
 
-            User user = route.getBenutzer();
+            User user = driveRoute.getBenutzer();
 
-            Route updateRoute = new Route(
-                    route.getId(),
+            DriveRoute updateDriveRoute = new DriveRoute(
+                    driveRoute.getId(),
                     new Start(firstAddress, driveTime.atDate(driveDate)),
                     new Destination(secondAddress, driveTime.atDate(driveDate)),
                     carSeatCount, user,LocalDateTime.now(),fahrtenTyp);
 
-            routeService.save(updateRoute);
+            driveRouteService.save(updateDriveRoute);
 
             NotificationSuccess.show("Fahrt wurde gespeichert!");
             this.close();

@@ -12,13 +12,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.RouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
@@ -53,7 +53,7 @@ import java.time.LocalTime;
 @CssImport("/themes/mitfahrgelegenheit/views/offer-drive-view.css")
 public class OfferDriveView extends VerticalLayout{
 
-    private final RouteService routeService;
+    private final DriveRouteService driveRouteService;
 
     private final UserService userService;
 
@@ -69,8 +69,8 @@ public class OfferDriveView extends VerticalLayout{
      * Der Konstruktor ist für das Erstellen der View und den zugehörigen
      * Listener zuständig.
      */
-    public OfferDriveView(RouteService routeService, UserService userService) {
-        this.routeService = routeService;
+    public OfferDriveView(DriveRouteService driveRouteService, UserService userService) {
+        this.driveRouteService = driveRouteService;
         this.userService = userService;
 
         setId("searchDriveResultView");
@@ -172,7 +172,7 @@ public class OfferDriveView extends VerticalLayout{
 
             User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-            routeService.save(new Route(
+            driveRouteService.save(new DriveRoute(
                     new Start(firstAddress, driveTime.atDate(driveDate)),
                     new Destination(secondAddress, driveTime.atDate(driveDate)),
                     carSeatCount, user, LocalDateTime.now(),fahrtenTyp

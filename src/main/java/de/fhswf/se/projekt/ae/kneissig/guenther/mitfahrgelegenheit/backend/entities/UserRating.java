@@ -4,6 +4,9 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import java.util.List;
 
+/**
+ * TD
+ */
 @Embeddable
 public class UserRating {
 
@@ -12,6 +15,8 @@ public class UserRating {
 
     @ElementCollection
     private List<Rating> passengerRatings;
+
+
 
     public UserRating(List<Rating> driverRatings, List<Rating> passengerRatings) {
         this.driverRatings = driverRatings;
@@ -36,5 +41,13 @@ public class UserRating {
 
     public void addPassengerRating(Rating rating){
         passengerRatings.add(rating);
+    }
+
+    public int getDriverRatingAverage(){
+        return  0;
+    }
+
+    public int getPassengerRatingAverage(){
+        return 0;
     }
 }

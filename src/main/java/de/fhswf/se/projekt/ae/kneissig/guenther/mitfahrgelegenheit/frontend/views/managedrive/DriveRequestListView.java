@@ -17,7 +17,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.PageTitle;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.StarsRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
@@ -77,9 +77,9 @@ public class DriveRequestListView extends VerticalLayout {
         VerticalLayout verticalLayout = new VerticalLayout();
         H1 title = new H1("Fahrtanfragen");
 
-        List<Route> driveList = new ArrayList<>();
+        List<DriveRoute> driveList = new ArrayList<>();
 
-        Grid<Route> grid = new Grid<>(Route.class);
+        Grid<DriveRoute> grid = new Grid<>(DriveRoute.class);
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES); //mit Ivonne Themes anschauen!
 
         grid.setId("contentLeftdriveRequestList");

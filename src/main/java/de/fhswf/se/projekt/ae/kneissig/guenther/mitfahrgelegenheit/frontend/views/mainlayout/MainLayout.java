@@ -15,12 +15,10 @@ import com.vaadin.flow.theme.Theme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.OfferDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.login.LoginView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.CompletedDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.DriveRequestListView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.OwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.PlannedDriveView;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.BookmarksView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -103,10 +101,6 @@ public class MainLayout extends AppLayout {
         MenuItem profilAnzeigen = usersSubMenu.addItem("Profil");
         profilAnzeigen.getElement().getClassList().add("menuItems");
         profilAnzeigen.addClickListener(e -> UI.getCurrent().navigate(ProfileView.class));
-
-        MenuItem merkliste= usersSubMenu.addItem("Merkliste");
-        merkliste.getElement().getClassList().add("menuItems");
-        merkliste.addClickListener(e -> UI.getCurrent().navigate(BookmarksView.class));
 
         MenuItem abmelden = usersSubMenu.addItem("Abmelden");
         abmelden.getElement().getClassList().add("menuItems");

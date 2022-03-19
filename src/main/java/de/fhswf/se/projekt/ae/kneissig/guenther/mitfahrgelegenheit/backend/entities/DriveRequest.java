@@ -5,20 +5,20 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 public class DriveRequest {
 
     private Long id;
-    private Route route;
+    private DriveRoute driveRoute;
     private RequestState requestState;
     private User passenger;
     private String note;
 
-    public DriveRequest(Route route, RequestState requestState, User passenger, String note) {
-        this.route = route;
+    public DriveRequest(DriveRoute driveRoute, RequestState requestState, User passenger, String note) {
+        this.driveRoute = driveRoute;
         this.requestState = requestState;
         this.passenger = passenger;
         this.note = note;
     }
 
-    public Route getRoute() {
-        return route;
+    public DriveRoute getRoute() {
+        return driveRoute;
     }
 
     public RequestState getRequestState() {
@@ -33,8 +33,8 @@ public class DriveRequest {
         return note;
     }
 
-    public void setRoute(Route route) {
-        this.route = route;
+    public void setRoute(DriveRoute driveRoute) {
+        this.driveRoute = driveRoute;
     }
 
     public void setRequestState(RequestState requestState) {

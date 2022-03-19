@@ -8,7 +8,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.StarsRating;
@@ -21,12 +21,12 @@ public class SearchDriveResultViewDialog extends Dialog {
 
     private final Icon PROFILE_ICON = new Icon(VaadinIcon.USER);
 
-    private Route route;
+    private DriveRoute driveRoute;
     private FormLayoutTopOfferDrive formLayoutHinfahrt;
     private FormLayoutBottomOfferDrive formLayoutRueckfahrt;
     private VerticalLayout verticalLayout;
 
-    public SearchDriveResultViewDialog(Route route){
+    public SearchDriveResultViewDialog(DriveRoute driveRoute){
 
 //        this.fahrerRoute = fahrerRoute;
 
@@ -47,7 +47,7 @@ public class SearchDriveResultViewDialog extends Dialog {
         driverRating.setManual(true);
         add(driverRating);
 
-        switch (route.getDriveType()) {
+        switch (driveRoute.getDriveType()) {
             case OUTWARD_TRIP -> {
                 formLayoutHinfahrt = new FormLayoutTopOfferDrive();
 
@@ -64,15 +64,15 @@ public class SearchDriveResultViewDialog extends Dialog {
                 });
 
                 formLayoutHinfahrt.setReadOnly(true);
-                formLayoutHinfahrt.setTitle("Hinfahrt von " + route.getBenutzer().getUsername());
-                formLayoutHinfahrt.setSitzplaetze(route.getSeatCount().toString());
-                formLayoutHinfahrt.setFhLocation(route.getZiel().getAdresse().getPlace());
-                formLayoutHinfahrt.setDriveTime(route.getZiel().getTime().toLocalTime());
-                formLayoutHinfahrt.setDriveDateStart(route.getZiel().getTime().toLocalDate());
-                formLayoutHinfahrt.setAddress(route.getStart().getAdresse().getStreet() + " "
-                        + route.getStart().getAdresse().getHouseNumber() + ", "
-                        + route.getStart().getAdresse().getPostal() + " "
-                        + route.getStart().getAdresse().getPlace() + ", "
+                formLayoutHinfahrt.setTitle("Hinfahrt von " + driveRoute.getBenutzer().getUsername());
+                formLayoutHinfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
+                formLayoutHinfahrt.setFhLocation(driveRoute.getZiel().getAdresse().getPlace());
+                formLayoutHinfahrt.setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
+                formLayoutHinfahrt.setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
+                formLayoutHinfahrt.setAddress(driveRoute.getStart().getAdresse().getStreet() + " "
+                        + driveRoute.getStart().getAdresse().getHouseNumber() + ", "
+                        + driveRoute.getStart().getAdresse().getPostal() + " "
+                        + driveRoute.getStart().getAdresse().getPlace() + ", "
                         + "Deutschland");
                 verticalLayout.add(formLayoutHinfahrt);
             }
@@ -93,15 +93,15 @@ public class SearchDriveResultViewDialog extends Dialog {
 
 
                 formLayoutRueckfahrt.setReadOnly(true);
-                formLayoutRueckfahrt.setTitle("Rückfahrt von " + route.getBenutzer().getUsername());
-                formLayoutRueckfahrt.setSitzplaetze(route.getSeatCount().toString());
-                formLayoutRueckfahrt.setFhLocation(route.getStart().getAdresse().getPlace());
-                formLayoutRueckfahrt.setDriveTime(route.getStart().getTime().toLocalTime());
-                formLayoutRueckfahrt.setDriveDateStart(route.getStart().getTime().toLocalDate());
-                formLayoutRueckfahrt.setAddress(route.getZiel().getAdresse().getStreet() + " "
-                        + route.getZiel().getAdresse().getHouseNumber() + ", "
-                        + route.getZiel().getAdresse().getPostal() + " "
-                        + route.getZiel().getAdresse().getPlace() + ", "
+                formLayoutRueckfahrt.setTitle("Rückfahrt von " + driveRoute.getBenutzer().getUsername());
+                formLayoutRueckfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
+                formLayoutRueckfahrt.setFhLocation(driveRoute.getStart().getAdresse().getPlace());
+                formLayoutRueckfahrt.setDriveTime(driveRoute.getStart().getTime().toLocalTime());
+                formLayoutRueckfahrt.setDriveDateStart(driveRoute.getStart().getTime().toLocalDate());
+                formLayoutRueckfahrt.setAddress(driveRoute.getZiel().getAdresse().getStreet() + " "
+                        + driveRoute.getZiel().getAdresse().getHouseNumber() + ", "
+                        + driveRoute.getZiel().getAdresse().getPostal() + " "
+                        + driveRoute.getZiel().getAdresse().getPlace() + ", "
                         + "Deutschland");
                 verticalLayout.add(formLayoutRueckfahrt);
             }
@@ -117,10 +117,10 @@ public class SearchDriveResultViewDialog extends Dialog {
      */
     private HorizontalLayout createButtons() {
 
-        Button bookmarkButton = new Button("Fahrt merken");
-        bookmarkButton.setId("search-drive-result-view-dialog-bookmark_button");
-        bookmarkButton.setClassName("search-drive-result-view-dialog-buttons");
-        bookmarkButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+//        Button bookmarkButton = new Button("Fahrt merken");
+//        bookmarkButton.setId("search-drive-result-view-dialog-bookmark_button");
+//        bookmarkButton.setClassName("search-drive-result-view-dialog-buttons");
+//        bookmarkButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button requestButton = new Button("Fahrt anfragen");
         requestButton.setId("search-drive-result-view-dialog-request_button");
@@ -129,7 +129,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setClassName("search-drive-result-view-dialog-button_layout");
-        buttonLayout.add(bookmarkButton, requestButton);
+        buttonLayout.add(requestButton);
 
         return buttonLayout;
     }

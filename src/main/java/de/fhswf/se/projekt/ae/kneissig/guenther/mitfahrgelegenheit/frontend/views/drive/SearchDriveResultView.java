@@ -7,10 +7,11 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.RouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,13 +33,12 @@ import java.util.List;
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-result-view.css")
 public class SearchDriveResultView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver{
 
-    private static final String PAGE_ID = "SearchDriveResultView";
     private static final String TITEL_GRID = "Suchergebnisse";
 
-    private final RouteService routeService;
+    private final DriveRouteService driveRouteService;
     private final UserService userService;
 
-    private List<Route> driveList;
+    private List<DriveRoute> driveList;
     private DriveType fahrtenTyp;
     private String typ;
     private String fhStandort;
@@ -47,10 +47,10 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    public SearchDriveResultView(RouteService routeService, UserService userService) {
-        this.routeService = routeService;
+    public SearchDriveResultView(DriveRouteService driveRouteService, UserService userService) {
+        this.driveRouteService = driveRouteService;
         this.userService = userService;
-        UI.getCurrent().setId(PAGE_ID);
+        UI.getCurrent().setId(PageId.SEARCH_DRIVE_RESULT_VIEW.label);
         setId("searchDriveResultView");
     }
 
@@ -73,7 +73,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
         H1 title = new H1(TITEL_GRID);
 //        GridBookmarkSearchDriveResult grid = new GridBookmarkSearchDriveResult(TITEL_GRID, driveList);
-        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, routeService);
+        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, driveRouteService);
+        grid.setId("gridOwnOffersView");
         div.add(title,grid);
         add(div);
     }
@@ -107,7 +108,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                 fahrtenTyp = DriveType.RETURN_TRIP;
             }
         }
-        driveList = routeService.findRouten(user,fahrtenTyp,adresse,fhStandort);
+        driveList = driveRouteService.findRouten(user,fahrtenTyp,adresse,fhStandort);
 
 
         //If fahrten leer notification und zur Searchdrive zurück

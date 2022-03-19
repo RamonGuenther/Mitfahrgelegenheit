@@ -21,6 +21,7 @@ public class ProfileDoubleRating extends VerticalLayout {
      * Im Konstruktor werden die Ratingelemente erzeugt.
      */
     public ProfileDoubleRating(){
+
         driverRating = new StarsRating(0);
         driverRating.setId("driverRating");
         driverRating.setManual(false);

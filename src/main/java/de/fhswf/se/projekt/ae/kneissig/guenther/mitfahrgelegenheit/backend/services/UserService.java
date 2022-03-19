@@ -2,6 +2,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.serv
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,5 +20,9 @@ public class UserService {
 
     public User findBenutzerByUsername(String username){
         return repository.findBenutzerByUsername(username);
+    }
+
+    public User getCurrentUser(){
+        return repository.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }

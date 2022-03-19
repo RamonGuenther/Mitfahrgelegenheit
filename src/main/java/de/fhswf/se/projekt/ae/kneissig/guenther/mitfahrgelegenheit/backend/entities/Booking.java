@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Booking {
     private final Long id;
 
-    private final Route route;
+    private final DriveRoute driveRoute;
 
     private final User mitfahrer;
 
@@ -13,10 +13,10 @@ public class Booking {
 
     private final LocalDateTime buchungsDatum;
 
-    public Booking(Long id, Route route, User mitfahrer, Boolean bestaetigt, LocalDateTime buchungsDatum)
+    public Booking(Long id, DriveRoute driveRoute, User mitfahrer, Boolean bestaetigt, LocalDateTime buchungsDatum)
     {
         this.id = id;
-        this.route = route;
+        this.driveRoute = driveRoute;
         this.mitfahrer = mitfahrer;
         this.bestaetigt = bestaetigt;
         this.buchungsDatum = buchungsDatum;
@@ -27,9 +27,9 @@ public class Booking {
         return id;
     }
 
-    public Route getRoute()
+    public DriveRoute getRoute()
     {
-        return route;
+        return driveRoute;
     }
 
     public User getMitfahrer()

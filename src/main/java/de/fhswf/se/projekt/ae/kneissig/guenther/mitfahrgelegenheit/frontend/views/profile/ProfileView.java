@@ -1,21 +1,31 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import com.vaadin.flow.router.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.MultiSelectLanguage;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectFhLocation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectLanguage;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectSubjectArea;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.AverageProfileRatings;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
@@ -31,16 +41,24 @@ import java.util.List;
  * @author Ivonne Kneißig
  */
 
-@com.vaadin.flow.router.Route(value = "profil", layout = MainLayout.class)
+@Route(value = "profil", layout = MainLayout.class)
 @PageTitle("Profil")
 @CssImport("/themes/mitfahrgelegenheit/views/profile-view.css")
 public class ProfileView extends VerticalLayout {
+
+    private final DriveRouteService driveRouteService;
+    private UserService userService;
+    private User currentUser;
 
     /**
      * Der Konstruktor ist für das Erstellen der Profilansicht
      * zuständig.
      */
-    public ProfileView(){
+    public ProfileView(DriveRouteService driveRouteService, UserService userService){
+        UI.getCurrent().setId(PageId.PROFILE.label);
+        this.driveRouteService = driveRouteService;
+        this.userService = userService;
+        currentUser = userService.getCurrentUser();
         setId("profileView");
         createProfileView();
         createOwnOffersGrid();
@@ -139,23 +157,46 @@ public class ProfileView extends VerticalLayout {
      * zusammengefügt.
      */
     private void createOwnOffersGrid(){
-        List<Route> driveList = new ArrayList<>();
-        LocalDateTime test = LocalDateTime.of(2017, 12, 10, 10, 0);
-        //personList.add(new FahrerRoute(10L, "Sundernallee 75", "FH Iserlohn", test, null, test, null, null, null, null));
 
         H2 labelProfileGrid = new H2("Fahrtangebote von ...");
-        labelProfileGrid.addClassName("profilegrid");
 
-        Grid<Route> grid = new Grid<>();
-        grid.addClassName("profilegrid");
-        grid.setItems(driveList);
-        grid.removeColumnByKey("id");
+        List<DriveRoute> driveListTo = driveRouteService.findAllByBenutzerAndFahrtenTyp(currentUser, DriveType.OUTWARD_TRIP);
+        List<DriveRoute> driveListBack = driveRouteService.findAllByBenutzerAndFahrtenTyp(currentUser, DriveType.RETURN_TRIP);
 
-        grid.setColumns("ziel", "sitzplaetze");
-        grid.getColumnByKey("ziel").setFooter("Anzahl:  "  /*cardList.size()*/);
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
+        RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
+        radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
+        radioButtonGroup.setValue("Hinfahrt");
 
-        add(labelProfileGrid, grid);
+        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService);
+        gridHinfahrt.addClassName("profilegrid");
+        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService);
+        gridRueckfahrt.addClassName("profilegrid");
+        Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
+        div.setId("contentOwnDriveOffers");
+        add(div);
+
+        radioButtonGroup.addValueChangeListener(e -> {
+            switch (e.getValue()) {
+                case "Hinfahrt":
+                    div.remove(gridRueckfahrt);
+                    div.add(gridHinfahrt);
+                    break;
+
+                case "Rückfahrt":
+                    div.remove(gridHinfahrt);
+                    div.add(gridRueckfahrt);
+                    break;
+            }
+        });
+
+//        grid.addClassName("profilegrid");
+//        grid.setItems(driveList);
+//
+//
+//        grid.getColumnByKey("ziel").setFooter("Anzahl:  "  /*cardList.size()*/);
+//        grid.getColumns().forEach(col -> col.setAutoWidth(true));
+
+        add(div);
     }
 
     /**

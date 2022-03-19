@@ -5,7 +5,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 
 import java.util.Collection;
 
@@ -23,7 +23,7 @@ public class GridBookmarkSearchDriveResult extends VerticalLayout { //beschissen
      *
      * @param s String der den Titel der Seite bestimmt
      */
-    public GridBookmarkSearchDriveResult(String s, Collection<Route> driveList) {
+    public GridBookmarkSearchDriveResult(String s, Collection<DriveRoute> driveList) {
         if(s.isEmpty()){
             throw new IllegalArgumentException("Fehler: String ist leer.");
         }
@@ -38,14 +38,14 @@ public class GridBookmarkSearchDriveResult extends VerticalLayout { //beschissen
      * @throws IllegalArgumentException if(s.isEmpty())
      *
      */
-    private void createGrid(String s, Collection<Route> driveList){
+    private void createGrid(String s, Collection<DriveRoute> driveList){
         if(s.isEmpty()){
             throw new IllegalArgumentException("Fehler: String ist leer.");
         }
         H1 title = new H1(s);
         title.setId("titleSearchDriveResultBookMark");
 
-        Grid<Route> grid = new Grid<>(Route.class);
+        Grid<DriveRoute> grid = new Grid<>(DriveRoute.class);
         grid.setItems(driveList);
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 

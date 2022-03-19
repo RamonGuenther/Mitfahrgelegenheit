@@ -7,8 +7,9 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.RouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.OwnDriveOffersEditDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.SearchDriveResultViewDialog;
 
@@ -19,20 +20,15 @@ import java.util.List;
 /**
  * TODO: - Name passt nicht mehr da dieses Grid auch für SearchDriveResult benutzt wird.
  */
-public class GridOwnDriveOffersView extends Grid<Route> {
+public class GridOwnDriveOffersView extends Grid<DriveRoute> {
 
-    private static final String OWN_DRIVE_OFFERS_VIEW = "OwnDriveOffersView";
-    private static final String SEARCH_DRIVE_RESULT_VIEW = "SearchDriveResultView";
+    private final DriveRouteService driveRouteService;
 
-
-    private final RouteService routeService;
-
-    public GridOwnDriveOffersView(String zeitpunkt, List<Route> driveList, RouteService routeService) {
-        this.routeService = routeService;
+    public GridOwnDriveOffersView(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService) {
+        this.driveRouteService = driveRouteService;
 
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
-        setId("gridOwnOffersView");
         //TODO Abfrage Absicherung
         setItems(driveList);
 
@@ -52,8 +48,8 @@ public class GridOwnDriveOffersView extends Grid<Route> {
 
         getColumns().get(0).setFooter("Anzahl:  " + driveList.size());
 
-        addColumn(Route::getSeatCount).setHeader("Sitzplaetze");
-        addColumn(Route::getDriveType).setHeader("Fahrentyp");
+        addColumn(DriveRoute::getSeatCount).setHeader("Sitzplaetze");
+        addColumn(DriveRoute::getDriveType).setHeader("Fahrentyp");
 
         addComponentColumn(this::createButtons);
 
@@ -61,18 +57,21 @@ public class GridOwnDriveOffersView extends Grid<Route> {
 
     }
 
-    private Button createButtons(Route route) {
+    private Button createButtons(DriveRoute driveRoute) {
         Icon icon = new Icon(VaadinIcon.SEARCH);
         Button button = new Button();
         button.setIcon(icon);
 
         button.addClickListener(e->{
 
-            if(UI.getCurrent().getId().get().equals(OWN_DRIVE_OFFERS_VIEW)) {
-                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(route, routeService);
+            if(UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
+                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService);
             }
-            else if(UI.getCurrent().getId().get().equals(SEARCH_DRIVE_RESULT_VIEW)){
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(route);
+            else if(UI.getCurrent().getId().get().equals(PageId.SEARCH_DRIVE_RESULT_VIEW.label)){
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute);
+            }
+            else if(UI.getCurrent().getId().get().equals(PageId.PROFILE.label)){
+                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService);
             }
             else{
                 throw new IllegalArgumentException("Fehler in " + getClass().getSimpleName() + "lol");
