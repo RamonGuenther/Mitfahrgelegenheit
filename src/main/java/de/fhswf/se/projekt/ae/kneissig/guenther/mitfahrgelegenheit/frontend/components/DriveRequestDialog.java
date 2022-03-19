@@ -1,52 +1,25 @@
-package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive;
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.CheckboxRegularDrive;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.email.MailSender;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- * TODO: Überarbeiten
- */
+import javax.mail.MessagingException;
+import java.net.ContentHandler;
 
-/**
- * Die Klasse DriveView erstellt eine View zum erstellen einer
- * Anfrage zu einer Fahrt.
- *
- * @author Ivonne Kneißig
- */
-
-@Route(value = "fahrtanfrage", layout = MainLayout.class)
-@PageTitle("Fahrtanfrage stellen")
-@CssImport("/themes/mitfahrgelegenheit/views/drive-request-view.css")
-public class DriveRequestView extends VerticalLayout {
-
-
-    /**
-     * Der Konstruktor ist für das Erstellen der View zum
-     * Erstellen einer Anfrage zuständig.
-     */
-    public DriveRequestView(){
-        setId("driveRequestView");
-        createDriveRequestView();
-    }
-
-    /**
-     * In der Methode createDriveRequestView werden die einzelnen Komponenten
-     * der View erzeugt und zusammengefügt.
-     */
-    private void createDriveRequestView(){
-
+@CssImport("/themes/mitfahrgelegenheit/components/drive-request-dialog.css")
+public class DriveRequestDialog extends Dialog {
+    public DriveRequestDialog(String routelink) {
         H1 title = new H1("Anfrage stellen");
         title.setId("titleDriveRequest");
 
@@ -128,12 +101,21 @@ public class DriveRequestView extends VerticalLayout {
         Button buttonRequest = new Button("Fahrt anfragen");
         buttonRequest.setClassName("buttonRequest");
         buttonRequest.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        buttonRequest.addClickListener(e->{
+            try {
+                MailSender.getInstance().sendMail(SecurityContextHolder.getContext().getAuthentication().getName(), textAreaMessage.getValue(),"kneissig.ivonne@fh-swf.de", routelink);
+            } catch (MessagingException ex) {
+                ex.printStackTrace();
+            }
+        });
+
         Button buttonCancel = new Button("Abbrechen");
         buttonCancel.setClassName("buttonRequest");
         buttonCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         buttons.add(buttonRequest, buttonCancel);
 
         add(requestForm, buttons);
+
     }
 
 }

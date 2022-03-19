@@ -30,7 +30,6 @@ public class TextFieldAddress extends Autocomplete implements GoogleApiKey {
      * @param label String, für die Beschriftung des Textfeldes
      */
     public TextFieldAddress(String label) {
-
         setLabel(label);
         GoogleAddressAutocomplete googleAddressAutocomplete = new GoogleAddressAutocomplete();
 

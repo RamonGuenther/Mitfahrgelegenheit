@@ -71,6 +71,7 @@ import '@vaadin/vaadin-lumo-styles/color.js';
 import '@vaadin/vaadin-lumo-styles/typography.js';
 import averageRatingsCss from './components/average-ratings.css';
 import button_switch_themeCss from './components/button_switch_theme.css';
+import driveRequestDialogCss from './components/drive-request-dialog.css';
 import menuBarButtonCss from './components/menu-bar-button.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
 import profileDoubleRatingsCss from './components/profile-double-ratings.css';
@@ -98,6 +99,12 @@ export const applyTheme = (target) => {
       'button_switch_theme',
       css`
         ${unsafeCSS(button_switch_themeCss.toString())}
+      `
+    );
+    registerStyles(
+      'drive-request-dialog',
+      css`
+        ${unsafeCSS(driveRequestDialogCss.toString())}
       `
     );
     registerStyles(

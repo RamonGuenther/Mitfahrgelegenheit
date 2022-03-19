@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.email.MailSender;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
@@ -8,9 +9,15 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.annotation.PostConstruct;
+import javax.mail.*;
+import javax.mail.internet.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 @SpringBootApplication
 public class MitfahrgelegenheitApplication {
@@ -66,5 +73,7 @@ public class MitfahrgelegenheitApplication {
 		);
 		userService.save(user3);
 	}
+
+
 
 }

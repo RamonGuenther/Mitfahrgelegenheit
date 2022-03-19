@@ -9,6 +9,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.DriveRequestDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.StarsRating;
@@ -105,6 +106,7 @@ public class SearchDriveResultViewDialog extends Dialog {
                         + "Deutschland");
                 verticalLayout.add(formLayoutRueckfahrt);
             }
+
         }
         verticalLayout.add(createButtons());
         add(verticalLayout);
@@ -126,6 +128,12 @@ public class SearchDriveResultViewDialog extends Dialog {
         requestButton.setId("search-drive-result-view-dialog-request_button");
         requestButton.setClassName("search-drive-result-view-dialog-buttons");
         requestButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        requestButton.addClickListener(e->{
+            close();
+            DriveRequestDialog driveRequestDialog = new DriveRequestDialog("https://www.youtube.com/watch?v=LSyRf8rAjTs"); //TODO: ROUTE ÜBERGEBEN
+            driveRequestDialog.open();
+        });
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setClassName("search-drive-result-view-dialog-button_layout");
