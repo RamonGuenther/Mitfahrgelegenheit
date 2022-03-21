@@ -4,30 +4,22 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.AverageProfileRatings;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutProfileData;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileRatings;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
-import java.util.List;
-import java.util.Set;
 
 /**
  * Die Klasse ProfileView erstellt eine View der Profilansicht
@@ -38,13 +30,13 @@ import java.util.Set;
 
 @Route(value = "profil", layout = MainLayout.class)
 @PageTitle("Profil")
-@CssImport("/themes/mitfahrgelegenheit/views/profile-view.css")
+@CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class ProfileView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
+    private FormLayoutProfileData profileDataForm;
     private final UserService userService;
     private final User user;
-    private TextFieldAddress changeAddress;
 
     /**
      * Der Konstruktor ist für das Erstellen der Profilansicht
@@ -55,9 +47,9 @@ public class ProfileView extends VerticalLayout {
         this.driveRouteService = driveRouteService;
         this.userService = userService;
         user = userService.getCurrentUser();
-        setId("profileView");
+
         createProfileView();
-        createOwnOffersGrid();
+//        createOwnOffersGrid();
         createRatingsView();
     }
 
@@ -67,170 +59,96 @@ public class ProfileView extends VerticalLayout {
      */
     private void createProfileView(){
 
-        H1 title = new H1("Profil");
-        title.setId("titleProfile");
-        ProfileDoubleRating doubleRating = new ProfileDoubleRating();
-        doubleRating.setId("doubleRating");
-        HorizontalLayout header = new HorizontalLayout();
-        header.setId("profileHeader");
-        header.add(title, doubleRating);
-
-        TextField firstname = new TextField("Vorname");
-        firstname.setReadOnly(true);
-        firstname.setValue(user.getFirstName());
-
-        TextField lastname = new TextField("Nachname");
-        lastname.setReadOnly(true);
-        lastname.setValue(user.getLastName());
-
-        TextField email = new TextField("Email");
-        email.setReadOnly(true);
-        email.setPattern("^[a-z]+.[a-z]+([1-9][0-9]*)?@fh-swf.de$");
-        email.setErrorMessage("Bitte gültige FH-Mail eingeben.");
-        email.setValue(user.getEmail());
-
-        TextField address = new TextField("Straße/Hausnummer");
-        address.setReadOnly(true);
-        address.setValue(user.getAddress().getStreet() + user.getAddress().getHouseNumber());
-
-        TextField postal = new TextField("Postleitzahl");
-        postal.setReadOnly(true);
-        postal.setValue(user.getAddress().getPostal());
-
-        TextField place = new TextField("Wohnort");
-        place.setReadOnly(true);
-        place.setValue(user.getAddress().getPlace());
-
-        SelectUniversityLocation selectUniversityLocation = new SelectUniversityLocation();
-//        TextField selectUniversityLocation = new TextField("FH-Standort");
-        selectUniversityLocation.setReadOnly(true);
-        selectUniversityLocation.setValue(user.getUniversityLocation());
-
-        SelectFaculty selectFaculty = new SelectFaculty();
-//        TextField selectFaculty = new TextField("Fachbereich");
-        selectFaculty.setValue(user.getFaculty());
-        selectFaculty.setReadOnly(true);
-
-        SelectLanguage selectLanguage = new SelectLanguage();
-        selectLanguage.setReadOnly(true);
-        selectLanguage.setValue(user.getLanguages().getMainLanguage());
-
-        MultiSelectLanguage multiSelectLanguage = new MultiSelectLanguage();
-        multiSelectLanguage.setReadOnly(true);
-        Set<String> testlanguages = user.getLanguages().getAllLanguages();
-        multiSelectLanguage.setValue(testlanguages);
-
-        // Buttons zum Bearbeiten / Löschen des Profil
         Button editProfileButton = new Button("Profil bearbeiten");
-        editProfileButton.addClassName("buttonsProfile");
+        editProfileButton.addClassName("profile-data-buttons");
         editProfileButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-
         Button changePasswordButton = new Button("Passwort ändern");
-        changePasswordButton.addClassName("buttonsProfile");
+        changePasswordButton.addClassName("profile-data-buttons");
         changePasswordButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button deleteAccountButton = new Button("Account löschen");
-        deleteAccountButton.addClassName("buttonsProfile");
+        deleteAccountButton.addClassName("profile-data-buttons");
         deleteAccountButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         HorizontalLayout horizontalLayout = new HorizontalLayout(editProfileButton, changePasswordButton, deleteAccountButton);
 
-        FormLayout registrationForm = new FormLayout(title, firstname, lastname, selectUniversityLocation, selectFaculty, address,
-                postal, place, email, selectLanguage, multiSelectLanguage, horizontalLayout);
-        registrationForm.setId("registrationForm");
-
-        registrationForm.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1, FormLayout.ResponsiveStep.LabelsPosition.TOP),
-                new FormLayout.ResponsiveStep("490px", 4, FormLayout.ResponsiveStep.LabelsPosition.TOP));
-
-        registrationForm.setColspan(title, 4);
-        registrationForm.setColspan(firstname, 2);
-        registrationForm.setColspan(lastname, 2);
-        registrationForm.setColspan(email, 2);
-        registrationForm.setColspan(selectUniversityLocation, 2);
-        registrationForm.setColspan(address, 2);
-        registrationForm.setColspan(selectFaculty, 2);
-        registrationForm.setColspan(postal, 1);
-        registrationForm.setColspan(place, 1);
-        registrationForm.setColspan(selectLanguage, 1);
-        registrationForm.setColspan(multiSelectLanguage, 1);
-        registrationForm.setColspan(horizontalLayout, 4);
+        profileDataForm = new FormLayoutProfileData("Profil", horizontalLayout);
+        profileDataForm.remove(profileDataForm.getGoogleAddress());
+        profileDataForm.addComponentAtIndex(5, profileDataForm.getStreet());
+        profileDataForm.setColspan(profileDataForm.getStreet(), 2);
+        profileDataForm.showUserData(user);
+        profileDataForm.setReadOnly(true);
+        profileDataForm.setClassName("profile-data-form");
 
         editProfileButton.addClickListener(event -> {
-            firstname.setReadOnly(false);
-            lastname.setReadOnly(false);
-            selectUniversityLocation.setReadOnly(false);
-            selectFaculty.setReadOnly(false);
-            editAddress(registrationForm, address, postal, place);
-            email.setReadOnly(false);
-            selectLanguage.setReadOnly(false);
-            multiSelectLanguage.setReadOnly(false);
+            profileDataForm.setReadOnly(false);
+
+            editAddress();
 
             Button saveProfile = new Button("Speichern");
             saveProfile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            saveProfile.addClassName("profile-data-buttons");
             Button cancel = new Button("Abbrechen");
             cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            HorizontalLayout editProfilButtonLayout = new HorizontalLayout(saveProfile, cancel);
-            registrationForm.remove(horizontalLayout);
-            registrationForm.addComponentAtIndex(11, editProfilButtonLayout);
-            registrationForm.setColspan(editProfilButtonLayout, 4);
+            cancel.addClassName("profile-data-buttons");
 
+            HorizontalLayout editProfilButtonLayout = new HorizontalLayout(saveProfile, cancel);
+            profileDataForm.remove(horizontalLayout);
+            profileDataForm.addComponentAtIndex(11, editProfilButtonLayout);
+            profileDataForm.setColspan(editProfilButtonLayout, 4);
+
+            saveProfile.addClickListener(saveEvent -> {
+              saveProfileData(editProfilButtonLayout, horizontalLayout);
+            });
             cancel.addClickListener(cancelEvent -> {
-                firstname.setReadOnly(true);
-                firstname.setValue(user.getFirstName());
-                lastname.setReadOnly(true);
-                lastname.setValue(user.getLastName());
-                selectUniversityLocation.setReadOnly(true);
-                selectFaculty.setReadOnly(true);
-                address.setReadOnly(true);
-                email.setReadOnly(true);
-                selectLanguage.setReadOnly(true);
-                multiSelectLanguage.setReadOnly(true);
+                profileDataForm.setReadOnly(true);
+                profileDataForm.showUserData(user);
+                profileDataForm.remove(editProfilButtonLayout);
+                profileDataForm.addComponentAtIndex(11, horizontalLayout);
+                profileDataForm.setColspan(horizontalLayout, 4);
             });
         });
-
-        add(registrationForm);
+        add(profileDataForm);
     }
-
-
 
     /**
      * In der Methode createOwnOffersGrid werden die einzelnen Komponenten
      * für eine Auflistung der eigenen angebotenen Fahrten erstellt und
      * zusammengefügt.
      */
-    private void createOwnOffersGrid(){
-
-        H2 labelProfileGrid = new H2("Fahrtangebote von ...");
-
-        List<DriveRoute> driveListTo = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.OUTWARD_TRIP);
-        List<DriveRoute> driveListBack = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.RETURN_TRIP);
-
-        RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
-        radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
-        radioButtonGroup.setValue("Hinfahrt");
-
-        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService);
-        gridHinfahrt.addClassName("profilegrid");
-        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService);
-        gridRueckfahrt.addClassName("profilegrid");
-        Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
-        div.setId("contentOwnDriveOffers");
-        add(div);
-
-        radioButtonGroup.addValueChangeListener(e -> {
-            switch (e.getValue()) {
-                case "Hinfahrt":
-                    div.remove(gridRueckfahrt);
-                    div.add(gridHinfahrt);
-                    break;
-
-                case "Rückfahrt":
-                    div.remove(gridHinfahrt);
-                    div.add(gridRueckfahrt);
-                    break;
-            }
-        });
+//    private void createOwnOffersGrid(){
+//
+//        H2 labelProfileGrid = new H2("Fahrtangebote von ...");
+//
+//        List<DriveRoute> driveListTo = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.OUTWARD_TRIP);
+//        List<DriveRoute> driveListBack = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.RETURN_TRIP);
+//
+//        RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
+//        radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
+//        radioButtonGroup.setValue("Hinfahrt");
+//
+//        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService);
+//        gridHinfahrt.addClassName("profilegrid");
+//        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService);
+//        gridRueckfahrt.addClassName("profilegrid");
+//        Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
+//        div.setId("contentOwnDriveOffers");
+//        add(div);
+//
+//        radioButtonGroup.addValueChangeListener(e -> {
+//            switch (e.getValue()) {
+//                case "Hinfahrt":
+//                    div.remove(gridRueckfahrt);
+//                    div.add(gridHinfahrt);
+//                    break;
+//
+//                case "Rückfahrt":
+//                    div.remove(gridHinfahrt);
+//                    div.add(gridRueckfahrt);
+//                    break;
+//            }
+//        });
 
 //        grid.addClassName("profilegrid");
 //        grid.setItems(driveList);
@@ -239,9 +157,9 @@ public class ProfileView extends VerticalLayout {
 //        grid.getColumnByKey("ziel").setFooter("Anzahl:  "  /*cardList.size()*/);
 //        grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        add(div);
-    }
-
+//        add(div);
+//    }
+//
     /**
      * In der Methode createRatingsView werden die einzelnen Komponenten
      * der Benutzerbewertungen erstellt und zusammengefügt.
@@ -251,47 +169,66 @@ public class ProfileView extends VerticalLayout {
         HorizontalLayout profileRatingLayout = new HorizontalLayout();
         profileRatingLayout.setId("profileRatingLayout");
 
-        AverageProfileRatings averageProfileRatings = new AverageProfileRatings();
-        averageProfileRatings.setId("averageProfileRatings");
-        profileRatingLayout.add(averageProfileRatings);
-        averageProfileRatings.getRatingsRadio().addValueChangeListener(event ->
-                averageProfileRatings.setAverageRatings(averageProfileRatings.getRatingsRadio().getValue()));
-
+        ProfileRatings profileRatings = new ProfileRatings(user);
+        profileRatingLayout.add(profileRatings);
+        profileRatings.getRatingsRadio().addValueChangeListener(event ->
+                profileRatings.setAverageRatingsDriver(profileRatings.getRatingsRadio().getValue()));
         add(profileRatingLayout);
     }
 
 
-    private void editAddress(FormLayout layout, TextField address,
-                             TextField postal, TextField place){
-        if(layout == null){
-            throw new IllegalArgumentException("RegistrationView: FormLayout is null");
-        }
-        if(address == null){
-            throw new IllegalArgumentException("RegistrationView: TextFieldAddress is null");
-        }
-        if(postal == null){
-            throw new IllegalArgumentException("RegistrationView: Textfield for postal is null");
-        }
-        if(place == null){
-            throw new IllegalArgumentException("RegistrationView: Textfield for place is null");
+    private void editAddress(){
+        if(profileDataForm == null){
+            throw new IllegalArgumentException("ProfileView: FormLayout is null");
         }
 
-        layout.remove(address);
-        changeAddress = new TextFieldAddress("Adresse");
-        layout.addComponentAtIndex(5, changeAddress);
-        layout.setColspan(changeAddress, 2);
+        profileDataForm.getStreet().addFocusListener(focusEvent -> {
+            profileDataForm.remove(profileDataForm.getStreet());
+            profileDataForm.remove(profileDataForm.getGoogleAddress());
+            profileDataForm.setGoogleAddress(new TextFieldAddress("Adresse"));
+            profileDataForm.addComponentAtIndex(5, profileDataForm.getGoogleAddress());
+            profileDataForm.setColspan(profileDataForm.getGoogleAddress(), 2);
 
-        changeAddress.addValueChangeListener(event -> {
-            address.setValue(changeAddress.getStreet());
-            place.setValue(changeAddress.getPlace());
-            postal.setValue(changeAddress.getPostal());
+            profileDataForm.getGoogleAddress().focus();
+            profileDataForm.getGoogleAddress().addValueChangeListener(event -> {
+                profileDataForm.getStreet().setValue(profileDataForm.getGoogleAddress().getStreet());
+                profileDataForm.getPlace().setValue(profileDataForm.getGoogleAddress().getPlace());
+                profileDataForm.getPostal().setValue(profileDataForm.getGoogleAddress().getPostal());
 
-            layout.remove(changeAddress);
-            layout.addComponentAtIndex(5, address);
-            layout.setColspan(address, 2);
-            address.addFocusListener(e1 -> {
-                editAddress(layout, address, place, postal);
+                profileDataForm.remove(profileDataForm.getGoogleAddress());
+                profileDataForm.addComponentAtIndex(5, profileDataForm.getStreet());
+                profileDataForm.setColspan(profileDataForm.getStreet(), 2);
             });
         });
+    }
+
+    private void saveProfileData(HorizontalLayout currentButtonLayout, HorizontalLayout newButtonLayout){
+        if(profileDataForm.isValuePresent()){
+            user.setFirstName(profileDataForm.getFirstName().getValue());
+            user.setLastName(profileDataForm.getLastName().getValue());
+            user.setEmail(profileDataForm.getEmail().getValue());
+            user.setUniversityLocation(profileDataForm.getSelectUniversityLocation().getValue());
+            user.setFaculty((profileDataForm.getSelectFaculty().getValue()));
+            user.setLanguages(new Languages(profileDataForm.getSelectLanguage().getValue(),
+                    profileDataForm.getMultiSelectLanguage().getSelectedItems()));
+            if(!profileDataForm.getGoogleAddress().getValue().isEmpty()){
+                user.setAddress(new Address(
+                        profileDataForm.getGoogleAddress().getPostal(),
+                        profileDataForm.getGoogleAddress().getPlace(),
+                        profileDataForm.getGoogleAddress().getStreetWithoutNumber(),
+                        profileDataForm.getGoogleAddress().getNumber()
+                ));
+            }
+            userService.save(user);
+            profileDataForm.setReadOnly(true);
+            profileDataForm.showUserData(user);
+
+            profileDataForm.remove(currentButtonLayout);
+            profileDataForm.addComponentAtIndex(11, newButtonLayout);
+            profileDataForm.setColspan(newButtonLayout, 4);
+        }
+        else{
+            NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
+        }
     }
 }

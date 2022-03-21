@@ -2,6 +2,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 @Embeddable
 public class UserRating {
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Rating> driverRatings;
 
     @ElementCollection

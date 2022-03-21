@@ -1,0 +1,45 @@
+.registration-data-form{
+    width: 1000px;
+    margin: auto;
+    margin-top: 150px;
+}
+
+.profile-data-form{
+    width: 1000px;
+    margin: auto;
+}
+
+.profile-data-buttonlayout{
+    margin-top: 50px;
+}
+
+.profile-data-buttons{
+    margin: auto;
+    width: 200px;
+}
+
+#profile-data-double_rating{
+    margin-top: 18px;
+}
+
+#profileRatingLayout{
+    width: 1000px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+#rating-grid{
+    width: 700px;
+    height: 200px;
+    margin-left: 0;
+    margin-top: 30px;
+
+}
+
+.rating-stars{
+    width: 300px !important;
+}
+
+#profile-ratings{
+    margin-left: 0;
+}

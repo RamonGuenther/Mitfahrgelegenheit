@@ -6,8 +6,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.AverageRatingsDriver;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.AverageRatingsPassenger;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.AverageRatings;
 
 /**
  * Die Klasse RatingButton erstellt einen Button für die CompletedDriveView,
@@ -48,10 +47,10 @@ public class RatingButton extends Button {
 
         div.add(labelRatingDialog);
         if (role == Role.FAHRER) {
-            AverageRatingsPassenger ratingPassenger = new AverageRatingsPassenger();
+            AverageRatings ratingPassenger = new AverageRatings();
             div.add(ratingPassenger);
         } else if (role == Role.MITFAHRER) {
-            AverageRatingsDriver ratingDriver = new AverageRatingsDriver();
+            AverageRatings ratingDriver = new AverageRatings();
             div.add(ratingDriver);
         }
         div.add(buttonLayoutRating);

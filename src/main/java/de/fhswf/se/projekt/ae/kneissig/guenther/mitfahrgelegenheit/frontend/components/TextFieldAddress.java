@@ -22,6 +22,7 @@ public class TextFieldAddress extends Autocomplete implements GoogleApiKey {
     private String street;
     private String place;
     private String postal;
+    private String streetWithoutNumber;
 
     /**
      * Im Konstruktor wird das Textfeld mit der Autocomplete-Funktion
@@ -69,11 +70,11 @@ public class TextFieldAddress extends Autocomplete implements GoogleApiKey {
         String[] addressComponents = value.split(" ");
 
         if (addressComponents.length == 5) {
-            street = addressComponents[0];
+            streetWithoutNumber = addressComponents[0];
             number = addressComponents[1];
             postal = addressComponents[2];
             place = addressComponents[3];
-            street += " " + number;
+            street = streetWithoutNumber + " " + number;
         } else {
             street = addressComponents[0];
             postal = addressComponents[1];
@@ -96,5 +97,9 @@ public class TextFieldAddress extends Autocomplete implements GoogleApiKey {
 
     public String getNumber() {
         return number;
+    }
+
+    public String getStreetWithoutNumber() {
+        return streetWithoutNumber;
     }
 }

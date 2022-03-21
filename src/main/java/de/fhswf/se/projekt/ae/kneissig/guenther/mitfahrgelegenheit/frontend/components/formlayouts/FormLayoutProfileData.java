@@ -1,12 +1,15 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts;
 
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 
+@CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class FormLayoutProfileData extends FormLayout {
 
     private String title;
@@ -23,11 +26,17 @@ public class FormLayoutProfileData extends FormLayout {
     private MultiSelectLanguage multiSelectLanguage;
     private HorizontalLayout buttonLayout;
 
+    private ProfileDoubleRating doubleRating;
+
     public FormLayoutProfileData(String titleText, HorizontalLayout buttonLayout){
-        setId("registrationForm");
 
         H1 title = new H1(titleText);
-        title.setId("titleRegistrationForm");
+
+        doubleRating = new ProfileDoubleRating();
+        doubleRating.setId("profile-data-double_rating");
+
+        HorizontalLayout header = new HorizontalLayout();
+        header.add(title, doubleRating);
 
         firstName = new TextField("Vorname");
 
@@ -58,15 +67,16 @@ public class FormLayoutProfileData extends FormLayout {
         multiSelectLanguage = new MultiSelectLanguage();
 
         this.buttonLayout = buttonLayout;
+        this.buttonLayout.setClassName("profile-data-buttonlayout");
 
-        add(title, firstName, lastName, email, selectUniversityLocation, googleAddress,
+        add(header, firstName, lastName, email, selectUniversityLocation, googleAddress,
                 selectFaculty, postal, place, selectLanguage, multiSelectLanguage, buttonLayout);
 
         setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1, FormLayout.ResponsiveStep.LabelsPosition.TOP),
                 new FormLayout.ResponsiveStep("490px", 4, FormLayout.ResponsiveStep.LabelsPosition.TOP));
 
 
-        setColspan(title, 4);
+        setColspan(header, 4);
         setColspan(firstName, 2);
         setColspan(lastName, 2);
         setColspan(email, 2);
@@ -96,13 +106,39 @@ public class FormLayoutProfileData extends FormLayout {
         lastName.setValue(user.getLastName());
         email.setValue(user.getEmail());
         selectUniversityLocation.setValue(user.getUniversityLocation());
+        selectFaculty.setSubjectAreaItems(user.getUniversityLocation());
+        selectFaculty.setValue(user.getFaculty());
         street.setValue(user.getAddress().getStreet() + " " + user.getAddress().getHouseNumber());
-        place.setValue((user.getAddress().getPlace()));
+        place.setValue(user.getAddress().getPlace());
         postal.setValue(user.getAddress().getPostal());
         selectLanguage.setValue(user.getLanguages().getMainLanguage());
         multiSelectLanguage.setValue(user.getLanguages().getAllLanguages());
     }
 
+    public void setReadOnly(boolean value){
+        firstName.setReadOnly(value);
+        lastName.setReadOnly(value);
+        selectUniversityLocation.setReadOnly(value);
+        selectFaculty.setReadOnly(value);
+        email.setReadOnly(value);
+        street.setReadOnly(value);
+        selectLanguage.setReadOnly(value);
+        multiSelectLanguage.setReadOnly(value);
+    }
+
+    public boolean isValuePresent(){
+        if(getStreet().getValue() == null || getStreet().getValue().isEmpty() ||
+                getFirstName().getValue() == null || getFirstName().getValue().isEmpty() ||
+                getLastName().getValue() == null || getLastName().getValue().isEmpty() ||
+                getEmail().getValue() == null || getEmail().getValue().isEmpty() ||
+                getSelectUniversityLocation().getValue() == null || getSelectUniversityLocation().getValue().isEmpty() ||
+                getSelectLanguage().getValue().isEmpty()){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
     public String getTitle() {
         return title;
@@ -206,5 +242,13 @@ public class FormLayoutProfileData extends FormLayout {
 
     public void setButtonLayout(HorizontalLayout buttonLayout) {
         this.buttonLayout = buttonLayout;
+    }
+
+    public ProfileDoubleRating getDoubleRating() {
+        return doubleRating;
+    }
+
+    public void setDoubleRating(ProfileDoubleRating doubleRating) {
+        this.doubleRating = doubleRating;
     }
 }

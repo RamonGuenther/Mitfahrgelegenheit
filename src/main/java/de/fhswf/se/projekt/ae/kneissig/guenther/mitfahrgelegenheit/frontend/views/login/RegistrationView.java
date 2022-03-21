@@ -30,7 +30,7 @@ import java.util.Set;
 
 @Route("benutzerdaten")
 @PageTitle("Benutzerdaten anpassen")
-@CssImport("/themes/mitfahrgelegenheit/views/registration-view.css")
+@CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class RegistrationView extends VerticalLayout {
 
     private final UserService userService;
@@ -41,7 +41,6 @@ public class RegistrationView extends VerticalLayout {
      */
 
     public RegistrationView(UserService userService) {
-        setId("registrationView");
         this.userService = userService;
         createRegistrationView();
     }
@@ -53,17 +52,19 @@ public class RegistrationView extends VerticalLayout {
 
     private void createRegistrationView() {
         Button submitButton = new Button("Speichern");
-        submitButton.addClassName("buttonsRegistration");
+        submitButton.addClassName("profile-data-buttons");
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button cancelButton = new Button("Abbrechen");
-        cancelButton.addClassName("buttonsRegistration");
+        cancelButton.addClassName("profile-data-buttons");
         cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         HorizontalLayout horizontalLayout = new HorizontalLayout(submitButton, cancelButton);
 
         FormLayoutProfileData registrationForm = new FormLayoutProfileData("Benutzerdaten hinzufügen", horizontalLayout);
         registrationForm.markFormComponentsAsRequired();
+        registrationForm.getDoubleRating().setVisible(false);
+        registrationForm.setClassName("registration-data-form");
 
         registrationForm.getGoogleAddress().addValueChangeListener(event ->
                 setAddressFields(
@@ -76,15 +77,7 @@ public class RegistrationView extends VerticalLayout {
             User user = userService.getCurrentUser();
             Set<String> languages = registrationForm.getMultiSelectLanguage().getSelectedItems();
 
-            if(registrationForm.getStreet().getValue() == null || registrationForm.getStreet().getValue().isEmpty() ||
-                    registrationForm.getFirstName().getValue() == null || registrationForm.getFirstName().getValue().isEmpty() ||
-                    registrationForm.getLastName().getValue() == null || registrationForm.getLastName().getValue().isEmpty() ||
-                    registrationForm.getEmail().getValue() == null || registrationForm.getEmail().getValue().isEmpty() ||
-                    registrationForm.getSelectUniversityLocation().getValue() == null || registrationForm.getSelectUniversityLocation().getValue().isEmpty() ||
-                    registrationForm.getSelectLanguage().getValue() == null || registrationForm.getSelectLanguage().getValue().isEmpty()){
-                NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
-            }
-            else{
+            if(registrationForm.isValuePresent()){
                 user.setFirstName(registrationForm.getFirstName().getValue());
                 user.setLastName(registrationForm.getLastName().getValue());
                 user.setAddress(new Address(registrationForm.getGoogleAddress().getPostal(),
@@ -100,6 +93,9 @@ public class RegistrationView extends VerticalLayout {
 
                 userService.save(user);
                 UI.getCurrent().navigate(SearchDriveView.class);
+            }
+            else{
+                NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
             }
         });
 
@@ -126,15 +122,6 @@ public class RegistrationView extends VerticalLayout {
                                   TextField postal, TextField place){
         if(layout == null){
             throw new IllegalArgumentException("RegistrationView: FormLayout is null");
-        }
-        if(address == null){
-            throw new IllegalArgumentException("RegistrationView: TextFieldAddress is null");
-        }
-        if(postal == null){
-            throw new IllegalArgumentException("RegistrationView: Textfield for postal is null");
-        }
-        if(place == null){
-            throw new IllegalArgumentException("RegistrationView: Textfield for place is null");
         }
 
         layout.getStreet().setValue(address.getStreet());

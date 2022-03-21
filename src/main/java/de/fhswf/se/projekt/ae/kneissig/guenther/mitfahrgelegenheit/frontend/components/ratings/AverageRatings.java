@@ -5,23 +5,23 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
- * Die Klasse AverageRatingsPassenger erstellt eine Ansicht
- * für die Mitfahrerbewertungen.
+ * Die Klasse AverageRatingsDrive erstellt eine Ansicht für
+ * die Fahrerbewertungen.
  *
  * @author Ivonne Kneißig
  */
 @CssImport("/themes/mitfahrgelegenheit/components/average-ratings.css")
-public class AverageRatingsPassenger extends VerticalLayout {
+public class AverageRatings extends VerticalLayout {
 
     private StarsRating punctuality;
     private StarsRating reliability;
 
     /**
      * Der Konstruktor ist für das Erstellen der Bewertungssterne
-     * für die Mitfahrerbewertungen und die entsprechende Beschriftung
+     * für die Fahrerbewertungen und die entsprechende Beschriftung
      * zuständig.
      */
-    public AverageRatingsPassenger(){
+    public AverageRatings(){
         FormLayout ratings = new FormLayout();
         ratings.setId("ratingsForm");
 
@@ -36,5 +36,21 @@ public class AverageRatingsPassenger extends VerticalLayout {
         ratings.addFormItem(reliability, "Zuverlässigkeit");
 
         add(ratings);
+    }
+
+    public StarsRating getPunctuality() {
+        return punctuality;
+    }
+
+    public void setPunctuality(StarsRating punctuality) {
+        this.punctuality = punctuality;
+    }
+
+    public StarsRating getReliability() {
+        return reliability;
+    }
+
+    public void setReliability(StarsRating reliability) {
+        this.reliability = reliability;
     }
 }

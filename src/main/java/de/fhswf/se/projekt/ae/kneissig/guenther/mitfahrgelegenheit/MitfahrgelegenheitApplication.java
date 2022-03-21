@@ -1,7 +1,5 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
-import com.vaadin.flow.router.RouterLink;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.email.MailSender;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
