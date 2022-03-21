@@ -4,8 +4,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,6 +14,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutProfileData;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
 
@@ -35,7 +34,6 @@ import java.util.Set;
 public class RegistrationView extends VerticalLayout {
 
     private final UserService userService;
-    private TextField street;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zum Anpassen der Benutzerdaten
@@ -45,8 +43,6 @@ public class RegistrationView extends VerticalLayout {
     public RegistrationView(UserService userService) {
         setId("registrationView");
         this.userService = userService;
-        street = new TextField("Straße/Hausnummer");
-        street.setRequired(true);
         createRegistrationView();
     }
 
@@ -56,42 +52,6 @@ public class RegistrationView extends VerticalLayout {
      */
 
     private void createRegistrationView() {
-        H1 title = new H1("Benutzerdaten anpassen");
-        title.setId("titleRegistrationForm");
-
-        TextField firstname = new TextField("Vorname");
-        firstname.setRequired(true);
-
-        TextField lastname = new TextField("Nachname");
-        lastname.setRequired(true);
-
-        TextField email = new TextField("FH-Email");
-        email.setRequired(true);
-
-        TextFieldAddress address = new TextFieldAddress("Adresse");
-        address.setRequiredIndicatorVisible(true);
-
-        TextField postal = new TextField("Postleitzahl");
-        postal.setEnabled(false);
-        postal.setRequired(true);
-
-        TextField place = new TextField("Wohnort");
-        place.setEnabled(false);
-        place.setRequired(true);
-
-        SelectUniversityLocation selectUniversityLocation = new SelectUniversityLocation();
-        selectUniversityLocation.setRequiredIndicatorVisible(true);
-
-        SelectFaculty selectFaculty = new SelectFaculty();
-
-        selectUniversityLocation.addValueChangeListener(event ->
-                selectFaculty.setSubjectAreaItems(selectUniversityLocation.getValue()));
-
-        SelectLanguage selectLanguage = new SelectLanguage();
-        selectLanguage.setRequiredIndicatorVisible(true);
-
-        MultiSelectLanguage multiSelectLanguage = new MultiSelectLanguage();
-
         Button submitButton = new Button("Speichern");
         submitButton.addClassName("buttonsRegistration");
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -102,46 +62,39 @@ public class RegistrationView extends VerticalLayout {
 
         HorizontalLayout horizontalLayout = new HorizontalLayout(submitButton, cancelButton);
 
-        FormLayout registrationForm = new FormLayout(title, firstname, lastname, email, selectUniversityLocation, address,
-                selectFaculty, postal, place, selectLanguage, multiSelectLanguage, horizontalLayout);
-        registrationForm.setId("registrationForm");
+        FormLayoutProfileData registrationForm = new FormLayoutProfileData("Benutzerdaten hinzufügen", horizontalLayout);
+        registrationForm.markFormComponentsAsRequired();
 
-        registrationForm.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1, FormLayout.ResponsiveStep.LabelsPosition.TOP),
-                new FormLayout.ResponsiveStep("490px", 4, FormLayout.ResponsiveStep.LabelsPosition.TOP));
-
-        registrationForm.setColspan(title, 4);
-        registrationForm.setColspan(firstname, 2);
-        registrationForm.setColspan(lastname, 2);
-        registrationForm.setColspan(email, 2);
-        registrationForm.setColspan(selectUniversityLocation, 2);
-        registrationForm.setColspan(address, 2);
-        registrationForm.setColspan(selectFaculty, 2);
-        registrationForm.setColspan(postal, 1);
-        registrationForm.setColspan(place, 1);
-        registrationForm.setColspan(selectLanguage, 1);
-        registrationForm.setColspan(multiSelectLanguage, 1);
-        registrationForm.setColspan(horizontalLayout, 4);
-
-        address.addValueChangeListener(event -> setAddressFields(registrationForm, address, postal, place));
+        registrationForm.getGoogleAddress().addValueChangeListener(event ->
+                setAddressFields(
+                        registrationForm,
+                        registrationForm.getGoogleAddress(),
+                        registrationForm.getPostal(),
+                        registrationForm.getPlace()));
 
         submitButton.addClickListener(e -> {
             User user = userService.getCurrentUser();
-            Set<String> languages = multiSelectLanguage.getSelectedItems();
+            Set<String> languages = registrationForm.getMultiSelectLanguage().getSelectedItems();
 
-            if(address.getValue() == null || address.getValue().isEmpty() ||
-                    firstname.getValue() == null || firstname.getValue().isEmpty() ||
-                    lastname.getValue() == null || lastname.getValue().isEmpty() ||
-                    email.getValue() == null || email.getValue().isEmpty() ||
-                    selectUniversityLocation.getValue() == null || selectUniversityLocation.getValue().isEmpty() ||
-                    selectLanguage.getValue() == null || selectLanguage.getValue().isEmpty()){
+            if(registrationForm.getStreet().getValue() == null || registrationForm.getStreet().getValue().isEmpty() ||
+                    registrationForm.getFirstName().getValue() == null || registrationForm.getFirstName().getValue().isEmpty() ||
+                    registrationForm.getLastName().getValue() == null || registrationForm.getLastName().getValue().isEmpty() ||
+                    registrationForm.getEmail().getValue() == null || registrationForm.getEmail().getValue().isEmpty() ||
+                    registrationForm.getSelectUniversityLocation().getValue() == null || registrationForm.getSelectUniversityLocation().getValue().isEmpty() ||
+                    registrationForm.getSelectLanguage().getValue() == null || registrationForm.getSelectLanguage().getValue().isEmpty()){
                 NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
             }
             else{
-                user.setAddress(new Address(address.getPostal(), address.getPlace(), address.getStreet(), address.getNumber()));
-                user.setLanguages(new Languages(selectLanguage.getValue(), languages));
-                user.setFaculty(selectFaculty.getValue());
-                user.setUniversityLocation(selectUniversityLocation.getValue());
-                user.setEmail(email.getValue());
+                user.setFirstName(registrationForm.getFirstName().getValue());
+                user.setLastName(registrationForm.getLastName().getValue());
+                user.setAddress(new Address(registrationForm.getGoogleAddress().getPostal(),
+                        registrationForm.getGoogleAddress().getPlace(),
+                        registrationForm.getGoogleAddress().getStreet(),
+                        registrationForm.getGoogleAddress().getNumber()));
+                user.setLanguages(new Languages(registrationForm.getSelectLanguage().getValue(), languages));
+                user.setFaculty(registrationForm.getSelectFaculty().getValue());
+                user.setUniversityLocation(registrationForm.getSelectUniversityLocation().getValue());
+                user.setEmail(registrationForm.getEmail().getValue());
                 user.setLastLogin(LocalDateTime.now());
                 user.setFirstLogin(true);
 
@@ -169,7 +122,7 @@ public class RegistrationView extends VerticalLayout {
      *                          werden soll
      * @param place             Textfeld für den Ort, dessen Wert gesetzt werden soll
      */
-    private void setAddressFields(FormLayout layout, TextFieldAddress address,
+    private void setAddressFields(FormLayoutProfileData layout, TextFieldAddress address,
                                   TextField postal, TextField place){
         if(layout == null){
             throw new IllegalArgumentException("RegistrationView: FormLayout is null");
@@ -184,20 +137,20 @@ public class RegistrationView extends VerticalLayout {
             throw new IllegalArgumentException("RegistrationView: Textfield for place is null");
         }
 
-        street.setValue(address.getStreet());
+        layout.getStreet().setValue(address.getStreet());
         postal.setValue(address.getPostal());
         place.setValue(address.getPlace());
 
         layout.remove(address);
-        layout.addComponentAtIndex(5, street);
-        layout.setColspan(street, 2);
+        layout.addComponentAtIndex(5, layout.getStreet());
+        layout.setColspan(layout.getStreet(), 2);
 
         TextFieldAddress changeAddressTextField = new TextFieldAddress("Adresse");
         changeAddressTextField.addValueChangeListener(event -> setAddressFields(layout, changeAddressTextField,
                 postal, place));
 
-        street.addFocusListener(event -> {
-            layout.remove(street);
+        layout.getStreet().addFocusListener(event -> {
+            layout.remove(layout.getStreet());
             layout.addComponentAtIndex(2, changeAddressTextField);
             layout.setColspan(changeAddressTextField, 2);
             changeAddressTextField.focus();

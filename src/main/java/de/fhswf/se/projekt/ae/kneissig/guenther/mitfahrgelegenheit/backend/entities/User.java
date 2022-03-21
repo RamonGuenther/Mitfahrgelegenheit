@@ -13,22 +13,27 @@ public class User {
     @Id
     private Long id;
     private String username;
+    private String firstName;
+    private String lastName;
+
     @Embedded
     private Address address;
+    private String email;
+    private String universityLocation;
+    private String faculty;
+
     @Embedded
     private Languages languages;
     private LocalDateTime lastLogin;
-
     private boolean firstLogin;
-    private String universityLocation;
-    private String faculty;
-    private String email;
 
     @Embedded
     private final UserRating userRating;
 
     public User(Long id,
                 String username,
+                String firstName,
+                String lastName,
                 Address address,
                 Languages languages,
                 String universityLocation,
@@ -40,6 +45,8 @@ public class User {
                 ) {
         this.id = id;
         this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.address = address;
         this.languages = languages;
         this.lastLogin = lastLogin;
@@ -53,6 +60,8 @@ public class User {
     public User() {
         this.id = null;
         this.username = null;
+        this.firstName = null;
+        this.lastName = null;
         this.address = null;
         this.languages = null;
         this.lastLogin = null;
@@ -137,5 +146,21 @@ public class User {
 
     public UserRating getUserRating() {
         return userRating;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

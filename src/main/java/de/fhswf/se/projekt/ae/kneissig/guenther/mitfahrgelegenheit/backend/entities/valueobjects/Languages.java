@@ -1,12 +1,16 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import com.google.common.collect.Streams;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,7 +21,7 @@ public class Languages {
 
     private final String mainLanguage;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private final Set<String> languages;
 
     public Languages(String mainLanguage, Set<String> languages) {
@@ -41,9 +45,17 @@ public class Languages {
         return mainLanguage;
     }
 
-    public Set<String> getAllLanguages() {
-        return Streams.concat(Stream.of(mainLanguage), languages.stream()).collect(Collectors.toSet());
+//    public Set<String> getAllLanguages() {
+//        return Streams.concat(Stream.of(mainLanguage), languages.stream()).collect(Collectors.toSet());
+//    }
+
+    public Set<String> getAllLanguages(){
+        return languages;
     }
+//
+//    public List<String> getAllLanguages(){
+//        return languages.stream().toList();
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -50,6 +50,8 @@ public class DriveRoute {
 
     private String note;
 
+    private String currentRouteLink;
+
 
     public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType) {
         this.start = start;

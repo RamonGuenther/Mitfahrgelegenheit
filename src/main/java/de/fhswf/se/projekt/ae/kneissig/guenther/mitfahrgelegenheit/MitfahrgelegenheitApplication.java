@@ -1,6 +1,5 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.email.MailSender;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
@@ -9,15 +8,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.annotation.PostConstruct;
-import javax.mail.*;
-import javax.mail.internet.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 @SpringBootApplication
 public class MitfahrgelegenheitApplication {
@@ -34,8 +27,10 @@ public class MitfahrgelegenheitApplication {
 		User user1 = new User(
 				1L,
 				"rague002",
-				new Address("58636","Iserlohn","Sundernalle 47","75"),
-				new Languages("deutsch"),
+				"Ramon",
+				"Günther",
+				new Address("58636","Iserlohn","Sundernalle","75"),
+				new Languages("Deutsch"),
 				"Iserlohn",
 				"Informatik und Naturwissenschaften",
 				"guenther.ramonantonio@fh-swf.de",
@@ -48,8 +43,10 @@ public class MitfahrgelegenheitApplication {
 		User user2 = new User(
 				2L,
 				"ivkne001",
+				"Ivonne",
+				"Kneißig",
 				new Address("58097","Hagen","Diesterwegstraße","6"),
-				new Languages("deutsch"),
+				new Languages("Deutsch"),
 				"Iserlohn",
 				"Informatik und Naturwissenschaften",
 				"kneissig.ivonne@fh-swf.de",
@@ -62,8 +59,10 @@ public class MitfahrgelegenheitApplication {
 		User user3 = new User(
 				3L,
 				"user3",
+				"Max",
+				"Mustermann",
 				new Address("58636","Iserlohn","Sundernallee","75"),
-				new Languages("deutsch"),
+				new Languages("Deutsch"),
 				null,
 				null,
 				null,

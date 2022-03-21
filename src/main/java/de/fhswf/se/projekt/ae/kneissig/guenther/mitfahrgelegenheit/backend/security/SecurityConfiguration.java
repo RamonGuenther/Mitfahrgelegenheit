@@ -54,22 +54,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService(){
         UserDetails user =
                 User
-                        .withUsername("user")
-                        .password("{noop}password")
+                        .withUsername("rague002")
+                        .password("{noop}1234")
                         .roles("USER")
                         .build();
 
         UserDetails user2 =
                 User
-                        .withUsername("user2")
-                        .password("{noop}password")
+                        .withUsername("ivkne001")
+                        .password("{noop}1234")
                         .roles("USER")
                         .build();
 
         UserDetails user3 =
                 User
                         .withUsername("user3")
-                        .password("{noop}password")
+                        .password("{noop}1234")
                         .roles("USER")
                         .build();
 
