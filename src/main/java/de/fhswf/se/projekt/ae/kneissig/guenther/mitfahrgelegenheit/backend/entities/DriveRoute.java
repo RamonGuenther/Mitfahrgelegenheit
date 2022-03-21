@@ -53,13 +53,14 @@ public class DriveRoute {
     private String currentRouteLink;
 
 
-    public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType) {
+    public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
         this.start = start;
         this.destination = destination;
         this.seatCount = seatCount;
         this.driver = driver;
         this.creationDate = creationDate;
         this.driveType = driveType;
+        this.currentRouteLink = currentRouteLink;
         id = hashCode();
     }
 
@@ -122,6 +123,14 @@ public class DriveRoute {
 
     public String getNote() {
         return note;
+    }
+
+    public String getCurrentRouteLink() {
+        return currentRouteLink;
+    }
+
+    public void setCurrentRouteLink(String currentRouteLink) {
+        this.currentRouteLink = currentRouteLink;
     }
 
     @Override

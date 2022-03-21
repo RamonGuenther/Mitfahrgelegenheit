@@ -1,60 +1,30 @@
-#titleDriveRequest{
-    font-size: xx-large;
+#drive-request-dialog{
+
 }
 
-#driveRequestView{
-    width: 1000px;
+#drive-request-dialog-title{
+    font-size: x-large;
 }
 
-#requestLayoutRoute{
-    width: 450px;
+#drive-request-dialog-address{
+    width: 350px;
 }
 
-#layoutRequestForm{
-    margin-top: 105px;
+#drive-request-dialog-message{
+    width: 350px;
+    height: 150px;
 }
 
-#checkboxRegularDrive{
-    width: 200px;
+#drive-request-dialog-request_button{
+    width: 150px;
+
 }
 
-#textAreaMessage{
-    width: 450px;
-    height: 222px;
-    margin-top: 125px;
+#drive-request-dialog-cancel_button{
+    width: 150px;
 }
 
-#dateTo{
-    margin-left: 65px;
-}
 
-#layoutRequestFormFull{
+.drive-request-dialog-button_layout{
     margin: auto;
-}
-
-#layoutButtons{
-    margin: auto;
-}
-
-.buttonRequest{
-    margin-left: 150px;
-    margin-right: 150px;
-    margin-top: 50px;
-    width: 200px;
-}
-
-.requestTextfields{
-    width: 450px;
-}
-
-.requestMapLinks{
-    width: 450px;
-}
-
-.requestRouteLinks{
-    padding-left: 0px;
-}
-
-.requestTextFieldsPlace{
-    width: 217px;
 }

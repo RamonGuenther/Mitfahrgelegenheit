@@ -38,29 +38,37 @@ public class MailSender {
         return mailsender;
     }
 
-    /**
-     *
-     * @param username
-     * @param message
-     * @param email
-     * @param route
-     * @throws MessagingException
-     */
-    public void sendMail(String username, String message, String email, String route) throws MessagingException {
+
+    public void sendMail(String passengerName, String driverName, String message, String email, String route) throws MessagingException {
         Message m = new MimeMessage(session);
         m.setFrom(new InternetAddress(SENDER_MAIL));
 
         m.addRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 
-        m.setSubject("Fahrtanfrage von " + username);
+        m.setSubject("Fahrtanfrage von " + passengerName);
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
 
-        mimeBodyPart.setContent("" +
-                "<h2> test </h2>" +
-                "<a href="+route+"> Route anzeigen </a>"
-                + message
-                , "text/html; charset=utf-8"
-                );
+
+        if(message.isEmpty()) {
+            mimeBodyPart.setContent(
+                    "<h2> Hallo " + driverName + ",</h2>" +
+                            "<h2> es wurde eine Fahrt vom Nutzer " + passengerName + " angefragt. </h2>" +
+                            "<p></p>" +
+                            "<a href=" + route + "> Route anzeigen </a>"+
+                            "<p> Dies ist eine automatisch generierte E-Mail von einer System-E-Mail-Adresse. Bitte antworten Sie\n" +
+                            "nicht auf diese E-Mail.</p>", "text/html; charset=utf-8");
+        }
+        else{
+            mimeBodyPart.setContent(
+                    "<h2> Hallo " + driverName + ",</h2>" +
+                            "<h2> es wurde eine Fahrt vom Nutzer " + passengerName + " angefragt. </h2>" +
+                            "<p></p>" +
+                            "<a href=" + route + "> Route anzeigen </a>" +
+                            "<p> Nachricht des Nutzers: " + message + "</p>" +
+                            "<p> Dies ist eine automatisch generierte E-Mail von einer System-E-Mail-Adresse. Bitte antworten Sie\n" +
+                            "nicht auf diese E-Mail.</p>", "text/html; charset=utf-8");
+        }
+
 
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(mimeBodyPart);

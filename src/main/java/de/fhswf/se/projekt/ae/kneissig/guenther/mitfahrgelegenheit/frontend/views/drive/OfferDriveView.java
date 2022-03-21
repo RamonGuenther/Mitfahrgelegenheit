@@ -175,7 +175,8 @@ public class OfferDriveView extends VerticalLayout{
             driveRouteService.save(new DriveRoute(
                     new Start(firstAddress, driveTime.atDate(driveDate)),
                     new Destination(secondAddress, driveTime.atDate(driveDate)),
-                    carSeatCount, user, LocalDateTime.now(),fahrtenTyp
+                    carSeatCount, user, LocalDateTime.now(),fahrtenTyp,
+                    "" //TODO: FIXXEN
             ));
 
 

@@ -29,6 +29,8 @@ public class SearchDriveResultViewDialog extends Dialog {
 
     public SearchDriveResultViewDialog(DriveRoute driveRoute){
 
+        this.driveRoute = driveRoute;
+
 //        this.fahrerRoute = fahrerRoute;
 
         verticalLayout = new VerticalLayout();
@@ -131,7 +133,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         requestButton.addClickListener(e->{
             close();
-            DriveRequestDialog driveRequestDialog = new DriveRequestDialog("https://www.youtube.com/watch?v=LSyRf8rAjTs"); //TODO: ROUTE ÜBERGEBEN
+            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute); //TODO: ROUTE ÜBERGEBEN
             driveRequestDialog.open();
         });
 

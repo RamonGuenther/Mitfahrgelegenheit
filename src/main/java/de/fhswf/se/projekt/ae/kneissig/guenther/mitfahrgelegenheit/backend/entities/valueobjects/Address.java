@@ -40,6 +40,10 @@ public class Address {
         return houseNumber;
     }
 
+    public String getAddress(){
+        return street + " " + houseNumber + ", " + postal +" " + place + ", Deutschland";
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(postal, place, street, houseNumber);
