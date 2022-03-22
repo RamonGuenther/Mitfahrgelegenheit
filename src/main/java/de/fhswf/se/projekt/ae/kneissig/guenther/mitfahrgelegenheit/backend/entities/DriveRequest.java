@@ -2,23 +2,30 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 
+import javax.persistence.*;
+
+@Embeddable
 public class DriveRequest {
 
-    private Long id;
-    private DriveRoute driveRoute;
-    private RequestState requestState;
+    @OneToOne
     private User passenger;
-    private String note;
 
-    public DriveRequest(DriveRoute driveRoute, RequestState requestState, User passenger, String note) {
-        this.driveRoute = driveRoute;
+    private RequestState requestState;
+    private String note;
+    private String currentRouteLink;
+
+    public DriveRequest(RequestState requestState, User passenger, String note, String currentRouteLink) {
         this.requestState = requestState;
         this.passenger = passenger;
         this.note = note;
+        this.currentRouteLink = currentRouteLink;
     }
 
-    public DriveRoute getRoute() {
-        return driveRoute;
+    public DriveRequest() {
+        this.requestState = null;
+        this.passenger = null;
+        this.note = null;
+        this.currentRouteLink = null;
     }
 
     public RequestState getRequestState() {
@@ -33,8 +40,8 @@ public class DriveRequest {
         return note;
     }
 
-    public void setRoute(DriveRoute driveRoute) {
-        this.driveRoute = driveRoute;
+    public String getCurrentRouteLink() {
+        return currentRouteLink;
     }
 
     public void setRequestState(RequestState requestState) {

@@ -3,6 +3,10 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.com
 // TODO
 // Später wieder mögliche Umwege einbauen
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
+
+import java.util.List;
+
 /**
  * Die Klasse RouteString erstellt den String für eine URL,
  * welche die Website google-Maps öffnet und die Route für
@@ -23,7 +27,7 @@ public class RouteString {
     private final String numberDestination;
     private final String plzDestination;
     private final String placeDestination;
-
+    
 //    private String streetDetour;
 //    private String numberDetour;
 //    private String plzDetour;
@@ -32,6 +36,7 @@ public class RouteString {
 
     public RouteString(String streetStart, String numberStart, String plzStart, String placeStart,
                        String streetDestination, String numberDestination, String plzDestination, String placeDestination) {
+
         this.streetStart = streetStart.trim();
         this.numberStart = numberStart.trim();
         this.plzStart = plzStart.trim();

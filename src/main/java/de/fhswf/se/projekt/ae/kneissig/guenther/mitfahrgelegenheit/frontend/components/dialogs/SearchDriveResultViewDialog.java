@@ -9,6 +9,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.DriveRequestDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
@@ -22,13 +24,19 @@ public class SearchDriveResultViewDialog extends Dialog {
 
     private final Icon PROFILE_ICON = new Icon(VaadinIcon.USER);
 
+    private UserService userService;
+    private DriveRouteService driveRouteService;
+
+
     private DriveRoute driveRoute;
     private FormLayoutTopOfferDrive formLayoutHinfahrt;
     private FormLayoutBottomOfferDrive formLayoutRueckfahrt;
     private VerticalLayout verticalLayout;
 
-    public SearchDriveResultViewDialog(DriveRoute driveRoute){
 
+    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService){
+        this.userService = userService;
+        this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
 
 //        this.fahrerRoute = fahrerRoute;
@@ -133,7 +141,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         requestButton.addClickListener(e->{
             close();
-            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute); //TODO: ROUTE ÜBERGEBEN
+            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute, userService, driveRouteService); //TODO: ROUTE ÜBERGEBEN
             driveRequestDialog.open();
         });
 

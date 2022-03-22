@@ -17,14 +17,17 @@
 
 #drive-request-dialog-request_button{
     width: 150px;
+    margin-right: 20px;
 
 }
 
 #drive-request-dialog-cancel_button{
     width: 150px;
+    margin-left: 20px;
 }
 
 
 .drive-request-dialog-button_layout{
     margin: auto;
+    margin-top: 20px;
 }

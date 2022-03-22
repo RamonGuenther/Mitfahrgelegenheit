@@ -73,7 +73,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
         H1 title = new H1(TITEL_GRID);
 //        GridBookmarkSearchDriveResult grid = new GridBookmarkSearchDriveResult(TITEL_GRID, driveList);
-        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, driveRouteService);
+        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, driveRouteService, userService);
         grid.setId("gridOwnOffersView");
         div.add(title,grid);
         add(div);

@@ -4,26 +4,31 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.email.MailSender;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.mail.MessagingException;
 
 /**
- * Notifications auch oben ansiedeln oder unten und full wie labor ??
+ *      Todo:
+ *             -Fahrtanfrage darf nicht mehrmals von einer Person möglich sein, siehe Sebastian krassen shit
  */
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-dialog.css")
 public class DriveRequestDialog extends Dialog {
 
-    public DriveRequestDialog(DriveRoute driveRoute) {
+    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService) {
 
-        setWidth("500px");
+        User currentUser = userService.getCurrentUser();
 
         H1 title = new H1("Fahrtanfrage stellen");
         title.setId("drive-request-dialog-title");
@@ -38,17 +43,31 @@ public class DriveRequestDialog extends Dialog {
         Button buttonRequest = new Button("Fahrt anfragen");
         buttonRequest.setId("drive-request-dialog-request_button");
         buttonRequest.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonRequest.addClickListener(e->{
+        buttonRequest.addClickListener(e -> {
             try {
-                if(textFieldAddress.getValue().isEmpty()) {
+                if (textFieldAddress.getValue().isEmpty()) {
                     NotificationError.show("Abholadresse bitte angeben");
                     return;
                 }
+                //TODO hier muss dann der neue RouteLink erstellt werden für DriveRequest
+                // erst beim annehmen der Anfrage wird die Url in DriveRoute gespeichert
+                // Fahrtanfrage darf nicht mehrmals von einer Person möglich sein, siehe Sebastian krassen shit
+
+                DriveRequest driveRequest = new DriveRequest(RequestState.OPEN,currentUser,textAreaMessage.getValue(),"Apfel");
+
+                driveRoute.addDriveRequest(driveRequest);
+
+                driveRouteService.save(driveRoute);
+
+                DriveRequest driveRequest1 = driveRoute.getDriveRequests().get(0);
+
+                System.out.println(driveRequest1.getCurrentRouteLink());
+
                 MailSender.getInstance().sendMail(
-                        SecurityContextHolder.getContext().getAuthentication().getName(),
-                        driveRoute.getBenutzer().getUsername(),
+                        currentUser.getFullName(),
+                        driveRoute.getBenutzer().getFirstName(),
                         textAreaMessage.getValue(),
-                        "ramon.guenther@outlook.de",
+                        driveRoute.getBenutzer().getEmail(),
                         driveRoute.getCurrentRouteLink()
                 );
 
@@ -67,7 +86,7 @@ public class DriveRequestDialog extends Dialog {
         buttonLayout.setClassName("drive-request-dialog-button_layout");
         buttonLayout.add(buttonRequest, buttonCancel);
 
-        Div div = new Div(title,textFieldAddress,textAreaMessage,buttonLayout);
+        VerticalLayout div = new VerticalLayout(title, textFieldAddress, textAreaMessage, buttonLayout);
 
         add(div);
     }
