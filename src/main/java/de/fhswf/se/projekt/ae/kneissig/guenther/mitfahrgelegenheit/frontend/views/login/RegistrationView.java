@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -59,11 +60,14 @@ public class RegistrationView extends VerticalLayout {
         cancelButton.addClassName("profile-data-buttons");
         cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        HorizontalLayout horizontalLayout = new HorizontalLayout(submitButton, cancelButton);
+        HorizontalLayout registrationButtonLayout = new HorizontalLayout(submitButton, cancelButton);
 
-        FormLayoutProfileData registrationForm = new FormLayoutProfileData("Benutzerdaten hinzufügen", horizontalLayout);
+        H1 title = new H1("Benutzerdaten anpassen");
+        title.setId("registration-data-title");
+
+        FormLayoutProfileData registrationForm = new FormLayoutProfileData(registrationButtonLayout);
+        registrationForm.createOwnProfileLayout();
         registrationForm.markFormComponentsAsRequired();
-        registrationForm.getDoubleRating().setVisible(false);
         registrationForm.setClassName("registration-data-form");
 
         registrationForm.getGoogleAddress().addValueChangeListener(event ->
@@ -101,7 +105,7 @@ public class RegistrationView extends VerticalLayout {
 
         cancelButton.addClickListener(e -> UI.getCurrent().navigate(LoginView.class));
 
-        add(registrationForm);
+        add(title, registrationForm);
     }
 
     /**

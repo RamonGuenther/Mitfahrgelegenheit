@@ -1,8 +1,10 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import java.util.List;
 
 /**
@@ -11,13 +13,13 @@ import java.util.List;
 @Embeddable
 public class UserRating {
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ElementCollection
     private List<Rating> driverRatings;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ElementCollection
     private List<Rating> passengerRatings;
-
-
 
     public UserRating(List<Rating> driverRatings, List<Rating> passengerRatings) {
         this.driverRatings = driverRatings;

@@ -1,13 +1,17 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.RouteParam;
+import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -15,6 +19,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.StarsRating;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * TODO:  - Für Merkliste könnte man den Dialog auch missbrauchen nur mit anderen buttons unten!
@@ -32,6 +38,7 @@ public class SearchDriveResultViewDialog extends Dialog {
     private FormLayoutTopOfferDrive formLayoutHinfahrt;
     private FormLayoutBottomOfferDrive formLayoutRueckfahrt;
     private VerticalLayout verticalLayout;
+    Anchor userAnchor; //TODO
 
 
     public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService){
@@ -56,9 +63,13 @@ public class SearchDriveResultViewDialog extends Dialog {
         StarsRating driverRating = new StarsRating(0);
         driverRating.setId("search-drive-result-view-driver_rating");
         driverRating.setManual(true);
-        add(driverRating);
+
+        userAnchor = new Anchor("/profil/" + driveRoute.getBenutzer().getUsername(), driveRoute.getBenutzer().getUsername()); //TODO
+
+        add(userAnchor, driverRating);
 
         switch (driveRoute.getDriveType()) {
+
             case OUTWARD_TRIP -> {
                 formLayoutHinfahrt = new FormLayoutTopOfferDrive();
 
@@ -71,7 +82,9 @@ public class SearchDriveResultViewDialog extends Dialog {
                 formLayoutHinfahrt.setColspan(formLayoutHinfahrt.getTitleLayout(), 2);
 
                 formLayoutHinfahrt.getFlexButton().addClickListener(e -> {
-                    //Hier gehts zum Profil
+                    UI.getCurrent().navigate(ProfileView.class,
+                            new RouteParameters(new RouteParam("username", driveRoute.getBenutzer().getUsername())));
+                    this.close();
                 });
 
                 formLayoutHinfahrt.setReadOnly(true);
@@ -99,9 +112,10 @@ public class SearchDriveResultViewDialog extends Dialog {
                 formLayoutRueckfahrt.setColspan(formLayoutRueckfahrt.getTitleLayout(), 2);
 
                 formLayoutRueckfahrt.getFlexButton().addClickListener(e -> {
-                    //Hier gehts zum Profil
+                    UI.getCurrent().navigate(ProfileView.class,
+                            new RouteParameters(new RouteParam("username", driveRoute.getBenutzer().getUsername())));
+                    this.close();
                 });
-
 
                 formLayoutRueckfahrt.setReadOnly(true);
                 formLayoutRueckfahrt.setTitle("Rückfahrt von " + driveRoute.getBenutzer().getUsername());

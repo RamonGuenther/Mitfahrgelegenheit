@@ -82,7 +82,6 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        System.out.println("Hallo");
         if(beforeEnterEvent.getRouteParameters().get("fahrtentyp").isPresent()){
             typ = beforeEnterEvent.getRouteParameters().get("fahrtentyp").get();
         }

@@ -10,8 +10,6 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Rating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 
-import java.util.List;
-
 /**
  * Die Klasse AverageRatingsRatings erstellt eine Ansicht
  * für die Auswahl der Durchschnittsbewertungen für die
@@ -27,6 +25,7 @@ public class ProfileRatings extends VerticalLayout {
     private AverageRatings averageRatingsDriver;
     Grid<Rating> ratingGrid;
     private User user;
+    HorizontalLayout ratingLayout;
 
     /**
      * Der Konstruktor ist für das Erstellen der Bewertungssterne
@@ -43,6 +42,7 @@ public class ProfileRatings extends VerticalLayout {
         ratingsRadio.setId("radioRatings");
         ratingsRadio.setItems("Fahrerbewertung", "Mitfahrerbewertung");
         ratingsRadio.setValue("Fahrerbewertung");
+        ratingsRadio.addValueChangeListener(e -> setAverageRatingsLayout(e.getValue()));
 
         averageRatingsDriver = new AverageRatings();
         averageRatingsDriver.setClassName("rating-stars");
@@ -58,7 +58,7 @@ public class ProfileRatings extends VerticalLayout {
         ratingGrid.addColumn(Rating::getPunctuality).setHeader("Zuverlässigkeit");
         ratingGrid.setId("rating-grid");
 
-        HorizontalLayout ratingLayout = new HorizontalLayout(averageRatingsDriver, ratingGrid);
+        ratingLayout = new HorizontalLayout(averageRatingsDriver, ratingGrid);
 
         add(ratingsTitle, ratingsRadio, ratingLayout);
     }
@@ -71,7 +71,7 @@ public class ProfileRatings extends VerticalLayout {
      *
      * @param ratingChoice  Auswahl des Nutzers bei den RadioButtons
      */
-    public void setAverageRatingsDriver(String ratingChoice){
+    public void setAverageRatingsLayout(String ratingChoice){
 
         if(ratingChoice == null){
             throw new IllegalArgumentException("AverageProfileRatings: String ratingChoice is null");
@@ -79,11 +79,13 @@ public class ProfileRatings extends VerticalLayout {
         else{
             switch (ratingChoice){
                 case "Fahrerbewertung":
-                    replace(this.getComponentAt(1), averageRatingsDriver);
+                    ratingLayout.remove(averageRatingsPassenger);
+                    ratingLayout.addComponentAsFirst(averageRatingsDriver);
                     ratingGrid.setItems(user.getUserRating().getDriverRatings());
                     break;
                 case "Mitfahrerbewertung":
-                    replace(this.getComponentAt(1), averageRatingsPassenger);
+                    ratingLayout.remove(averageRatingsDriver);
+                    ratingLayout.addComponentAsFirst(averageRatingsPassenger);
                     ratingGrid.setItems(user.getUserRating().getPassengerRatings());
                     break;
                 default:
@@ -112,7 +114,7 @@ public class ProfileRatings extends VerticalLayout {
         return averageRatingsDriver;
     }
 
-    public void setAverageRatingsDriver(AverageRatings averageRatings) {
+    public void setAverageRatingsLayout(AverageRatings averageRatings) {
         this.averageRatingsDriver = averageRatings;
     }
 }

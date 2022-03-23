@@ -2,13 +2,19 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.com
 
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 
+/**
+ * Die Klasse FormLayoutProfileData erstellt das FormLayout zur Eingabe bzw.
+ * Anzeige der Profildaten eines Benutzers auf der RegistrationView und
+ * der ProfileView
+ *
+ * @author Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class FormLayoutProfileData extends FormLayout {
 
@@ -26,17 +32,23 @@ public class FormLayoutProfileData extends FormLayout {
     private MultiSelectLanguage multiSelectLanguage;
     private HorizontalLayout buttonLayout;
 
-    private ProfileDoubleRating doubleRating;
+    public FormLayoutProfileData(HorizontalLayout buttonLayout){
+        this.buttonLayout = buttonLayout;
+        this.buttonLayout.setClassName("profile-data-buttonlayout");
+        createProfileDataForm();
+    }
 
-    public FormLayoutProfileData(String titleText, HorizontalLayout buttonLayout){
+    public FormLayoutProfileData(){
+        this.buttonLayout = new HorizontalLayout();
+        this.buttonLayout.setClassName("profile-data-buttonlayout");
+        createProfileDataForm();
+    }
 
-        H1 title = new H1(titleText);
-
-        doubleRating = new ProfileDoubleRating();
-        doubleRating.setId("profile-data-double_rating");
-
-        HorizontalLayout header = new HorizontalLayout();
-        header.add(title, doubleRating);
+    /**
+     * Die Methode createProfileDataForm erzeugt die notwendigen Komponenten für
+     * das FormLayout zum Anzeigen oder Bearbeiten von Profildaten.
+     */
+    public void createProfileDataForm(){
 
         firstName = new TextField("Vorname");
 
@@ -51,10 +63,10 @@ public class FormLayoutProfileData extends FormLayout {
         street = new TextField("Straße / Hausnummer");
 
         postal = new TextField("Postleitzahl");
-        postal.setEnabled(false);
+        postal.setReadOnly(true);
 
         place = new TextField("Wohnort");
-        place.setEnabled(false);
+        place.setReadOnly(true);
 
         selectFaculty = new SelectFaculty();
 
@@ -66,17 +78,9 @@ public class FormLayoutProfileData extends FormLayout {
 
         multiSelectLanguage = new MultiSelectLanguage();
 
-        this.buttonLayout = buttonLayout;
-        this.buttonLayout.setClassName("profile-data-buttonlayout");
-
-        add(header, firstName, lastName, email, selectUniversityLocation, googleAddress,
-                selectFaculty, postal, place, selectLanguage, multiSelectLanguage, buttonLayout);
-
         setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1, FormLayout.ResponsiveStep.LabelsPosition.TOP),
                 new FormLayout.ResponsiveStep("490px", 4, FormLayout.ResponsiveStep.LabelsPosition.TOP));
 
-
-        setColspan(header, 4);
         setColspan(firstName, 2);
         setColspan(lastName, 2);
         setColspan(email, 2);
@@ -87,9 +91,13 @@ public class FormLayoutProfileData extends FormLayout {
         setColspan(place, 1);
         setColspan(selectLanguage, 1);
         setColspan(multiSelectLanguage, 1);
-        setColspan(buttonLayout, 4);
+        setColspan(this.buttonLayout, 4);
     }
 
+    /**
+     * Die Methode markFormComponentsAsRequired zeigt an, welche Felder vom Benutzer
+     * ausgefüllt werden müssen.
+     */
     public void markFormComponentsAsRequired(){
         firstName.setRequired(true);
         lastName.setRequired(true);
@@ -101,6 +109,12 @@ public class FormLayoutProfileData extends FormLayout {
         selectLanguage.setRequiredIndicatorVisible(true);
     }
 
+    /**
+     * Mit der Methode showUserData werden die Felder des Formulars mit den
+     * bereist vorhandenen Nutzerdaten ausgefüllt.
+     *
+     * @param user      Benutzer, dessen Daten angezeigt werden sollen.
+     */
     public void showUserData(User user){
         firstName.setValue(user.getFirstName());
         lastName.setValue(user.getLastName());
@@ -115,6 +129,12 @@ public class FormLayoutProfileData extends FormLayout {
         multiSelectLanguage.setValue(user.getLanguages().getAllLanguages());
     }
 
+    /**
+     * Mit der Methode setReadOnly kann eingestellt werden, ob die Felder des
+     * Formulars nur zu lesen sind, oder ob sie auch bearbeitet werden können.
+     *
+     * @param value         true oder false
+     */
     public void setReadOnly(boolean value){
         firstName.setReadOnly(value);
         lastName.setReadOnly(value);
@@ -126,18 +146,34 @@ public class FormLayoutProfileData extends FormLayout {
         multiSelectLanguage.setReadOnly(value);
     }
 
+    /**
+     * Prüft, ob alle Felder, die ausgefüllt sein müssen, entsprechend Daten enthalten.
+     *
+     * @return  Alle notwendigen Felder ausgefüllt?
+     */
     public boolean isValuePresent(){
-        if(getStreet().getValue() == null || getStreet().getValue().isEmpty() ||
-                getFirstName().getValue() == null || getFirstName().getValue().isEmpty() ||
-                getLastName().getValue() == null || getLastName().getValue().isEmpty() ||
-                getEmail().getValue() == null || getEmail().getValue().isEmpty() ||
-                getSelectUniversityLocation().getValue() == null || getSelectUniversityLocation().getValue().isEmpty() ||
-                getSelectLanguage().getValue().isEmpty()){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return getStreet().getValue() != null && !getStreet().getValue().isEmpty() &&
+                getFirstName().getValue() != null && !getFirstName().getValue().isEmpty() &&
+                getLastName().getValue() != null && !getLastName().getValue().isEmpty() &&
+                getEmail().getValue() != null && !getEmail().getValue().isEmpty() &&
+                getSelectUniversityLocation().getValue() != null && !getSelectUniversityLocation().getValue().isEmpty() &&
+                !getSelectLanguage().getValue().isEmpty();
+    }
+
+    /**
+     * Setzt das Formular für die Registierung oder das eigene Profil zusammen.
+     */
+    public void createOwnProfileLayout(){
+        add(firstName, lastName, email, selectUniversityLocation, googleAddress,
+                selectFaculty, postal, place, selectLanguage, multiSelectLanguage, buttonLayout);
+    }
+
+    /**
+     * Sett das Formular für das Profil eines anderen Benutzers zusammen.
+     */
+    public void createOtherUserProfileLayout(){
+        add(firstName, lastName,selectUniversityLocation,
+                selectFaculty, selectLanguage, multiSelectLanguage);
     }
 
     public String getTitle() {
@@ -152,24 +188,12 @@ public class FormLayoutProfileData extends FormLayout {
         return firstName;
     }
 
-    public void setFirstName(TextField firstName) {
-        this.firstName = firstName;
-    }
-
     public TextField getLastName() {
         return lastName;
     }
 
-    public void setLastName(TextField lastName) {
-        this.lastName = lastName;
-    }
-
     public TextField getEmail() {
         return email;
-    }
-
-    public void setEmail(TextField email) {
-        this.email = email;
     }
 
     public TextFieldAddress getGoogleAddress() {
@@ -184,16 +208,8 @@ public class FormLayoutProfileData extends FormLayout {
         return street;
     }
 
-    public void setStreet(TextField street) {
-        this.street = street;
-    }
-
     public TextField getPostal() {
         return postal;
-    }
-
-    public void setPostal(TextField postal) {
-        this.postal = postal;
     }
 
     public TextField getPlace() {
@@ -208,32 +224,16 @@ public class FormLayoutProfileData extends FormLayout {
         return selectUniversityLocation;
     }
 
-    public void setSelectUniversityLocation(SelectUniversityLocation selectUniversityLocation) {
-        this.selectUniversityLocation = selectUniversityLocation;
-    }
-
     public SelectFaculty getSelectFaculty() {
         return selectFaculty;
-    }
-
-    public void setSelectFaculty(SelectFaculty selectFaculty) {
-        this.selectFaculty = selectFaculty;
     }
 
     public SelectLanguage getSelectLanguage() {
         return selectLanguage;
     }
 
-    public void setSelectLanguage(SelectLanguage selectLanguage) {
-        this.selectLanguage = selectLanguage;
-    }
-
     public MultiSelectLanguage getMultiSelectLanguage() {
         return multiSelectLanguage;
-    }
-
-    public void setMultiSelectLanguage(MultiSelectLanguage multiSelectLanguage) {
-        this.multiSelectLanguage = multiSelectLanguage;
     }
 
     public HorizontalLayout getButtonLayout() {
@@ -244,11 +244,4 @@ public class FormLayoutProfileData extends FormLayout {
         this.buttonLayout = buttonLayout;
     }
 
-    public ProfileDoubleRating getDoubleRating() {
-        return doubleRating;
-    }
-
-    public void setDoubleRating(ProfileDoubleRating doubleRating) {
-        this.doubleRating = doubleRating;
-    }
 }

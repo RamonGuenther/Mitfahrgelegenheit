@@ -1,11 +1,11 @@
 .registration-data-form{
     width: 1000px;
     margin: auto;
-    margin-top: 150px;
+    margin-top: 30px;
 }
 
 .profile-data-form{
-    width: 1000px;
+    width: 1020px;
     margin: auto;
 }
 
@@ -20,10 +20,11 @@
 
 #profile-data-double_rating{
     margin-top: 18px;
+    width: 200px !important;
 }
 
 #profileRatingLayout{
-    width: 1000px;
+    width: 1020px;
     margin: auto;
     margin-top: 50px;
 }
@@ -31,9 +32,8 @@
 #rating-grid{
     width: 700px;
     height: 200px;
-    margin-left: 0;
+    margin-left: 20px;
     margin-top: 30px;
-
 }
 
 .rating-stars{
@@ -42,4 +42,32 @@
 
 #profile-ratings{
     margin-left: 0;
+}
+
+.profilegrid{
+    width: 1020px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    margin-top:30px;
+}
+
+#profile-drive_offers_layout{
+    margin: auto;
+    margin-top: 50px;
+
+}
+
+#profile-data-title{
+    margin-left: 5px;
+}
+
+#profile-data-header{
+    width: 1000px;
+    margin: auto;
+}
+
+#registration-data-title{
+    margin: auto;
+    margin-top: 150px;
+    width: 1000px;
 }

@@ -7,6 +7,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -167,4 +168,5 @@ public class User {
     public String getFullName(){
         return firstName + " " +lastName.charAt(0) + ". ";
     }
+
 }

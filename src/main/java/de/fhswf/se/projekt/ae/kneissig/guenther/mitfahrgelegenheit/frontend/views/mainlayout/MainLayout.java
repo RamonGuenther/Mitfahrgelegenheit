@@ -9,11 +9,14 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.router.RouteParam;
+import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.OfferDriveView;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveResultView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.CompletedDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.DriveRequestListView;
@@ -100,8 +103,10 @@ public class MainLayout extends AppLayout {
 
         MenuItem profilAnzeigen = usersSubMenu.addItem("Profil");
         profilAnzeigen.getElement().getClassList().add("menuItems");
-        profilAnzeigen.addClickListener(e -> UI.getCurrent().navigate(ProfileView.class));
-
+        profilAnzeigen.addClickListener(e ->
+                UI.getCurrent().navigate(ProfileView.class,
+                new RouteParameters(new RouteParam("username",
+                        SecurityContextHolder.getContext().getAuthentication().getName()))));
         MenuItem abmelden = usersSubMenu.addItem("Abmelden");
         abmelden.getElement().getClassList().add("menuItems");
 
