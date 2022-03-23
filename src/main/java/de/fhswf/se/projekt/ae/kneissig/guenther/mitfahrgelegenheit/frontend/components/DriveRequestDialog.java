@@ -8,7 +8,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.email.MailSender;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
@@ -16,8 +16,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
-
-import javax.mail.MessagingException;
 
 /**
  *      Todo:
@@ -49,7 +47,7 @@ public class DriveRequestDialog extends Dialog {
                     NotificationError.show("Abholadresse bitte angeben");
                     return;
                 }
-                //TODO hier muss dann der neue RouteLink erstellt werden für DriveRequest
+                //TODO hier muss dann der neue RouteLink erstellt werden für DriveRequest mithilfe von GoogleDistanceCalculation und String gedöns
                 // erst beim annehmen der Anfrage wird die Url in DriveRoute gespeichert
                 // Fahrtanfrage darf nicht mehrmals von einer Person möglich sein, siehe Sebastian krassen shit
 
@@ -63,19 +61,19 @@ public class DriveRequestDialog extends Dialog {
 
                 System.out.println(driveRequest1.getCurrentRouteLink());
 
-                MailSender.getInstance().sendMail(
+                close();
+
+                MailService.getInstance().sendMail(
                         currentUser.getFullName(),
                         driveRoute.getBenutzer().getFirstName(),
                         textAreaMessage.getValue(),
                         driveRoute.getBenutzer().getEmail(),
                         driveRoute.getCurrentRouteLink()
                 );
-
-                close();
-
-            } catch (MessagingException ex) {
+            } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
             }
+
         });
 
         Button buttonCancel = new Button("Abbrechen");

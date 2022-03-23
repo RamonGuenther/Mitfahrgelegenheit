@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
+import com.google.maps.errors.ApiException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
@@ -8,6 +9,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.AddressConverter;
@@ -18,7 +20,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class MitfahrgelegenheitApplication {
@@ -34,7 +39,7 @@ public class MitfahrgelegenheitApplication {
 	}
 
 	@PostConstruct
-	public void initData() throws MessagingException {
+	public void initData() throws MessagingException, IOException, InterruptedException, ApiException {
 		User user1 = new User(
 				1L,
 				"rague002",
@@ -144,13 +149,22 @@ public class MitfahrgelegenheitApplication {
 		driveRouteService.save(driveRoute1);
 
 
-
-
-//		case "Hagen" -> locationAddress = "Haldener Str. 182, 58095 Hagen, Deutschland";
-//		case "Iserlohn" -> locationAddress = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
-//		case "Lüdenscheid" -> locationAddress = "Bahnhofsallee 5, 58507 Lüdenscheid, Deutschland";
-//		case "Meschede" -> locationAddress = "Lindenstraße 53, 59872 Meschede, Deutschland";
-//		case "Soest" -> locationAddress = "Lübecker Ring 2, 59494 Soest, Deutschland";
+//		GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
+//
+//
+//		List<String> origins = new ArrayList<>();
+//		origins.add("Diesterwegstraße 6, 58095 Hagen");
+//        origins.add("Sundernallee 75, 58636 Iserlohn");
+//        origins.add("Schulstraße 95, 58636 Iserlohn");
+//        origins.add("Im Wiesengrund, 58636 Iserlohn");
+//
+//		String target = "Frauenstuhlweg 31, 58644 Iserlohn";
+//
+//		List<String> result = googleDistanceCalculation.calculate(origins, target);
+//
+//		for(String res : result){
+//			System.out.println(res);
+//		}
 
 	}
 

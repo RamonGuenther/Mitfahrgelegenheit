@@ -1,4 +1,8 @@
-package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.email;
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -7,15 +11,19 @@ import java.util.Properties;
 /**
  *
  */
-public class MailSender {
+@Service
+public class MailService {
 
     private final String SENDER_MAIL = "drive.together@outlook.de";
     private final String SENDER_PASSWORT = "Mitfahrgelegenheit1234";
 
-    private static MailSender mailsender;
+    private static MailService mailsender;
     private final Session session;
 
-    private MailSender() {
+    @Autowired
+    private TaskExecutor taskExecutor;
+
+    private MailService() {
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");
@@ -31,15 +39,15 @@ public class MailSender {
 
     }
 
-    public static MailSender getInstance() {
+    public static MailService getInstance() {
         if (mailsender == null) {
-            mailsender = new MailSender();
+            mailsender = new MailService();
         }
         return mailsender;
     }
 
 
-    public void sendMail(String passengerName, String driverName, String message, String email, String route) throws MessagingException {
+    private void mail(String passengerName, String driverName, String message, String email, String route) throws MessagingException {
         Message m = new MimeMessage(session);
         m.setFrom(new InternetAddress(SENDER_MAIL));
 
@@ -76,6 +84,17 @@ public class MailSender {
         m.setContent(multipart);
 
         Transport.send(m);
+    }
+
+    public void sendMail(String passengerName, String driverName, String message, String email, String route){
+        taskExecutor.execute(() -> {
+            try {
+                mail(passengerName,driverName,message,email,route);
+            } catch (Exception e) {
+                e.printStackTrace();
+//                    log.error("Failed to send email to: " + to + " reason: "+e.getMessage());
+            }
+        });
     }
 
 

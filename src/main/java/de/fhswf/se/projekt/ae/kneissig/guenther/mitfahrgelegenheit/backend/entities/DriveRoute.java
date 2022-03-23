@@ -8,9 +8,7 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class DriveRoute {
@@ -55,7 +53,7 @@ public class DriveRoute {
     private String currentRouteLink;
 
     @ElementCollection (fetch = FetchType.EAGER)
-    private List<DriveRequest> driveRequests;
+    private Set<DriveRequest> driveRequests;
 
     public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
         this.start = start;
@@ -65,7 +63,7 @@ public class DriveRoute {
         this.creationDate = creationDate;
         this.driveType = driveType;
         this.currentRouteLink = currentRouteLink;
-        driveRequests = new ArrayList<>();
+        driveRequests = new HashSet<>();
         id = hashCode();
     }
 
@@ -135,7 +133,7 @@ public class DriveRoute {
     }
 
     public List<DriveRequest> getDriveRequests() {
-        return driveRequests;
+        return driveRequests.stream().toList();
     }
 
     public void setCurrentRouteLink(String currentRouteLink) {
@@ -163,7 +161,10 @@ public class DriveRoute {
         return driver;
     }
 
-    public void addDriveRequest(DriveRequest driveRequest){
+    public void addDriveRequest(DriveRequest driveRequest) throws IllegalArgumentException{
+        if(driveRequests.contains(driveRequest)){
+            throw new IllegalArgumentException();
+        }
         driveRequests.add(driveRequest);
     }
 }
