@@ -5,10 +5,10 @@ import java.util.Objects;
 
 @Embeddable
 public class Address {
-    private final String postal;
-    private final String place;
-    private final String street;
-    private final String houseNumber;
+    private String postal;
+    private String place;
+    private String street;
+    private String houseNumber;
 
     public Address(String postal, String place, String street, String houseNumber) {
         this.postal = postal;
@@ -40,9 +40,28 @@ public class Address {
         return houseNumber;
     }
 
-    public String getAddress(){
+    public void setPostal(String postal) {
+        this.postal = postal;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setHouseNumber(String houseNumber) {
+        this.houseNumber = houseNumber;
+    }
+
+    @Override
+    public String toString(){
         return street + " " + houseNumber + ", " + postal +" " + place + ", Deutschland";
     }
+
+
 
     @Override
     public int hashCode() {

@@ -1,49 +1,37 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
 
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
+@Embeddable
 public class Booking {
-    private final Long id;
 
-    private final DriveRoute driveRoute;
-
+    @ManyToOne
     private final User mitfahrer;
 
-    private final Boolean bestaetigt;
+    private final LocalDateTime dateOfBooking;
 
-    private final LocalDateTime buchungsDatum;
-
-    public Booking(Long id, DriveRoute driveRoute, User mitfahrer, Boolean bestaetigt, LocalDateTime buchungsDatum)
+    public Booking(User mitfahrer, LocalDateTime dateOfBooking)
     {
-        this.id = id;
-        this.driveRoute = driveRoute;
         this.mitfahrer = mitfahrer;
-        this.bestaetigt = bestaetigt;
-        this.buchungsDatum = buchungsDatum;
+        this.dateOfBooking = dateOfBooking;
     }
 
-    public Long getId()
-    {
-        return id;
+    public Booking() {
+        mitfahrer = null;
+        dateOfBooking = null;
     }
 
-    public DriveRoute getRoute()
-    {
-        return driveRoute;
-    }
 
     public User getMitfahrer()
     {
         return mitfahrer;
     }
 
-    public Boolean getBestaetigt()
-    {
-        return bestaetigt;
-    }
 
-    public LocalDateTime getBuchungsDatum()
+    public LocalDateTime getDateOfBooking()
     {
-        return buchungsDatum;
+        return dateOfBooking;
     }
 }

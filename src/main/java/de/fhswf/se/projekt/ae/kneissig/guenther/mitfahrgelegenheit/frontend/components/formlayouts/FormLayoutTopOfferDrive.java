@@ -16,7 +16,7 @@ import com.vaadin.flow.component.timepicker.TimePicker;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.StopOver;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
@@ -142,14 +142,14 @@ public class FormLayoutTopOfferDrive extends FormLayout {
                 AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
 
                 //TODO: Braucht die richtige Route, damit die Umwege rausgezogen werden können?!
-                List<StopOver> test = new ArrayList<>();
-                StopOver test1 = new StopOver(new Address(
+                List<Stopover> test = new ArrayList<>();
+                Stopover test1 = new Stopover(new Address(
                         "58095",
                         "Hagen",
                         "Kratzkopfstraße",
                         "10"
                 ), LocalDateTime.now());
-                StopOver test2 = new StopOver(new Address(
+                Stopover test2 = new Stopover(new Address(
                         "58095",
                         "Hagen",
                         "Diesterwegstraße",

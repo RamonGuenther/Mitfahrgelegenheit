@@ -88,8 +88,8 @@ public class MitfahrgelegenheitApplication {
 
 //		AddressConverter converterStart = new AddressConverter(start.getAdresse().getAddress());
 //		AddressConverter converterZiel = new AddressConverter(destination.getAdresse().getAddress());
-		List<StopOver> test = new ArrayList<>();
-		StopOver test1 = new StopOver(new Address(
+		List<Stopover> test = new ArrayList<>();
+		Stopover test1 = new Stopover(new Address(
 				"58636",
 				"Iserlohn",
 				"Frauenstuhlweg",

@@ -17,12 +17,12 @@ public class RouteString {
 
     private Start startAddress;
     private Destination destinationAddress;
-    private List<StopOver> stopOverAddress;
+    private List<Stopover> stopoverAddresses;
 
-    public RouteString(Start startAddress, Destination destinationAddress, List<StopOver> stopOverAddress){
+    public RouteString(Start startAddress, Destination destinationAddress, List<Stopover> stopoverAddresses){
         this.startAddress = startAddress;
         this.destinationAddress = destinationAddress;
-        this.stopOverAddress = stopOverAddress;
+        this.stopoverAddresses = stopoverAddresses;
         buildRouteURL();
     }
 
@@ -39,15 +39,15 @@ public class RouteString {
                 startAddress.getAdresse().getPostal() + "+" +
                 startAddress.getAdresse().getPlace();
 
-        if(!stopOverAddress.isEmpty()){
+        if(!stopoverAddresses.isEmpty()){
             route = route + "&waypoints=";
-            for(int i=0; i < stopOverAddress.size(); i++){
+            for(int i = 0; i < stopoverAddresses.size(); i++){
                 route = route +
-                        stopOverAddress.get(i).getAdresse().getStreet() + "+" +
-                        stopOverAddress.get(i).getAdresse().getHouseNumber() + "+" +
-                        stopOverAddress.get(i).getAdresse().getPostal() + "+" +
-                        stopOverAddress.get(i).getAdresse().getPlace() + "+";
-                if(stopOverAddress.size() > 1 && i < stopOverAddress.size() - 1){
+                        stopoverAddresses.get(i).getAdresse().getStreet() + "+" +
+                        stopoverAddresses.get(i).getAdresse().getHouseNumber() + "+" +
+                        stopoverAddresses.get(i).getAdresse().getPostal() + "+" +
+                        stopoverAddresses.get(i).getAdresse().getPlace() + "+";
+                if(stopoverAddresses.size() > 1 && i < stopoverAddresses.size() - 1){
                     route = route + "|";
                 };
             }

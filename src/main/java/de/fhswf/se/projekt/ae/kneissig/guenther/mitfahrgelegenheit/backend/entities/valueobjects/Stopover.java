@@ -1,13 +1,15 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects;
 
+import javax.persistence.Embeddable;
 import java.time.LocalDateTime;
 
-public class StopOver extends Waypoint {
-    public StopOver(Address address, LocalDateTime time) {
+@Embeddable
+public class Stopover extends Waypoint {
+    public Stopover(Address address, LocalDateTime time) {
         super(address, time);
     }
 
-    protected StopOver() {
+    protected Stopover() {
         super();
     }
 }

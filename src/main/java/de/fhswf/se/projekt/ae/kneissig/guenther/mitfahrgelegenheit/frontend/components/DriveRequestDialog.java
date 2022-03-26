@@ -58,7 +58,7 @@ public class DriveRequestDialog extends Dialog {
                 driveRoute.addDriveRequest(driveRequest);
 
                 driveRouteService.save(driveRoute);
-                
+
                 close();
 
                 mailService.sendSimpleMessage(
