@@ -13,11 +13,18 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -136,8 +143,10 @@ public class FormLayoutBottomOfferDrive extends FormLayout {
             if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
                 AddressConverter converterStart = new AddressConverter(fhLocation.getUniversityLocationAddress());
                 AddressConverter converterZiel = new AddressConverter(address.getValue());
-                RouteString routeString = new RouteString(converterStart.getStreet(), converterStart.getNumber(), converterStart.getPostalCode(), converterStart.getPlace(),
-                        converterZiel.getStreet(), converterZiel.getNumber(), converterZiel.getPostalCode(), converterZiel.getPlace());
+                RouteString routeString = new RouteString(
+                        new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber()), LocalDateTime.now()),
+                        new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber()), LocalDateTime.now()),
+                        new ArrayList<>());
 
                 UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
             } else {

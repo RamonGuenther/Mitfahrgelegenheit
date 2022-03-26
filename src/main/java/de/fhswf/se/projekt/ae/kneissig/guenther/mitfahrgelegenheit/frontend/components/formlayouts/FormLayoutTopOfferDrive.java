@@ -13,14 +13,19 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.StopOver;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Die Klasse FormLayoutBottomOfferDrive erstellt ein
@@ -135,8 +140,28 @@ public class FormLayoutTopOfferDrive extends FormLayout {
             if(!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")){
                 AddressConverter converterStart = new AddressConverter(address.getValue());
                 AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
-                RouteString routeString = new RouteString(converterStart.getStreet(), converterStart.getNumber(), converterStart.getPostalCode(), converterStart.getPlace(),
-                        converterZiel.getStreet(), converterZiel.getNumber(), converterZiel.getPostalCode(), converterZiel.getPlace());
+
+                //TODO: Braucht die richtige Route, damit die Umwege rausgezogen werden können?!
+                List<StopOver> test = new ArrayList<>();
+                StopOver test1 = new StopOver(new Address(
+                        "58095",
+                        "Hagen",
+                        "Kratzkopfstraße",
+                        "10"
+                ), LocalDateTime.now());
+                StopOver test2 = new StopOver(new Address(
+                        "58095",
+                        "Hagen",
+                        "Diesterwegstraße",
+                        "6"
+                ), LocalDateTime.now());
+                test.add(test1);
+//                test.add(test2);
+
+                RouteString routeString = new RouteString(
+                        new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber()), LocalDateTime.now()),
+                        new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber()), LocalDateTime.now()),
+                        test);
 
                 UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
             }

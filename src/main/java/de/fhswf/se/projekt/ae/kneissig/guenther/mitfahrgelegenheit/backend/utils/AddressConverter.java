@@ -1,4 +1,4 @@
-package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components;
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -5,15 +5,11 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.AddressConverter;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.RouteString;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -92,19 +88,18 @@ public class MitfahrgelegenheitApplication {
 		Start start = new Start(new Address("58636", "Iserlohn","Sundernallee","75"), LocalDateTime.now());
 		Destination destination = new Destination(new Address("58644","Iserlohn","Frauenstuhlweg","31"), LocalDateTime.now());
 
-		AddressConverter converterStart = new AddressConverter(start.getAdresse().getAddress());
-		AddressConverter converterZiel = new AddressConverter(destination.getAdresse().getAddress());
+//		AddressConverter converterStart = new AddressConverter(start.getAdresse().getAddress());
+//		AddressConverter converterZiel = new AddressConverter(destination.getAdresse().getAddress());
+		List<StopOver> test = new ArrayList<>();
+		StopOver test1 = new StopOver(new Address(
+				"58636",
+				"Iserlohn",
+				"Frauenstuhlweg",
+				"31"
+		), LocalDateTime.now());
+		test.add(test1);
 
-		RouteString routeString = new RouteString(
-				converterStart.getStreet(),
-				converterStart.getNumber(),
-				converterStart.getPostalCode(),
-				converterStart.getPlace(),
-				converterZiel.getStreet(),
-				converterZiel.getNumber(),
-				converterZiel.getPostalCode(),
-				converterZiel.getPlace()
-		);
+		RouteString routeString = new RouteString(start, destination, test);
 
 		DriveRoute driveRoute = new DriveRoute(
 				start,
@@ -121,19 +116,7 @@ public class MitfahrgelegenheitApplication {
 		start = new Start(new Address("58644","Iserlohn","Frauenstuhlweg","31"), LocalDateTime.now());
 		destination = new Destination(new Address("58636", "Iserlohn","Schulstraße","95"), LocalDateTime.now());
 
-		converterStart = new AddressConverter(start.getAdresse().getAddress());
-		converterZiel = new AddressConverter(destination.getAdresse().getAddress());
-
-		routeString = new RouteString(
-				converterStart.getStreet(),
-				converterStart.getNumber(),
-				converterStart.getPostalCode(),
-				converterStart.getPlace(),
-				converterZiel.getStreet(),
-				converterZiel.getNumber(),
-				converterZiel.getPostalCode(),
-				converterZiel.getPlace()
-		);
+		routeString = new RouteString(start, destination, test);
 
 		DriveRoute driveRoute1 = new DriveRoute(
 				start,
