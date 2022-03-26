@@ -8,14 +8,16 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
+
+import javax.mail.MessagingException;
 
 /**
  *      Todo:
@@ -24,7 +26,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-dialog.css")
 public class DriveRequestDialog extends Dialog {
 
-    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService) {
+    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService) {
 
         User currentUser = userService.getCurrentUser();
 
@@ -56,21 +58,17 @@ public class DriveRequestDialog extends Dialog {
                 driveRoute.addDriveRequest(driveRequest);
 
                 driveRouteService.save(driveRoute);
-
-                DriveRequest driveRequest1 = driveRoute.getDriveRequests().get(0);
-
-                System.out.println(driveRequest1.getCurrentRouteLink());
-
+                
                 close();
 
-                MailService.getInstance().sendMail(
+                mailService.sendSimpleMessage(
                         currentUser.getFullName(),
                         driveRoute.getBenutzer().getFirstName(),
                         textAreaMessage.getValue(),
                         driveRoute.getBenutzer().getEmail(),
                         driveRoute.getCurrentRouteLink()
                 );
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException | MessagingException ex) {
                 ex.printStackTrace();
             }
 

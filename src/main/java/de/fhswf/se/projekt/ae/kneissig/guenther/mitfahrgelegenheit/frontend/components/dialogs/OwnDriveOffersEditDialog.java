@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -212,7 +213,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
             driveRouteService.save(updateDriveRoute);
 
-            NotificationSuccess.show("Fahrt wurde gespeichert!");
+            UI.getCurrent().getPage().reload();
+//            NotificationSuccess.show("Fahrt wurde gespeichert!");
             this.close();
 
         } catch (Exception e) {

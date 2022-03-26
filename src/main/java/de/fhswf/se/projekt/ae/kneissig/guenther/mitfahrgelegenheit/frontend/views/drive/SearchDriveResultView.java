@@ -10,6 +10,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
@@ -37,6 +38,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
     private final DriveRouteService driveRouteService;
     private final UserService userService;
+    private MailService mailService;
 
     private List<DriveRoute> driveList;
     private DriveType fahrtenTyp;
@@ -47,8 +49,9 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    public SearchDriveResultView(DriveRouteService driveRouteService, UserService userService) {
+    public SearchDriveResultView(DriveRouteService driveRouteService, UserService userService, MailService mailService) {
         this.driveRouteService = driveRouteService;
+        this.mailService = mailService;
         this.userService = userService;
         UI.getCurrent().setId(PageId.SEARCH_DRIVE_RESULT_VIEW.label);
         setId("searchDriveResultView");
@@ -73,7 +76,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
         H1 title = new H1(TITEL_GRID);
 //        GridBookmarkSearchDriveResult grid = new GridBookmarkSearchDriveResult(TITEL_GRID, driveList);
-        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, driveRouteService, userService);
+        GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, driveRouteService, userService, mailService);
         grid.setId("gridOwnOffersView");
         div.add(title,grid);
         add(div);

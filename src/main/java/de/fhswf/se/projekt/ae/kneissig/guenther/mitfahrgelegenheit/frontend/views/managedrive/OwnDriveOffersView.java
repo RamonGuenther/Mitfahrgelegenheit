@@ -12,6 +12,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
@@ -39,12 +40,14 @@ public class OwnDriveOffersView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
     private final UserService userService;
+    private MailService mailService;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    OwnDriveOffersView(DriveRouteService driveRouteService, UserService userService) {
+    OwnDriveOffersView(DriveRouteService driveRouteService, UserService userService, MailService mailService) {
         this.driveRouteService = driveRouteService;
+        this.mailService = mailService;
         this.userService = userService;
         createGrids();
     }
@@ -69,9 +72,9 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService, userService);
+        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService, userService, mailService);
         gridHinfahrt.setId("gridOwnOffersView");
-        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService, userService);
+        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService);
         gridRueckfahrt.setId("gridOwnOffersView");
 
         Div div = new Div(title, radioButtonGroup, gridHinfahrt);

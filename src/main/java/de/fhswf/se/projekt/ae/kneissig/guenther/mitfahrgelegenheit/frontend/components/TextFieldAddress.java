@@ -1,6 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components;
 
 import com.vaadin.componentfactory.Autocomplete;
+import com.vaadin.flow.component.textfield.TextField;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleAddressAutocomplete;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleApiKey;
 
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Ivonne Kneißig und Ramon Günther
  */
-public class TextFieldAddress extends Autocomplete implements GoogleApiKey {
+public class TextFieldAddress extends Autocomplete {
 
     private List<String> daten;
 
