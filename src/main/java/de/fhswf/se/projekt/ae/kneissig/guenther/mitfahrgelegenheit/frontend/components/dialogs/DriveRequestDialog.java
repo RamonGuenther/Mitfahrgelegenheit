@@ -1,4 +1,4 @@
-package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components;
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -12,12 +12,21 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 
 import javax.mail.MessagingException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *      Todo:
@@ -53,28 +62,35 @@ public class DriveRequestDialog extends Dialog {
                 // erst beim annehmen der Anfrage wird die Url in DriveRoute gespeichert
                 // Fahrtanfrage darf nicht mehrmals von einer Person möglich sein, siehe Sebastian krassen shit
 
-                DriveRequest driveRequest = new DriveRequest(RequestState.OPEN,currentUser,textAreaMessage.getValue(),"Apfel");
+                List<Stopover> stopoverList = new ArrayList<>();
+                Address address = new Address(textFieldAddress.getPostal(),textFieldAddress.getPlace(),textFieldAddress.getStreetWithoutNumber(), textFieldAddress.getNumber());
 
+                stopoverList.add(new Stopover(address, LocalDateTime.now()));
+
+                RouteString routeString = new RouteString(driveRoute.getStart(),driveRoute.getZiel(), stopoverList);
+
+                DriveRequest driveRequest = new DriveRequest(RequestState.OPEN,currentUser,textAreaMessage.getValue(),"Apfel", LocalDateTime.now(), new Stopover(new Address(), null));
                 driveRoute.addDriveRequest(driveRequest);
-
                 driveRouteService.save(driveRoute);
 
                 close();
 
-                mailService.sendSimpleMessage(
+                mailService.sendSimpleMessage(                 //TODO: Route ist nicht einsehbar im Link in der Mail
                         currentUser.getFullName(),
                         driveRoute.getBenutzer().getFirstName(),
                         textAreaMessage.getValue(),
                         driveRoute.getBenutzer().getEmail(),
-                        driveRoute.getCurrentRouteLink()
+                        routeString.getRoute()
                 );
-            } catch (IllegalArgumentException | MessagingException ex) {
+            } catch (MessagingException | DuplicateRequestException ex) {
+                NotificationError.show("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
                 ex.printStackTrace();
             }
 
         });
 
         Button buttonCancel = new Button("Abbrechen");
+        buttonCancel.addClickListener(e-> close());
         buttonCancel.setId("drive-request-dialog-cancel_button");
         buttonCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 

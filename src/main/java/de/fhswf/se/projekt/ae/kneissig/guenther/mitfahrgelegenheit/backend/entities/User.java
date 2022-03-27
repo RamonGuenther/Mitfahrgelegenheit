@@ -1,6 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.HashedPassword;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
 
 import javax.persistence.Embedded;
@@ -16,6 +17,7 @@ public class User {
     private String username;
     private String firstName;
     private String lastName;
+    private HashedPassword password;
 
     @Embedded
     private Address address;

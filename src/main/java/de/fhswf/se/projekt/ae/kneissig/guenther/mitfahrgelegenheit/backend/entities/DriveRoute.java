@@ -5,11 +5,19 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateBookingException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateStopoverException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
 @Entity
 public class DriveRoute {
@@ -59,16 +67,6 @@ public class DriveRoute {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Booking> bookings;
 
-    @ElementCollection
-    @AttributeOverrides({
-            @AttributeOverride(name = "time", column = @Column(name = "zwischenstopp_zeit")),
-            @AttributeOverride(name = "address.postal", column = @Column(name = "zwischenstopp_plz")),
-            @AttributeOverride(name = "address.street", column = @Column(name = "zwischenstopp_strasse")),
-            @AttributeOverride(name = "address.place", column = @Column(name = "zwischenstopp_ort")),
-            @AttributeOverride(name = "address.houseNumber", column = @Column(name = "zwischenstopp_hausnummer"))
-    })
-    private Set<Stopover> stopovers;
-
     public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
         this.start = start;
         this.destination = destination;
@@ -79,7 +77,19 @@ public class DriveRoute {
         this.currentRouteLink = currentRouteLink;
         driveRequests = new HashSet<>();
         bookings = new HashSet<>();
-        stopovers = new HashSet<>();
+        id = hashCode();
+    }
+
+    public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType, String currentRouteLink, Set<DriveRequest> driveRequests) {
+        this.start = start;
+        this.destination = destination;
+        this.seatCount = seatCount;
+        this.driver = driver;
+        this.creationDate = creationDate;
+        this.driveType = driveType;
+        this.currentRouteLink = currentRouteLink;
+        this.driveRequests = new HashSet<>(driveRequests);
+        bookings = new HashSet<>();
         id = hashCode();
     }
 
@@ -103,7 +113,8 @@ public class DriveRoute {
 
     @PersistenceConstructor
     public DriveRoute() {
-
+        driveRequests = new HashSet<>();
+        bookings = new HashSet<>();
     }
 
     public Integer getId() {
@@ -166,19 +177,22 @@ public class DriveRoute {
         return driver;
     }
 
-    public void addDriveRequest(DriveRequest driveRequest) throws IllegalArgumentException {
-        if (driveRequests.contains(driveRequest)) {
-            throw new IllegalArgumentException();
-        }
+    public void addDriveRequest(DriveRequest driveRequest) throws DuplicateRequestException {
+        nullCheck(driveRequest);
+
+        if (driveRequests.contains(driveRequest))
+            throw new DuplicateRequestException();
+
         driveRequests.add(driveRequest);
     }
 
-    public void addBooking(Booking newBooking) {
-        bookings.add(newBooking);
-    }
+    public void addBooking(Booking newBooking) throws DuplicateBookingException {
+        nullCheck(newBooking);
 
-    public void addStopover(Stopover newStopover){
-        stopovers.add(newStopover);
+        if (bookings.contains(newBooking))
+            throw new DuplicateBookingException();
+
+        bookings.add(newBooking);
     }
 
     @Override

@@ -39,15 +39,15 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
         //TODO Abfrage Absicherung
         setItems(driveList);
 
-        addColumn(start -> start.getStart().getAdresse().getStreet() + " "
-                + start.getStart().getAdresse().getHouseNumber() + ", "
-                + start.getStart().getAdresse().getPostal() + " "
-                + start.getStart().getAdresse().getPlace()).setHeader("Startadresse");
+        addColumn(start -> start.getStart().getAddress().getStreet() + " "
+                + start.getStart().getAddress().getHouseNumber() + ", "
+                + start.getStart().getAddress().getPostal() + " "
+                + start.getStart().getAddress().getPlace()).setHeader("Startadresse");
 
-        addColumn(ziel -> ziel.getZiel().getAdresse().getStreet() + " "
-                + ziel.getZiel().getAdresse().getHouseNumber() + ", "
-                + ziel.getZiel().getAdresse().getPostal() + " "
-                + ziel.getZiel().getAdresse().getPlace()).setHeader("Zieladresse");
+        addColumn(ziel -> ziel.getZiel().getAddress().getStreet() + " "
+                + ziel.getZiel().getAddress().getHouseNumber() + ", "
+                + ziel.getZiel().getAddress().getPostal() + " "
+                + ziel.getZiel().getAddress().getPlace()).setHeader("Zieladresse");
 
         addColumn(new LocalDateTimeRenderer<>(item -> item.getZiel().getTime(),
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader(zeitpunkt);

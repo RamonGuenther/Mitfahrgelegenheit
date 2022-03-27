@@ -1,37 +1,57 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
 
-import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Embeddable
 public class Booking {
 
     @ManyToOne
-    private final User mitfahrer;
+    private User passenger;
 
     private final LocalDateTime dateOfBooking;
 
-    public Booking(User mitfahrer, LocalDateTime dateOfBooking)
+    @Embedded
+    private Stopover stopover;
+
+    public Booking(User passenger, LocalDateTime dateOfBooking, Stopover stopover)
     {
-        this.mitfahrer = mitfahrer;
+        this.passenger = passenger;
         this.dateOfBooking = dateOfBooking;
+        this.stopover = stopover;
     }
 
     public Booking() {
-        mitfahrer = null;
+        passenger = null;
         dateOfBooking = null;
     }
 
 
-    public User getMitfahrer()
+    public User getPassenger()
     {
-        return mitfahrer;
+        return passenger;
     }
 
 
     public LocalDateTime getDateOfBooking()
     {
         return dateOfBooking;
+    }
+
+    public Stopover getStopover() {
+        return stopover;
+    }
+
+    @Override
+    public boolean equals (Object o) {
+        return o instanceof Booking && passenger.getId().equals (((Booking) o).passenger.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPassenger().getId().hashCode());
     }
 }

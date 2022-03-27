@@ -34,19 +34,19 @@ public class RouteString {
     private void buildRouteURL(){
 
         route = "https://www.google.com/maps/dir/?api=1&origin=" +
-                startAddress.getAdresse().getStreet() + "+" +
-                startAddress.getAdresse().getHouseNumber() + "+" +
-                startAddress.getAdresse().getPostal() + "+" +
-                startAddress.getAdresse().getPlace();
+                startAddress.getAddress().getStreet() + "+" +
+                startAddress.getAddress().getHouseNumber() + "+" +
+                startAddress.getAddress().getPostal() + "+" +
+                startAddress.getAddress().getPlace();
 
         if(!stopoverAddresses.isEmpty()){
             route = route + "&waypoints=";
             for(int i = 0; i < stopoverAddresses.size(); i++){
                 route = route +
-                        stopoverAddresses.get(i).getAdresse().getStreet() + "+" +
-                        stopoverAddresses.get(i).getAdresse().getHouseNumber() + "+" +
-                        stopoverAddresses.get(i).getAdresse().getPostal() + "+" +
-                        stopoverAddresses.get(i).getAdresse().getPlace() + "+";
+                        stopoverAddresses.get(i).getAddress().getStreet() + "+" +
+                        stopoverAddresses.get(i).getAddress().getHouseNumber() + "+" +
+                        stopoverAddresses.get(i).getAddress().getPostal() + "+" +
+                        stopoverAddresses.get(i).getAddress().getPlace() + "+";
                 if(stopoverAddresses.size() > 1 && i < stopoverAddresses.size() - 1){
                     route = route + "|";
                 };
@@ -54,10 +54,10 @@ public class RouteString {
         }
 
         route = route + "&destination=" +
-                destinationAddress.getAdresse().getStreet() + "+" +
-                destinationAddress.getAdresse().getHouseNumber() + "+" +
-                destinationAddress.getAdresse().getPostal() + "+" +
-                destinationAddress.getAdresse().getPlace() + "&travelmode=driving";
+                destinationAddress.getAddress().getStreet() + "+" +
+                destinationAddress.getAddress().getHouseNumber() + "+" +
+                destinationAddress.getAddress().getPostal() + "+" +
+                destinationAddress.getAddress().getPlace() + "&travelmode=driving";
     }
 
     /**

@@ -10,6 +10,6 @@ public class Stopover extends Waypoint {
     }
 
     protected Stopover() {
-        super();
+        super(null,null);
     }
 }

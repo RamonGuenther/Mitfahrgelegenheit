@@ -14,14 +14,14 @@ import java.util.Objects;
 public abstract class Waypoint {
 
     @Embedded
-    protected final Address address;
+    protected Address address;
 
     @Column(name = "time")
-    protected final LocalDateTime time;
+    protected LocalDateTime time;
 
     @Override
     public int hashCode() {
-        return Objects.hash(address, time);
+        return Objects.hash(address);
     }
 
     public Waypoint(Address address, LocalDateTime time) {
@@ -35,8 +35,16 @@ public abstract class Waypoint {
         this.time = null;
     }
 
-    public Address getAdresse() {
+    public Address getAddress() {
         return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 
     public LocalDateTime getTime() {
@@ -46,8 +54,7 @@ public abstract class Waypoint {
     @Override
     public boolean equals(Object other) {
         if (other instanceof Waypoint)
-            return getAdresse().equals(((Waypoint) other).getAdresse())
-                    && getTime().equals(((Waypoint) other).getTime());
+            return getAddress().equals(((Waypoint) other).getAddress());
         else
             return false;
     }

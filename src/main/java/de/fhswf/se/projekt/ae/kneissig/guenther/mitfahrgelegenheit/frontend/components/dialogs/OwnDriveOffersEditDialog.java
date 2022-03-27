@@ -20,7 +20,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 
 
 import java.time.LocalDate;
@@ -92,13 +91,13 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
                 formLayoutHinfahrt.setTitle("Hinfahrt bearbeiten");
                 formLayoutHinfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutHinfahrt.setFhLocation(driveRoute.getZiel().getAdresse().getPlace());
+                formLayoutHinfahrt.setFhLocation(driveRoute.getZiel().getAddress().getPlace());
                 formLayoutHinfahrt.setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
                 formLayoutHinfahrt.setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
-                formLayoutHinfahrt.setAddress(driveRoute.getStart().getAdresse().getStreet() + " "
-                        + driveRoute.getStart().getAdresse().getHouseNumber() + ", "
-                        + driveRoute.getStart().getAdresse().getPostal() + " "
-                        + driveRoute.getStart().getAdresse().getPlace() + ", "
+                formLayoutHinfahrt.setAddress(driveRoute.getStart().getAddress().getStreet() + " "
+                        + driveRoute.getStart().getAddress().getHouseNumber() + ", "
+                        + driveRoute.getStart().getAddress().getPostal() + " "
+                        + driveRoute.getStart().getAddress().getPlace() + ", "
                         + "Deutschland");
                 add(formLayoutHinfahrt);
             }
@@ -124,13 +123,13 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
                 formLayoutRueckfahrt.setTitle("Rückfahrt bearbeiten");
                 formLayoutRueckfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutRueckfahrt.setFhLocation(driveRoute.getStart().getAdresse().getPlace());
+                formLayoutRueckfahrt.setFhLocation(driveRoute.getStart().getAddress().getPlace());
                 formLayoutRueckfahrt.setDriveTime(driveRoute.getStart().getTime().toLocalTime());
                 formLayoutRueckfahrt.setDriveDateStart(driveRoute.getStart().getTime().toLocalDate());
-                formLayoutRueckfahrt.setAddress(driveRoute.getZiel().getAdresse().getStreet() + " "
-                        + driveRoute.getZiel().getAdresse().getHouseNumber() + ", "
-                        + driveRoute.getZiel().getAdresse().getPostal() + " "
-                        + driveRoute.getZiel().getAdresse().getPlace() + ", "
+                formLayoutRueckfahrt.setAddress(driveRoute.getZiel().getAddress().getStreet() + " "
+                        + driveRoute.getZiel().getAddress().getHouseNumber() + ", "
+                        + driveRoute.getZiel().getAddress().getPostal() + " "
+                        + driveRoute.getZiel().getAddress().getPlace() + ", "
                         + "Deutschland");
                 add(formLayoutRueckfahrt);
             }

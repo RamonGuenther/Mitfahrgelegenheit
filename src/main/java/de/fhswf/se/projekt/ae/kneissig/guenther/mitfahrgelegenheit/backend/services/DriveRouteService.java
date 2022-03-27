@@ -1,12 +1,14 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.DriveRouteRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * TODO: Andere Namen für die Methoden ausdenken und Validieren in Searchdrive ob es überhaupt funktioniert also findRouten
@@ -51,6 +53,28 @@ public class DriveRouteService {
             case OUTWARD_TRIP -> findAllByFahrtenTypAndStart_Adresse_OrtAndBenutzerUsernameNot(driveType, destinationPlace, user.getUsername());
             case RETURN_TRIP -> findAllByFahrtenTypAndZiel_Adresse_OrtAndBenutzerUsernameNot(driveType, startPlace, user.getUsername());
         };
+    }
+
+    public Optional<DriveRoute> findById(Integer id){
+        return repository.findById(id);
+    }
+
+    public List<DriveRequest> findAllDriveRequest(User user){
+        if(findAllFahrerRoutenByBenutzer(user).isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<DriveRequest> driveRequests = new ArrayList<>();
+
+        for(DriveRoute driveRoute: findAllFahrerRoutenByBenutzer(user)){
+            List<DriveRequest> driveRequests1 = driveRoute.getDriveRequests();
+            for(DriveRequest driveRequest : driveRequests1){
+                if(driveRequest.getRequestState().label.equals(RequestState.OPEN.label)){
+                    driveRequests.add(driveRequest);
+                }
+            }
+        }
+        return driveRequests;
     }
 
 }
