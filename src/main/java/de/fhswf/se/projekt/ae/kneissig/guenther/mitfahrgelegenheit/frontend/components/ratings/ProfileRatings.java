@@ -7,8 +7,13 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Rating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 /**
  * Die Klasse AverageRatingsRatings erstellt eine Ansicht
@@ -53,7 +58,7 @@ public class ProfileRatings extends VerticalLayout {
         ratingGrid.setItems(user.getUserRating().getDriverRatings());
         ratingGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         ratingGrid.setSelectionMode(Grid.SelectionMode.NONE);
-        ratingGrid.addColumn(Rating::getDate).setHeader("Datum");
+        ratingGrid.addColumn(Rating::getFormattedDate).setHeader("Datum");
         ratingGrid.addColumn(Rating::getPunctuality).setHeader("Pünktlichkeit");
         ratingGrid.addColumn(Rating::getPunctuality).setHeader("Zuverlässigkeit");
         ratingGrid.setId("rating-grid");

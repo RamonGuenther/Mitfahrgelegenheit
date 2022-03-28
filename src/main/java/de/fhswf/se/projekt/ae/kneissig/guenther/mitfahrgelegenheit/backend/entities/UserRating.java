@@ -5,6 +5,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +28,8 @@ public class UserRating {
     }
 
     public UserRating() {
-
+       driverRatings = new ArrayList<>();
+       passengerRatings = new ArrayList<>();
     }
 
     public List<Rating> getDriverRatings() {
@@ -52,5 +54,59 @@ public class UserRating {
 
     public int getPassengerRatingAverage(){
         return 0;
+    }
+
+    public Integer getAverageDriverRating(){
+        double result = 0.0;
+        for(Rating r: driverRatings){
+            result += r.getPunctuality() + r.getReliability();
+        }
+
+        return (int) Math.round( result / (driverRatings.size() *2));
+    }
+
+    public Integer getAveragePassengerRating(){
+        double result = 0.0;
+        for(Rating r: passengerRatings){
+            result += r.getPunctuality() + r.getReliability();
+        }
+
+        return (int) Math.round( result / (passengerRatings.size() *2));
+    }
+
+    public Integer getAverageDriverRatingPunctuality(){
+        double result = 0.0;
+        for(Rating r: driverRatings){
+            result += r.getPunctuality();
+        }
+
+        return (int) Math.round( result / (driverRatings.size()));
+    }
+
+    public Integer getAverageDriverRatingReliability(){
+        double result = 0.0;
+        for(Rating r: driverRatings){
+            result += r.getReliability();
+        }
+
+        return (int) Math.round( result / (driverRatings.size()));
+    }
+
+    public Integer getAveragePassengerRatingPunctuality(){
+        double result = 0.0;
+        for(Rating r: passengerRatings){
+            result += r.getPunctuality();
+        }
+
+        return (int) Math.round( result / (driverRatings.size()));
+    }
+
+    public Integer getAveragePassengerRatingReliability(){
+        double result = 0.0;
+        for(Rating r: passengerRatings){
+            result += r.getReliability();
+        }
+
+        return (int) Math.round( result / (driverRatings.size()));
     }
 }

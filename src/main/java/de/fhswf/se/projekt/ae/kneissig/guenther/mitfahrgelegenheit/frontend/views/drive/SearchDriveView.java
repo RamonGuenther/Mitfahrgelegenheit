@@ -35,6 +35,7 @@ import java.time.Duration;
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-view.css")
 public class SearchDriveView extends VerticalLayout {
 
+    private final UserService userService;
     private Checkbox checkboxRegularDrive;
     private RadioButtonGroup<String> radioDriveDirection;
     private TextFieldAddress address;
@@ -48,6 +49,7 @@ public class SearchDriveView extends VerticalLayout {
      */
 
     public SearchDriveView(UserService userService) {
+        this.userService = userService;
         setId("searchView");
         createSearchView();
 //        GoogleDistanceCalculation distance = new GoogleDistanceCalculation();
@@ -78,6 +80,7 @@ public class SearchDriveView extends VerticalLayout {
         date.setId("datepicker");
 
         fhLocation = new SelectUniversityLocation();
+        fhLocation.setValue(userService.getCurrentUser().getUniversityLocation());
         fhLocation.setId("textfieldDestination");
         fhLocation.addValueChangeListener(event ->
                 fhLocation.setUniversityLocationAddress(fhLocation.getValue()));

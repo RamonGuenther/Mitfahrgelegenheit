@@ -3,6 +3,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.com
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 
 /**
  * Die Klasse AverageRatingsDrive erstellt eine Ansicht für

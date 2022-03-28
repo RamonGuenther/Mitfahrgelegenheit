@@ -2,6 +2,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.com
 
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 
 /**
  * Die Klasse ProfileDoubleRating erstellt eine Ratinganzeige für
@@ -36,15 +37,15 @@ public class ProfileDoubleRating extends VerticalLayout {
         return driverRating;
     }
 
-    public void setDriverRating(StarsRating driverRating) {
-        this.driverRating = driverRating;
+    public void setDriverRating(Integer driverRating) {
+        this.driverRating.setRating(driverRating);
     }
 
     public StarsRating getPassengerRating() {
         return passengerRating;
     }
 
-    public void setPassengerRating(StarsRating passengerRating) {
-        this.passengerRating = passengerRating;
+    public void setPassengerRating(Integer passengerRating) {
+        this.passengerRating.setRating(passengerRating);
     }
 }

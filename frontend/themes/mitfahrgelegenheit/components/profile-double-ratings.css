@@ -2,7 +2,7 @@
     display: block;
     font-size: 2em;
     --star-size: 25px;
-    --star-color: #000080;
+    --star-color: #F59F26;
     margin-bottom: -15px;
 }
 
@@ -10,6 +10,7 @@
      display: block;
      font-size: 2em;
      --star-size: 25px;
-     --star-color: #000080;
+     --star-color: #F59F26;
+     --star-color: #F59F26;
     margin-top: -15px;
  }

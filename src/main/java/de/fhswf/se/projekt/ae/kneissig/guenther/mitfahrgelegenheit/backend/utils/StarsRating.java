@@ -1,4 +1,4 @@
-package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings;
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils;
 
 /* © Copyright JFancy 2021 www.jfancy.de */
 import com.vaadin.flow.component.AbstractSinglePropertyField;

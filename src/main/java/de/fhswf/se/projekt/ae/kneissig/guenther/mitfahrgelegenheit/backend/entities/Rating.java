@@ -2,6 +2,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Embeddable
 public class Rating {
@@ -29,5 +30,10 @@ public class Rating {
 
     public int getReliability() {
         return reliability;
+    }
+
+    public String getFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return date.format(formatter);
     }
 }

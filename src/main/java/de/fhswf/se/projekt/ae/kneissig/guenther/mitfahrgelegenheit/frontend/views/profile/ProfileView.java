@@ -177,8 +177,15 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      */
     private void createRatingsView(){
 
-        HorizontalLayout profileRatingLayout = new HorizontalLayout(new ProfileRatings(user));
+        ProfileRatings profileRatings = new ProfileRatings(user);
+        profileRatings.getAverageRatingsDriver().getPunctuality().setRating(user.getUserRating().getAverageDriverRatingPunctuality());
+        profileRatings.getAverageRatingsDriver().getReliability().setRating(user.getUserRating().getAverageDriverRatingReliability());
+        profileRatings.getAverageRatingsPassenger().getPunctuality().setRating(user.getUserRating().getAveragePassengerRatingPunctuality());
+        profileRatings.getAverageRatingsPassenger().getPunctuality().setRating(user.getUserRating().getAveragePassengerRatingReliability());
+
+        HorizontalLayout profileRatingLayout = new HorizontalLayout(profileRatings);
         profileRatingLayout.setId("profileRatingLayout");
+
         add(profileRatingLayout);
     }
 
@@ -232,7 +239,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
                 user.setAddress(new Address(
                         profileDataForm.getGoogleAddress().getPostal(),
                         profileDataForm.getGoogleAddress().getPlace(),
-                        profileDataForm.getGoogleAddress().getStreetWithoutNumber(),
+                        profileDataForm.getGoogleAddress().getStreet(),
                         profileDataForm.getGoogleAddress().getNumber()
                 ));
             }
@@ -265,6 +272,8 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
         ProfileDoubleRating doubleRating = new ProfileDoubleRating();
         doubleRating.setId("profile-data-double_rating");
+        doubleRating.setDriverRating(user.getUserRating().getAverageDriverRating());
+        doubleRating.setPassengerRating(user.getUserRating().getAveragePassengerRating());
 
         HorizontalLayout header = new HorizontalLayout();
         header.add(title, doubleRating);

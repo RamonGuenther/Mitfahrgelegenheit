@@ -17,7 +17,7 @@ public class User {
     private String username;
     private String firstName;
     private String lastName;
-    private HashedPassword password;
+//    private HashedPassword password;
 
     @Embedded
     private Address address;
@@ -31,7 +31,7 @@ public class User {
     private boolean firstLogin;
 
     @Embedded
-    private final UserRating userRating;
+    private UserRating userRating;
 
     public User(Long id,
                 String username,
@@ -171,4 +171,7 @@ public class User {
         return firstName + " " +lastName.charAt(0) + ". ";
     }
 
+    public void setUserRating(UserRating userRating) {
+        this.userRating = userRating;
+    }
 }

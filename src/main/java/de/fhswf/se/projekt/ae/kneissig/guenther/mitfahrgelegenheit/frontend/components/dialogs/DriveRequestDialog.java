@@ -63,7 +63,7 @@ public class DriveRequestDialog extends Dialog {
                 // Fahrtanfrage darf nicht mehrmals von einer Person möglich sein, siehe Sebastian krassen shit
 
                 List<Stopover> stopoverList = new ArrayList<>();
-                Address address = new Address(textFieldAddress.getPostal(),textFieldAddress.getPlace(),textFieldAddress.getStreetWithoutNumber(), textFieldAddress.getNumber());
+                Address address = new Address(textFieldAddress.getPostal(),textFieldAddress.getPlace(),textFieldAddress.getStreet(), textFieldAddress.getNumber());
 
                 stopoverList.add(new Stopover(address, LocalDateTime.now()));
 

@@ -58,6 +58,8 @@ public class RouteString {
                 destinationAddress.getAddress().getHouseNumber() + "+" +
                 destinationAddress.getAddress().getPostal() + "+" +
                 destinationAddress.getAddress().getPlace() + "&travelmode=driving";
+
+        route = route.replace(" ", "+");
     }
 
     /**

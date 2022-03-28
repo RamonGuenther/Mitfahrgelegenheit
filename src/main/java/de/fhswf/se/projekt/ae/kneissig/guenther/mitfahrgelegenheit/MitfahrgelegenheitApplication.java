@@ -1,6 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Rating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +149,25 @@ public class MitfahrgelegenheitApplication {
 //			System.out.println(res);
 //		}
 
+		Rating rating = new Rating(LocalDate.now(),4,5);
+
+		UserRating userRating = new UserRating();
+
+		userRating.addDriverRating(rating);
+
+		rating =  new Rating(LocalDate.now(), 5,4);
+		userRating.addDriverRating(rating);
+
+		rating =  new Rating(LocalDate.now(), 3,2);
+		userRating.addDriverRating(rating);
+
+		userRating.addDriverRating(rating);
+
+		user1.setUserRating(userRating);
+
+		userService.save(user1);
+
+		System.out.println(user1.getUserRating().getAverageDriverRating());
 
 
 

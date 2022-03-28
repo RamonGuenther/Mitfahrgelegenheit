@@ -21,7 +21,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.RatingButton;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.ReportButton;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.Role;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.StarsRating;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
 import java.time.LocalDate;

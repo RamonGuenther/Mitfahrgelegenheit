@@ -4,20 +4,10 @@
 
 #ratingPunctuality{
     --star-size: 25px;
-    --star-color: #000080;
+    --star-color: #F59F26;
 }
 
 #ratingReliability{
     --star-size: 25px;
-    --star-color: #000080;
-}
-
-#ratingDrivingstyle{
-    --star-size: 25px;
-    --star-color: #000080;
-}
-
-#ratingCleanliness{
-    --star-size: 25px;
-    --star-color: #000080;
+    --star-color: #F59F26;
 }

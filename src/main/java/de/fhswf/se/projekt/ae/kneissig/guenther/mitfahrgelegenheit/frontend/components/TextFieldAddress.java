@@ -1,9 +1,8 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components;
 
 import com.vaadin.componentfactory.Autocomplete;
-import com.vaadin.flow.component.textfield.TextField;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleAddressAutocomplete;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleApiKey;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,6 @@ public class TextFieldAddress extends Autocomplete {
     private String street;
     private String place;
     private String postal;
-    private String streetWithoutNumber;
 
     /**
      * Im Konstruktor wird das Textfeld mit der Autocomplete-Funktion
@@ -52,37 +50,18 @@ public class TextFieldAddress extends Autocomplete {
                     if (daten != null) {
                         for (String str : daten) {
                             if (str.equals(event.getValue())) {
-                                setAddressComponents();
+                                AddressConverter converter = new AddressConverter(this.getValue());
+
+                                street = converter.getStreet();
+                                number = converter.getNumber();
+                                postal = converter.getPostalCode();
+                                place = converter.getPlace();
                             }
                         }
                     }
                 }
         );
     }
-
-    /**
-     * Die Methode setAddressComponents speichert die Address-
-     * komponenten in einzelne Variablen, um diese weiter-
-     * verwenden zu können.
-     */
-    private void setAddressComponents() {
-        // getValue: Wert den das Feld nach dem Auswählen einer Adresse hat
-        String value = this.getValue().replace(",", "");
-        String[] addressComponents = value.split(" ");
-
-        if (addressComponents.length == 5) {
-            streetWithoutNumber = addressComponents[0];
-            number = addressComponents[1];
-            postal = addressComponents[2];
-            place = addressComponents[3];
-            street = streetWithoutNumber + " " + number;
-        } else {
-            street = addressComponents[0];
-            postal = addressComponents[1];
-            place = addressComponents[2];
-        }
-    }
-
 
     public String getStreet() {
         return street;
@@ -100,7 +79,4 @@ public class TextFieldAddress extends Autocomplete {
         return number;
     }
 
-    public String getStreetWithoutNumber() {
-        return streetWithoutNumber;
-    }
 }
