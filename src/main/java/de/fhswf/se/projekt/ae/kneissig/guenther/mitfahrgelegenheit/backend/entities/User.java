@@ -61,18 +61,7 @@ public class User {
     }
 
     public User() {
-        this.id = null;
-        this.username = null;
-        this.firstName = null;
-        this.lastName = null;
-        this.address = null;
-        this.languages = null;
-        this.lastLogin = null;
-        this.firstLogin = false;
-        this.universityLocation = null;
-        this.faculty = null;
-        this.email = null;
-        this.userRating = null;
+
     }
 
     public Long getId() {

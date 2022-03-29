@@ -1,14 +1,16 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
+import com.google.maps.errors.ApiException;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Rating;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.UserRating;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,7 +40,7 @@ public class MitfahrgelegenheitApplication {
     }
 
     @PostConstruct
-    public void initData() {
+    public void initData() throws IOException, InterruptedException, ApiException, DuplicateRequestException {
         User user1 = new User(
                 1L,
                 "rague002",
@@ -151,24 +154,10 @@ public class MitfahrgelegenheitApplication {
         );
 
         driveRouteService.save(driveRoute2);
-
-
-//		GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
-//
-//
-//		List<String> origins = new ArrayList<>();
-//		origins.add("Diesterwegstraße 6, 58095 Hagen");
-//        origins.add("Sundernallee 75, 58636 Iserlohn");
-//        origins.add("Schulstraße 95, 58636 Iserlohn");
-//        origins.add("Im Wiesengrund, 58636 Iserlohn");
-//
-//		String target = "Frauenstuhlweg 31, 58644 Iserlohn";
-//
-//		List<String> result = googleDistanceCalculation.calculate(origins, target);
-//
-//		for(String res : result){
-//			System.out.println(res);
-//		}
+        
+        /**
+         * TODO: Rating
+         */
 
         Rating rating = new Rating(LocalDate.now(), 4, 5);
 
@@ -190,6 +179,44 @@ public class MitfahrgelegenheitApplication {
 
         System.out.println(user1.getUserRating().getAverageDriverRating());
 
+
+        /**
+         * TODO: GOOGLE DISTANCE BEISPIEL
+         */
+
+//        GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
+//
+//
+//		List<String> origins = new ArrayList<>();
+//        origins.add("Diesterwegstraße 6, 58095 Hagen, Deutschland");
+//        origins.add("Sundernallee 75, 58636 Iserlohn, Deutschland");
+//        origins.add("Schulstraße 95, 58636 Iserlohn, Deutschland");
+//        origins.add("Im Wiesengrund, 58636 Iserlohn, Deutschland");
+//
+//		String target = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
+//
+//		List<String> result = googleDistanceCalculation.calculate(origins, target);
+//
+//
+//        List<Stopover> stopoverList = new ArrayList<>();
+//
+//        for(String res : result){
+//            AddressConverter addressConverter = new AddressConverter(res);
+//            stopoverList.add(new Stopover(new Address(addressConverter.getPostalCode(),addressConverter.getPlace(),addressConverter.getStreet(), addressConverter.getNumber()), LocalDateTime.now()));
+//		}
+//
+//        Start start1 = new Start(new Address("58095", "Hagen","Diesterwegstraße","6"), LocalDateTime.now());
+//        Destination destination1 = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"),LocalDateTime.now());
+//
+//
+//        RouteString routeString4 = new RouteString(start1, destination1, stopoverList);
+//
+//        System.out.println(routeString4.getRoute());
+
+
+        DriveRequest driveRequest = new DriveRequest(RequestState.OPEN,user2,"","", LocalDateTime.now(), new Stopover(new Address(), null));
+        driveRoute.addDriveRequest(driveRequest);
+        driveRouteService.save(driveRoute);
 
     }
 

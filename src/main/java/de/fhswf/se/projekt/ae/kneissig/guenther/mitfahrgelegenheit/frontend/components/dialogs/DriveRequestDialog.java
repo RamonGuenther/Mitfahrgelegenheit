@@ -75,14 +75,14 @@ public class DriveRequestDialog extends Dialog {
 
                 close();
 
-                mailService.sendSimpleMessage(                 //TODO: Route ist nicht einsehbar im Link in der Mail
-                        currentUser.getFullName(),
-                        driveRoute.getBenutzer().getFirstName(),
-                        textAreaMessage.getValue(),
-                        driveRoute.getBenutzer().getEmail(),
-                        routeString.getRoute()
-                );
-            } catch (MessagingException | DuplicateRequestException ex) {
+//                mailService.sendSimpleMessage(                 //TODO: Route ist nicht einsehbar im Link in der Mail
+//                        currentUser.getFullName(),
+//                        driveRoute.getBenutzer().getFirstName(),
+//                        textAreaMessage.getValue(),
+//                        driveRoute.getBenutzer().getEmail(),
+//                        routeString.getRoute()
+//                );
+            } catch (DuplicateRequestException ex) {
                 NotificationError.show("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
                 ex.printStackTrace();
             }

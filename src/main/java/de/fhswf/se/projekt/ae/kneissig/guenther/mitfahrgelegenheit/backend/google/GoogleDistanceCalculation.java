@@ -42,6 +42,9 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
             String value = entry.getValue();
             result.add(value);
         }
+
+        result.remove(0);
+
         return result;
     }
 }

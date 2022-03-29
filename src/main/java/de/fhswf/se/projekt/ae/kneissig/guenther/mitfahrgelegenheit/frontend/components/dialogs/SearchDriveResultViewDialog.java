@@ -27,19 +27,15 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 @CssImport("/themes/mitfahrgelegenheit/components/search-drive-result-view-dialog.css")
 public class SearchDriveResultViewDialog extends Dialog {
 
-    private final Icon PROFILE_ICON = new Icon(VaadinIcon.USER);
-
-    private UserService userService;
-    private DriveRouteService driveRouteService;
+    private final UserService userService;
+    private final DriveRouteService driveRouteService;
 
 
-    private DriveRoute driveRoute;
-    private FormLayoutTopOfferDrive formLayoutHinfahrt;
-    private FormLayoutBottomOfferDrive formLayoutRueckfahrt;
-    private VerticalLayout verticalLayout;
+    private final DriveRoute driveRoute;
 
-    private MailService mailService;
-    Anchor userAnchor; //TODO
+    private final MailService mailService;
+
+    private Anchor userAnchor; //TODO
 
 
     public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService){
@@ -48,9 +44,7 @@ public class SearchDriveResultViewDialog extends Dialog {
         this.driveRoute = driveRoute;
         this.mailService = mailService;
 
-//        this.fahrerRoute = fahrerRoute;
-
-        verticalLayout = new VerticalLayout();
+        VerticalLayout verticalLayout = new VerticalLayout();
 
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
@@ -70,10 +64,11 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         add(userAnchor, driverRating);
 
+        Icon PROFILE_ICON = new Icon(VaadinIcon.USER);
         switch (driveRoute.getDriveType()) {
 
             case OUTWARD_TRIP -> {
-                formLayoutHinfahrt = new FormLayoutTopOfferDrive();
+                FormLayoutTopOfferDrive formLayoutHinfahrt = new FormLayoutTopOfferDrive();
 
                 formLayoutHinfahrt.getFlexButton().setVisible(true);
                 formLayoutHinfahrt.getFlexButton().setId("search-drive-result-view-dialog-profile_button");
@@ -103,7 +98,7 @@ public class SearchDriveResultViewDialog extends Dialog {
                 verticalLayout.add(formLayoutHinfahrt);
             }
             case RETURN_TRIP -> {
-                formLayoutRueckfahrt = new FormLayoutBottomOfferDrive();
+                FormLayoutBottomOfferDrive formLayoutRueckfahrt = new FormLayoutBottomOfferDrive();
 
                 formLayoutRueckfahrt.getFlexButton().setVisible(true);
                 formLayoutRueckfahrt.getFlexButton().setId("search-drive-result-view-dialog-profile_button");
@@ -144,12 +139,6 @@ public class SearchDriveResultViewDialog extends Dialog {
      * für den Dialog erstellt.
      */
     private HorizontalLayout createButtons() {
-
-//        Button bookmarkButton = new Button("Fahrt merken");
-//        bookmarkButton.setId("search-drive-result-view-dialog-bookmark_button");
-//        bookmarkButton.setClassName("search-drive-result-view-dialog-buttons");
-//        bookmarkButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
         Button requestButton = new Button("Fahrt anfragen");
         requestButton.setId("search-drive-result-view-dialog-request_button");
         requestButton.setClassName("search-drive-result-view-dialog-buttons");
@@ -157,7 +146,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         requestButton.addClickListener(e->{
             close();
-            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute, userService, driveRouteService, mailService); //TODO: ROUTE ÜBERGEBEN
+            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute, userService, driveRouteService, mailService);
             driveRequestDialog.open();
         });
 

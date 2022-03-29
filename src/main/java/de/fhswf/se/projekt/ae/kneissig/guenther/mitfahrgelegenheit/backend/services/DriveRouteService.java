@@ -60,6 +60,10 @@ public class DriveRouteService {
         return repository.findById(id);
     }
 
+    public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String destinationPlace, String username, LocalDateTime dateTime){
+       return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(driveType,destinationPlace, username,dateTime);
+    }
+
     public List<DriveRequest> findAllDriveRequest(User user){
         if(findAllFahrerRoutenByBenutzer(user).isEmpty()){
             return Collections.emptyList();
@@ -76,10 +80,6 @@ public class DriveRouteService {
             }
         }
         return driveRequests;
-    }
-
-    public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String destinationPlace, String username, LocalDateTime dateTime){
-       return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(driveType,destinationPlace, username,dateTime);
     }
 
 }

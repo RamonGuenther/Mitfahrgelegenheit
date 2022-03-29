@@ -13,6 +13,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridBookmarkSearchDriveResult;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -79,7 +80,6 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         div.setId("search-drive-result-view-content-div");
 
         H1 title = new H1(TITEL_GRID);
-//        GridBookmarkSearchDriveResult grid = new GridBookmarkSearchDriveResult(TITEL_GRID, driveList);
         GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, driveRouteService, userService, mailService);
         grid.setId("gridOwnOffersView");
         div.add(title, grid);
@@ -134,8 +134,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                         Integer.parseInt(time.substring(3)))
         );
 
-        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, fhStandort, user.getUsername(),dateTime);
-//        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
+//        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, fhStandort, user.getUsername(),dateTime);
+        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
 
 
         //If fahrten leer notification und zur Searchdrive zurück
