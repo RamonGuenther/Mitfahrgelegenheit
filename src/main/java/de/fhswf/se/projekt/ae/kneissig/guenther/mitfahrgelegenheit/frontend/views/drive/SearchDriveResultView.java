@@ -17,6 +17,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -29,10 +32,10 @@ import java.util.List;
  *
  * @author Ramon Günther
  */
-@com.vaadin.flow.router.Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/search", layout = MainLayout.class)
+@Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/datum/:datum/uhrzeit/:uhrzeit/search", layout = MainLayout.class)
 @PageTitle("Ergebnis Fahrtensuche")
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-result-view.css")
-public class SearchDriveResultView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver{
+public class SearchDriveResultView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver {
 
     private static final String TITEL_GRID = "Suchergebnisse";
 
@@ -45,6 +48,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private String typ;
     private String fhStandort;
     private String adresse;
+    private String date;
+    private String time;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
@@ -68,7 +73,6 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     /**
      * In der Methode createGridLayout werden die Komponenten der Tabelle,
      * dem Layout hinzugefügt.
-     *
      */
     private void createGridLayout() { //Hier entsteht grid , dann klicken wir eine Sache an die runter zu createGridDetailsLayout gebracht werden muss
         Div div = new Div();
@@ -78,39 +82,60 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 //        GridBookmarkSearchDriveResult grid = new GridBookmarkSearchDriveResult(TITEL_GRID, driveList);
         GridOwnDriveOffersView grid = new GridOwnDriveOffersView("Ankunftszeit", driveList, driveRouteService, userService, mailService);
         grid.setId("gridOwnOffersView");
-        div.add(title,grid);
+        div.add(title, grid);
         add(div);
     }
 
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if(beforeEnterEvent.getRouteParameters().get("fahrtentyp").isPresent()){
+        if (beforeEnterEvent.getRouteParameters().get("fahrtentyp").isPresent()) {
             typ = beforeEnterEvent.getRouteParameters().get("fahrtentyp").get();
         }
 
-        if(beforeEnterEvent.getRouteParameters().get("fhStandort").isPresent()){
+        if (beforeEnterEvent.getRouteParameters().get("fhStandort").isPresent()) {
             fhStandort = beforeEnterEvent.getRouteParameters().get("fhStandort").get();
         }
 
-        if(beforeEnterEvent.getRouteParameters().get("adresse").isPresent()){
+        if (beforeEnterEvent.getRouteParameters().get("adresse").isPresent()) {
             adresse = beforeEnterEvent.getRouteParameters().get("adresse").get();
         }
 
+
+        if (beforeEnterEvent.getRouteParameters().get("datum").isPresent()) {
+            date = beforeEnterEvent.getRouteParameters().get("datum").get();
+        }
+
+
+        if (beforeEnterEvent.getRouteParameters().get("uhrzeit").isPresent()) {
+            time = beforeEnterEvent.getRouteParameters().get("uhrzeit").get();
+        }
     }
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
         User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         switch (typ) {
-            case "Hinfahrt" ->{
+            case "Hinfahrt" -> {
                 fahrtenTyp = DriveType.OUTWARD_TRIP;
             }
             case "Rückfahrt" -> {
                 fahrtenTyp = DriveType.RETURN_TRIP;
             }
         }
-        driveList = driveRouteService.findRouten(user,fahrtenTyp,adresse,fhStandort);
+
+        LocalDateTime dateTime = LocalDateTime.of(
+                LocalDate.of(
+                        Integer.parseInt(date.substring(0, 4)),
+                        date.substring(5,6).contains("0") ? Integer.parseInt(date.substring(6,7)) : Integer.parseInt(date.substring(5,7)),
+                        date.substring(8,9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))),
+                LocalTime.of(
+                        Integer.parseInt(time.substring(0, 2)),
+                        Integer.parseInt(time.substring(3)))
+        );
+
+        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, fhStandort, user.getUsername(),dateTime);
+//        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
 
 
         //If fahrten leer notification und zur Searchdrive zurück

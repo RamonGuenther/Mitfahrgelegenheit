@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Rating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,112 +26,131 @@ import java.util.List;
 @EnableAsync
 public class MitfahrgelegenheitApplication {
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	@Autowired
-	private DriveRouteService driveRouteService;
+    @Autowired
+    private DriveRouteService driveRouteService;
 
-	public static void main(String[] args) {
-		SpringApplication.run(MitfahrgelegenheitApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MitfahrgelegenheitApplication.class, args);
+    }
 
-	@PostConstruct
-	public void initData(){
-		User user1 = new User(
-				1L,
-				"rague002",
-				"Ramon",
-				"Günther",
-				new Address("58636","Iserlohn","Sundernalle","75"),
-				new Languages("Deutsch"),
-				"Iserlohn",
-				"Informatik und Naturwissenschaften",
-				"guenther.ramonantonio@fh-swf.de",
-				new UserRating(),
-				LocalDateTime.now(),
-				true
-				);
-		userService.save(user1);
+    @PostConstruct
+    public void initData() {
+        User user1 = new User(
+                1L,
+                "rague002",
+                "Ramon",
+                "Günther",
+                new Address("58636", "Iserlohn", "Sundernalle", "75"),
+                new Languages("Deutsch"),
+                "Iserlohn",
+                "Informatik und Naturwissenschaften",
+                "guenther.ramonantonio@fh-swf.de",
+                new UserRating(),
+                LocalDateTime.now(),
+                true
+        );
+        userService.save(user1);
 
-		User user2 = new User(
-				2L,
-				"ivkne001",
-				"Ivonne",
-				"Kneißig",
-				new Address("58097","Hagen","Diesterwegstraße","6"),
-				new Languages("Deutsch"),
-				"Iserlohn",
-				"Informatik und Naturwissenschaften",
-				"kneissig.ivonne@fh-swf.de",
-				new UserRating(),
-				LocalDateTime.now(),
-				true
-		);
-		userService.save(user2);
+        User user2 = new User(
+                2L,
+                "ivkne001",
+                "Ivonne",
+                "Kneißig",
+                new Address("58097", "Hagen", "Diesterwegstraße", "6"),
+                new Languages("Deutsch"),
+                "Iserlohn",
+                "Informatik und Naturwissenschaften",
+                "kneissig.ivonne@fh-swf.de",
+                new UserRating(),
+                LocalDateTime.now(),
+                true
+        );
+        userService.save(user2);
 
-		User user3 = new User(
-				3L,
-				"user3",
-				"Max",
-				"Mustermann",
-				new Address("58636","Iserlohn","Sundernallee","75"),
-				new Languages("Deutsch"),
-				null,
-				null,
-				null,
-				new UserRating(),
-				LocalDateTime.now(),
-				false
-		);
+        User user3 = new User(
+                3L,
+                "user3",
+                "Max",
+                "Mustermann",
+                new Address("58636", "Iserlohn", "Sundernallee", "75"),
+                new Languages("Deutsch"),
+                null,
+                null,
+                null,
+                new UserRating(),
+                LocalDateTime.now(),
+                false
+        );
 
-		userService.save(user3);
+        userService.save(user3);
 
-		Start start = new Start(new Address("58636", "Iserlohn","Sundernallee","75"), LocalDateTime.now());
-		Destination destination = new Destination(new Address("58644","Iserlohn","Frauenstuhlweg","31"), LocalDateTime.now());
+        Start start = new Start(new Address("58636", "Iserlohn", "Sundernallee", "75"), LocalDateTime.now());
+        Destination destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"), LocalDateTime.now());
 
 //		AddressConverter converterStart = new AddressConverter(start.getAdresse().getAddress());
 //		AddressConverter converterZiel = new AddressConverter(destination.getAdresse().getAddress());
-		List<Stopover> test = new ArrayList<>();
-		Stopover test1 = new Stopover(new Address(
-				"58636",
-				"Iserlohn",
-				"Frauenstuhlweg",
-				"31"
-		), LocalDateTime.now());
-		test.add(test1);
+        List<Stopover> test = new ArrayList<>();
+        Stopover test1 = new Stopover(new Address(
+                "58636",
+                "Iserlohn",
+                "Frauenstuhlweg",
+                "31"
+        ), LocalDateTime.now());
+        test.add(test1);
 
-		RouteString routeString = new RouteString(start, destination, test);
+        RouteString routeString = new RouteString(start, destination, test);
 
-		DriveRoute driveRoute = new DriveRoute(
-				start,
-				destination,
-				4,
-				user1,
-				LocalDateTime.now(),
-				DriveType.OUTWARD_TRIP,
-				routeString.getRoute()
-				);
+        DriveRoute driveRoute = new DriveRoute(
+                start,
+                destination,
+                4,
+                user1,
+                LocalDateTime.now(),
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
 
-		driveRouteService.save(driveRoute);
-
-		start = new Start(new Address("58644","Iserlohn","Frauenstuhlweg","31"), LocalDateTime.now());
-		destination = new Destination(new Address("58636", "Iserlohn","Schulstraße","95"), LocalDateTime.now());
-
-		routeString = new RouteString(start, destination, test);
-
-		DriveRoute driveRoute1 = new DriveRoute(
-				start,
-				destination,
-				4,
-				user1,
-				LocalDateTime.now(),
-				DriveType.RETURN_TRIP,
-				routeString.getRoute()
-		);
+        driveRouteService.save(driveRoute);
 
 
-		driveRouteService.save(driveRoute1);
+        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"), LocalDateTime.now());
+        destination = new Destination(new Address("58636", "Iserlohn", "Schulstraße", "95"), LocalDateTime.now());
+
+        routeString = new RouteString(start, destination, test);
+
+        DriveRoute driveRoute1 = new DriveRoute(
+                start,
+                destination,
+                4,
+                user1,
+                LocalDateTime.now(),
+                DriveType.RETURN_TRIP,
+                routeString.getRoute()
+        );
+
+
+        driveRouteService.save(driveRoute1);
+
+
+        start = new Start(new Address("58636", "Iserlohn", "Schulstraße", "95"),
+                LocalDateTime.of(2022, 4, 1, 14, 30));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"
+        ), LocalDateTime.of(2022, 4, 1, 14, 30));
+
+        DriveRoute driveRoute2 = new DriveRoute(
+                start,
+                destination,
+                5,
+                user1,
+                LocalDateTime.of(2022, 4, 1, 14, 30),
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteService.save(driveRoute2);
 
 
 //		GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
@@ -149,30 +170,28 @@ public class MitfahrgelegenheitApplication {
 //			System.out.println(res);
 //		}
 
-		Rating rating = new Rating(LocalDate.now(),4,5);
+        Rating rating = new Rating(LocalDate.now(), 4, 5);
 
-		UserRating userRating = new UserRating();
+        UserRating userRating = new UserRating();
 
-		userRating.addDriverRating(rating);
+        userRating.addDriverRating(rating);
 
-		rating =  new Rating(LocalDate.now(), 5,4);
-		userRating.addDriverRating(rating);
+        rating = new Rating(LocalDate.now(), 5, 4);
+        userRating.addDriverRating(rating);
 
-		rating =  new Rating(LocalDate.now(), 3,2);
-		userRating.addDriverRating(rating);
+        rating = new Rating(LocalDate.now(), 3, 2);
+        userRating.addDriverRating(rating);
 
-		userRating.addDriverRating(rating);
+        userRating.addDriverRating(rating);
 
-		user1.setUserRating(userRating);
+        user1.setUserRating(userRating);
 
-		userService.save(user1);
+        userService.save(user1);
 
-		System.out.println(user1.getUserRating().getAverageDriverRating());
+        System.out.println(user1.getUserRating().getAverageDriverRating());
 
 
-
-	}
-
+    }
 
 
 }

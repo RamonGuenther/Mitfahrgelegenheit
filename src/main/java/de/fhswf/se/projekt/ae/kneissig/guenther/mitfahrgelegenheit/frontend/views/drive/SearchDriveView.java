@@ -101,7 +101,9 @@ public class SearchDriveView extends VerticalLayout {
                                     new RouteParameters(
                                             new RouteParam("fahrtentyp", radioDriveDirection.getValue()),
                                             new RouteParam("fhStandort", fhLocation.getValue()),
-                                            new RouteParam("adresse", address.getPlace())
+                                            new RouteParam("adresse", address.getPlace()),
+                                            new RouteParam("datum", date.getValue().toString()),
+                                            new RouteParam("uhrzeit", time.getValue().toString())
                                     ));
                         } else {
                             NotificationError.show("Bitte Start- und Zieladresse angeben.");

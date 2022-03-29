@@ -8,6 +8,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.DriveRouteRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -42,8 +43,8 @@ public class DriveRouteService {
         return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
     }
 
-    public List<DriveRoute> findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String destinationPlace, String startPlace, String benutzerUsername) {
-        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, startPlace, benutzerUsername);
+    public List<DriveRoute> findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String startPlace, String destinationPlace, String benutzerUsername) {
+        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, destinationPlace, benutzerUsername);
     }
 
     public List<DriveRoute> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
@@ -75,6 +76,10 @@ public class DriveRouteService {
             }
         }
         return driveRequests;
+    }
+
+    public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String destinationPlace, String username, LocalDateTime dateTime){
+       return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(driveType,destinationPlace, username,dateTime);
     }
 
 }
