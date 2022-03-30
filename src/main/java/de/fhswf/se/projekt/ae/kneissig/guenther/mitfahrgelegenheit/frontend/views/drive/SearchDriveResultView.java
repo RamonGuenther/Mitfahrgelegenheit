@@ -51,6 +51,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private String adresse;
     private String date;
     private String time;
+    private boolean regularDrive;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
@@ -134,8 +135,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                         Integer.parseInt(time.substring(3)))
         );
 
-//        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, fhStandort, user.getUsername(),dateTime);
-        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
+        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, adresse, fhStandort, user, dateTime, false);
+//        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
 
 
         //If fahrten leer notification und zur Searchdrive zurück

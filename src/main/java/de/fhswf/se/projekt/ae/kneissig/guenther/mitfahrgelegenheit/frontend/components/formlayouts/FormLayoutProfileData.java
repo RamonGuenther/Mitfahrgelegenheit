@@ -6,7 +6,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 
 /**
  * Die Klasse FormLayoutProfileData erstellt das FormLayout zur Eingabe bzw.
@@ -116,8 +115,9 @@ public class FormLayoutProfileData extends FormLayout {
      * @param user      Benutzer, dessen Daten angezeigt werden sollen.
      */
     public void showUserData(User user){
-        firstName.setValue(user.getFirstName());
+
         lastName.setValue(user.getLastName());
+        firstName.setValue(user.getFirstName());
         email.setValue(user.getEmail());
         selectUniversityLocation.setValue(user.getUniversityLocation());
         selectFaculty.setSubjectAreaItems(user.getUniversityLocation());
@@ -164,6 +164,9 @@ public class FormLayoutProfileData extends FormLayout {
      * Setzt das Formular für die Registierung oder das eigene Profil zusammen.
      */
     public void createOwnProfileLayout(){
+        setColspan(selectLanguage, 1);
+        setColspan(multiSelectLanguage, 1);
+
         add(firstName, lastName, email, selectUniversityLocation, googleAddress,
                 selectFaculty, postal, place, selectLanguage, multiSelectLanguage, buttonLayout);
     }
@@ -172,8 +175,12 @@ public class FormLayoutProfileData extends FormLayout {
      * Sett das Formular für das Profil eines anderen Benutzers zusammen.
      */
     public void createOtherUserProfileLayout(){
+        setColspan(selectLanguage, 2);
+        setColspan(multiSelectLanguage, 2);
+
         add(firstName, lastName,selectUniversityLocation,
                 selectFaculty, selectLanguage, multiSelectLanguage);
+
     }
 
     public String getTitle() {
@@ -242,6 +249,10 @@ public class FormLayoutProfileData extends FormLayout {
 
     public void setButtonLayout(HorizontalLayout buttonLayout) {
         this.buttonLayout = buttonLayout;
+    }
+
+    public void setLastNameValue(String lastName) {
+        this.lastName.setValue(lastName);
     }
 
 }

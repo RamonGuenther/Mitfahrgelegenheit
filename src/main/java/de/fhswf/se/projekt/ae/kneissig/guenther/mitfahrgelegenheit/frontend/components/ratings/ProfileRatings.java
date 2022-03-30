@@ -7,13 +7,11 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.function.SerializableBiConsumer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Rating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 
 /**
  * Die Klasse AverageRatingsRatings erstellt eine Ansicht
@@ -25,11 +23,11 @@ import java.time.format.FormatStyle;
 @CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class ProfileRatings extends VerticalLayout {
 
-    private RadioButtonGroup<String> ratingsRadio;
-    private AverageRatings averageRatingsPassenger;
-    private AverageRatings averageRatingsDriver;
+    private final RadioButtonGroup<String> ratingsRadio;
+    private final AverageRatings averageRatingsPassenger;
+    private final AverageRatings averageRatingsDriver;
     Grid<Rating> ratingGrid;
-    private User user;
+    private final User user;
     HorizontalLayout ratingLayout;
 
     /**
@@ -59,8 +57,18 @@ public class ProfileRatings extends VerticalLayout {
         ratingGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         ratingGrid.setSelectionMode(Grid.SelectionMode.NONE);
         ratingGrid.addColumn(Rating::getFormattedDate).setHeader("Datum");
-        ratingGrid.addColumn(Rating::getPunctuality).setHeader("Pünktlichkeit");
-        ratingGrid.addColumn(Rating::getPunctuality).setHeader("Zuverlässigkeit");
+//        ratingGrid.addColumn(Rating::getPunctuality).setHeader("Pünktlichkeit");
+//        ratingGrid.addColumn(Rating::getPunctuality).setHeader("Zuverlässigkeit");
+        SerializableBiConsumer<StarsRating, Rating> consumerPunctuality = (starsRating, rating) -> {
+                    starsRating.setRating(rating.getPunctuality());
+                    starsRating.setId("ratingReliability");
+                    starsRating.setManual(false);};
+        ratingGrid.addColumn(new ComponentRenderer<>(StarsRating::new, consumerPunctuality)).setHeader("Pünktlichkeit");
+        SerializableBiConsumer<StarsRating, Rating> consumerReliability = (starsRating, rating) -> {
+                    starsRating.setRating(rating.getReliability());
+                    starsRating.setId("ratingReliability");
+                    starsRating.setManual(false);};
+        ratingGrid.addColumn(new ComponentRenderer<>(StarsRating::new, consumerReliability)).setHeader("Zuverlässigkeit");
         ratingGrid.setId("rating-grid");
 
         ratingLayout = new HorizontalLayout(averageRatingsDriver, ratingGrid);
@@ -70,7 +78,7 @@ public class ProfileRatings extends VerticalLayout {
 
     /**
      * Die Methode setAverageRatings ist für das Wechseln der Bewertungs-
-     * anzeige in Abhängigkeit vom gewählten Radiobutton zuständig.
+     * anzeige, in Abhängigkeit vom gewählten Radiobutton zuständig.
      * Je nach Auswahl werden die durchschnittlichen Bewertungen als Fahrer
      * oder als Mitfahrer angezeigt.
      *
@@ -82,44 +90,29 @@ public class ProfileRatings extends VerticalLayout {
             throw new IllegalArgumentException("AverageProfileRatings: String ratingChoice is null");
         }
         else{
-            switch (ratingChoice){
-                case "Fahrerbewertung":
+            switch (ratingChoice) {
+                case "Fahrerbewertung" -> {
                     ratingLayout.remove(averageRatingsPassenger);
                     ratingLayout.addComponentAsFirst(averageRatingsDriver);
                     ratingGrid.setItems(user.getUserRating().getDriverRatings());
-                    break;
-                case "Mitfahrerbewertung":
+                }
+                case "Mitfahrerbewertung" -> {
                     ratingLayout.remove(averageRatingsDriver);
                     ratingLayout.addComponentAsFirst(averageRatingsPassenger);
                     ratingGrid.setItems(user.getUserRating().getPassengerRatings());
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
         }
-    }
-
-    public RadioButtonGroup<String> getRatingsRadio() {
-        return ratingsRadio;
-    }
-
-    public void setRatingsRadio(RadioButtonGroup<String> ratingsRadio) {
-        this.ratingsRadio = ratingsRadio;
     }
 
     public AverageRatings getAverageRatingsPassenger() {
         return averageRatingsPassenger;
     }
 
-    public void setAverageRatingsPassenger(AverageRatings averageRatingsPassenger) {
-        this.averageRatingsPassenger = averageRatingsPassenger;
-    }
-
     public AverageRatings getAverageRatingsDriver() {
         return averageRatingsDriver;
     }
 
-    public void setAverageRatingsLayout(AverageRatings averageRatings) {
-        this.averageRatingsDriver = averageRatings;
-    }
 }

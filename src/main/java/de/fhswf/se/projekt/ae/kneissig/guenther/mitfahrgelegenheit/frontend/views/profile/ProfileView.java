@@ -48,7 +48,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     private final UserService userService;
     private String username;
     private User user;
-    private MailService mailService;
+    private final MailService mailService;
 
     /**
      * Der Konstruktor initialisiert die Services für die ProfileView.
@@ -104,9 +104,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             profileDataForm.addComponentAtIndex(10, editProfilButtonLayout);
             profileDataForm.setColspan(editProfilButtonLayout, 4);
 
-            saveProfile.addClickListener(saveEvent -> {
-              saveProfileData(editProfilButtonLayout, profileButtonLayout);
-            });
+            saveProfile.addClickListener(saveEvent -> saveProfileData(editProfilButtonLayout, profileButtonLayout));
             cancel.addClickListener(cancelEvent -> {
                 profileDataForm.setReadOnly(true);
                 profileDataForm.showUserData(user);
@@ -157,15 +155,14 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case "Hinfahrt":
+                case "Hinfahrt" -> {
                     div.remove(gridRueckfahrt);
                     div.add(gridHinfahrt);
-                    break;
-
-                case "Rückfahrt":
+                }
+                case "Rückfahrt" -> {
                     div.remove(gridHinfahrt);
                     div.add(gridRueckfahrt);
-                    break;
+                }
             }
         });
         add(div);
@@ -248,7 +245,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             profileDataForm.showUserData(user);
 
             profileDataForm.remove(editProfileButtonLayout);
-            profileDataForm.addComponentAtIndex(11, profileButtonLayout);
+            profileDataForm.addComponentAtIndex(10, profileButtonLayout);
             profileDataForm.setColspan(profileButtonLayout, 4);
         }
         else{
@@ -258,8 +255,14 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+
         if(beforeEnterEvent.getRouteParameters().get("username").isPresent()){
-            username = beforeEnterEvent.getRouteParameters().get("username").get();
+            if(username != null && !username.equals(beforeEnterEvent.getRouteParameters().get("username").get())){
+                UI.getCurrent().getPage().reload();
+            }
+            else{
+                username = beforeEnterEvent.getRouteParameters().get("username").get();
+            }
         }
     }
 
@@ -288,6 +291,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         else{
             title.setText("Profil von " + user.getFirstName());
             createOtherUserProfileView();
+            profileDataForm.setLastNameValue(user.getLastName().charAt(0) + ".");
             createUsersDriveOffersGrid();
         }
         createRatingsView();
