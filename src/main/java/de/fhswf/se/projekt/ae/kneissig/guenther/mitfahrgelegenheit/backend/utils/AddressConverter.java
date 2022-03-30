@@ -5,7 +5,9 @@ import java.util.regex.Pattern;
 
 public class AddressConverter {
 
-    private static final String ADDRESS_PATTERN = "(?<strasse>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<hausnummer>[\\s\\w]*) (?<postleitzahl>\\d{5}) (?<ort>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<land>[a-zA-Z]+)";
+//    private static final String ADDRESS_PATTERN = "(?<strasse>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<hausnummer>[\\s\\w]*) (?<postleitzahl>\\d{5}) (?<ort>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<land>[a-zA-Z]+)";
+    private static final String ADDRESS_PATTERN = "(?<strasse>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<hausnummer>[\\s\\w]*) (?<postleitzahl>\\d{5}) (?<ort>[A-Za-z_äÄöÖüÜß\\s-.()]+)";
+
 
     private String street;
     private String number;
@@ -13,6 +15,7 @@ public class AddressConverter {
     private String place;
 
     public AddressConverter(String address) {
+        address = address.replace(", Deutschland", "");
         convert(address);
     }
 

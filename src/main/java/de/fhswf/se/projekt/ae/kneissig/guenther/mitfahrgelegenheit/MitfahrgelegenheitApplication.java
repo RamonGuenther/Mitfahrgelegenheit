@@ -182,18 +182,19 @@ public class MitfahrgelegenheitApplication {
 
         /**
          * TODO: GOOGLE DISTANCE BEISPIEL
+         * TODO: GOOGLE DISTANCE CALCULATION REMOVE 0 FUNKTIONIERT GGF NICHT???
          */
 
 //        GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
 //
 //
 //		List<String> origins = new ArrayList<>();
-//        origins.add("Diesterwegstraße 6, 58095 Hagen, Deutschland");
-//        origins.add("Sundernallee 75, 58636 Iserlohn, Deutschland");
-//        origins.add("Schulstraße 95, 58636 Iserlohn, Deutschland");
-//        origins.add("Im Wiesengrund, 58636 Iserlohn, Deutschland");
+//        origins.add("Diesterwegstraße 6, 58095 Hagen");
+//        origins.add("Sundernallee 75, 58636 Iserlohn");
+//        origins.add("Schulstraße 95, 58636 Iserlohn");
+//        origins.add("Im Wiesengrund, 58636 Iserlohn");
 //
-//		String target = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
+//		String target = "Frauenstuhlweg 31, 58644 Iserlohn";
 //
 //		List<String> result = googleDistanceCalculation.calculate(origins, target);
 //

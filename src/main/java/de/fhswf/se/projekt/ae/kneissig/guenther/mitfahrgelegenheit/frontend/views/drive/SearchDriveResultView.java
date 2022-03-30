@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author Ramon Günther
  */
-@Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/datum/:datum/uhrzeit/:uhrzeit/search", layout = MainLayout.class)
+@Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/datum/:datum/uhrzeit/:uhrzeit/:regelmaessig/search", layout = MainLayout.class)
 @PageTitle("Ergebnis Fahrtensuche")
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-result-view.css")
 public class SearchDriveResultView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver {
@@ -102,14 +102,16 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
             adresse = beforeEnterEvent.getRouteParameters().get("adresse").get();
         }
 
-
         if (beforeEnterEvent.getRouteParameters().get("datum").isPresent()) {
             date = beforeEnterEvent.getRouteParameters().get("datum").get();
         }
 
-
         if (beforeEnterEvent.getRouteParameters().get("uhrzeit").isPresent()) {
             time = beforeEnterEvent.getRouteParameters().get("uhrzeit").get();
+        }
+
+        if (beforeEnterEvent.getRouteParameters().get("regelmaessig").isPresent()) {
+            regularDrive = Boolean.parseBoolean(beforeEnterEvent.getRouteParameters().get("regelmaessig").get());
         }
     }
 
@@ -117,12 +119,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
         User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         switch (typ) {
-            case "Hinfahrt" -> {
-                fahrtenTyp = DriveType.OUTWARD_TRIP;
-            }
-            case "Rückfahrt" -> {
-                fahrtenTyp = DriveType.RETURN_TRIP;
-            }
+            case "Hinfahrt" -> fahrtenTyp = DriveType.OUTWARD_TRIP;
+            case "Rückfahrt" -> fahrtenTyp = DriveType.RETURN_TRIP;
         }
 
         LocalDateTime dateTime = LocalDateTime.of(
@@ -135,7 +133,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                         Integer.parseInt(time.substring(3)))
         );
 
-        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, adresse, fhStandort, user, dateTime, false);
+        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive);
 //        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
 
 

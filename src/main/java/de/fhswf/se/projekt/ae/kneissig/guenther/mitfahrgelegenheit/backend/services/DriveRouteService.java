@@ -60,10 +60,6 @@ public class DriveRouteService {
         return repository.findById(id);
     }
 
-    public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String destinationPlace, String username, LocalDateTime dateTime){
-       return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(driveType,destinationPlace, username,dateTime);
-    }
-
     public List<DriveRequest> findAllDriveRequest(User user){
         if(findAllFahrerRoutenByBenutzer(user).isEmpty()){
             return Collections.emptyList();
@@ -82,30 +78,53 @@ public class DriveRouteService {
         return driveRequests;
     }
 
-<<<<<<< Updated upstream
-=======
     public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive){
         List<DriveRoute> driveRoutes = new ArrayList<>();
+        List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace);
 
-        if(regularDrive){
-            for (DriveRoute route : findRouten(user, driveType, destinationPlace, startPlace)) {
-                if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) ||
-                        route.getZiel().getTime().toLocalDate().isAfter(datetime.toLocalDate()) &&
-                        route.getZiel().getTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
-                        route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
-                    driveRoutes.add(route);
+        switch (driveType){
+            case OUTWARD_TRIP -> {
+                if(regularDrive){
+                    for (DriveRoute route : unfilteredRoutes) {
+                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) ||
+                                route.getZiel().getTime().toLocalDate().isAfter(datetime.toLocalDate()) &&
+                                route.getZiel().getTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                            driveRoutes.add(route);
+                        }
+                    }
+                }else{
+                    for (DriveRoute route : unfilteredRoutes) {
+                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) &&
+                                route.getZiel().getTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                            driveRoutes.add(route);
+                        }
+                    }
                 }
             }
-        }else{
-            for (DriveRoute route : findRouten(user, driveType, destinationPlace, startPlace)) {
-                if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) &&
-                        route.getZiel().getTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
-                        route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
-                    driveRoutes.add(route);
+            case RETURN_TRIP -> {
+                if(regularDrive){
+                    for (DriveRoute route : unfilteredRoutes) {
+                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) ||
+                                route.getZiel().getTime().toLocalDate().isAfter(datetime.toLocalDate()) &&
+                                route.getZiel().getTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                            driveRoutes.add(route);
+                        }
+                    }
+                }else{
+                    for (DriveRoute route : unfilteredRoutes) {
+                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) &&
+                                route.getZiel().getTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                            driveRoutes.add(route);
+                        }
+                    }
                 }
             }
         }
+
         return driveRoutes;
     }
->>>>>>> Stashed changes
 }
