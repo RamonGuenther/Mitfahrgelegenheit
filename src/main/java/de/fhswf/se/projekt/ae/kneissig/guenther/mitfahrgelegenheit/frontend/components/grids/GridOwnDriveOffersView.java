@@ -9,6 +9,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -28,11 +29,13 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
 
     private final UserService userService;
     private final MailService mailService;
+    private final DriveRequestService driveRequestService;
 
-    public GridOwnDriveOffersView(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService) {
+    public GridOwnDriveOffersView(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
         this.driveRouteService = driveRouteService;
         this.userService= userService;
         this.mailService = mailService;
+        this.driveRequestService = driveRequestService;
 
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
@@ -75,7 +78,7 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
                 OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService);
             }
             else if(UI.getCurrent().getId().get().equals(PageId.SEARCH_DRIVE_RESULT_VIEW.label)){
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute,userService, driveRouteService, mailService);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute,userService, driveRouteService, mailService, driveRequestService);
             }
             else if(UI.getCurrent().getId().get().equals(PageId.PROFILE.label)){
                 OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService);

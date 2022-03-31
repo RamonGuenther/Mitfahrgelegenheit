@@ -23,7 +23,7 @@ public class DriveRouteService {
         this.repository = repository;
     }
 
-    public void save(DriveRoute driveRoute){
+    public void save(DriveRoute driveRoute) {
         repository.save(driveRoute);
     }
 
@@ -56,68 +56,50 @@ public class DriveRouteService {
         };
     }
 
-    public Optional<DriveRoute> findById(Integer id){
+    public Optional<DriveRoute> findById(Integer id) {
         return repository.findById(id);
     }
 
-    public List<DriveRequest> findAllDriveRequest(User user){
-        if(findAllFahrerRoutenByBenutzer(user).isEmpty()){
-            return Collections.emptyList();
-        }
-
-        List<DriveRequest> driveRequests = new ArrayList<>();
-
-        for(DriveRoute driveRoute: findAllFahrerRoutenByBenutzer(user)){
-            List<DriveRequest> driveRequests1 = driveRoute.getDriveRequests();
-            for(DriveRequest driveRequest : driveRequests1){
-                if(driveRequest.getRequestState().label.equals(RequestState.OPEN.label)){
-                    driveRequests.add(driveRequest);
-                }
-            }
-        }
-        return driveRequests;
-    }
-
-    public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive){
+    public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
         List<DriveRoute> driveRoutes = new ArrayList<>();
         List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace);
 
-        switch (driveType){
+        switch (driveType) {
             case OUTWARD_TRIP -> {
-                if(regularDrive){
+                if (regularDrive) {
                     for (DriveRoute route : unfilteredRoutes) {
-                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) ||
+                        if (route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) ||
                                 route.getZiel().getTime().toLocalDate().isAfter(datetime.toLocalDate()) &&
-                                route.getZiel().getTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
-                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                                        route.getZiel().getTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())) {
                             driveRoutes.add(route);
                         }
                     }
-                }else{
+                } else {
                     for (DriveRoute route : unfilteredRoutes) {
-                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) &&
+                        if (route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) &&
                                 route.getZiel().getTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
-                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())) {
                             driveRoutes.add(route);
                         }
                     }
                 }
             }
             case RETURN_TRIP -> {
-                if(regularDrive){
+                if (regularDrive) {
                     for (DriveRoute route : unfilteredRoutes) {
-                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) ||
+                        if (route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) ||
                                 route.getZiel().getTime().toLocalDate().isAfter(datetime.toLocalDate()) &&
-                                route.getZiel().getTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
-                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                                        route.getZiel().getTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())) {
                             driveRoutes.add(route);
                         }
                     }
-                }else{
+                } else {
                     for (DriveRoute route : unfilteredRoutes) {
-                        if(route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) &&
+                        if (route.getZiel().getTime().toLocalDate().equals(datetime.toLocalDate()) &&
                                 route.getZiel().getTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
-                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())){
+                                route.getZiel().getTime().toLocalTime().equals(datetime.toLocalTime())) {
                             driveRoutes.add(route);
                         }
                     }
@@ -127,4 +109,30 @@ public class DriveRouteService {
 
         return driveRoutes;
     }
+
+
+//    public List<DriveRequest> findAllDriveRequest(User user) {
+//        if (findAllFahrerRoutenByBenutzer(user).isEmpty()) {
+//            return Collections.emptyList();
+//        }
+//
+//        List<DriveRequest> driveRequests = new ArrayList<>();
+//
+//        for (DriveRoute driveRoute : findAllFahrerRoutenByBenutzer(user)) {
+//            List<DriveRequest> driveRequests1 = driveRoute.getDriveRequests();
+//            for (DriveRequest driveRequest : driveRequests1) {
+//                if (driveRequest.getRequestState().label.equals(RequestState.OPEN.label)) {
+//                    driveRequests.add(driveRequest);
+//                }
+//            }
+//        }
+//        return driveRequests;
+//    }
+//
+//
+//    public List<DriveRoute> findDriveRouteByDriveRequest(String username){
+//        return repository.findDriveRouteByDriveRequestsInBenutzer( username);
+//    }
+
+
 }

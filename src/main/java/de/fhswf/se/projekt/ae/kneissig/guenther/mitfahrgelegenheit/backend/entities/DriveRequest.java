@@ -7,11 +7,17 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Embeddable
+@Entity
 public class DriveRequest {
 
-    @OneToOne
+    @Id
+    private Integer id;
+
+    @ManyToOne
     private User passenger;
+
+    @ManyToOne
+    private DriveRoute driveRoute;
 
     private RequestState requestState;
 
@@ -22,13 +28,15 @@ public class DriveRequest {
     @Embedded
     private Stopover stopover;
 
-    public DriveRequest(RequestState requestState, User passenger, String note, String currentRouteLink, LocalDateTime requestTime, Stopover stopover) {
+    public DriveRequest(DriveRoute driveRoute, RequestState requestState, User passenger, String note, String currentRouteLink, LocalDateTime requestTime, Stopover stopover) {
+        this.driveRoute = driveRoute;
         this.requestState = requestState;
         this.passenger = passenger;
         this.note = note;
         this.currentRouteLink = currentRouteLink;
         this.requestTime = requestTime;
         this.stopover = stopover;
+        id=hashCode();
     }
 
     public DriveRequest() {
@@ -74,13 +82,28 @@ public class DriveRequest {
         return stopover;
     }
 
+    public DriveRoute getDriveRoute() {
+        return driveRoute;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+
+    //TODO: Vllt dicker bullshit
+
     @Override
-    public boolean equals (Object o) {
-        return o instanceof DriveRequest && passenger.getId().equals (((DriveRequest) o).passenger.getId());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DriveRequest)) return false;
+        DriveRequest that = (DriveRequest) o;
+        return  Objects.equals(getPassenger(), that.getPassenger()) && Objects.equals(getDriveRoute(), that.getDriveRoute());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPassenger().getId().hashCode());
+        return Objects.hash(getPassenger(), getDriveRoute());
     }
 }
+

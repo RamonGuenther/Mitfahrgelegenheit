@@ -5,6 +5,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -24,4 +25,10 @@ public interface DriveRouteRepository extends JpaRepository<DriveRoute, Integer>
 
     List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(
             DriveType driveType, String destinationPlace, String startPlace, String username);
+//
+//    @Query("SELECT dr FROM DriveRoute dr JOIN dr.driveRequests dq WHERE dq.passenger.username = :username")
+//    List<DriveRoute> findDriveRouteByDriveRequestsInBenutzer(String username);
+
+
 }
+

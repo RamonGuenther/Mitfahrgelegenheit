@@ -37,7 +37,7 @@ public class TextFieldAddress extends Autocomplete {
             if (getValue().length() > 10) {
                 try {
                     daten = new ArrayList<>();
-                    daten = googleAddressAutocomplete.test(daten, getValue());
+                    daten = googleAddressAutocomplete.findStreets(daten, getValue());
                     setOptions(daten);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -46,12 +46,10 @@ public class TextFieldAddress extends Autocomplete {
         });
         addValueChangeListener(
                 event -> {
-                    System.out.println(event.getValue());
                     if (daten != null) {
                         for (String str : daten) {
                             if (str.equals(event.getValue())) {
                                 AddressConverter converter = new AddressConverter(this.getValue());
-
                                 street = converter.getStreet();
                                 number = converter.getNumber();
                                 postal = converter.getPostalCode();

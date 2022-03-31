@@ -34,7 +34,7 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
             System.out.println(matrix.rows[i].elements[0].distance);
             sortedAddresses.put(Double.parseDouble(
                             matrix.rows[i].elements[0].distance.toString().replace(" km", "")),
-                    origins[i]
+                            origins[i]
             );
         }
 

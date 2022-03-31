@@ -23,7 +23,7 @@ public class GoogleAddressAutocomplete implements GoogleApiKey{
         token = new PlaceAutocompleteRequest.SessionToken();
     }
 
-    public List<String> test(List<String> daten, String eventValue) throws IOException, InterruptedException, ApiException {
+    public List<String> findStreets(List<String> daten, String eventValue) throws IOException, InterruptedException, ApiException {
         results = PlacesApi.placeAutocomplete(context, eventValue, token)
                 .location(LOCATION)
                 .offset(4)

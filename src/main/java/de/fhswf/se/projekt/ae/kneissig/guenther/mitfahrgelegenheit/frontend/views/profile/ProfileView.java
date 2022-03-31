@@ -17,6 +17,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -49,15 +50,17 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     private String username;
     private User user;
     private final MailService mailService;
+    private final DriveRequestService driveRequestService;
 
     /**
      * Der Konstruktor initialisiert die Services für die ProfileView.
      */
-    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService){
+    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService){
         UI.getCurrent().setId(PageId.PROFILE.label);
         this.driveRouteService = driveRouteService;
         this.userService = userService;
         this.mailService = mailService;
+        this.driveRequestService = driveRequestService;
     }
 
     /**
@@ -145,9 +148,9 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService, userService, mailService);
+        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService);
         gridHinfahrt.addClassName("profilegrid");
-        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService);
+        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
         gridRueckfahrt.addClassName("profilegrid");
         Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
         div.setId("profile-drive_offers_layout");

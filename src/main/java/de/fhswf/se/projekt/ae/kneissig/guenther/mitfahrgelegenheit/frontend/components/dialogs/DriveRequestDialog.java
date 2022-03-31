@@ -15,6 +15,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-dialog.css")
 public class DriveRequestDialog extends Dialog {
 
-    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService) {
+    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService) {
 
         User currentUser = userService.getCurrentUser();
 
@@ -69,8 +70,9 @@ public class DriveRequestDialog extends Dialog {
 
                 RouteString routeString = new RouteString(driveRoute.getStart(),driveRoute.getZiel(), stopoverList);
 
-                DriveRequest driveRequest = new DriveRequest(RequestState.OPEN,currentUser,textAreaMessage.getValue(),"Apfel", LocalDateTime.now(), new Stopover(new Address(), null));
+                DriveRequest driveRequest = new DriveRequest(driveRoute,RequestState.OPEN,currentUser,textAreaMessage.getValue(),"Apfel", LocalDateTime.now(), new Stopover(new Address(), null));
                 driveRoute.addDriveRequest(driveRequest);
+                driveRequestService.save(driveRequest);
                 driveRouteService.save(driveRoute);
 
                 close();

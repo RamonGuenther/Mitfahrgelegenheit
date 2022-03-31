@@ -163,4 +163,15 @@ public class User {
     public void setUserRating(UserRating userRating) {
         this.userRating = userRating;
     }
+
+
+    @Override
+    public boolean equals (Object o) {
+        return o instanceof User && getUsername().equals (((User) o).getUsername());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername().hashCode());
+    }
 }

@@ -61,7 +61,7 @@ public class FormLayoutBottomOfferDrive extends FormLayout {
 
         setId("formLayoutOfferDriveBottom");
 
-        title = new H2("Hinfahrt erstellen");
+        title = new H2("Rückfahrt erstellen");
 
         //nur für den SearchDriveResultViewDialog Dialog
         titleLayout = new HorizontalLayout();

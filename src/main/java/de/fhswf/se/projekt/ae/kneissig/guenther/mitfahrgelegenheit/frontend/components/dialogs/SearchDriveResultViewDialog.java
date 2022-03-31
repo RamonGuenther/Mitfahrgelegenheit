@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -34,15 +35,17 @@ public class SearchDriveResultViewDialog extends Dialog {
     private final DriveRoute driveRoute;
 
     private final MailService mailService;
+    private final DriveRequestService driveRequestService;
 
     private Anchor userAnchor; //TODO
 
 
-    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService){
+    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService){
         this.userService = userService;
         this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
         this.mailService = mailService;
+        this.driveRequestService = driveRequestService;
 
         VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -146,7 +149,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         requestButton.addClickListener(e->{
             close();
-            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute, userService, driveRouteService, mailService);
+            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService);
             driveRequestDialog.open();
         });
 

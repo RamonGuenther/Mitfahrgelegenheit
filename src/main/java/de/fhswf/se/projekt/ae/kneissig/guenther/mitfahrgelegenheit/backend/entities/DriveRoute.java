@@ -11,11 +11,13 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
 @Entity
 public class DriveRoute {
+
     @Id
     private Integer id;
 
@@ -56,7 +58,7 @@ public class DriveRoute {
 
     private String currentRouteLink;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<DriveRequest> driveRequests;
 
     @ElementCollection(fetch = FetchType.EAGER)

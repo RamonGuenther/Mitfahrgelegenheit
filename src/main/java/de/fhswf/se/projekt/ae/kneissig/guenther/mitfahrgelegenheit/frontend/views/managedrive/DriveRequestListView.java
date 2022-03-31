@@ -4,7 +4,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
@@ -13,15 +12,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
 
 
@@ -42,8 +39,11 @@ import java.util.List;
 @CssImport("/themes/mitfahrgelegenheit/views/drive-request-list-view.css")
 public class DriveRequestListView extends VerticalLayout {
 
+    private String username;
 
-    DriveRequestListView(DriveRouteService driveRouteService, UserService userService){
+
+    DriveRequestListView(DriveRouteService driveRouteService, UserService userService, DriveRequestService driveRequestService){
+        username = userService.getCurrentUser().getUsername();
 
         Div verticalLayout = new Div();
         verticalLayout.setId("drive-request-list-view-layout");
@@ -54,14 +54,13 @@ public class DriveRequestListView extends VerticalLayout {
         RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems("Meine Fahrtangebote", "Meine Fahrtsuchen");
 
-        List<DriveRequest> driveRequests = driveRouteService.findAllDriveRequest(userService.getCurrentUser());
 
 
         Grid<DriveRequest> driverGrid = new Grid<>();
         driverGrid.setClassName("drive-request-list-view-grids");
         driverGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 
-        driverGrid.setItems(driveRequests);
+        driverGrid.setItems(driveRequestService.findAllDriveRequestsDriver(userService.getCurrentUser()));
         driverGrid.addColumn(date ->date.getRequestTime().toLocalDate()).setHeader("Datum");
         driverGrid.addColumn(time ->time.getRequestTime().toLocalTime()).setHeader("Uhrzeit");
         driverGrid.addColumn(passenger ->passenger.getPassenger().getFullName()).setHeader("Mitfahrer");
@@ -76,17 +75,23 @@ public class DriveRequestListView extends VerticalLayout {
 
         Grid<DriveRequest> passengerGrid = new Grid<>();
         passengerGrid.setClassName("drive-request-list-view-grids");
-        passengerGrid.setItems(driveRequests);
+
+
+        passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()));
+
+        passengerGrid.addColumn(name ->name.getDriveRoute().getDriver().getFullName()).setHeader("Name");
         passengerGrid.addColumn(date ->date.getRequestTime().toLocalDate()).setHeader("Datum");
         passengerGrid.addColumn(time ->time.getRequestTime().toLocalTime()).setHeader("Uhrzeit");
         passengerGrid.addColumn(status ->status.getRequestState().label).setHeader("Anfragestatus");
 
+
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
             showDriveRequestButton.addClickListener(e->{
-                //Hier lieber gleich die ganze Fahrt anzeigen? a la Searchdrive result details???
+
             });
             return showDriveRequestButton;
+//            return new Label(driveRouteService.findDriveRouteByDriveRequest(item.getApfel(), item.getPassenger().getUsername()).getBenutzer().getFullName());
         }).setHeader("");
 
         passengerGrid.addComponentColumn(item -> {

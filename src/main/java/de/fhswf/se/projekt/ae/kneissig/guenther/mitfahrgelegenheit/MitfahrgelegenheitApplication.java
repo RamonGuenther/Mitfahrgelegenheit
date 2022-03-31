@@ -8,6 +8,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
@@ -34,6 +35,9 @@ public class MitfahrgelegenheitApplication {
 
     @Autowired
     private DriveRouteService driveRouteService;
+
+    @Autowired
+    private DriveRequestService driveRequestService;
 
     public static void main(String[] args) {
         SpringApplication.run(MitfahrgelegenheitApplication.class, args);
@@ -154,7 +158,7 @@ public class MitfahrgelegenheitApplication {
         );
 
         driveRouteService.save(driveRoute2);
-        
+
         /**
          * TODO: Rating
          */
@@ -182,19 +186,18 @@ public class MitfahrgelegenheitApplication {
 
         /**
          * TODO: GOOGLE DISTANCE BEISPIEL
-         * TODO: GOOGLE DISTANCE CALCULATION REMOVE 0 FUNKTIONIERT GGF NICHT???
          */
 
 //        GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
 //
 //
 //		List<String> origins = new ArrayList<>();
-//        origins.add("Diesterwegstraße 6, 58095 Hagen");
-//        origins.add("Sundernallee 75, 58636 Iserlohn");
-//        origins.add("Schulstraße 95, 58636 Iserlohn");
-//        origins.add("Im Wiesengrund, 58636 Iserlohn");
+//        origins.add("Diesterwegstraße 6, 58095 Hagen, Deutschland");
+//        origins.add("Sundernallee 75, 58636 Iserlohn, Deutschland");
+//        origins.add("Schulstraße 95, 58636 Iserlohn, Deutschland");
+//        origins.add("Im Wiesengrund, 58636 Iserlohn, Deutschland");
 //
-//		String target = "Frauenstuhlweg 31, 58644 Iserlohn";
+//		String target = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
 //
 //		List<String> result = googleDistanceCalculation.calculate(origins, target);
 //
@@ -215,9 +218,10 @@ public class MitfahrgelegenheitApplication {
 //        System.out.println(routeString4.getRoute());
 
 
-        DriveRequest driveRequest = new DriveRequest(RequestState.OPEN,user2,"","", LocalDateTime.now(), new Stopover(new Address(), null));
-        driveRoute.addDriveRequest(driveRequest);
-        driveRouteService.save(driveRoute);
+        DriveRequest driveRequest = new DriveRequest(driveRoute2,RequestState.OPEN,user2,"eeee","", LocalDateTime.now(), new Stopover(new Address(), null));
+        driveRoute2.addDriveRequest(driveRequest);
+        driveRequestService.save(driveRequest);
+        driveRouteService.save(driveRoute2);
 
     }
 
