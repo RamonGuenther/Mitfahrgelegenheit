@@ -3,6 +3,6 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repo
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findBenutzerByUsername(String username);
+public interface UserRepository extends JpaRepository<User, String> {
+    User findByUsername(String username);
 }

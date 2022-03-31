@@ -1,9 +1,9 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.HashedPassword;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,10 +14,12 @@ import java.util.Objects;
 public class User {
     @Id
     private Long id;
+    @Column(nullable = false, unique = true)
     private String username;
+    private String password;
+
     private String firstName;
     private String lastName;
-//    private HashedPassword password;
 
     @Embedded
     private Address address;
@@ -35,6 +37,7 @@ public class User {
 
     public User(Long id,
                 String username,
+                String password,
                 String firstName,
                 String lastName,
                 Address address,
@@ -44,20 +47,19 @@ public class User {
                 String email,
                 UserRating userRating,
                 LocalDateTime lastLogin,
-                boolean firstLogin
-                ) {
+                boolean firstLogin) {
         this.id = id;
         this.username = username;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
+        this.email = email;
+        this.universityLocation = universityLocation;
+        this.faculty = faculty;
         this.languages = languages;
         this.lastLogin = lastLogin;
         this.firstLogin = firstLogin;
-        this.universityLocation = universityLocation;
-        this.faculty = faculty;
-        this.email = email;
-        this.userRating = userRating;
     }
 
     public User() {
@@ -70,6 +72,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUsername() {
@@ -164,14 +174,15 @@ public class User {
         this.userRating = userRating;
     }
 
-
     @Override
-    public boolean equals (Object o) {
-        return o instanceof User && getUsername().equals (((User) o).getUsername());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return firstLogin == user.firstLogin && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(address, user.address) && Objects.equals(email, user.email) && Objects.equals(universityLocation, user.universityLocation) && Objects.equals(faculty, user.faculty) && Objects.equals(languages, user.languages) && Objects.equals(lastLogin, user.lastLogin) && Objects.equals(userRating, user.userRating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername().hashCode());
+        return Objects.hash(id, username, password, firstName, lastName, address, email, universityLocation, faculty, languages, lastLogin, firstLogin, userRating);
     }
 }

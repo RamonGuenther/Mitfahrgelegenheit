@@ -19,10 +19,10 @@ public class UserService {
     }
 
     public User findBenutzerByUsername(String username){
-        return repository.findBenutzerByUsername(username);
+        return repository.findByUsername(username);
     }
 
     public User getCurrentUser(){
-        return repository.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        return repository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }
