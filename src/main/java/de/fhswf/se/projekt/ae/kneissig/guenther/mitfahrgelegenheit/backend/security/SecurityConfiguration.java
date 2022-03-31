@@ -2,14 +2,15 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.secu
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
@@ -21,6 +22,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new SecurityUserDetailsService();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authenticationProvider());
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
@@ -46,34 +72,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationSuccessHandler ApplicationUrlAuthenticationSuccessHandler(){
         return new ApplicationUrlAuthenticationSuccessHandler();
-    }
-
-    // TESTUSER -> Kann mit Ldap-Verbindung nicht mehr verwendet werden!
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService(){
-        UserDetails user =
-                User
-                        .withUsername("rague002")
-                        .password("{noop}1234")
-                        .roles("USER")
-                        .build();
-
-        UserDetails user2 =
-                User
-                        .withUsername("ivkne001")
-                        .password("{noop}1234")
-                        .roles("USER")
-                        .build();
-
-        UserDetails user3 =
-                User
-                        .withUsername("user3")
-                        .password("{noop}1234")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user, user2, user3);
     }
 
     /**

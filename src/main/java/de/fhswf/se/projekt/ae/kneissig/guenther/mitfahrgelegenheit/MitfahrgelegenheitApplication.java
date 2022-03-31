@@ -1,27 +1,22 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
-import com.google.maps.errors.ApiException;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +30,19 @@ public class MitfahrgelegenheitApplication {
     @Autowired
     private DriveRouteService driveRouteService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     public static void main(String[] args) {
         SpringApplication.run(MitfahrgelegenheitApplication.class, args);
     }
 
     @PostConstruct
-    public void initData() throws IOException, InterruptedException, ApiException, DuplicateRequestException {
+    public void initData() throws DuplicateRequestException {
         User user1 = new User(
                 1L,
                 "rague002",
+                passwordEncoder.encode("1234"),
                 "Ramon",
                 "Günther",
                 new Address("58636", "Iserlohn", "Sundernalle", "75"),
@@ -60,6 +59,7 @@ public class MitfahrgelegenheitApplication {
         User user2 = new User(
                 2L,
                 "ivkne001",
+                passwordEncoder.encode("1234"),
                 "Ivonne",
                 "Kneißig",
                 new Address("58097", "Hagen", "Diesterwegstraße", "6"),
@@ -76,6 +76,7 @@ public class MitfahrgelegenheitApplication {
         User user3 = new User(
                 3L,
                 "user3",
+                passwordEncoder.encode("1234"),
                 "Max",
                 "Mustermann",
                 new Address("58636", "Iserlohn", "Sundernallee", "75"),
