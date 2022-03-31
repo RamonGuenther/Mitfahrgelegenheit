@@ -17,6 +17,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.DriveRequestManageDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
 import java.util.List;
@@ -67,7 +68,8 @@ public class DriveRequestListView extends VerticalLayout {
         driverGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
             showDriveRequestButton.addClickListener(e->{
-
+                DriveRequestManageDialog driveRequestManageDialog = new DriveRequestManageDialog(driveRequestService, driveRouteService, item);
+                driveRequestManageDialog.open();
             });
             return showDriveRequestButton;
         }).setHeader("");
@@ -91,7 +93,6 @@ public class DriveRequestListView extends VerticalLayout {
 
             });
             return showDriveRequestButton;
-//            return new Label(driveRouteService.findDriveRouteByDriveRequest(item.getApfel(), item.getPassenger().getUsername()).getBenutzer().getFullName());
         }).setHeader("");
 
         passengerGrid.addComponentColumn(item -> {

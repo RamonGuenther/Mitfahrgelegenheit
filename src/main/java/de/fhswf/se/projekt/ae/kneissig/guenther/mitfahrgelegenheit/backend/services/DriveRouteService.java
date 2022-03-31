@@ -1,10 +1,8 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
 
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.DriveRouteRepository;
 import org.springframework.stereotype.Service;
 
@@ -109,30 +107,4 @@ public class DriveRouteService {
 
         return driveRoutes;
     }
-
-
-//    public List<DriveRequest> findAllDriveRequest(User user) {
-//        if (findAllFahrerRoutenByBenutzer(user).isEmpty()) {
-//            return Collections.emptyList();
-//        }
-//
-//        List<DriveRequest> driveRequests = new ArrayList<>();
-//
-//        for (DriveRoute driveRoute : findAllFahrerRoutenByBenutzer(user)) {
-//            List<DriveRequest> driveRequests1 = driveRoute.getDriveRequests();
-//            for (DriveRequest driveRequest : driveRequests1) {
-//                if (driveRequest.getRequestState().label.equals(RequestState.OPEN.label)) {
-//                    driveRequests.add(driveRequest);
-//                }
-//            }
-//        }
-//        return driveRequests;
-//    }
-//
-//
-//    public List<DriveRoute> findDriveRouteByDriveRequest(String username){
-//        return repository.findDriveRouteByDriveRequestsInBenutzer( username);
-//    }
-
-
 }

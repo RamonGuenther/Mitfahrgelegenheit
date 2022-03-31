@@ -36,7 +36,7 @@ public class DriveRequest {
         this.currentRouteLink = currentRouteLink;
         this.requestTime = requestTime;
         this.stopover = stopover;
-        id=hashCode();
+        id = hashCode();
     }
 
     public DriveRequest() {
@@ -91,19 +91,19 @@ public class DriveRequest {
     }
 
 
-    //TODO: Vllt dicker bullshit
+    //TODO: wenn ohne getid geht es aber whyyyyyy :( dadurch werden doppelte wiederzugelassen
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DriveRequest)) return false;
         DriveRequest that = (DriveRequest) o;
-        return  Objects.equals(getPassenger(), that.getPassenger()) && Objects.equals(getDriveRoute(), that.getDriveRoute());
+        return Objects.equals(getPassenger().getId(), that.getPassenger().getId()) && Objects.equals(getDriveRoute().getId(), that.getDriveRoute().getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPassenger(), getDriveRoute());
+        return Objects.hash(getPassenger().getId(), getDriveRoute().getId());
     }
 }
 

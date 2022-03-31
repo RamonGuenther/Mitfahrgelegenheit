@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
@@ -48,7 +49,7 @@ import java.time.LocalTime;
  *
  * @author Ramon Günther
  */
-@com.vaadin.flow.router.Route(value = "fahrtAnbieten", layout = MainLayout.class)
+@Route(value = "fahrtAnbieten", layout = MainLayout.class)
 @PageTitle("Fahrt Anbieten")
 @CssImport("/themes/mitfahrgelegenheit/views/offer-drive-view.css")
 public class OfferDriveView extends VerticalLayout{

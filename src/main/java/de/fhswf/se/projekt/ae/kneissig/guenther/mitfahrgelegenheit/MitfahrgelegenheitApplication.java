@@ -5,6 +5,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
@@ -32,6 +33,9 @@ public class MitfahrgelegenheitApplication {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    DriveRequestService driveRequestService;
 
     public static void main(String[] args) {
         SpringApplication.run(MitfahrgelegenheitApplication.class, args);
@@ -213,6 +217,7 @@ public class MitfahrgelegenheitApplication {
 //        RouteString routeString4 = new RouteString(start1, destination1, stopoverList);
 //
 //        System.out.println(routeString4.getRoute());
+
 
 
         DriveRequest driveRequest = new DriveRequest(driveRoute2,RequestState.OPEN,user2,"eeee","", LocalDateTime.now(), new Stopover(new Address(), null));
