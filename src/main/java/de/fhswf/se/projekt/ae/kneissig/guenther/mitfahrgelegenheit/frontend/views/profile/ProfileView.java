@@ -22,12 +22,16 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.PasswordDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutProfileData;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileRatings;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -51,6 +55,9 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     private User user;
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     /**
      * Der Konstruktor initialisiert die Services für die ProfileView.
@@ -115,6 +122,11 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
                 profileDataForm.addComponentAtIndex(10, profileButtonLayout);
                 profileDataForm.setColspan(profileButtonLayout, 4);
             });
+        });
+
+        changePasswordButton.addClickListener(changePasswordEvent ->{
+            PasswordDialog passwordDialog = new PasswordDialog(userService, passwordEncoder);
+            passwordDialog.open();
         });
         add(profileDataForm);
     }
