@@ -96,14 +96,13 @@ public class DriveRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DriveRequest)) return false;
-        DriveRequest that = (DriveRequest) o;
-        return Objects.equals(getPassenger().getId(), that.getPassenger().getId()) && Objects.equals(getDriveRoute().getId(), that.getDriveRoute().getId());
+        if (!(o instanceof DriveRequest that)) return false;
+        return Objects.equals(getPassenger(), that.getPassenger()) && Objects.equals(getDriveRoute(), that.getDriveRoute());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPassenger().getId(), getDriveRoute().getId());
+        return Objects.hash(getPassenger(), getDriveRoute());
     }
 }
 

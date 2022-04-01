@@ -14,6 +14,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -43,7 +44,7 @@ public class DriveRequestListView extends VerticalLayout {
     private String username;
 
 
-    DriveRequestListView(DriveRouteService driveRouteService, UserService userService, DriveRequestService driveRequestService){
+    DriveRequestListView(DriveRouteService driveRouteService, UserService userService, DriveRequestService driveRequestService, BookingService bookingService){
         username = userService.getCurrentUser().getUsername();
 
         Div verticalLayout = new Div();
@@ -68,7 +69,7 @@ public class DriveRequestListView extends VerticalLayout {
         driverGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
             showDriveRequestButton.addClickListener(e->{
-                DriveRequestManageDialog driveRequestManageDialog = new DriveRequestManageDialog(driveRequestService, driveRouteService, item);
+                DriveRequestManageDialog driveRequestManageDialog = new DriveRequestManageDialog(driveRequestService, driveRouteService, item, bookingService);
                 driveRequestManageDialog.open();
             });
             return showDriveRequestButton;

@@ -6,22 +6,30 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Embeddable
+@Entity
 public class Booking {
+
+    @Id
+    private Integer id;
 
     @ManyToOne
     private User passenger;
+
+    @ManyToOne
+    private DriveRoute driveRoute;
 
     private final LocalDateTime dateOfBooking;
 
     @Embedded
     private Stopover stopover;
 
-    public Booking(User passenger, LocalDateTime dateOfBooking, Stopover stopover)
+    public Booking(DriveRoute driveRoute,User passenger, LocalDateTime dateOfBooking, Stopover stopover)
     {
+        this.driveRoute = driveRoute;
         this.passenger = passenger;
         this.dateOfBooking = dateOfBooking;
         this.stopover = stopover;
+        id = hashCode();
     }
 
     public Booking() {
@@ -29,6 +37,9 @@ public class Booking {
         dateOfBooking = null;
     }
 
+    public Integer getId() {
+        return id;
+    }
 
     public User getPassenger()
     {
@@ -54,4 +65,5 @@ public class Booking {
     public int hashCode() {
         return Objects.hash(getPassenger().getId().hashCode());
     }
+
 }

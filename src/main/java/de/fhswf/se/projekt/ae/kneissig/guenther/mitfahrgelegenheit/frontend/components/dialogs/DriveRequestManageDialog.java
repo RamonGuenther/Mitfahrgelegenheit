@@ -8,21 +8,23 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateBookingException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 
 import java.time.LocalDateTime;
 
 //TODO: - Fahrtanfragen gehen wieder mehrfach von der gleichen Person für eine fahrt wegen Equals und hashcode
-//      -
 public class DriveRequestManageDialog extends Dialog {
 
     private final DriveRequestService driveRequestService;
     private final DriveRouteService driveRouteService;
     private final DriveRequest driveRequest;
+    private final BookingService bookingService;
     private DriveRoute driveRoute;
 
-    public DriveRequestManageDialog(DriveRequestService driveRequestService, DriveRouteService driveRouteService, DriveRequest driveRequest) {
+    public DriveRequestManageDialog(DriveRequestService driveRequestService, DriveRouteService driveRouteService, DriveRequest driveRequest, BookingService bookingService) {
+        this.bookingService = bookingService;
         this.driveRequestService = driveRequestService;
         this.driveRouteService = driveRouteService;
         this.driveRequest = driveRequest;
@@ -32,7 +34,7 @@ public class DriveRequestManageDialog extends Dialog {
         Button acceptButton = new Button("Akzeptieren");
         Button declineButton = new Button("Ablehnen");
 
-        //TODO: Booking / Auslagern  | Wie setze ich den DriveRequest in der Route dann? scheint zu klappen lol
+        //TODO: Wie setze ich den DriveRequest in der Route dann? scheint zu klappen lol
         acceptButton.addClickListener(e -> {
             saveDriveRequest(RequestState.ACCEPTED);
             System.out.println(driveRouteService.findById(driveRequest.getDriveRoute().getId()).get().getDriveRequests().get(0).getRequestState().label);
@@ -51,7 +53,8 @@ public class DriveRequestManageDialog extends Dialog {
         driveRequest.setRequestState(requestState);
         driveRequestService.save(driveRequest);
         if(requestState == RequestState.ACCEPTED){
-            Booking newBooking = new Booking(driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
+            Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
+            bookingService.save(newBooking);
             try {
                 driveRequest.getDriveRoute().addBooking(newBooking);
             } catch (DuplicateBookingException ex) {

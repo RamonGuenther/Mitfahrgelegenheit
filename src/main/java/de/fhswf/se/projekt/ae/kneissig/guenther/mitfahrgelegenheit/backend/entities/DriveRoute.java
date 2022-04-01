@@ -60,7 +60,7 @@ public class DriveRoute {
     @OneToMany(fetch = FetchType.EAGER)
     private Set<DriveRequest> driveRequests;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Booking> bookings;
 
     public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
