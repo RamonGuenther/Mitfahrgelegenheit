@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
+import com.vaadin.flow.component.dependency.CssImport;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
@@ -23,6 +24,8 @@ import java.util.List;
 
 @SpringBootApplication
 @EnableAsync
+@CssImport(value = "/themes/mitfahrgelegenheit/components/petrol-buttons.css", themeFor = "vaadin-button")
+
 public class MitfahrgelegenheitApplication {
 
     @Autowired

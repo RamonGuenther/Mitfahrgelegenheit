@@ -16,12 +16,11 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.OfferDriveView;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveResultView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.CompletedDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.DriveRequestListView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.OwnDriveOffersView;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.PlannedDriveView;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.BookingsView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -91,7 +90,7 @@ public class MainLayout extends AppLayout {
 
         MenuItem geplanteFahrten = projectSubMenu.addItem("gebuchte Fahrten");
         geplanteFahrten.getElement().getClassList().add("menuItems");
-        geplanteFahrten.addClickListener(e -> UI.getCurrent().navigate(PlannedDriveView.class));
+        geplanteFahrten.addClickListener(e -> UI.getCurrent().navigate(BookingsView.class));
 
         MenuItem abgeschlosseneFahrten = projectSubMenu.addItem("Abgeschlossene Fahrten");
         abgeschlosseneFahrten.getElement().getClassList().add("menuItems");

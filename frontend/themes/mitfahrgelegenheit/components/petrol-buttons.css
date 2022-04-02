@@ -1,0 +1,9 @@
+:host {
+    background-color: #3e5365;
+    color: white;
+    font-weight: bold;
+}
+:host(:hover) {
+    opacity: 90%;
+    cursor: pointer;
+}

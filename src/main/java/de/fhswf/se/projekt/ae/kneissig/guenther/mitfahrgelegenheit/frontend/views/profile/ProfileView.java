@@ -78,11 +78,9 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
         Button editProfileButton = new Button("Profil bearbeiten");
         editProfileButton.addClassName("profile-data-buttons");
-        editProfileButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button changePasswordButton = new Button("Passwort ändern");
         changePasswordButton.addClassName("profile-data-buttons");
-        changePasswordButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         HorizontalLayout profileButtonLayout = new HorizontalLayout(editProfileButton, changePasswordButton);
         profileButtonLayout.setClassName("profile-data-buttonlayout");
@@ -102,10 +100,8 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             editAddress();
 
             Button saveProfile = new Button("Speichern");
-            saveProfile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             saveProfile.addClassName("profile-data-buttons");
             Button cancel = new Button("Abbrechen");
-            cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             cancel.addClassName("profile-data-buttons");
 
             HorizontalLayout editProfilButtonLayout = new HorizontalLayout(saveProfile, cancel);

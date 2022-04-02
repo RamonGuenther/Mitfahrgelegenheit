@@ -191,6 +191,14 @@ public class DriveRoute {
         bookings.add(newBooking);
     }
 
+    public void deleteBooking(Booking booking){
+        nullCheck(booking);
+
+        if(bookings.contains(booking)){
+            bookings.remove(booking);
+        }
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(start, destination, seatCount, driver.getId());

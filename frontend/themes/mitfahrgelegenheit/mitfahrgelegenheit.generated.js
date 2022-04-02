@@ -71,9 +71,11 @@ import '@vaadin/vaadin-lumo-styles/color.js';
 import '@vaadin/vaadin-lumo-styles/typography.js';
 import averageRatingsCss from './components/average-ratings.css';
 import button_switch_themeCss from './components/button_switch_theme.css';
+import changePasswordDialogCss from './components/change-password-dialog.css';
 import driveRequestDialogCss from './components/drive-request-dialog.css';
 import menuBarButtonCss from './components/menu-bar-button.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
+import petrolButtonsCss from './components/petrol-buttons.css';
 import profileDoubleRatingsCss from './components/profile-double-ratings.css';
 import searchDriveResultViewDialogCss from './components/search-drive-result-view-dialog.css';
 
@@ -102,6 +104,12 @@ export const applyTheme = (target) => {
       `
     );
     registerStyles(
+      'change-password-dialog',
+      css`
+        ${unsafeCSS(changePasswordDialogCss.toString())}
+      `
+    );
+    registerStyles(
       'drive-request-dialog',
       css`
         ${unsafeCSS(driveRequestDialogCss.toString())}
@@ -117,6 +125,12 @@ export const applyTheme = (target) => {
       'own-drive-offers-edit-dialog',
       css`
         ${unsafeCSS(ownDriveOffersEditDialogCss.toString())}
+      `
+    );
+    registerStyles(
+      'petrol-buttons',
+      css`
+        ${unsafeCSS(petrolButtonsCss.toString())}
       `
     );
     registerStyles(

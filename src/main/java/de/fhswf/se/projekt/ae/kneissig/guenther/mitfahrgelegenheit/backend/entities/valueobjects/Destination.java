@@ -15,4 +15,10 @@ public class Destination extends Waypoint
     {
         super(null, null);
     }
+
+    public String getFullAddressToString(){
+        return address.getStreet() + " " +
+                address.getHouseNumber() + ", " +
+                address.getPostal() + " " +
+                address.getPlace();}
 }

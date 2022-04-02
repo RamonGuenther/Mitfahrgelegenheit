@@ -3,6 +3,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 
 import javax.persistence.*;
+import java.awt.print.Book;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -56,14 +57,19 @@ public class Booking {
         return stopover;
     }
 
-    @Override
-    public boolean equals (Object o) {
-        return o instanceof Booking && passenger.getId().equals (((Booking) o).passenger.getId());
+    public DriveRoute getDriveRoute() {
+        return driveRoute;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getPassenger().getId().hashCode());
-    }
+    //TODO: Hat Probleme bei der Bookings View verursacht
+//    @Override
+//    public boolean equals (Object o) {
+//        return o instanceof Booking && passenger.equals (((Booking) o).passenger);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getPassenger().hashCode());
+//    }
 
 }
