@@ -3,7 +3,6 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.vie
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -21,8 +20,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
@@ -31,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 
 
 /*
@@ -58,9 +58,8 @@ public class OfferDriveView extends VerticalLayout{
 
     private final UserService userService;
 
-    private FormLayoutBottomOfferDrive formLayoutBottom;
-
-    private FormLayoutTopOfferDrive formLayoutTop;
+    private FormLayoutDriveRoute formlayoutTop;
+    private FormLayoutDriveRoute formLayoutBottom;
 
     private RadioButtonGroup<String> layoutOption;
 
@@ -71,10 +70,11 @@ public class OfferDriveView extends VerticalLayout{
      * Listener zuständig.
      */
     public OfferDriveView(DriveRouteService driveRouteService, UserService userService) {
+
+
         this.driveRouteService = driveRouteService;
         this.userService = userService;
 
-        setId("searchDriveResultView");
         createOfferDriveView();
         layoutOption.setValue("Hinfahrt");
 
@@ -83,20 +83,20 @@ public class OfferDriveView extends VerticalLayout{
             switch (layoutOption.getValue()) {
                 case "Hinfahrt" -> {
                     saveFormLayoutTop();
-                    formLayoutTop.clearFields();
+                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                 }
                 case "Rückfahrt" -> {
                     saveFormLayoutBottom();
-                    formLayoutBottom.clearFields();
+                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+
                 }
                 case "Hin- & Rückfahrt" -> {
                     saveFormLayoutTop();
                     saveFormLayoutBottom();
-                    formLayoutTop.clearFields();
-                    formLayoutBottom.clearFields();
+                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                 }
             }
-            //UI.getCurrent().getPage().reload();
         });
     }
 
@@ -106,46 +106,40 @@ public class OfferDriveView extends VerticalLayout{
      */
     private void createOfferDriveView() {
         Div div = new Div();
-        div.setId("containerOfferDrive");
+        div.setId("offer-drive-view-layout");
 
         H1 title = new H1("Fahrt anbieten");
 
-        formLayoutBottom = new FormLayoutBottomOfferDrive();
-        formLayoutTop = new FormLayoutTopOfferDrive();
+        formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+        formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
 
         layoutOption = new RadioButtonGroup<>();
         layoutOption.setItems("Hinfahrt", "Rückfahrt", "Hin- & Rückfahrt");
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setId("buttonLayoutOfferDrive");
+        buttonLayout.setId("offer-drive-view-button_layout");
         createButton = new Button("Fahrt erstellen");
-        createButton.setId("createButtonOfferDrive");
-        createButton.setClassName("operationButtonOfferDrive");
+        createButton.setId("offer-drive-view-create_button");
+        createButton.setClassName("offer-drive-view-buttons");
         Button cancelButton = new Button("Abbrechen");
-        cancelButton.setId("cancelButtonOfferDrive");
-        cancelButton.setClassName("operationButtonOfferDrive");
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        createButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        cancelButton.setId("offer-drive-view-cancel_button");
+        cancelButton.setClassName("offer-drive-view-buttons");
 
         buttonLayout.add(createButton, cancelButton);
 
         layoutOption.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt" -> {
-                    formLayoutTop = new FormLayoutTopOfferDrive();
                     div.removeAll();
-                    div.add(title, layoutOption, formLayoutTop, buttonLayout);
+                    div.add(title, layoutOption, formlayoutTop, buttonLayout);
                 }
                 case "Rückfahrt" -> {
-                    formLayoutBottom = new FormLayoutBottomOfferDrive();
                     div.removeAll();
                     div.add(title, layoutOption, formLayoutBottom, buttonLayout);
                 }
                 case "Hin- & Rückfahrt" -> {
-                    formLayoutTop = new FormLayoutTopOfferDrive();
-                    formLayoutBottom = new FormLayoutBottomOfferDrive();
                     div.removeAll();
-                    div.add(title, layoutOption, formLayoutTop, formLayoutBottom, buttonLayout);
+                    div.add(title, layoutOption, formlayoutTop, formLayoutBottom, buttonLayout);
                 }
             }
         });
@@ -156,7 +150,7 @@ public class OfferDriveView extends VerticalLayout{
     }
 
     private void saveFormLayoutTop() {
-        saveDrive(formLayoutTop.getAddress(), formLayoutTop.getFhLocation(), formLayoutTop.getDriveTime(), formLayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formLayoutTop.getDriveDateStart());
+        saveDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
     }
 
     private void saveFormLayoutBottom() {
@@ -173,13 +167,16 @@ public class OfferDriveView extends VerticalLayout{
 
             User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-            driveRouteService.save(new DriveRoute(
-                    new Start(firstAddress, driveTime.atDate(driveDate)),
-                    new Destination(secondAddress, driveTime.atDate(driveDate)),
-                    carSeatCount, user, LocalDateTime.now(),fahrtenTyp,
-                    "" //TODO: FIXXEN
-            ));
+            Start start = new Start(firstAddress, driveTime.atDate(driveDate));
+            Destination destination = new Destination(secondAddress, driveTime.atDate(driveDate));
 
+            RouteString routeString = new RouteString(start, destination, Collections.emptyList());
+            driveRouteService.save(new DriveRoute(
+                    start,
+                    destination,
+                    carSeatCount, user, LocalDateTime.now(),fahrtenTyp,
+                    routeString.getRoute()
+            ));
 
             NotificationSuccess.show("Fahrt wurde erstellt!");
         }

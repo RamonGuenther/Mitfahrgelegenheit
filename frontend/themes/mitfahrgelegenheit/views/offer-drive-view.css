@@ -1,41 +1,24 @@
-#containerOfferDrive{
+#offer-drive-view-layout{
     margin: auto;
 }
 
-
-#formLayoutOfferDriveTop{
-    width: 1000px;
+#offer-drive-view-button_layout{
     margin:auto;
 }
 
-#formLayoutOfferDriveBottom{
-    width: 1000px;
-    margin:auto;
-}
-
-#buttonLayoutOfferDrive{
-    margin:auto;
-}
-
-#createButtonOfferDrive{
+#offer-drive-view-create_button{
     margin-right: 5%;
 }
 
-#cancelButtonOfferDrive{
+#offer-drive-view-cancel_button{
     margin-left: 5%;
 }
 
-.operationButtonOfferDrive{
+.offer-drive-view-buttons{
     width: 200px;
     margin: auto;
     margin-top: 30px;
 }
 
-#anchorGoogleMapsOfferDrive{
-    padding-left: 0px;
-}
 
-#buttonGoogleMapsOfferDrive{
-    width: 490px;
-}
 

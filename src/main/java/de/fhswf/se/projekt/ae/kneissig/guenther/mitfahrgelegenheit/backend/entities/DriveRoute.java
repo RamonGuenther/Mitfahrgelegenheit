@@ -169,9 +169,7 @@ public class DriveRoute {
         return driveType;
     }
 
-    public User getBenutzer() {
-        return driver;
-    }
+
 
     public void addDriveRequest(DriveRequest driveRequest) throws DuplicateRequestException {
         nullCheck(driveRequest);
@@ -201,6 +199,11 @@ public class DriveRoute {
 
     @Override
     public int hashCode() {
-        return Objects.hash(start, destination, seatCount, driver.getId());
+        return Objects.hash(start, destination, driver, creationDate);
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        return obj instanceof DriveRoute && id.equals(((DriveRoute) obj).id);
     }
 }

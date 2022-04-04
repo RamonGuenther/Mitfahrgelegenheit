@@ -177,12 +177,12 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return firstLogin == user.firstLogin && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(address, user.address) && Objects.equals(email, user.email) && Objects.equals(universityLocation, user.universityLocation) && Objects.equals(faculty, user.faculty) && Objects.equals(languages, user.languages) && Objects.equals(lastLogin, user.lastLogin) && Objects.equals(userRating, user.userRating);
+        if (!(o instanceof User)) return false;
+        return username.equals(((User) o).username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, firstName, lastName, address, email, universityLocation, faculty, languages, lastLogin, firstLogin, userRating);
+        return Objects.hash(username);
     }
 }

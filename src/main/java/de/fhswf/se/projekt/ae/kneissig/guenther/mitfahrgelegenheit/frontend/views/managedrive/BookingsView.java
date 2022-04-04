@@ -79,7 +79,7 @@ public class BookingsView extends VerticalLayout {
         gridBookings.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         gridBookings.addColumn(booking -> booking.getDriveRoute().getZiel().getFullAddressToString()).setHeader("Ziel");
 
-        gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getBenutzer().getFirstName(), booking.getDriveRoute().getBenutzer().getFirstName())).setHeader("Fahrer");
+        gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getFirstName(), booking.getDriveRoute().getDriver().getFirstName())).setHeader("Fahrer");
 
         gridBookings.addComponentColumn(this::createLeaveDriveButton).setHeader("Weiter mitfahren?");
 

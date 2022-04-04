@@ -1,20 +1,12 @@
-#buttonLayoutOwnDriveEdit{
+.own-drive-offers-edit-dialog-button_layout{
     margin-left: 165px;
     margin-top: 30px;
 }
 
-#optionButtonOwnDriveEdit{
+.own-drive-offers-edit-dialog-buttons{
     margin-left: 100px;
     width: 200px;
 }
 
-#own-drive-offers-edit-dialog-edit_button{
-    width: 200px !important;
-    margin-left: 300px;
-}
 
-#own-drive-offers-edit-dialog-close_button{
-    margin-left: 960px;
-    color: red;
-}
 

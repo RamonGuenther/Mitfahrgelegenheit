@@ -1,35 +1,29 @@
-#search-drive-result-view-close_button{
-    margin-left: 960px;
-    color: red;
-}
-
-#search-drive-result-view-dialog-profile_button{
-    width: 100px !important;
-    margin-left: 400px;
-}
-
-
-#search-drive-result-view-dialog-bookmark_button{
+#search-drive-result-view-title {
 
 }
 
-#search-drive-result-view-dialog-request_button{
+#search-drive-result-view-driver_rating {
+    margin-top: 20px;
+}
 
+#search-drive-result-view-profile_button {
+    margin-top: 30px;
+    margin-left: 470px;
+}
+
+.search-drive-result-view-title_layout {
+    margin-left: 15px;
 }
 
 
-.search-drive-result-view-dialog-buttons{
+.search-drive-result-view-dialog-buttons {
     margin-left: 100px;
     width: 200px;
 }
 
-.search-drive-result-view-dialog-button_layout{
+.search-drive-result-view-dialog-button_layout {
     margin-left: 165px;
     margin-top: 30px;
-}
-
-#search-drive-result-view-driver_rating{
-
 }
 
 

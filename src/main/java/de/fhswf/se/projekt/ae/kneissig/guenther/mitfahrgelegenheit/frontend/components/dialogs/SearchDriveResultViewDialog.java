@@ -2,29 +2,24 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.com
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutBottomOfferDrive;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutTopOfferDrive;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 
-/**
- * TODO:  - Für Merkliste könnte man den Dialog auch missbrauchen nur mit anderen buttons unten!
- */
 @CssImport("/themes/mitfahrgelegenheit/components/search-drive-result-view-dialog.css")
 public class SearchDriveResultViewDialog extends Dialog {
 
@@ -37,10 +32,7 @@ public class SearchDriveResultViewDialog extends Dialog {
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
 
-    private Anchor userAnchor; //TODO
-
-
-    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService){
+    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService) {
         this.userService = userService;
         this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
@@ -52,83 +44,60 @@ public class SearchDriveResultViewDialog extends Dialog {
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
 
-        Icon icon = new Icon(VaadinIcon.CLOSE_CIRCLE);
-        Button closeButton = new Button();
-        closeButton.setId("search-drive-result-view-close_button");
-        closeButton.setIcon(icon);
-        closeButton.addClickListener(e -> close());
-        verticalLayout.add(closeButton);
+        H2 title = new H2("Fahrt von " + driveRoute.getDriver().getFullName());
+        title.setId("search-drive-result-view-title");
 
-        StarsRating driverRating = new StarsRating(0);
+        StarsRating driverRating = new StarsRating(driveRoute.getDriver().getUserRating().getAverageDriverRating());
         driverRating.setId("search-drive-result-view-driver_rating");
         driverRating.setManual(true);
 
-        userAnchor = new Anchor("/profil/" + driveRoute.getBenutzer().getUsername(), driveRoute.getBenutzer().getUsername()); //TODO
+        Button profileButton = new Button(VaadinIcon.USER.create());
+        profileButton.setText("Profil");
+        profileButton.setId("search-drive-result-view-profile_button");
+        profileButton.addClickListener(e -> {
+            close();
+            UI.getCurrent().navigate(ProfileView.class,
+                    new RouteParameters(new RouteParam("username", driveRoute.getDriver().getUsername())));
 
-        add(userAnchor, driverRating);
+        });
 
-        Icon PROFILE_ICON = new Icon(VaadinIcon.USER);
+        HorizontalLayout titleLayout = new HorizontalLayout(title, driverRating, profileButton);
+        titleLayout.setClassName("search-drive-result-view-title_layout");
+        add(titleLayout);
+
         switch (driveRoute.getDriveType()) {
 
             case OUTWARD_TRIP -> {
-                FormLayoutTopOfferDrive formLayoutHinfahrt = new FormLayoutTopOfferDrive();
+                FormLayoutDriveRoute formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                formLayoutDriveRouteTop.remove(formLayoutDriveRouteTop.getTitle());
 
-                formLayoutHinfahrt.getFlexButton().setVisible(true);
-                formLayoutHinfahrt.getFlexButton().setId("search-drive-result-view-dialog-profile_button");
-                formLayoutHinfahrt.getFlexButton().setText("Profil");
-                formLayoutHinfahrt.getFlexButton().setIcon(PROFILE_ICON);
-
-                formLayoutHinfahrt.getTitleLayout().add(driverRating);
-                formLayoutHinfahrt.setColspan(formLayoutHinfahrt.getTitleLayout(), 2);
-
-                formLayoutHinfahrt.getFlexButton().addClickListener(e -> {
-                    UI.getCurrent().navigate(ProfileView.class,
-                            new RouteParameters(new RouteParam("username", driveRoute.getBenutzer().getUsername())));
-                    this.close();
-                });
-
-                formLayoutHinfahrt.setReadOnly(true);
-                formLayoutHinfahrt.setTitle("Hinfahrt von " + driveRoute.getBenutzer().getUsername());
-                formLayoutHinfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutHinfahrt.setFhLocation(driveRoute.getZiel().getAddress().getPlace());
-                formLayoutHinfahrt.setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
-                formLayoutHinfahrt.setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
-                formLayoutHinfahrt.setAddress(driveRoute.getStart().getAddress().getStreet() + " "
+                formLayoutDriveRouteTop.setReadOnly(true);
+                formLayoutDriveRouteTop.setSitzplaetze(driveRoute.getSeatCount().toString());
+                formLayoutDriveRouteTop.setFhLocation(driveRoute.getZiel().getAddress().getPlace());
+                formLayoutDriveRouteTop.setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
+                formLayoutDriveRouteTop.setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
+                formLayoutDriveRouteTop.setAddress(driveRoute.getStart().getAddress().getStreet() + " "
                         + driveRoute.getStart().getAddress().getHouseNumber() + ", "
                         + driveRoute.getStart().getAddress().getPostal() + " "
                         + driveRoute.getStart().getAddress().getPlace() + ", "
                         + "Deutschland");
-                verticalLayout.add(formLayoutHinfahrt);
+                verticalLayout.add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
-                FormLayoutBottomOfferDrive formLayoutRueckfahrt = new FormLayoutBottomOfferDrive();
+                FormLayoutDriveRoute formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                formLayoutDriveRouteBottom.remove(formLayoutDriveRouteBottom.getTitle());
 
-                formLayoutRueckfahrt.getFlexButton().setVisible(true);
-                formLayoutRueckfahrt.getFlexButton().setId("search-drive-result-view-dialog-profile_button");
-                formLayoutRueckfahrt.getFlexButton().setText("Profil");
-                formLayoutRueckfahrt.getFlexButton().setIcon(PROFILE_ICON);
-
-                formLayoutRueckfahrt.getTitleLayout().add(driverRating);
-                formLayoutRueckfahrt.setColspan(formLayoutRueckfahrt.getTitleLayout(), 2);
-
-                formLayoutRueckfahrt.getFlexButton().addClickListener(e -> {
-                    UI.getCurrent().navigate(ProfileView.class,
-                            new RouteParameters(new RouteParam("username", driveRoute.getBenutzer().getUsername())));
-                    this.close();
-                });
-
-                formLayoutRueckfahrt.setReadOnly(true);
-                formLayoutRueckfahrt.setTitle("Rückfahrt von " + driveRoute.getBenutzer().getUsername());
-                formLayoutRueckfahrt.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutRueckfahrt.setFhLocation(driveRoute.getStart().getAddress().getPlace());
-                formLayoutRueckfahrt.setDriveTime(driveRoute.getStart().getTime().toLocalTime());
-                formLayoutRueckfahrt.setDriveDateStart(driveRoute.getStart().getTime().toLocalDate());
-                formLayoutRueckfahrt.setAddress(driveRoute.getZiel().getAddress().getStreet() + " "
+                formLayoutDriveRouteBottom.setReadOnly(true);
+                formLayoutDriveRouteBottom.setSitzplaetze(driveRoute.getSeatCount().toString());
+                formLayoutDriveRouteBottom.setFhLocation(driveRoute.getStart().getAddress().getPlace());
+                formLayoutDriveRouteBottom.setDriveTime(driveRoute.getStart().getTime().toLocalTime());
+                formLayoutDriveRouteBottom.setDriveDateStart(driveRoute.getStart().getTime().toLocalDate());
+                formLayoutDriveRouteBottom.setAddress(driveRoute.getZiel().getAddress().getStreet() + " "
                         + driveRoute.getZiel().getAddress().getHouseNumber() + ", "
                         + driveRoute.getZiel().getAddress().getPostal() + " "
                         + driveRoute.getZiel().getAddress().getPlace() + ", "
                         + "Deutschland");
-                verticalLayout.add(formLayoutRueckfahrt);
+                verticalLayout.add(formLayoutDriveRouteBottom);
             }
 
         }
@@ -143,19 +112,26 @@ public class SearchDriveResultViewDialog extends Dialog {
      */
     private HorizontalLayout createButtons() {
         Button requestButton = new Button("Fahrt anfragen");
-        requestButton.setId("search-drive-result-view-dialog-request_button");
         requestButton.setClassName("search-drive-result-view-dialog-buttons");
-        requestButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        requestButton.addClickListener(e->{
+        Button closeButton = new Button("Schließen");
+        closeButton.setClassName("search-drive-result-view-dialog-buttons");
+        closeButton.addClickListener(e-> close());
+
+        requestButton.addClickListener(e -> {
             close();
-            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService);
+            DriveRequestDialog driveRequestDialog = new DriveRequestDialog(
+                    driveRoute,
+                    userService,
+                    driveRouteService,
+                    mailService,
+                    driveRequestService
+            );
             driveRequestDialog.open();
         });
 
-        HorizontalLayout buttonLayout = new HorizontalLayout();
+        HorizontalLayout buttonLayout = new HorizontalLayout(requestButton, closeButton);
         buttonLayout.setClassName("search-drive-result-view-dialog-button_layout");
-        buttonLayout.add(requestButton);
 
         return buttonLayout;
     }

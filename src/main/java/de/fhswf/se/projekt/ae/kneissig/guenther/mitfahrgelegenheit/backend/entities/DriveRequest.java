@@ -91,8 +91,6 @@ public class DriveRequest {
     }
 
 
-    //TODO: wenn ohne getid geht es aber whyyyyyy :( dadurch werden doppelte wiederzugelassen
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,9 +98,10 @@ public class DriveRequest {
         return Objects.equals(getPassenger(), that.getPassenger()) && Objects.equals(getDriveRoute(), that.getDriveRoute());
     }
 
+
     @Override
     public int hashCode() {
-        return Objects.hash(getPassenger(), getDriveRoute());
+        return Objects.hash(passenger, driveRoute);
     }
 }
 

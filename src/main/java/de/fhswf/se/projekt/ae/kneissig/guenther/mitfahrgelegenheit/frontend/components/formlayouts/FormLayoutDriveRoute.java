@@ -4,22 +4,25 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.CheckboxRegularDrive;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -27,15 +30,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
-/**
- * Die Klasse FormLayoutBottomOfferDrive erstellt ein
- * FormLayout für die Klasse OfferDrive.
- *
- * @author Ramon Günther & Ivonne Kneißig
- */
-public class FormLayoutTopOfferDrive extends FormLayout {
+@CssImport("/themes/mitfahrgelegenheit/components/form-layout-drive-route.css")
+public class FormLayoutDriveRoute extends FormLayout {
 
-    private final H2 title;
     private final TextFieldAddress address;
     private final SelectUniversityLocation fhLocation;
     private final TimePicker driveTime;
@@ -47,27 +44,18 @@ public class FormLayoutTopOfferDrive extends FormLayout {
     private final CheckboxRegularDrive driveDays;
     private final Checkbox detourCheckbox;
     private final Checkbox visibleCheckbox;
-    private final Button flexButton;
-    private final HorizontalLayout titleLayout;
-//    private Anchor anchorGoogleMaps;
+    private final H2 title;
+
 
     /**
      * Der Konstruktor erstellt das FormLayout für
      * die Klasse OfferDriveView
      */
-    public FormLayoutTopOfferDrive() {
-        setId("formLayoutOfferDriveTop");
+    public FormLayoutDriveRoute(DriveType driveType) {
 
         title = new H2("Hinfahrt erstellen");
 
-        //nur für den SearchDriveResultViewDialog Dialog
-        titleLayout = new HorizontalLayout();
-        titleLayout.add(title);
-        titleLayout.getStyle().set("height","60px");
-
-        //Nur für den Dialog in OwnDriveOffersEditDialog & SearchDriveResultViewDialog
-        flexButton = new Button();
-        flexButton.setVisible(false);
+        setId("form-layout-drive-route-layout");
 
         address = new TextFieldAddress("Von");
 
@@ -92,21 +80,31 @@ public class FormLayoutTopOfferDrive extends FormLayout {
         carSeatCount.setItems("1", "2", "3", "4");
 
         Button buttonDetourRoute = new Button("Route anzeigen", new Icon(VaadinIcon.CAR));
-        buttonDetourRoute.setId("buttonGoogleMapsOfferDrive");
+        buttonDetourRoute.setId("form-layout-drive-route-google_maps_button");
 
         detourCheckbox = new Checkbox("Umweg möglich?");
-        detourCheckbox.setId("detourCheckBox");
 
         visibleCheckbox = new Checkbox("Unsichtbar schalten");
 
         setResponsiveSteps(new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
                 new ResponsiveStep("490px", 4, ResponsiveStep.LabelsPosition.TOP));
 
-        add(titleLayout, flexButton, address, fhLocation, driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
-                driveTime, driveDays, carSeatCount, detourCheckbox, visibleCheckbox, buttonDetourRoute);
+        if(driveType == DriveType.OUTWARD_TRIP){
+            add(title,address, fhLocation, driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
+                    driveTime, driveDays, carSeatCount, detourCheckbox, visibleCheckbox, buttonDetourRoute);
 
-        setColspan(titleLayout, 4);
-        setColspan(flexButton, 2);
+        }
+        else{
+            fhLocation.setLabel("Von");
+            address.setLabel("Nach");
+            driveTime.setLabel("Abfahrtzeit");
+            title.setText("Rückfahrt erstellen");
+            add(title,fhLocation, address,driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
+                    driveTime, driveDays, carSeatCount, detourCheckbox, visibleCheckbox, buttonDetourRoute);
+
+        }
+
+        setColspan(title, 4);
         setColspan(address, 2);
         setColspan(fhLocation, 2);
         setColspan(driveDateStart, 1);
@@ -131,37 +129,16 @@ public class FormLayoutTopOfferDrive extends FormLayout {
             driveDays.setReadOnly(checked);
         });
 
-        visibleCheckbox.addValueChangeListener(event -> {
-            boolean checked = !event.getValue();
-            visibleCheckbox.setLabel(checked ? "Unsichtbar schalten" : "Sichtbar schalten");
-        });
 
         buttonDetourRoute.addClickListener(e -> {
             if(!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")){
                 AddressConverter converterStart = new AddressConverter(address.getValue());
                 AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
 
-                //TODO: Braucht die richtige Route, damit die Umwege rausgezogen werden können?!
-                List<Stopover> test = new ArrayList<>();
-                Stopover test1 = new Stopover(new Address(
-                        "58095",
-                        "Hagen",
-                        "Kratzkopfstraße",
-                        "10"
-                ), LocalDateTime.now());
-                Stopover test2 = new Stopover(new Address(
-                        "58095",
-                        "Hagen",
-                        "Diesterwegstraße",
-                        "6"
-                ), LocalDateTime.now());
-                test.add(test1);
-//                test.add(test2);
-
                 RouteString routeString = new RouteString(
                         new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber()), LocalDateTime.now()),
                         new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber()), LocalDateTime.now()),
-                        test);
+                        Collections.emptyList());
 
                 UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
             }
@@ -173,14 +150,10 @@ public class FormLayoutTopOfferDrive extends FormLayout {
         });
     }
 
-    public HorizontalLayout getTitleLayout() {
-        return titleLayout;
-    }
 
     public H2 getTitle() {
         return title;
     }
-
     public String getAddress() {
         return address.getValue();
     }
@@ -225,10 +198,6 @@ public class FormLayoutTopOfferDrive extends FormLayout {
         return visibleCheckbox.getValue();
     }
 
-    public void setTitle(String titel){
-        title.setText(titel);
-    }
-
     public void setSitzplaetze(String anzahl){
         carSeatCount.setValue(anzahl);
     }
@@ -249,29 +218,6 @@ public class FormLayoutTopOfferDrive extends FormLayout {
         this.address.setValue(address);
     }
 
-    public Button getFlexButton() {
-        return flexButton;
-    }
-
-    /**
-     * Die Methode clearFields() setzt alle Felder der View
-     * zurück bzw. leert sie.
-     */
-    public void clearFields(){
-        address.setValue(" ");
-        address.setOptions(Collections.emptyList());
-        fhLocation.clear();
-        driveTime.clear();
-        carSeatCount.clear();
-        driveDateStart.clear();
-        driveDateEnd.clear();
-        checkboxRegularDrive.clear();
-        checkboxFuelParticipation.clear();
-        driveDays.clear();
-        detourCheckbox.clear();
-        visibleCheckbox.clear();
-    }
-
     public void setReadOnly(boolean check){
         address.setReadOnly(check);
         address.setReadOnly(check);
@@ -288,3 +234,4 @@ public class FormLayoutTopOfferDrive extends FormLayout {
     }
 
 }
+

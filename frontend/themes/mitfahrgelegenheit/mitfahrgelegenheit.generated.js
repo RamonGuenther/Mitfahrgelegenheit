@@ -73,6 +73,7 @@ import averageRatingsCss from './components/average-ratings.css';
 import button_switch_themeCss from './components/button_switch_theme.css';
 import changePasswordDialogCss from './components/change-password-dialog.css';
 import driveRequestDialogCss from './components/drive-request-dialog.css';
+import formLayoutDriveRouteCss from './components/form-layout-drive-route.css';
 import menuBarButtonCss from './components/menu-bar-button.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
 import petrolButtonsCss from './components/petrol-buttons.css';
@@ -113,6 +114,12 @@ export const applyTheme = (target) => {
       'drive-request-dialog',
       css`
         ${unsafeCSS(driveRequestDialogCss.toString())}
+      `
+    );
+    registerStyles(
+      'form-layout-drive-route',
+      css`
+        ${unsafeCSS(formLayoutDriveRouteCss.toString())}
       `
     );
     registerStyles(
