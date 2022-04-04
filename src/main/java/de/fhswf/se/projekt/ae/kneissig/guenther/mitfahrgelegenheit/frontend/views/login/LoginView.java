@@ -8,13 +8,12 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 
 @Route("login")
 @PageTitle("Mitfahrgelegenheit | Login")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver{
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private LoginForm login;
 
     public LoginView() {
-
-        getElement().getStyle().set("background", "hsl(0, 36%, 39%)");
+        getElement().getStyle().set("background", "#3e5365");
 
         setSizeFull();
 
@@ -29,7 +28,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver{
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if(beforeEnterEvent.getLocation()
+        if (beforeEnterEvent.getLocation()
                 .getQueryParameters()
                 .getParameters()
                 .containsKey("error")) {

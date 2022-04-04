@@ -1,0 +1,32 @@
+#drive-details-dialog-title {
+    margin-left: -1px;
+}
+
+#drive-details-dialog-driver_rating {
+    margin-top: 20px;
+}
+
+#drive-details-dialog-profile_button {
+    grid-area: c;
+    margin-bottom: -200px;
+    width: 150px;
+}
+
+.drive-details-dialog-title_layout {
+    display: grid;
+    grid-template-areas: "a c";
+    grid-template-columns: 2fr 0.3fr;
+}
+
+.drive-details-dialog-driver_information_layout {
+    grid-area: a;
+}
+
+#drive-details-dialog-close_button {
+    width: 200px;
+    margin: auto;
+}
+
+.drive-details-dialog-button_layout{
+    margin-top: 20px;
+}

@@ -56,29 +56,13 @@ public class OwnDriveOffersEditDialog extends Dialog {
             case OUTWARD_TRIP -> {
                 formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                 formLayoutDriveRouteTop.setReadOnly(true);
-                formLayoutDriveRouteTop.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutDriveRouteTop.setFhLocation(driveRoute.getZiel().getAddress().getPlace());
-                formLayoutDriveRouteTop.setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
-                formLayoutDriveRouteTop.setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
-                formLayoutDriveRouteTop.setAddress(driveRoute.getStart().getAddress().getStreet() + " "
-                        + driveRoute.getStart().getAddress().getHouseNumber() + ", "
-                        + driveRoute.getStart().getAddress().getPostal() + " "
-                        + driveRoute.getStart().getAddress().getPlace() + ", "
-                        + "Deutschland");
+                formLayoutDriveRouteTop.setData(driveRoute);
                 add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
                 formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                 formLayoutDriveRouteBottom.setReadOnly(true);
-                formLayoutDriveRouteBottom.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutDriveRouteBottom.setFhLocation(driveRoute.getStart().getAddress().getPlace());
-                formLayoutDriveRouteBottom.setDriveTime(driveRoute.getStart().getTime().toLocalTime());
-                formLayoutDriveRouteBottom.setDriveDateStart(driveRoute.getStart().getTime().toLocalDate());
-                formLayoutDriveRouteBottom.setAddress(driveRoute.getZiel().getAddress().getStreet() + " "
-                        + driveRoute.getZiel().getAddress().getHouseNumber() + ", "
-                        + driveRoute.getZiel().getAddress().getPostal() + " "
-                        + driveRoute.getZiel().getAddress().getPlace() + ", "
-                        + "Deutschland");
+                formLayoutDriveRouteBottom.setData(driveRoute);
                 add(formLayoutDriveRouteBottom);
             }
         }

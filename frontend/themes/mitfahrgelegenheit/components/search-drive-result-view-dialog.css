@@ -1,5 +1,5 @@
 #search-drive-result-view-title {
-
+    margin-left: -1px;
 }
 
 #search-drive-result-view-driver_rating {
@@ -7,13 +7,21 @@
 }
 
 #search-drive-result-view-profile_button {
-    margin-top: 30px;
-    margin-left: 470px;
+    grid-area: c;
+    margin-bottom: -200px;
+    width: 150px;
 }
 
 .search-drive-result-view-title_layout {
-    margin-left: 15px;
+    display: grid;
+    grid-template-areas: "a c";
+    grid-template-columns: 2fr 0.3fr;
 }
+
+.search-drive-result-view-driver_information_layout{
+    grid-area: a;
+}
+
 
 
 .search-drive-result-view-dialog-buttons {

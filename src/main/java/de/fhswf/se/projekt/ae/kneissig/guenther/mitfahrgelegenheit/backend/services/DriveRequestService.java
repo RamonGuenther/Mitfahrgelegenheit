@@ -21,6 +21,10 @@ public class DriveRequestService {
         repository.save(newDriveRequest);
     }
 
+    public void delete(DriveRequest driveRequest){
+        repository.delete(driveRequest);
+    }
+
     public List<DriveRequest> findAllDriveRequestsDriver(User driver){
         return repository.findAllByDriveRoute_DriverAndRequestState(driver, RequestState.OPEN);
     }

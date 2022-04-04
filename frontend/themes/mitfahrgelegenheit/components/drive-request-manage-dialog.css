@@ -1,0 +1,38 @@
+#drive-request-manage-dialog-title{
+    margin-left: -1px;
+}
+
+#drive-request-manage-dialog-passenger_rating{
+    margin-top: 20px;
+}
+
+#drive-request-manage-dialog-profile_button{
+    grid-area: c;
+    margin-bottom: -200px;
+    width: 150px;
+}
+
+.drive-request-manage-dialog-title_layout {
+    display: grid;
+    grid-template-areas: "a c";
+    grid-template-columns: 2fr 0.3fr;
+}
+
+.drive-request-manage-dialog-passenger_information_layout{
+    grid-area: a;
+}
+
+#drive-request-manage-dialog-text_area{
+    width: 1000px;
+    height: 100px;
+    margin-bottom: 30px;
+}
+
+.drive-request-manage-dialog-buttons{
+    width: 200px;
+    margin: auto;
+}
+
+.drive-request-manage-dialog-button_layout{
+
+}

@@ -39,17 +39,20 @@ public class SearchDriveResultViewDialog extends Dialog {
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
 
-        VerticalLayout verticalLayout = new VerticalLayout();
-
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
+
+        HorizontalLayout driverInformationLayout = new HorizontalLayout();
+        driverInformationLayout.setClassName("search-drive-result-view-driver_information_layout");
 
         H2 title = new H2("Fahrt von " + driveRoute.getDriver().getFullName());
         title.setId("search-drive-result-view-title");
 
         StarsRating driverRating = new StarsRating(driveRoute.getDriver().getUserRating().getAverageDriverRating());
         driverRating.setId("search-drive-result-view-driver_rating");
-        driverRating.setManual(true);
+        driverRating.setManual(false);
+
+        driverInformationLayout.add(title, driverRating);
 
         Button profileButton = new Button(VaadinIcon.USER.create());
         profileButton.setText("Profil");
@@ -61,7 +64,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         });
 
-        HorizontalLayout titleLayout = new HorizontalLayout(title, driverRating, profileButton);
+        HorizontalLayout titleLayout = new HorizontalLayout(driverInformationLayout, profileButton);
         titleLayout.setClassName("search-drive-result-view-title_layout");
         add(titleLayout);
 
@@ -70,39 +73,20 @@ public class SearchDriveResultViewDialog extends Dialog {
             case OUTWARD_TRIP -> {
                 FormLayoutDriveRoute formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                 formLayoutDriveRouteTop.remove(formLayoutDriveRouteTop.getTitle());
-
                 formLayoutDriveRouteTop.setReadOnly(true);
-                formLayoutDriveRouteTop.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutDriveRouteTop.setFhLocation(driveRoute.getZiel().getAddress().getPlace());
-                formLayoutDriveRouteTop.setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
-                formLayoutDriveRouteTop.setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
-                formLayoutDriveRouteTop.setAddress(driveRoute.getStart().getAddress().getStreet() + " "
-                        + driveRoute.getStart().getAddress().getHouseNumber() + ", "
-                        + driveRoute.getStart().getAddress().getPostal() + " "
-                        + driveRoute.getStart().getAddress().getPlace() + ", "
-                        + "Deutschland");
-                verticalLayout.add(formLayoutDriveRouteTop);
+                formLayoutDriveRouteTop.setData(driveRoute);
+                add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
                 FormLayoutDriveRoute formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                 formLayoutDriveRouteBottom.remove(formLayoutDriveRouteBottom.getTitle());
-
                 formLayoutDriveRouteBottom.setReadOnly(true);
-                formLayoutDriveRouteBottom.setSitzplaetze(driveRoute.getSeatCount().toString());
-                formLayoutDriveRouteBottom.setFhLocation(driveRoute.getStart().getAddress().getPlace());
-                formLayoutDriveRouteBottom.setDriveTime(driveRoute.getStart().getTime().toLocalTime());
-                formLayoutDriveRouteBottom.setDriveDateStart(driveRoute.getStart().getTime().toLocalDate());
-                formLayoutDriveRouteBottom.setAddress(driveRoute.getZiel().getAddress().getStreet() + " "
-                        + driveRoute.getZiel().getAddress().getHouseNumber() + ", "
-                        + driveRoute.getZiel().getAddress().getPostal() + " "
-                        + driveRoute.getZiel().getAddress().getPlace() + ", "
-                        + "Deutschland");
-                verticalLayout.add(formLayoutDriveRouteBottom);
+                formLayoutDriveRouteBottom.setData(driveRoute);
+                add(formLayoutDriveRouteBottom);
             }
 
         }
-        verticalLayout.add(createButtons());
-        add(verticalLayout);
+        add(createButtons());
         open();
     }
 

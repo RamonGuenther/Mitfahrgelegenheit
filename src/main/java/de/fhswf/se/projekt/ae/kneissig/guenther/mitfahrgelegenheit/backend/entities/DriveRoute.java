@@ -180,6 +180,17 @@ public class DriveRoute {
         driveRequests.add(driveRequest);
     }
 
+    /**
+     * Recherschieren warum es nicht geht
+     *
+     * @param driveRequest
+     */
+    public void removeDriveRequest(DriveRequest driveRequest){
+        nullCheck(driveRequest);
+        System.out.println(driveRequests.contains(driveRequest));
+        driveRequests.remove(driveRequest);
+    }
+
     public void addBooking(Booking newBooking) throws DuplicateBookingException {
         nullCheck(newBooking);
 

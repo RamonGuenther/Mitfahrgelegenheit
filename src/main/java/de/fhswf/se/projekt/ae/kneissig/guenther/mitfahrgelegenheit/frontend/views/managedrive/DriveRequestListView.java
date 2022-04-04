@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
@@ -18,7 +19,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.DriveDetailsDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.DriveRequestManageDialog;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.SearchDriveResultViewDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
 import java.util.List;
@@ -29,12 +32,6 @@ import java.util.List;
  * der Fahrtanfragen.
  *
  * @author Ramon Günther
- */
-
-/**
- * TODO: Drive request nehmen und query schreiben wo man alle Anfragen kriegt wo der Fahrer eine Route hat-
- *          - Radiobuttons und extra Grid
- *          - siehe Wireframe!
  */
 @Route(value = "fahrtanfragen", layout = MainLayout.class)
 @PageTitle("Fahrtanfragen")
@@ -63,8 +60,8 @@ public class DriveRequestListView extends VerticalLayout {
         driverGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 
         driverGrid.setItems(driveRequestService.findAllDriveRequestsDriver(userService.getCurrentUser()));
-        driverGrid.addColumn(date ->date.getRequestTime().toLocalDate()).setHeader("Datum");
-        driverGrid.addColumn(time ->time.getRequestTime().toLocalTime()).setHeader("Uhrzeit");
+        driverGrid.addColumn(DriveRequest::getFormattedDate).setHeader("Datum");
+        driverGrid.addColumn(DriveRequest::getFormattedTime).setHeader("Uhrzeit");
         driverGrid.addColumn(passenger ->passenger.getPassenger().getFullName()).setHeader("Mitfahrer");
         driverGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
@@ -83,15 +80,16 @@ public class DriveRequestListView extends VerticalLayout {
         passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()));
 
         passengerGrid.addColumn(name ->name.getDriveRoute().getDriver().getFullName()).setHeader("Name");
-        passengerGrid.addColumn(date ->date.getRequestTime().toLocalDate()).setHeader("Datum");
-        passengerGrid.addColumn(time ->time.getRequestTime().toLocalTime()).setHeader("Uhrzeit");
+        passengerGrid.addColumn(DriveRequest::getFormattedDate).setHeader("Datum");
+        passengerGrid.addColumn(DriveRequest::getFormattedTime).setHeader("Uhrzeit");
         passengerGrid.addColumn(status ->status.getRequestState().label).setHeader("Anfragestatus");
 
 
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
             showDriveRequestButton.addClickListener(e->{
-
+                DriveDetailsDialog driveDetailsDialog = new DriveDetailsDialog(item.getDriveRoute());
+                driveDetailsDialog.open();
             });
             return showDriveRequestButton;
         }).setHeader("");
@@ -99,13 +97,15 @@ public class DriveRequestListView extends VerticalLayout {
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.TRASH.create());
             showDriveRequestButton.addClickListener(e->{
-
+//                System.out.println(item.getDriveRoute().getDriveRequests().size());
+//                item.getDriveRoute().removeDriveRequest(item);
+//                driveRouteService.save(item.getDriveRoute());
+//                System.out.println(item.getDriveRoute().getDriveRequests().size());
+//                driveRequestService.delete(item);
+//                UI.getCurrent().getPage().reload();
             });
             return showDriveRequestButton;
         }).setHeader("");
-
-//        grid.addColumn(new LocalDateTimeRenderer<>(item -> item.getZiel().getTime(),
-//                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader("zeitpunkt");
 
         passengerGrid.getColumns().forEach(col -> col.setAutoWidth(true));
         passengerGrid.getColumns().get(3).setWidth("50px");

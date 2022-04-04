@@ -13,6 +13,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
@@ -45,7 +46,6 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final Checkbox detourCheckbox;
     private final Checkbox visibleCheckbox;
     private final H2 title;
-
 
     /**
      * Der Konstruktor erstellt das FormLayout für
@@ -89,17 +89,16 @@ public class FormLayoutDriveRoute extends FormLayout {
         setResponsiveSteps(new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
                 new ResponsiveStep("490px", 4, ResponsiveStep.LabelsPosition.TOP));
 
-        if(driveType == DriveType.OUTWARD_TRIP){
-            add(title,address, fhLocation, driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
+        if (driveType == DriveType.OUTWARD_TRIP) {
+            add(title, address, fhLocation, driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
                     driveTime, driveDays, carSeatCount, detourCheckbox, visibleCheckbox, buttonDetourRoute);
 
-        }
-        else{
+        } else {
             fhLocation.setLabel("Von");
             address.setLabel("Nach");
             driveTime.setLabel("Abfahrtzeit");
             title.setText("Rückfahrt erstellen");
-            add(title,fhLocation, address,driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
+            add(title, fhLocation, address, driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
                     driveTime, driveDays, carSeatCount, detourCheckbox, visibleCheckbox, buttonDetourRoute);
 
         }
@@ -114,7 +113,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         setColspan(driveDays, 3);
         setColspan(carSeatCount, 1);
         setColspan(checkboxFuelParticipation, 1);
-        setColspan(buttonDetourRoute,4);
+        setColspan(buttonDetourRoute, 4);
         setColspan(detourCheckbox, 1);
         setColspan(visibleCheckbox, 1);
 
@@ -131,7 +130,7 @@ public class FormLayoutDriveRoute extends FormLayout {
 
 
         buttonDetourRoute.addClickListener(e -> {
-            if(!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")){
+            if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
                 AddressConverter converterStart = new AddressConverter(address.getValue());
                 AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
 
@@ -141,8 +140,7 @@ public class FormLayoutDriveRoute extends FormLayout {
                         Collections.emptyList());
 
                 UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
-            }
-            else{
+            } else {
                 Notification notification = new Notification("Bitte Start- und Zieladresse eingeben.", 3000);
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
                 notification.open();
@@ -154,6 +152,7 @@ public class FormLayoutDriveRoute extends FormLayout {
     public H2 getTitle() {
         return title;
     }
+
     public String getAddress() {
         return address.getValue();
     }
@@ -198,39 +197,55 @@ public class FormLayoutDriveRoute extends FormLayout {
         return visibleCheckbox.getValue();
     }
 
-    public void setSitzplaetze(String anzahl){
+    public void setSitzplaetze(String anzahl) {
         carSeatCount.setValue(anzahl);
     }
 
-    public void setFhLocation(String fhStandort){
+    public void setFhLocation(String fhStandort) {
         fhLocation.setValue(fhStandort);
     }
 
-    public void setDriveTime(LocalTime fahrZeit){
+    public void setDriveTime(LocalTime fahrZeit) {
         driveTime.setValue(fahrZeit);
     }
 
-    public void setDriveDateStart(LocalDate day){
+    public void setDriveDateStart(LocalDate day) {
         driveDateStart.setValue(day);
     }
 
-    public void setAddress(String address){
+    public void setAddress(String address) {
         this.address.setValue(address);
     }
 
-    public void setReadOnly(boolean check){
-        address.setReadOnly(check);
-        address.setReadOnly(check);
-        fhLocation.setReadOnly(check);
-        driveTime.setReadOnly(check);
-        carSeatCount.setReadOnly(check);
-        driveDateStart.setReadOnly(check);
-        driveDateEnd.setReadOnly(check);
-        checkboxRegularDrive.setReadOnly(check);
-        checkboxFuelParticipation.setReadOnly(check);
-        driveDays.setReadOnly(check);
-        detourCheckbox.setReadOnly(check);
-        visibleCheckbox.setReadOnly(check);
+    //TODO: MUSS MIT ALLEN DATEN PASSIEREN AUCH BEI NULL
+    public void setData(DriveRoute driveRoute) {
+        if(driveRoute == null){
+            throw new IllegalArgumentException();
+        }
+        setSitzplaetze(driveRoute.getSeatCount().toString());
+        setFhLocation(driveRoute.getZiel().getAddress().getPlace());
+        setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
+        setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
+        setAddress(driveRoute.getStart().getAddress().getStreet() + " "
+                + driveRoute.getStart().getAddress().getHouseNumber() + ", "
+                + driveRoute.getStart().getAddress().getPostal() + " "
+                + driveRoute.getStart().getAddress().getPlace() + ", "
+                + "Deutschland");
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        address.setReadOnly(readOnly);
+        address.setReadOnly(readOnly);
+        fhLocation.setReadOnly(readOnly);
+        driveTime.setReadOnly(readOnly);
+        carSeatCount.setReadOnly(readOnly);
+        driveDateStart.setReadOnly(readOnly);
+        driveDateEnd.setReadOnly(readOnly);
+        checkboxRegularDrive.setReadOnly(readOnly);
+        checkboxFuelParticipation.setReadOnly(readOnly);
+        driveDays.setReadOnly(readOnly);
+        detourCheckbox.setReadOnly(readOnly);
+        visibleCheckbox.setReadOnly(readOnly);
     }
 
 }

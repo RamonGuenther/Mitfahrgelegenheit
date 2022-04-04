@@ -72,7 +72,9 @@ import '@vaadin/vaadin-lumo-styles/typography.js';
 import averageRatingsCss from './components/average-ratings.css';
 import button_switch_themeCss from './components/button_switch_theme.css';
 import changePasswordDialogCss from './components/change-password-dialog.css';
+import driveDetailsDialogCss from './components/drive-details-dialog.css';
 import driveRequestDialogCss from './components/drive-request-dialog.css';
+import driveRequestManageDialogCss from './components/drive-request-manage-dialog.css';
 import formLayoutDriveRouteCss from './components/form-layout-drive-route.css';
 import menuBarButtonCss from './components/menu-bar-button.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
@@ -111,9 +113,21 @@ export const applyTheme = (target) => {
       `
     );
     registerStyles(
+      'drive-details-dialog',
+      css`
+        ${unsafeCSS(driveDetailsDialogCss.toString())}
+      `
+    );
+    registerStyles(
       'drive-request-dialog',
       css`
         ${unsafeCSS(driveRequestDialogCss.toString())}
+      `
+    );
+    registerStyles(
+      'drive-request-manage-dialog',
+      css`
+        ${unsafeCSS(driveRequestManageDialogCss.toString())}
       `
     );
     registerStyles(
