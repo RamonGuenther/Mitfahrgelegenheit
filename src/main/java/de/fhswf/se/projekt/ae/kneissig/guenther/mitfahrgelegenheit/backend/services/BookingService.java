@@ -21,8 +21,8 @@ public class BookingService {
         repository.save(newBooking);
     }
 
-    public void delete(Booking newBooking){
-        repository.delete(newBooking);
+    public void delete(Booking booking){
+        repository.delete(booking);
     }
 
     public List<Booking> findAllByPassengerAndDriveRoute_DriveType(User user, DriveType driveType){

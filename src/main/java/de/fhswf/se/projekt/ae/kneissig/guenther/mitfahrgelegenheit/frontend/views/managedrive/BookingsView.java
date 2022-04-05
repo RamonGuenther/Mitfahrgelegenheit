@@ -79,7 +79,7 @@ public class BookingsView extends VerticalLayout {
         gridBookings.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         gridBookings.addColumn(booking -> booking.getDriveRoute().getZiel().getFullAddressToString()).setHeader("Ziel");
 
-        gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getFirstName(), booking.getDriveRoute().getDriver().getFirstName())).setHeader("Fahrer");
+        gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getUsername(), booking.getDriveRoute().getDriver().getFirstName())).setHeader("Fahrer");
 
         gridBookings.addComponentColumn(this::createLeaveDriveButton).setHeader("Weiter mitfahren?");
 
@@ -111,6 +111,7 @@ public class BookingsView extends VerticalLayout {
         button.addClickListener(event -> {
 
             DriveRoute route = driveRouteService.findById(booking.getDriveRoute().getId()).get();
+
             route.deleteBooking(booking);
             driveRouteService.save(route);
             bookingService.delete(booking);
