@@ -61,15 +61,14 @@ public class Booking {
         return driveRoute;
     }
 
-    //TODO: Hat Probleme bei der Bookings View verursacht
-//    @Override
-//    public boolean equals (Object o) {
-//        return o instanceof Booking && passenger.equals (((Booking) o).passenger);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(getPassenger().hashCode());
-//    }
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof Booking) && id.equals(((Booking) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(passenger,driveRoute);
+    }
 
 }

@@ -223,7 +223,17 @@ public class MitfahrgelegenheitApplication {
 
 
 
-        DriveRequest driveRequest = new DriveRequest(driveRoute2,RequestState.OPEN,user2,"Apfel Birne und so","", LocalDateTime.now(), new Stopover(new Address(), null));
+        DriveRequest driveRequest = new DriveRequest(
+                driveRoute2,
+                RequestState.OPEN,
+                user2,
+                "Apfel Birne und so",
+                "",
+                LocalDateTime.now(),
+                new Stopover(new Address("58095","Hagen","Diesterwegstraße","6"),
+                        LocalDateTime.now())
+        );
+
         driveRoute2.addDriveRequest(driveRequest);
         driveRequestService.save(driveRequest);
         driveRouteService.save(driveRoute2);

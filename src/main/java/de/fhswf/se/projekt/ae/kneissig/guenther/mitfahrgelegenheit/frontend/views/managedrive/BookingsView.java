@@ -112,7 +112,7 @@ public class BookingsView extends VerticalLayout {
 
             DriveRoute route = driveRouteService.findById(booking.getDriveRoute().getId()).get();
 
-            route.deleteBooking(booking);
+            route.removeBooking(booking);
             driveRouteService.save(route);
             bookingService.delete(booking);
 

@@ -19,11 +19,6 @@ public abstract class Waypoint {
     @Column(name = "time")
     protected LocalDateTime time;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(address);
-    }
-
     public Waypoint(Address address, LocalDateTime time) {
         this.address = address;
         this.time = time;
@@ -51,12 +46,25 @@ public abstract class Waypoint {
         return time;
     }
 
+
+    public String getFullAddressToString(){
+        return address.getStreet() + " " +
+                address.getHouseNumber() + ", " +
+                address.getPostal() + " " +
+                address.getPlace();
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Waypoint)
             return getAddress().equals(((Waypoint) other).getAddress());
         else
             return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(address);
     }
 }
 

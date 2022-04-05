@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 /**
  *      Todo:
- *             -Fahrtanfrage darf nicht mehrmals von einer Person möglich sein, siehe Sebastian krassen shit
+ *             - Addressconverpattern nehmen um das Feld zu überprüfen auch für SearchDriveView und OfferDriveView
  */
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-dialog.css")
 public class DriveRequestDialog extends Dialog {

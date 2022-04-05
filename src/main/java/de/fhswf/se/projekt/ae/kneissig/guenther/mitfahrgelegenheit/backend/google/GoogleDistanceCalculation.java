@@ -43,7 +43,7 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
             result.add(value);
         }
 
-        result.remove(0);
+        result.remove(newOrigins.get(0));
 
         return result;
     }

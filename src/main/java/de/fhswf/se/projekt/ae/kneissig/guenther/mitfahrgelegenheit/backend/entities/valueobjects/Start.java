@@ -14,9 +14,5 @@ public class Start extends Waypoint {
         super();
     }
 
-    public String getFullAddressToString(){
-        return address.getStreet() + " " +
-                address.getHouseNumber() + ", " +
-                address.getPostal() + " " +
-                address.getPlace();}
+
 }

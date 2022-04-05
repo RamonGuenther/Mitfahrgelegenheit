@@ -37,7 +37,7 @@ public class DriveRequest {
         this.currentRouteLink = currentRouteLink;
         this.requestTime = requestTime;
         this.stopover = stopover;
-        id = hashCode();
+        id= hashCode();
     }
 
     public DriveRequest() {
@@ -104,9 +104,7 @@ public class DriveRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DriveRequest that)) return false;
-        return Objects.equals(getPassenger(), that.getPassenger()) && Objects.equals(getDriveRoute(), that.getDriveRoute());
+        return (o instanceof DriveRequest) && id.equals(((DriveRequest) o).id);
     }
 
 

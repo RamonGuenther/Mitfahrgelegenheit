@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs;
 
+import com.google.maps.errors.ApiException;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -14,15 +15,24 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateBookingException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-manage-dialog.css")
 public class DriveRequestManageDialog extends Dialog {
@@ -73,14 +83,14 @@ public class DriveRequestManageDialog extends Dialog {
         formLayoutDriveRoute.setReadOnly(true);
         formLayoutDriveRoute.setData(driveRoute);
         formLayoutDriveRoute.remove(formLayoutDriveRoute.getTitle());
-        add(titleLayout,formLayoutDriveRoute);
+        add(titleLayout, formLayoutDriveRoute);
 
         TextArea textArea = new TextArea("Nachricht: ");
         textArea.setReadOnly(true);
         textArea.setId("drive-request-manage-dialog-text_area");
         textArea.setValue(driveRequest.getNote());
 
-        if (!driveRequest.getNote().isEmpty()  || !driveRequest.getNote().equals("")) {
+        if (!driveRequest.getNote().isEmpty() || !driveRequest.getNote().equals("")) {
             add(textArea);
         }
 
@@ -91,12 +101,19 @@ public class DriveRequestManageDialog extends Dialog {
         Button cancelButton = new Button("Abbrechen");
         cancelButton.setClassName("drive-request-manage-dialog-buttons");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(acceptButton,declineButton,cancelButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(acceptButton, declineButton, cancelButton);
         buttonLayout.setClassName("drive-request-manage-dialog-button_layout");
 
-        acceptButton.addClickListener(e -> saveDriveRequest(RequestState.ACCEPTED));
-        declineButton.addClickListener(e -> saveDriveRequest(RequestState.REJECTED));
-        cancelButton.addClickListener(e-> close());
+        acceptButton.addClickListener(e -> {
+            saveDriveRequest(RequestState.ACCEPTED);
+
+        });
+        declineButton.addClickListener(e -> {
+
+            saveDriveRequest(RequestState.REJECTED);
+
+        });
+        cancelButton.addClickListener(e -> close());
 
         add(buttonLayout);
     }
@@ -104,16 +121,49 @@ public class DriveRequestManageDialog extends Dialog {
     private void saveDriveRequest(RequestState requestState) {
         driveRequest.setRequestState(requestState);
         driveRequestService.save(driveRequest);
-        if(requestState == RequestState.ACCEPTED){
-            Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
-            bookingService.save(newBooking);
-            //TODO: Hier den neuen Link erstellen und in DriveRoute speichern bzw auch den Fallbeachten,
-            // als gäbe es schon andere Stopovers
-            try {
-                driveRequest.getDriveRoute().addBooking(newBooking);
-            } catch (DuplicateBookingException ex) {
-                ex.printStackTrace();
-            }
+        if (requestState == RequestState.ACCEPTED) {
+//            try {
+//                Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
+//                bookingService.save(newBooking);
+//                driveRequest.getDriveRoute().addBooking(newBooking);
+//
+//
+//
+//                List<String> origins = new ArrayList<>();
+//
+//                origins.add(driveRequest.getDriveRoute().getStart().getFullAddressToString());
+//
+//                for (Booking booking : driveRequest.getDriveRoute().getBookings()) {
+//                    origins.add(booking.getStopover().getFullAddressToString());
+//                }
+//
+//                System.out.println(origins.stream().toList());
+//
+//                String target = driveRequest.getDriveRoute().getDestination().getFullAddressToString();
+//
+//                System.out.println(target);
+//
+//                GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
+//                List<String> result = googleDistanceCalculation.calculate(origins, target);
+//
+//
+//                List<Stopover> stopoverList= new ArrayList<>();
+//
+//                for (String res : result) {
+//                    AddressConverter addressConverter = new AddressConverter(res);
+//                    stopoverList.add(new Stopover(new Address(addressConverter.getPostalCode(), addressConverter.getPlace(), addressConverter.getStreet(), addressConverter.getNumber()), LocalDateTime.now()));
+//                }
+//
+//
+//                RouteString routeString = new RouteString(driveRequest.getDriveRoute().getStart(), driveRequest.getDriveRoute().getZiel(), stopoverList);
+//
+//                System.out.println(routeString.getRoute());
+//
+//                driveRequest.getDriveRoute().setCurrentRouteLink(routeString.getRoute());
+//
+//            } catch (IOException | InterruptedException | ApiException | DuplicateBookingException ex) {
+//                ex.printStackTrace();
+//            }
         }
         driveRouteService.save(driveRequest.getDriveRoute());
         System.out.println(driveRouteService.findById(driveRequest.getDriveRoute().getId()).get().getDriveRequests().get(0).getRequestState().label);

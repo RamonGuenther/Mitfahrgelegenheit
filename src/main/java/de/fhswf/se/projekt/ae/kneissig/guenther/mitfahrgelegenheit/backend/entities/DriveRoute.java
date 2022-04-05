@@ -57,7 +57,7 @@ public class DriveRoute {
 
     private String currentRouteLink;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute")
     private Set<DriveRequest> driveRequests;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute")
@@ -170,6 +170,9 @@ public class DriveRoute {
     }
 
 
+    public Set<Booking> getBookings() {
+        return bookings;
+    }
 
     public void addDriveRequest(DriveRequest driveRequest) throws DuplicateRequestException {
         nullCheck(driveRequest);
@@ -180,14 +183,8 @@ public class DriveRoute {
         driveRequests.add(driveRequest);
     }
 
-    /**
-     * Recherschieren warum es nicht geht
-     *
-     * @param driveRequest
-     */
     public void removeDriveRequest(DriveRequest driveRequest){
         nullCheck(driveRequest);
-        System.out.println(driveRequests.contains(driveRequest));
         driveRequests.remove(driveRequest);
     }
 
@@ -200,12 +197,9 @@ public class DriveRoute {
         bookings.add(newBooking);
     }
 
-    public void deleteBooking(Booking booking){
+    public void removeBooking(Booking booking){
         nullCheck(booking);
-
-        if(bookings.contains(booking)){
-            bookings.remove(booking);
-        }
+        bookings.remove(booking);
     }
 
     @Override
