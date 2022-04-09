@@ -41,10 +41,10 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final DatePicker driveDateStart;
     private final DatePicker driveDateEnd;
     private final Checkbox checkboxRegularDrive;
-    private final Checkbox checkboxFuelParticipation;
+
+
+    private Checkbox checkboxFuelParticipation;
     private final CheckboxRegularDrive driveDays;
-    private final Checkbox detourCheckbox;
-    private final Checkbox visibleCheckbox;
     private final H2 title;
 
     /**
@@ -58,10 +58,13 @@ public class FormLayoutDriveRoute extends FormLayout {
         setId("form-layout-drive-route-layout");
 
         address = new TextFieldAddress("Von");
+        address.setRequiredIndicatorVisible(true);
 
         fhLocation = new SelectUniversityLocation();
+        fhLocation.setRequiredIndicatorVisible(true);
 
         driveDateStart = new DatePicker("Tag der Fahrt");
+        driveDateStart.setRequiredIndicatorVisible(true);
 
         driveDateEnd = new DatePicker("Zeitraum bis");
         driveDateEnd.setReadOnly(true);
@@ -75,23 +78,22 @@ public class FormLayoutDriveRoute extends FormLayout {
         driveDays = new CheckboxRegularDrive();
         driveDays.setReadOnly(true);
 
+        driveTime.setRequiredIndicatorVisible(true);
+
         carSeatCount = new Select<>();
+        carSeatCount.setRequiredIndicatorVisible(true);
         carSeatCount.setLabel("Anzahl Sitzplätze");
         carSeatCount.setItems("1", "2", "3", "4");
 
         Button buttonDetourRoute = new Button("Route anzeigen", new Icon(VaadinIcon.CAR));
         buttonDetourRoute.setId("form-layout-drive-route-google_maps_button");
 
-        detourCheckbox = new Checkbox("Umweg möglich?");
-
-        visibleCheckbox = new Checkbox("Unsichtbar schalten");
-
         setResponsiveSteps(new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
                 new ResponsiveStep("490px", 4, ResponsiveStep.LabelsPosition.TOP));
 
         if (driveType == DriveType.OUTWARD_TRIP) {
             add(title, address, fhLocation, driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
-                    driveTime, driveDays, carSeatCount, detourCheckbox, visibleCheckbox, buttonDetourRoute);
+                    driveTime, driveDays, carSeatCount, buttonDetourRoute);
 
         } else {
             fhLocation.setLabel("Von");
@@ -99,7 +101,7 @@ public class FormLayoutDriveRoute extends FormLayout {
             driveTime.setLabel("Abfahrtzeit");
             title.setText("Rückfahrt erstellen");
             add(title, fhLocation, address, driveDateStart, driveDateEnd, checkboxRegularDrive, checkboxFuelParticipation,
-                    driveTime, driveDays, carSeatCount, detourCheckbox, visibleCheckbox, buttonDetourRoute);
+                    driveTime, driveDays, carSeatCount, buttonDetourRoute);
 
         }
 
@@ -114,8 +116,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         setColspan(carSeatCount, 1);
         setColspan(checkboxFuelParticipation, 1);
         setColspan(buttonDetourRoute, 4);
-        setColspan(detourCheckbox, 1);
-        setColspan(visibleCheckbox, 1);
 
         /* Listener*/
 
@@ -125,7 +125,9 @@ public class FormLayoutDriveRoute extends FormLayout {
             boolean checked = !event.getValue();
             driveDateStart.setLabel(checked ? "Tag der Fahrt" : "Zeitraum von");
             driveDateEnd.setReadOnly(checked);
+            driveDateEnd.setRequiredIndicatorVisible(!checked);
             driveDays.setReadOnly(checked);
+            driveDays.setRequiredIndicatorVisible(!checked);
         });
 
 
@@ -189,13 +191,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         return driveDays.getValue();
     }
 
-    public Boolean getDetourCheckbox() {
-        return detourCheckbox.getValue();
-    }
-
-    public Boolean getVisibleCheckbox() {
-        return visibleCheckbox.getValue();
-    }
 
     public void setSitzplaetze(String anzahl) {
         carSeatCount.setValue(anzahl);
@@ -217,11 +212,20 @@ public class FormLayoutDriveRoute extends FormLayout {
         this.address.setValue(address);
     }
 
+    public void setCheckboxFuelParticipation(boolean isChecked) {
+        this.checkboxFuelParticipation.setValue(isChecked);
+    }
+
+
+
+
     //TODO: MUSS MIT ALLEN DATEN PASSIEREN AUCH BEI NULL
     public void setData(DriveRoute driveRoute) {
         if(driveRoute == null){
             throw new IllegalArgumentException();
         }
+
+        setCheckboxFuelParticipation(driveRoute.isFuelParticipation());
         setSitzplaetze(driveRoute.getSeatCount().toString());
         setFhLocation(driveRoute.getZiel().getAddress().getPlace());
         setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
@@ -244,8 +248,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         checkboxRegularDrive.setReadOnly(readOnly);
         checkboxFuelParticipation.setReadOnly(readOnly);
         driveDays.setReadOnly(readOnly);
-        detourCheckbox.setReadOnly(readOnly);
-        visibleCheckbox.setReadOnly(readOnly);
     }
 
 }

@@ -26,7 +26,7 @@ public class GoogleAddressAutocomplete implements GoogleApiKey{
     public List<String> findStreets(List<String> daten, String eventValue) throws IOException, InterruptedException, ApiException {
         results = PlacesApi.placeAutocomplete(context, eventValue, token)
                 .location(LOCATION)
-                .offset(4)
+                .offset(10)
                 .radius(169991)
                 .components(ComponentFilter.country("DE"))
                 .types(PlaceAutocompleteType.ADDRESS)

@@ -44,13 +44,23 @@ public class OwnDriveOffersEditDialog extends Dialog {
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService) {
 
+    //TODO: hier muss noch das Textfeld hin für die Änderungsnotiz
+    public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService) {
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
 
         this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
+
+        Button deleteButton = new Button(VaadinIcon.TRASH.create());
+        deleteButton.setId("own-drive-offers-edit-dialog-delete_button");
+        add(deleteButton);
+
+        deleteButton.addClickListener(e->{
+           //DIALOG Für ob man sich sicher is da
+            driveRouteService.delete(driveRoute);
+        });
 
         switch (driveRoute.getDriveType()) {
             case OUTWARD_TRIP -> {
@@ -69,13 +79,13 @@ public class OwnDriveOffersEditDialog extends Dialog {
         Button editButton = new Button("Bearbeiten");
         editButton.setIcon(VaadinIcon.PENCIL.create());
         editButton.setClassName("own-drive-offers-edit-dialog-buttons");
-        editButton.addClickListener(e->{
+        editButton.addClickListener(e -> {
             createEditButtons(driveRoute.getDriveType());
         });
 
         Button closeButton = new Button("Schließen");
         closeButton.setClassName("own-drive-offers-edit-dialog-buttons");
-        closeButton.addClickListener(e-> close());
+        closeButton.addClickListener(e -> close());
 
         defaultButtonLayout = new HorizontalLayout(editButton, closeButton);
         defaultButtonLayout.setClassName("own-drive-offers-edit-dialog-button_layout");
@@ -134,6 +144,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
         saveDrive(formLayoutDriveRouteTop.getAddress(),
                 formLayoutDriveRouteTop.getFhLocation(),
                 formLayoutDriveRouteTop.getDriveTime(),
+                formLayoutDriveRouteTop.getCheckboxFuelParticipation(),
                 formLayoutDriveRouteTop.getCarSeatCount(),
                 DriveType.OUTWARD_TRIP,
                 formLayoutDriveRouteTop.getDriveDateStart()
@@ -144,13 +155,14 @@ public class OwnDriveOffersEditDialog extends Dialog {
         saveDrive(formLayoutDriveRouteBottom.getFhLocation(),
                 formLayoutDriveRouteBottom.getAddress(),
                 formLayoutDriveRouteBottom.getDriveTime(),
+                formLayoutDriveRouteBottom.getCheckboxRegularDrive(),
                 formLayoutDriveRouteBottom.getCarSeatCount(),
                 DriveType.RETURN_TRIP,
                 formLayoutDriveRouteBottom.getDriveDateStart()
         );
     }
 
-    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
+    private void saveDrive(String address, String fhLocation, LocalTime driveTime, boolean fuelParticipation, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
         try {
             AddressConverter converter = new AddressConverter(address);
             Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
@@ -164,12 +176,16 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     driveRoute.getId(),
                     new Start(firstAddress, driveTime.atDate(driveDate)),
                     new Destination(secondAddress, driveTime.atDate(driveDate)),
-                    carSeatCount, user,LocalDateTime.now(),fahrtenTyp);
+                    fuelParticipation,
+                    carSeatCount,
+                    user,
+                    LocalDateTime.now(),
+                    fahrtenTyp
+            );
 
             driveRouteService.save(updateDriveRoute);
 
             UI.getCurrent().getPage().reload();
-//            NotificationSuccess.show("Fahrt wurde gespeichert!");
             this.close();
 
         } catch (Exception e) {

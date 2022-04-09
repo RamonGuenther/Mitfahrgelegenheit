@@ -122,13 +122,12 @@ public class DriveRequestManageDialog extends Dialog {
         driveRequest.setRequestState(requestState);
         driveRequestService.save(driveRequest);
         if (requestState == RequestState.ACCEPTED) {
-//            try {
-//                Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
-//                bookingService.save(newBooking);
-//                driveRequest.getDriveRoute().addBooking(newBooking);
-//
-//
-//
+            try {
+                Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
+                bookingService.save(newBooking);
+                driveRequest.getDriveRoute().addBooking(newBooking);
+                //TODO: calculate start und so geben als start und enfach dorthn / google places recherchieren
+
 //                List<String> origins = new ArrayList<>();
 //
 //                origins.add(driveRequest.getDriveRoute().getStart().getFullAddressToString());
@@ -161,14 +160,15 @@ public class DriveRequestManageDialog extends Dialog {
 //
 //                driveRequest.getDriveRoute().setCurrentRouteLink(routeString.getRoute());
 //
-//            } catch (IOException | InterruptedException | ApiException | DuplicateBookingException ex) {
-//                ex.printStackTrace();
-//            }
-        }
-        driveRouteService.save(driveRequest.getDriveRoute());
-        System.out.println(driveRouteService.findById(driveRequest.getDriveRoute().getId()).get().getDriveRequests().get(0).getRequestState().label);
-        close();
-        UI.getCurrent().getPage().reload();
 
+            } catch (DuplicateBookingException e) {
+                e.printStackTrace();
+            }
+            driveRouteService.save(driveRequest.getDriveRoute());
+            System.out.println(driveRouteService.findById(driveRequest.getDriveRoute().getId()).get().getDriveRequests().get(0).getRequestState().label);
+            close();
+            UI.getCurrent().getPage().reload();
+
+        }
     }
 }

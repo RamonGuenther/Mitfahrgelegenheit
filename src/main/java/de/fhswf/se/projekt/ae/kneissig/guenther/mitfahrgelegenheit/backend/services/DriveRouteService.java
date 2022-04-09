@@ -26,6 +26,10 @@ public class DriveRouteService {
         repository.save(driveRoute);
     }
 
+    public void delete(DriveRoute driveRoute){
+        repository.delete(driveRoute);
+    }
+
     public List<DriveRoute> findAllFahrerRoutenByBenutzer(User user) {
         return repository.findAllByDriver(user);
     }

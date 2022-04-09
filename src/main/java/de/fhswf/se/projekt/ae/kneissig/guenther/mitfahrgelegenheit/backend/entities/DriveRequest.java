@@ -41,10 +41,7 @@ public class DriveRequest {
     }
 
     public DriveRequest() {
-        this.requestState = null;
-        this.passenger = null;
-        this.note = null;
-        this.currentRouteLink = null;
+
     }
 
     public RequestState getRequestState() {

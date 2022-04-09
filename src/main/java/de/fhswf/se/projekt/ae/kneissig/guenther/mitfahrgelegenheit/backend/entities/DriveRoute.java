@@ -51,7 +51,11 @@ public class DriveRoute {
 
     private boolean fuelParticipation;
 
+    private boolean isRegularDrive;
+
     private DayOfWeek regularDriveDay;
+
+    private LocalDateTime regularDriveDateEnd;
 
     private String note;
 
@@ -63,9 +67,13 @@ public class DriveRoute {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute")
     private Set<Booking> bookings;
 
-    public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
+    public DriveRoute(
+            Start start, Destination destination, boolean fuelParticipation, Integer seatCount, User driver,
+            LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
+
         this.start = start;
         this.destination = destination;
+        this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
         this.driver = driver;
         this.creationDate = creationDate;
@@ -76,23 +84,36 @@ public class DriveRoute {
         id = hashCode();
     }
 
-    public DriveRoute(Start start, Destination destination, Integer seatCount, User driver, LocalDateTime creationDate, DriveType driveType, String currentRouteLink, Set<DriveRequest> driveRequests) {
+    //TODO: Regelmäßige Fahrt Konstruktor brauch ich den überhaupt oder kann ich den hier einfach für alles nutzen und bei null wird halt null einegtragen? XD
+    public DriveRoute(Start start, Destination destination, boolean isRegularDrive, LocalDateTime regularDriveDateEnd,
+                      DayOfWeek regularDriveDay, boolean fuelParticipation, Integer seatCount, User driver,
+                      LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
+
         this.start = start;
         this.destination = destination;
+
+        this.isRegularDrive = isRegularDrive;
+        this.regularDriveDateEnd = regularDriveDateEnd;
+        this.regularDriveDay = regularDriveDay;
+
+        this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
         this.driver = driver;
         this.creationDate = creationDate;
         this.driveType = driveType;
         this.currentRouteLink = currentRouteLink;
-        this.driveRequests = new HashSet<>(driveRequests);
+        driveRequests = new HashSet<>();
         bookings = new HashSet<>();
         id = hashCode();
     }
 
+
+    //TODO: Update Konstruktor -> vllt doch über setter? oder überall über Konstruktor
     public DriveRoute(
             Integer id,
             Start start,
             Destination destination,
+            boolean fuelParticipation,
             Integer seatCount,
             User driver,
             LocalDateTime creationDate,
@@ -101,6 +122,7 @@ public class DriveRoute {
         this.id = id;
         this.start = start;
         this.destination = destination;
+        this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
         this.driver = driver;
         this.creationDate = creationDate;
@@ -169,6 +191,13 @@ public class DriveRoute {
         return driveType;
     }
 
+    public boolean isRegularDrive() {
+        return isRegularDrive;
+    }
+
+    public LocalDateTime getRegularDriveDateEnd() {
+        return regularDriveDateEnd;
+    }
 
     public Set<Booking> getBookings() {
         return bookings;
@@ -183,9 +212,11 @@ public class DriveRoute {
         driveRequests.add(driveRequest);
     }
 
-    public void removeDriveRequest(DriveRequest driveRequest){
+    public void removeDriveRequest(DriveRequest driveRequest) {
         nullCheck(driveRequest);
+        System.out.println(driveRequests.contains(driveRequest));
         driveRequests.remove(driveRequest);
+        System.out.println("Nach delete: " + driveRequests.size());
     }
 
     public void addBooking(Booking newBooking) throws DuplicateBookingException {
@@ -197,9 +228,10 @@ public class DriveRoute {
         bookings.add(newBooking);
     }
 
-    public void removeBooking(Booking booking){
+    public void removeBooking(Booking booking) {
         nullCheck(booking);
         bookings.remove(booking);
+        System.out.println("Nach delete: " + bookings.size());
     }
 
     @Override
@@ -208,7 +240,7 @@ public class DriveRoute {
     }
 
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj) {
         return obj instanceof DriveRoute && id.equals(((DriveRoute) obj).id);
     }
 }

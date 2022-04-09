@@ -103,7 +103,7 @@ public class DriveRequestListView extends VerticalLayout {
                 driveRouteService.save(item.getDriveRoute());
                 System.out.println(item.getDriveRoute().getDriveRequests().size());
                 driveRequestService.delete(item);
-
+                System.out.println(item.getDriveRoute().getDriveRequests().size());
                 passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()));
 
             });

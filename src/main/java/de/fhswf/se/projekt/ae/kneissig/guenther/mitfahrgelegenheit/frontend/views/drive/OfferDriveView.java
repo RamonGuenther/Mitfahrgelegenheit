@@ -150,14 +150,14 @@ public class OfferDriveView extends VerticalLayout{
     }
 
     private void saveFormLayoutTop() {
-        saveDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
+        saveDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(),formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
     }
 
     private void saveFormLayoutBottom() {
-        saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP,formLayoutBottom.getDriveDateStart());
+        saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(),formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP,formLayoutBottom.getDriveDateStart());
     }
 
-    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
+    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
         try{
             AddressConverter converter = new AddressConverter(address);
             Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
@@ -174,7 +174,11 @@ public class OfferDriveView extends VerticalLayout{
             driveRouteService.save(new DriveRoute(
                     start,
                     destination,
-                    carSeatCount, user, LocalDateTime.now(),fahrtenTyp,
+                    fuelParticipation,
+                    carSeatCount,
+                    user,
+                    LocalDateTime.now(),
+                    fahrtenTyp,
                     routeString.getRoute()
             ));
 

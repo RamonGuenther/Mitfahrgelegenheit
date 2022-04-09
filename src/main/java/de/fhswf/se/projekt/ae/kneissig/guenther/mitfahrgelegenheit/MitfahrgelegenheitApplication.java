@@ -117,6 +117,7 @@ public class MitfahrgelegenheitApplication {
         DriveRoute driveRoute = new DriveRoute(
                 start,
                 destination,
+                false,
                 4,
                 user1,
                 LocalDateTime.now(),
@@ -135,6 +136,7 @@ public class MitfahrgelegenheitApplication {
         DriveRoute driveRoute1 = new DriveRoute(
                 start,
                 destination,
+                false,
                 4,
                 user1,
                 LocalDateTime.now(),
@@ -154,6 +156,7 @@ public class MitfahrgelegenheitApplication {
         DriveRoute driveRoute2 = new DriveRoute(
                 start,
                 destination,
+                false,
                 5,
                 user1,
                 LocalDateTime.of(2022, 4, 1, 14, 30),
