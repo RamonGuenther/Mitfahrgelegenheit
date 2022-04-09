@@ -5,7 +5,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateBookingException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -35,17 +37,25 @@ public class MitfahrgelegenheitApplication {
     private DriveRouteService driveRouteService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    DriveRequestService driveRequestService;
+    private DriveRequestService driveRequestService;
+
+
+    @Autowired
+    private BookingService bookingService;
 
     public static void main(String[] args) {
         SpringApplication.run(MitfahrgelegenheitApplication.class, args);
     }
 
     @PostConstruct
-    public void initData() throws DuplicateRequestException {
+    public void initData() throws DuplicateRequestException, DuplicateBookingException {
+
+        /**
+         * Benutzer
+         */
         User user1 = new User(
                 1L,
                 "rague002",
@@ -97,6 +107,11 @@ public class MitfahrgelegenheitApplication {
         );
 
         userService.save(user3);
+
+
+        /**
+         * Fahrten
+         */
 
         Start start = new Start(new Address("58636", "Iserlohn", "Sundernallee", "75"), LocalDateTime.now());
         Destination destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"), LocalDateTime.now());
@@ -167,7 +182,7 @@ public class MitfahrgelegenheitApplication {
         driveRouteService.save(driveRoute2);
 
         /**
-         * TODO: Rating
+         *  Rating
          */
 
         Rating rating = new Rating(LocalDate.now(), 4, 5);
@@ -190,41 +205,9 @@ public class MitfahrgelegenheitApplication {
 
         System.out.println(user1.getUserRating().getAverageDriverRating());
 
-
         /**
-         * TODO: GOOGLE DISTANCE BEISPIEL
+         * REQUEST
          */
-
-//        GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
-//
-//
-//		List<String> origins = new ArrayList<>();
-//        origins.add("Diesterwegstraße 6, 58095 Hagen, Deutschland");
-//        origins.add("Sundernallee 75, 58636 Iserlohn, Deutschland");
-//        origins.add("Schulstraße 95, 58636 Iserlohn, Deutschland");
-//        origins.add("Im Wiesengrund, 58636 Iserlohn, Deutschland");
-//
-//		String target = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
-//
-//		List<String> result = googleDistanceCalculation.calculate(origins, target);
-//
-//
-//        List<Stopover> stopoverList = new ArrayList<>();
-//
-//        for(String res : result){
-//            AddressConverter addressConverter = new AddressConverter(res);
-//            stopoverList.add(new Stopover(new Address(addressConverter.getPostalCode(),addressConverter.getPlace(),addressConverter.getStreet(), addressConverter.getNumber()), LocalDateTime.now()));
-//		}
-//
-//        Start start1 = new Start(new Address("58095", "Hagen","Diesterwegstraße","6"), LocalDateTime.now());
-//        Destination destination1 = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"),LocalDateTime.now());
-//
-//
-//        RouteString routeString4 = new RouteString(start1, destination1, stopoverList);
-//
-//        System.out.println(routeString4.getRoute());
-
-
 
         DriveRequest driveRequest = new DriveRequest(
                 driveRoute2,
@@ -233,13 +216,25 @@ public class MitfahrgelegenheitApplication {
                 "Apfel Birne und so",
                 "",
                 LocalDateTime.now(),
-                new Stopover(new Address("58095","Hagen","Diesterwegstraße","6"),
+                new Stopover(new Address("58095", "Hagen", "Diesterwegstraße", "6"),
                         LocalDateTime.now())
         );
 
         driveRoute2.addDriveRequest(driveRequest);
         driveRequestService.save(driveRequest);
         driveRouteService.save(driveRoute2);
+
+
+        /**
+         * BOOKING
+         */
+        driveRequest.setRequestState(RequestState.ACCEPTED);
+        driveRequestService.save(driveRequest);
+        Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
+        bookingService.save(newBooking);
+        driveRequest.getDriveRoute().addBooking(newBooking);
+        driveRouteService.save(driveRequest.getDriveRoute());
+
 
     }
 

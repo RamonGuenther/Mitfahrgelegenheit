@@ -72,6 +72,7 @@ import '@vaadin/vaadin-lumo-styles/typography.js';
 import averageRatingsCss from './components/average-ratings.css';
 import button_switch_themeCss from './components/button_switch_theme.css';
 import changePasswordDialogCss from './components/change-password-dialog.css';
+import deleteDialogCss from './components/delete-dialog.css';
 import driveDetailsDialogCss from './components/drive-details-dialog.css';
 import driveRequestDialogCss from './components/drive-request-dialog.css';
 import driveRequestManageDialogCss from './components/drive-request-manage-dialog.css';
@@ -110,6 +111,12 @@ export const applyTheme = (target) => {
       'change-password-dialog',
       css`
         ${unsafeCSS(changePasswordDialogCss.toString())}
+      `
+    );
+    registerStyles(
+      'delete-dialog',
+      css`
+        ${unsafeCSS(deleteDialogCss.toString())}
       `
     );
     registerStyles(

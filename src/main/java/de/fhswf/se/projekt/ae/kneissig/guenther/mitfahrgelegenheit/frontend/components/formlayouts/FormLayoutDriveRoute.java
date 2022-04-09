@@ -45,7 +45,7 @@ public class FormLayoutDriveRoute extends FormLayout {
 
     private Checkbox checkboxFuelParticipation;
     private final CheckboxRegularDrive driveDays;
-    private final H2 title;
+    private H2 title;
 
     /**
      * Der Konstruktor erstellt das FormLayout für
@@ -153,6 +153,10 @@ public class FormLayoutDriveRoute extends FormLayout {
 
     public H2 getTitle() {
         return title;
+    }
+
+    public void setTitle(String text) {
+        this.title.setText(text);
     }
 
     public String getAddress() {

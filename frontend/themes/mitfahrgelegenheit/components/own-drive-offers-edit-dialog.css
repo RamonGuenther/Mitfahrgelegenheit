@@ -1,16 +1,29 @@
-.own-drive-offers-edit-dialog-button_layout{
+#own-drive-offers-edit-dialog-default_button_layout {
     margin-left: 165px;
     margin-top: 30px;
 }
 
-.own-drive-offers-edit-dialog-buttons{
+.own-drive-offers-edit-dialog-buttons {
     margin-left: 100px;
     width: 200px;
 }
 
 
-#own-drive-offers-edit-dialog-delete_button{
-    background-color: red;
+#own-drive-offers-edit-dialog-change_note {
+    width: 1000px;
+    height: 100px;
 }
 
 
+.own-drive-offers-edit-dialog-buttons_edit {
+    margin: auto;
+    width: 200px;
+}
+
+#own-drive-offers-edit-dialog-delete_button {
+    background-color: #c54a4a;
+}
+
+#own-drive-offers-edit-dialog-edit_button_layout {
+    margin-top: 30px;
+}

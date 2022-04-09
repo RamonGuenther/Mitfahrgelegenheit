@@ -1,0 +1,18 @@
+#delete-dialog-header{
+    font-size: x-large;
+    font-weight: bold;
+}
+
+
+#delete-dialog-checkbox{
+
+}
+
+.delete-dialog-buttons{
+    width: 150px;
+    margin-right: 30px;
+}
+
+#delete-dialog-button_layout{
+    margin-left: 60px;
+}

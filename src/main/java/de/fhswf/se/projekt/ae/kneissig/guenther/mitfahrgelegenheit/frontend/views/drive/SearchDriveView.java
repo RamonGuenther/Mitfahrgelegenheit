@@ -124,7 +124,7 @@ public class SearchDriveView extends VerticalLayout {
 
         Button buttonOfferDrive = new Button("Fahrt anbieten");
         buttonOfferDrive.setId("buttonOfferDrive");
-//        buttonOfferDrive.addClickListener(e -> UI.getCurrent().navigate(OfferDriveView.class)); //TODO
+        buttonOfferDrive.addClickListener(e -> UI.getCurrent().navigate(OfferDriveView.class));
 
         FormLayout formSearchDrive = new FormLayout(title, radioDriveDirection, checkboxRegularDrive,
                 address, date, fhLocation, time);

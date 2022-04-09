@@ -97,15 +97,10 @@ public class DriveRequestListView extends VerticalLayout {
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.TRASH.create());
             showDriveRequestButton.addClickListener(e->{
-
-                System.out.println(item.getDriveRoute().getDriveRequests().size());
                 item.getDriveRoute().removeDriveRequest(item);
                 driveRouteService.save(item.getDriveRoute());
-                System.out.println(item.getDriveRoute().getDriveRequests().size());
                 driveRequestService.delete(item);
-                System.out.println(item.getDriveRoute().getDriveRequests().size());
                 passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()));
-
             });
             return showDriveRequestButton;
         }).setHeader("");

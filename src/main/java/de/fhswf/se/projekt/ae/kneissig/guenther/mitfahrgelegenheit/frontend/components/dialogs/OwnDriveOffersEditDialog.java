@@ -2,12 +2,11 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.com
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
@@ -35,7 +34,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     private final DriveRouteService driveRouteService;
     private final HorizontalLayout defaultButtonLayout;
-    private DriveRoute driveRoute;
+    private final TextArea note;
+    private final DriveRoute driveRoute;
 
     private FormLayoutDriveRoute formLayoutDriveRouteTop;
     private FormLayoutDriveRoute formLayoutDriveRouteBottom;
@@ -44,8 +44,6 @@ public class OwnDriveOffersEditDialog extends Dialog {
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-
-    //TODO: hier muss noch das Textfeld hin für die Änderungsnotiz
     public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService) {
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
@@ -53,44 +51,42 @@ public class OwnDriveOffersEditDialog extends Dialog {
         this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
 
-        Button deleteButton = new Button(VaadinIcon.TRASH.create());
-        deleteButton.setId("own-drive-offers-edit-dialog-delete_button");
-        add(deleteButton);
-
-        deleteButton.addClickListener(e->{
-           //DIALOG Für ob man sich sicher is da
-            driveRouteService.delete(driveRoute);
-        });
-
         switch (driveRoute.getDriveType()) {
             case OUTWARD_TRIP -> {
                 formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                formLayoutDriveRouteTop.setTitle("Hinfahrt bearbeiten");
                 formLayoutDriveRouteTop.setReadOnly(true);
                 formLayoutDriveRouteTop.setData(driveRoute);
                 add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
                 formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                formLayoutDriveRouteBottom.setTitle("Rückfahrt bearbeiten");
                 formLayoutDriveRouteBottom.setReadOnly(true);
                 formLayoutDriveRouteBottom.setData(driveRoute);
                 add(formLayoutDriveRouteBottom);
             }
         }
+
+
+        note = new TextArea("Anmerkung");
+        note.setReadOnly(true);
+        note.setValue(driveRoute.getNote() == null ? "" : driveRoute.getNote());
+        note.setId("own-drive-offers-edit-dialog-change_note");
+
         Button editButton = new Button("Bearbeiten");
         editButton.setIcon(VaadinIcon.PENCIL.create());
         editButton.setClassName("own-drive-offers-edit-dialog-buttons");
-        editButton.addClickListener(e -> {
-            createEditButtons(driveRoute.getDriveType());
-        });
+        editButton.addClickListener(e -> createEditButtons(driveRoute.getDriveType()));
 
         Button closeButton = new Button("Schließen");
         closeButton.setClassName("own-drive-offers-edit-dialog-buttons");
         closeButton.addClickListener(e -> close());
 
         defaultButtonLayout = new HorizontalLayout(editButton, closeButton);
-        defaultButtonLayout.setClassName("own-drive-offers-edit-dialog-button_layout");
+        defaultButtonLayout.setId("own-drive-offers-edit-dialog-default_button_layout");
 
-        add(defaultButtonLayout);
+        add(note, defaultButtonLayout);
         open();
     }
 
@@ -100,44 +96,54 @@ public class OwnDriveOffersEditDialog extends Dialog {
      */
     private void createEditButtons(DriveType fahrtenTyp) {
         Button saveButton = new Button("Speichern");
-        saveButton.setClassName("own-drive-offers-edit-dialog-buttons");
+        saveButton.setClassName("own-drive-offers-edit-dialog-buttons_edit");
 
         Button cancelButton = new Button("Abbrechen");
-        cancelButton.setClassName("own-drive-offers-edit-dialog-buttons");
+        cancelButton.setClassName("own-drive-offers-edit-dialog-buttons_edit");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setClassName("own-drive-offers-edit-dialog-button_layout");
-        buttonLayout.add(saveButton, cancelButton);
+        Button deleteButton = new Button("Fahrt löschen");
+        deleteButton.setIcon(VaadinIcon.TRASH.create());
+        deleteButton.setId("own-drive-offers-edit-dialog-delete_button");
+        deleteButton.setClassName("own-drive-offers-edit-dialog-buttons_edit");
+        deleteButton.addClickListener(e -> {
+            DeleteDialog deleteDialog = new DeleteDialog(driveRoute, driveRouteService);
+            deleteDialog.open();
+        });
+
+        HorizontalLayout editButtonLayout = new HorizontalLayout();
+        editButtonLayout.setId("own-drive-offers-edit-dialog-edit_button_layout");
+        editButtonLayout.add(saveButton, cancelButton, deleteButton);
 
         remove(defaultButtonLayout);
-        add(buttonLayout);
+        add(editButtonLayout);
+
+        note.setReadOnly(false);
 
         switch (fahrtenTyp) {
             case OUTWARD_TRIP -> {
                 formLayoutDriveRouteTop.setReadOnly(false);
-                saveButton.addClickListener(event -> {
-                    saveFormLayoutTop();
-                });
+                saveButton.addClickListener(event -> saveFormLayoutTop());
                 cancelButton.addClickListener(event -> {
                     formLayoutDriveRouteTop.setReadOnly(true);
-                    remove(buttonLayout);
+                    note.setReadOnly(true);
+                    remove(editButtonLayout);
                     add(defaultButtonLayout);
                 });
             }
             case RETURN_TRIP -> {
                 formLayoutDriveRouteBottom.setReadOnly(true);
-                saveButton.addClickListener(event -> {
-                    saveFormLayoutBottom();
-                });
+                saveButton.addClickListener(event -> saveFormLayoutBottom());
                 cancelButton.addClickListener(event -> {
                     formLayoutDriveRouteBottom.setReadOnly(true);
-                    remove(buttonLayout);
+                    note.setReadOnly(true);
+                    remove(editButtonLayout);
                     add(defaultButtonLayout);
+
                 });
             }
 
         }
-        add(buttonLayout);
+        add(editButtonLayout);
     }
 
     private void saveFormLayoutTop() {
@@ -147,7 +153,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteTop.getCheckboxFuelParticipation(),
                 formLayoutDriveRouteTop.getCarSeatCount(),
                 DriveType.OUTWARD_TRIP,
-                formLayoutDriveRouteTop.getDriveDateStart()
+                formLayoutDriveRouteTop.getDriveDateStart(),
+                note.getValue()
         );
     }
 
@@ -158,11 +165,13 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteBottom.getCheckboxRegularDrive(),
                 formLayoutDriveRouteBottom.getCarSeatCount(),
                 DriveType.RETURN_TRIP,
-                formLayoutDriveRouteBottom.getDriveDateStart()
+                formLayoutDriveRouteBottom.getDriveDateStart(),
+                note.getValue()
         );
     }
 
-    private void saveDrive(String address, String fhLocation, LocalTime driveTime, boolean fuelParticipation, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
+    private void saveDrive(String address, String fhLocation, LocalTime driveTime, boolean fuelParticipation,
+                           Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate, String note) {
         try {
             AddressConverter converter = new AddressConverter(address);
             Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
@@ -180,7 +189,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     carSeatCount,
                     user,
                     LocalDateTime.now(),
-                    fahrtenTyp
+                    fahrtenTyp,
+                    note
             );
 
             driveRouteService.save(updateDriveRoute);

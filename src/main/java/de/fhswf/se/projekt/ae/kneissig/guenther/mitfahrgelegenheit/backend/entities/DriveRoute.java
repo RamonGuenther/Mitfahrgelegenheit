@@ -42,7 +42,7 @@ public class DriveRoute {
 
     private Integer seatCount;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private User driver;
 
     private LocalDateTime creationDate;
@@ -61,10 +61,10 @@ public class DriveRoute {
 
     private String currentRouteLink;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.ALL)
     private Set<DriveRequest> driveRequests;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.ALL)
     private Set<Booking> bookings;
 
     public DriveRoute(
@@ -117,7 +117,8 @@ public class DriveRoute {
             Integer seatCount,
             User driver,
             LocalDateTime creationDate,
-            DriveType driveType
+            DriveType driveType,
+            String note
     ) {
         this.id = id;
         this.start = start;
@@ -127,6 +128,7 @@ public class DriveRoute {
         this.driver = driver;
         this.creationDate = creationDate;
         this.driveType = driveType;
+        this.note = note;
     }
 
     @PersistenceConstructor
@@ -212,10 +214,24 @@ public class DriveRoute {
         driveRequests.add(driveRequest);
     }
 
+    //FIXME
     public void removeDriveRequest(DriveRequest driveRequest) {
         nullCheck(driveRequest);
-        System.out.println(driveRequests.contains(driveRequest));
-        driveRequests.remove(driveRequest);
+
+        System.out.println("Vor delete: " + driveRequests.size());
+
+
+        List<DriveRequest> driveRequestList = new ArrayList<>(driveRequests);
+
+        for (int i = 0; i < driveRequestList.size(); i++) {
+            if (Objects.equals(driveRequestList.get(i).getId(), driveRequest.getId())) {
+                driveRequestList.remove(i);
+                break;
+            }
+        }
+
+        driveRequests = new HashSet<>(driveRequestList);
+//        driveRequests.remove(driveRequest);
         System.out.println("Nach delete: " + driveRequests.size());
     }
 
@@ -228,10 +244,24 @@ public class DriveRoute {
         bookings.add(newBooking);
     }
 
+    //FIXME
     public void removeBooking(Booking booking) {
         nullCheck(booking);
-        bookings.remove(booking);
-        System.out.println("Nach delete: " + bookings.size());
+
+        System.out.println("Vor delete: " + bookings.size());
+
+        List<Booking> bookings = new ArrayList<>(this.bookings);
+
+        for (int i = 0; i < bookings.size(); i++) {
+            if (Objects.equals(bookings.get(i).getId(), booking.getId())) {
+                bookings.remove(i);
+                break;
+            }
+        }
+
+        this.bookings = new HashSet<>(bookings);
+//        bookings.remove(booking);
+        System.out.println("Nach delete: " + this.bookings.size());
     }
 
     @Override
