@@ -1,6 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components;
 
 import com.vaadin.componentfactory.Autocomplete;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleAddressAutocomplete;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 
@@ -46,16 +47,21 @@ public class TextFieldAddress extends Autocomplete {
         });
         addValueChangeListener(
                 event -> {
-                    if (daten != null) {
-                        for (String str : daten) {
-                            if (str.equals(event.getValue())) {
-                                AddressConverter converter = new AddressConverter(this.getValue());
-                                street = converter.getStreet();
-                                number = converter.getNumber();
-                                postal = converter.getPostalCode();
-                                place = converter.getPlace();
+                    try {
+                        if (daten != null) {
+                            for (String str : daten) {
+                                if (str.equals(event.getValue())) {
+                                    AddressConverter converter = new AddressConverter(this.getValue());
+                                    street = converter.getStreet();
+                                    number = converter.getNumber();
+                                    postal = converter.getPostalCode();
+                                    place = converter.getPlace();
+                                }
                             }
                         }
+                    }
+                    catch (InvalidAddressException ex){
+                        ex.printStackTrace();
                     }
                 }
         );

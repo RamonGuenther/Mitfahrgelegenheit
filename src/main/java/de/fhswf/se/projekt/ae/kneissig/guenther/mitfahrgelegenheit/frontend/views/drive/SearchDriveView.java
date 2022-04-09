@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
@@ -110,11 +111,10 @@ public class SearchDriveView extends VerticalLayout {
                             NotificationError.show("Bitte Start- und Zieladresse angeben.");
 
                         }
-                    } catch (Exception e) {
-                        NotificationError.show(e.getMessage());
+                    } catch (InvalidAddressException ex) {
+                        NotificationError.show("Keine gültige Adresse.");
+                        ex.printStackTrace();
                     }
-
-
                 }
         );
 

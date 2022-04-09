@@ -1,5 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +16,7 @@ public class AddressConverter {
     private String postalCode;
     private String place;
 
-    public AddressConverter(String address) {
+    public AddressConverter(String address) throws InvalidAddressException {
         address = address.replace(", Deutschland", "");
         convert(address);
     }
@@ -35,7 +37,7 @@ public class AddressConverter {
         return place;
     }
 
-    private void convert(String address) {
+    private void convert(String address) throws InvalidAddressException {
 
         String replacedAddress = address.replace(",", " ");
 
@@ -50,7 +52,7 @@ public class AddressConverter {
             place = addressMatcher.group("ort").trim();
         }
         catch(Exception e){
-            throw new IllegalArgumentException("Keine gültige Adresse.");
+            throw new InvalidAddressException();
         }
     }
 }

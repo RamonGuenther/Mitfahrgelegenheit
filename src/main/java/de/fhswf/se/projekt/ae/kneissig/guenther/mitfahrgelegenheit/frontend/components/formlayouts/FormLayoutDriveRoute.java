@@ -19,6 +19,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.CheckboxRegularDrive;
@@ -132,20 +133,24 @@ public class FormLayoutDriveRoute extends FormLayout {
 
 
         buttonDetourRoute.addClickListener(e -> {
-            if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
-                AddressConverter converterStart = new AddressConverter(address.getValue());
-                AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
+            try {
+                if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
+                    AddressConverter converterStart = new AddressConverter(address.getValue());
+                    AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
 
-                RouteString routeString = new RouteString(
-                        new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber()), LocalDateTime.now()),
-                        new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber()), LocalDateTime.now()),
-                        Collections.emptyList());
+                    RouteString routeString = new RouteString(
+                            new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber()), LocalDateTime.now()),
+                            new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber()), LocalDateTime.now()),
+                            Collections.emptyList());
 
-                UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
-            } else {
-                Notification notification = new Notification("Bitte Start- und Zieladresse eingeben.", 3000);
-                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-                notification.open();
+                    UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
+                } else {
+                    Notification notification = new Notification("Bitte Start- und Zieladresse eingeben.", 3000);
+                    notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    notification.open();
+                }
+            } catch (InvalidAddressException ex) {
+                ex.printStackTrace();
             }
         });
     }
@@ -221,11 +226,9 @@ public class FormLayoutDriveRoute extends FormLayout {
     }
 
 
-
-
     //TODO: MUSS MIT ALLEN DATEN PASSIEREN AUCH BEI NULL
     public void setData(DriveRoute driveRoute) {
-        if(driveRoute == null){
+        if (driveRoute == null) {
             throw new IllegalArgumentException();
         }
 

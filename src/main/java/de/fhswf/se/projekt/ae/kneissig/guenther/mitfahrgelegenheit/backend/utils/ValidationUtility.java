@@ -1,13 +1,19 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.isNull;
 
 public class ValidationUtility {
+
+    private static final String ADDRESS_PATTERN = "(?<strasse>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<hausnummer>[\\s\\w]*) (?<postleitzahl>\\d{5}) (?<ort>[A-Za-z_äÄöÖüÜß\\s-.()]+)";
 
     public static void nullCheck (Object o) throws IllegalArgumentException {
         if (isNull (o))
@@ -32,6 +38,16 @@ public class ValidationUtility {
 
     public static void nullOrEmptyCheck (String... ss) throws IllegalArgumentException {
         Arrays.stream (ss).forEach (ValidationUtility::nullOrEmptyCheck);
+    }
+
+    public static void addressPatternCheck(String address) throws InvalidAddressException {
+        address = address.replace(", Deutschland", "");
+        String replacedAddress = address.replace(",", " ");
+        Pattern pattern = Pattern.compile(ADDRESS_PATTERN);
+        Matcher addressMatcher = pattern.matcher(replacedAddress);
+        if(!addressMatcher.find()){
+            throw new InvalidAddressException();
+        }
     }
 
 }
