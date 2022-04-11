@@ -1,0 +1,22 @@
+#edit-note-dialog{
+    width: 350px;
+}
+
+#edit-note-title{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: x-large;
+}
+
+#edit-note-textarea{
+    width: 345px;
+}
+
+.edit-note-buttons{
+    width: 165px;
+    margin-top: 35px;
+}
+
+#edit-notes-button-layout{
+    margin: auto;
+}

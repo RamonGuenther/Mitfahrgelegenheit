@@ -1,5 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -47,5 +49,26 @@ public class MailService {
 
         javaMailSender.send(mail);
 
+    }
+
+    @Async
+    public void sendBookingCancellation(DriveRoute driveRoute, String passenger) throws MessagingException {
+
+        MimeMessage mail = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail,true, "UTF-8");
+
+        mimeMessageHelper.setFrom("drive.together@outlook.de");
+        mimeMessageHelper.setTo(driveRoute.getDriver().getEmail());
+
+        mimeMessageHelper.setText(
+                "<h2> Hallo " + driveRoute.getDriver().getFirstName() + ",</h2>" +
+                        "<h2>" + passenger +
+                        ". hat die Mitfahrt am " + driveRoute.getStart().getFormattedDate() + " abgesagt</h2>" +
+                        "<p>Deine Route sieht jetzt folgendermaßen aus: </p>" +
+                        "<a href=" + driveRoute.getCurrentRouteLink() + "> Route anzeigen </a>" +
+                        "<p> Dies ist eine automatisch generierte E-Mail von einer System-E-Mail-Adresse. Bitte antworten Sie\n" +
+                        "nicht auf diese E-Mail.</p>", true);
+
+        javaMailSender.send(mail);
     }
 }

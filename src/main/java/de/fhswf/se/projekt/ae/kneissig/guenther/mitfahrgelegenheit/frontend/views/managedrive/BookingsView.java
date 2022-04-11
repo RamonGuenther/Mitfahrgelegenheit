@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive;
 
+import com.google.maps.errors.ApiException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
@@ -17,6 +18,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
@@ -24,8 +28,11 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -110,21 +117,39 @@ public class BookingsView extends VerticalLayout {
 
         button.addClickListener(event -> {
 
-            DriveRoute route = driveRouteService.findById(booking.getDriveRoute().getId()).get();
+            DriveRoute driveRoute = driveRouteService.findById(booking.getDriveRoute().getId()).get();
+            String passenger = booking.getPassenger().getFullName();
 
-            route.removeBooking(booking);
-            driveRouteService.save(route);
-            bookingService.delete(booking);
+            try {
+                driveRoute.removeBooking(booking);
+                bookingService.delete(booking);
 
-            gridBookings.setItems(radioButtonGroup.getValue().equals("Hinfahrt") ?
-                    bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.OUTWARD_TRIP) :
-                    bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.RETURN_TRIP));
+                List<Stopover> stopoverList = new ArrayList<>();
 
-            NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
+                for (Booking routeBooking : driveRoute.getBookings()) {
+                    stopoverList.add(routeBooking.getStopover());
+                }
 
-            // Hier Mail versenden...muss aber erst neue Mail fertig machen?!
+                GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
+                String result = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList);
+
+                driveRoute.setCurrentRouteLink(result);
+                driveRouteService.save(driveRoute);
+
+                gridBookings.setItems(radioButtonGroup.getValue().equals("Hinfahrt") ?
+                        bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.OUTWARD_TRIP) :
+                        bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.RETURN_TRIP));
+
+                NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
+
+                mailService.sendBookingCancellation(driveRoute, passenger);
+
+            } catch (MessagingException | IOException | InterruptedException | InvalidAddressException | ApiException e) {
+                e.printStackTrace();
+            }
         });
 
         return button;
     }
 }
+

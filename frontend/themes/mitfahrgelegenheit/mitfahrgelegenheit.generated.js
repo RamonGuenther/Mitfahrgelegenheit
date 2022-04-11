@@ -78,6 +78,7 @@ import deleteDialogCss from './components/delete-dialog.css';
 import driveDetailsDialogCss from './components/drive-details-dialog.css';
 import driveRequestDialogCss from './components/drive-request-dialog.css';
 import driveRequestManageDialogCss from './components/drive-request-manage-dialog.css';
+import editNoteDialogCss from './components/edit-note-dialog.css';
 import formLayoutDriveRouteCss from './components/form-layout-drive-route.css';
 import menuBarButtonCss from './components/menu-bar-button.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
@@ -137,6 +138,12 @@ export const applyTheme = (target) => {
       'drive-request-manage-dialog',
       css`
         ${unsafeCSS(driveRequestManageDialogCss.toString())}
+      `
+    );
+    registerStyles(
+      'edit-note-dialog',
+      css`
+        ${unsafeCSS(editNoteDialogCss.toString())}
       `
     );
     registerStyles(

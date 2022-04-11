@@ -9,7 +9,7 @@ public enum Faculty {
     INGENIEUR_UND_WIRTSCHAFTSWISSENSCHAFTEN("Ingenieur- und Wirtschaftswissenschaften"),
     AGRARWIRTSCHAFT("Agrarwirtschaft"),
     BILDUNGS_UND_GESELLSCHAFTSWISSENSCHAFTEN("Bildungs- und Gesellschaftswissenschaften"),
-    ELEKTRISCHE_ENERGIERTECHNIK("Elektrische Energiertechnik"),
+    ELEKTRISCHE_ENERGIERTECHNIK("Elektrische Energietechnik"),
     MASCHINENBAU_AUTOMATISIERUNGSTECHNIK("Maschinenbau-Automatisierungstechnik");
 
     public final String label;

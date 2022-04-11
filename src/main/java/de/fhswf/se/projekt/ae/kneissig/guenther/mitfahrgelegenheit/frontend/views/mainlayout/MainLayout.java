@@ -15,6 +15,7 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.DashboardView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.OfferDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.CompletedDriveView;
@@ -59,7 +60,7 @@ public class MainLayout extends AppLayout {
                         getResourceAsStream("images/LogoMitfahrgelegenheit.png"));
 
         Image logoFH = new Image (streamResource, "FH SWF");
-        logoFH.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
+        logoFH.addClickListener(e -> UI.getCurrent().navigate(DashboardView.class));
 
         logoFH.setId("logoFH");
 
@@ -80,6 +81,11 @@ public class MainLayout extends AppLayout {
 
         // Untermenü Fahrten verwalten
         SubMenu projectSubMenu = fahrtVerwalten.getSubMenu();
+
+        MenuItem dashboard = projectSubMenu.addItem("Dashboard");
+        dashboard.getElement().getClassList().add("menuItems");
+        dashboard.addClickListener(e -> UI.getCurrent().navigate(DashboardView.class));
+
         MenuItem fahrtAngebote = projectSubMenu.addItem("Eigene Fahrtangebote");
         fahrtAngebote.getElement().getClassList().add("menuItems");
         fahrtAngebote.addClickListener(e -> UI.getCurrent().navigate(OwnDriveOffersView.class));

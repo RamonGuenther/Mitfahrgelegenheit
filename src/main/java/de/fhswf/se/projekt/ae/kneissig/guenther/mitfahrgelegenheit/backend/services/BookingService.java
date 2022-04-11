@@ -7,6 +7,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.BookingRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,5 +28,17 @@ public class BookingService {
 
     public List<Booking> findAllByPassengerAndDriveRoute_DriveType(User user, DriveType driveType){
         return repository.findAllByPassengerAndDriveRoute_DriveType(user, driveType);
+    }
+
+    public Booking findNextBookingByUserComparedByTime(User user){
+        List<Booking> bookings = repository.findAllByPassenger(user);
+        bookings.sort(Comparator.comparing(booking -> booking.getStopover().getTime()));
+
+        if(bookings.size() > 0){
+            return bookings.get(0);
+        }
+        else{
+            return null;
+        }
     }
 }

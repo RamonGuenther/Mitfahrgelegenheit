@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public class ApplicationUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private static final String DEFAULT_SUCCESS_URL = "/fahrtSuchen";
+    private static final String DEFAULT_SUCCESS_URL = "/dashboard";
     private static final String USERDATA_NEEDED_URL = "/benutzerdaten";
 
     @Autowired

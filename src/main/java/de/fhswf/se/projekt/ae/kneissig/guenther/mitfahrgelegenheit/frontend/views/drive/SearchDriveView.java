@@ -32,7 +32,6 @@ import java.time.Duration;
  * @author Ivonne Kneißig und Ramon Günther
  */
 
-@RouteAlias(value = "", layout = MainLayout.class)
 @Route(value = "fahrtSuchen", layout = MainLayout.class)
 @PageTitle("Fahrt Suchen")
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-view.css")

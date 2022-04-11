@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Embeddable
@@ -52,6 +53,16 @@ public abstract class Waypoint {
                 address.getHouseNumber() + ", " +
                 address.getPostal() + " " +
                 address.getPlace();
+    }
+
+    public String getFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return time.format(formatter);
+    }
+
+    public String getFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return time.format(formatter) + " Uhr";
     }
 
     @Override

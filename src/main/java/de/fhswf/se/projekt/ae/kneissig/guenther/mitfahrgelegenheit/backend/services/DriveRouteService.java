@@ -1,12 +1,8 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
 
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.BookingRepository;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.DriveRequestRepository;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.DriveRouteRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,44 +15,39 @@ import java.util.*;
 @Service
 public class DriveRouteService {
 
-    private final DriveRouteRepository driveRouteRepository;
+    private final DriveRouteRepository repository;
 
-    private final BookingRepository bookingRepository;
 
-    private final DriveRequestRepository driveRequestRepository;
-
-    public DriveRouteService(DriveRouteRepository driveRouteRepository, BookingRepository bookingRepository, DriveRequestRepository driveRequestRepository) {
-        this.driveRouteRepository = driveRouteRepository;
-        this.bookingRepository = bookingRepository;
-        this.driveRequestRepository = driveRequestRepository;
+    public DriveRouteService(DriveRouteRepository repository) {
+        this.repository = repository;
     }
 
     public void save(DriveRoute driveRoute) {
-        driveRouteRepository.save(driveRoute);
+        repository.save(driveRoute);
     }
 
     public void delete(DriveRoute driveRoute){
-        driveRouteRepository.delete(driveRoute);
+        repository.delete(driveRoute);
     }
 
     public List<DriveRoute> findAllFahrerRoutenByBenutzer(User user) {
-        return driveRouteRepository.findAllByDriver(user);
+        return repository.findAllByDriver(user);
     }
 
     public List<DriveRoute> findAllByBenutzerAndFahrtenTyp(User user, DriveType fahrtenTyp) {
-        return driveRouteRepository.findAllByDriverAndDriveType(user, fahrtenTyp);
+        return repository.findAllByDriverAndDriveType(user, fahrtenTyp);
     }
 
     public List<DriveRoute> findAllByFahrtenTypAndStart_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String startPlace, String benutzerUsername) {
-        return driveRouteRepository.findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, benutzerUsername);
+        return repository.findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, benutzerUsername);
     }
 
     public List<DriveRoute> findAllByFahrtenTypAndZiel_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String destinationPlace, String benutzerUsername) {
-        return driveRouteRepository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
+        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
     }
 
     public List<DriveRoute> findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String startPlace, String destinationPlace, String benutzerUsername) {
-        return driveRouteRepository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, destinationPlace, benutzerUsername);
+        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, destinationPlace, benutzerUsername);
     }
 
     public List<DriveRoute> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
@@ -69,7 +60,7 @@ public class DriveRouteService {
     }
 
     public Optional<DriveRoute> findById(Integer id) {
-        return driveRouteRepository.findById(id);
+        return repository.findById(id);
     }
 
     public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
@@ -122,12 +113,26 @@ public class DriveRouteService {
         return driveRoutes;
     }
 
-    public void deleteBookings(List<Booking> bookings){
-        bookingRepository.deleteAll(bookings);
-    }
+    public DriveRoute findNextDriveRouteByUserComparedByTime(User user) {
 
-    public void deleteRequests(List<DriveRequest> driveRequests){
-        driveRequestRepository.deleteAll(driveRequests);
-    }
+        List<DriveRoute> outwardTrips = repository.findAllByDriverAndDriveType(user, DriveType.OUTWARD_TRIP);
+        outwardTrips.sort(Comparator.comparing(driveRoute -> driveRoute.getZiel().getTime()));
 
+        List<DriveRoute> returnTrips = repository.findAllByDriverAndDriveType(user, DriveType.RETURN_TRIP);
+        returnTrips.sort(Comparator.comparing(driveRoute -> driveRoute.getStart().getTime()));
+
+        if (!outwardTrips.isEmpty() && !returnTrips.isEmpty()) {
+            if (outwardTrips.get(0).getZiel().getTime().isBefore(returnTrips.get(0).getStart().getTime())) {
+                return outwardTrips.get(0);
+            } else {
+                return returnTrips.get(0);
+            }
+        } else if (outwardTrips.isEmpty() && !returnTrips.isEmpty()) {
+            return returnTrips.get(0);
+        } else if (returnTrips.isEmpty() && !outwardTrips.isEmpty()) {
+            return outwardTrips.get(0);
+        } else {
+            return null;
+        }
+    }
 }

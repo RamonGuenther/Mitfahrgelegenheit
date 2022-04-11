@@ -6,9 +6,12 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.awt.print.Book;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByPassengerAndDriveRoute_DriveType(User passenger, DriveType driveType);
+
+    List<Booking> findAllByPassenger(User passenger);
 }

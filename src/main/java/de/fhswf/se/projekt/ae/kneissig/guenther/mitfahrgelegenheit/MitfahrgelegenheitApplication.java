@@ -264,12 +264,12 @@ public class MitfahrgelegenheitApplication {
         /**
          * BOOKING
          */
-        driveRequest.setRequestState(RequestState.ACCEPTED);
-        driveRequestService.save(driveRequest);
-        Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
-        bookingService.save(newBooking);
-        driveRequest.getDriveRoute().addBooking(newBooking);
-        driveRouteService.save(driveRequest.getDriveRoute());
+//        driveRequest.setRequestState(RequestState.ACCEPTED);
+//        driveRequestService.save(driveRequest);
+//        Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
+//        bookingService.save(newBooking);
+//        driveRequest.getDriveRoute().addBooking(newBooking);
+//        driveRouteService.save(driveRequest.getDriveRoute());
 
 
     }
