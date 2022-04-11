@@ -22,6 +22,7 @@ public class DriveRequestService {
     }
 
     public void delete(DriveRequest driveRequest){
+        System.out.println("Ich lösche ja");
         repository.delete(driveRequest);
     }
 

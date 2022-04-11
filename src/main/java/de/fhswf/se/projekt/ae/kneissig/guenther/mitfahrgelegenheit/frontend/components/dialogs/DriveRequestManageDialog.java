@@ -19,6 +19,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateBookingException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
@@ -32,6 +33,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-manage-dialog.css")
@@ -104,15 +106,10 @@ public class DriveRequestManageDialog extends Dialog {
         HorizontalLayout buttonLayout = new HorizontalLayout(acceptButton, declineButton, cancelButton);
         buttonLayout.setClassName("drive-request-manage-dialog-button_layout");
 
-        acceptButton.addClickListener(e -> {
-            saveDriveRequest(RequestState.ACCEPTED);
+        acceptButton.addClickListener(e -> saveDriveRequest(RequestState.ACCEPTED));
 
-        });
-        declineButton.addClickListener(e -> {
+        declineButton.addClickListener(e -> saveDriveRequest(RequestState.REJECTED));
 
-            saveDriveRequest(RequestState.REJECTED);
-
-        });
         cancelButton.addClickListener(e -> close());
 
         add(buttonLayout);
@@ -126,42 +123,23 @@ public class DriveRequestManageDialog extends Dialog {
                 Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
                 bookingService.save(newBooking);
                 driveRequest.getDriveRoute().addBooking(newBooking);
-                //TODO: calculate start und so geben als start und enfach dorthn / google places recherchieren
 
-//                List<String> origins = new ArrayList<>();
-//
-//                origins.add(driveRequest.getDriveRoute().getStart().getFullAddressToString());
-//
-//                for (Booking booking : driveRequest.getDriveRoute().getBookings()) {
-//                    origins.add(booking.getStopover().getFullAddressToString());
-//                }
-//
-//                System.out.println(origins.stream().toList());
-//
-//                String target = driveRequest.getDriveRoute().getDestination().getFullAddressToString();
-//
-//                System.out.println(target);
-//
-//                GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
-//                List<String> result = googleDistanceCalculation.calculate(origins, target);
-//
-//
-//                List<Stopover> stopoverList= new ArrayList<>();
-//
-//                for (String res : result) {
-//                    AddressConverter addressConverter = new AddressConverter(res);
-//                    stopoverList.add(new Stopover(new Address(addressConverter.getPostalCode(), addressConverter.getPlace(), addressConverter.getStreet(), addressConverter.getNumber()), LocalDateTime.now()));
-//                }
-//
-//
-//                RouteString routeString = new RouteString(driveRequest.getDriveRoute().getStart(), driveRequest.getDriveRoute().getZiel(), stopoverList);
-//
-//                System.out.println(routeString.getRoute());
-//
-//                driveRequest.getDriveRoute().setCurrentRouteLink(routeString.getRoute());
-//
+                List<Stopover> stopoverList = new ArrayList<>();
 
-            } catch (DuplicateBookingException e) {
+                for (Booking booking : driveRequest.getDriveRoute().getBookings()) {
+                    stopoverList.add(booking.getStopover());
+                }
+
+                System.out.println(stopoverList.size());
+
+                GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
+                String result = googleDistanceCalculation.calculate(driveRequest.getDriveRoute().getStart(), driveRequest.getDriveRoute().getDestination(), stopoverList);
+
+                System.out.println(result);
+
+                driveRequest.getDriveRoute().setCurrentRouteLink(result);
+
+            } catch (DuplicateBookingException | InvalidAddressException | IOException | InterruptedException | ApiException e) {
                 e.printStackTrace();
             }
             driveRouteService.save(driveRequest.getDriveRoute());

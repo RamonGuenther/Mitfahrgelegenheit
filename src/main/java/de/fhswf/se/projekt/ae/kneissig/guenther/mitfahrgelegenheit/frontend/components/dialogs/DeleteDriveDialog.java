@@ -10,12 +10,19 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 
+import java.sql.Driver;
+import java.util.List;
+
 @CssImport("/themes/mitfahrgelegenheit/components/delete-dialog.css")
-public class DeleteDialog extends Dialog {
-    public DeleteDialog(DriveRoute driveRoute, DriveRouteService driveRouteService) {
+public class DeleteDriveDialog extends Dialog {
+    public DeleteDriveDialog(DriveRoute driveRoute, DriveRouteService driveRouteService) {
         setCloseOnEsc(false);
         setCloseOnOutsideClick(false);
 
@@ -30,14 +37,17 @@ public class DeleteDialog extends Dialog {
         acceptButton.setClassName("delete-dialog-buttons");
         acceptButton.setEnabled(false);
 
-        acceptButton.addClickListener(e->{
-           driveRouteService.delete(driveRoute);
+        acceptButton.addClickListener(e -> {
+//            driveRouteService.deleteRequests(driveRoute.getDriveRequests());
+//            driveRouteService.deleteBookings(driveRoute.getBookings());
+//            driveRoute.deleteRequestsAndBookings();
+            driveRouteService.delete(driveRoute);
             UI.getCurrent().getPage().reload();
         });
 
         Button cancelButton = new Button("Abbrechen");
         cancelButton.setClassName("delete-dialog-buttons");
-        cancelButton.addClickListener(e-> close());
+        cancelButton.addClickListener(e -> close());
 
         HorizontalLayout buttonLayout = new HorizontalLayout(acceptButton, cancelButton);
         buttonLayout.setId("delete-dialog-button_layout");

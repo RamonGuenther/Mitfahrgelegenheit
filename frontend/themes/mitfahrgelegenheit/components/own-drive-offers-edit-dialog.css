@@ -9,9 +9,14 @@
 }
 
 
-#own-drive-offers-edit-dialog-change_note {
+#own-drive-offers-edit-dialog-note {
     width: 1000px;
     height: 100px;
+}
+
+
+#own-drive-offers-edit-dialog-passenger_badge_layout{
+    margin-top: 10px;
 }
 
 

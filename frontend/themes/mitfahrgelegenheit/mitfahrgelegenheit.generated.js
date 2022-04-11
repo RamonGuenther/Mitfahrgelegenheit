@@ -67,8 +67,10 @@ const getStyleModule = (id) => {
   return cssText;
 };
 import stylesCss from './styles.css';
-import '@vaadin/vaadin-lumo-styles/color.js';
 import '@vaadin/vaadin-lumo-styles/typography.js';
+import '@vaadin/vaadin-lumo-styles/color.js';
+import '@vaadin/vaadin-lumo-styles/spacing.js';
+import '@vaadin/vaadin-lumo-styles/badge.js';
 import averageRatingsCss from './components/average-ratings.css';
 import button_switch_themeCss from './components/button_switch_theme.css';
 import changePasswordDialogCss from './components/change-password-dialog.css';
@@ -180,11 +182,15 @@ export const applyTheme = (target) => {
 // For the document, we need to be compatible with flow-generated-imports and add missing <style> tags.
 const shadowRoot = (target instanceof ShadowRoot);
 if (shadowRoot) {
-injectGlobalCss(getStyleModule("lumo-color"), target, true);
 injectGlobalCss(getStyleModule("lumo-typography"), target, true);
+injectGlobalCss(getStyleModule("lumo-color"), target, true);
+injectGlobalCss(getStyleModule("lumo-spacing"), target, true);
+injectGlobalCss(getStyleModule("lumo-badge"), target, true);
 } else if (!document['_vaadinthemelumoimports_']) {
-addStyleInclude("lumo-color", target);
 addStyleInclude("lumo-typography", target);
+addStyleInclude("lumo-color", target);
+addStyleInclude("lumo-spacing", target);
+addStyleInclude("lumo-badge", target);
 document['_vaadinthemelumoimports_'] = true;
 }
 

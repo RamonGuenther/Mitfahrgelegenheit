@@ -61,17 +61,17 @@ public class DriveRoute {
 
     private String currentRouteLink;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = {CascadeType.REMOVE})
     private Set<DriveRequest> driveRequests;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.REMOVE)
     private Set<Booking> bookings;
 
-    public DriveRoute(
-            Start start, Destination destination, boolean fuelParticipation, Integer seatCount, User driver,
+    public DriveRoute(Start start, Destination destination, boolean fuelParticipation, Integer seatCount, User driver,
             LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
 
         this.start = start;
+        this.note = "";
         this.destination = destination;
         this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
@@ -91,11 +91,9 @@ public class DriveRoute {
 
         this.start = start;
         this.destination = destination;
-
         this.isRegularDrive = isRegularDrive;
         this.regularDriveDateEnd = regularDriveDateEnd;
         this.regularDriveDay = regularDriveDay;
-
         this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
         this.driver = driver;
@@ -201,8 +199,8 @@ public class DriveRoute {
         return regularDriveDateEnd;
     }
 
-    public Set<Booking> getBookings() {
-        return bookings;
+    public List<Booking> getBookings() {
+        return bookings.stream().toList();
     }
 
     public void addDriveRequest(DriveRequest driveRequest) throws DuplicateRequestException {
@@ -264,13 +262,18 @@ public class DriveRoute {
         System.out.println("Nach delete: " + this.bookings.size());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(start, destination, driver, creationDate);
+    public void deleteRequestsAndBookings(){
+        driveRequests.clear();
+        bookings.clear();
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj instanceof DriveRoute && id.equals(((DriveRoute) obj).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, destination, driver, creationDate);
     }
 }

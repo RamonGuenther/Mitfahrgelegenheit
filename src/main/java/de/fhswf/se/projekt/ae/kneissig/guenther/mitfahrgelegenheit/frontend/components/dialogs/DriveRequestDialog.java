@@ -58,7 +58,7 @@ public class DriveRequestDialog extends Dialog {
                     return;
                 }
 
-                addressPatternCheck(textFieldAddress.getValue());
+//                addressPatternCheck(textFieldAddress.getValue());
 
                 List<Stopover> stopoverList = new ArrayList<>();
                 Address address = new Address(textFieldAddress.getPostal(), textFieldAddress.getPlace(), textFieldAddress.getStreet(), textFieldAddress.getNumber());
@@ -81,7 +81,7 @@ public class DriveRequestDialog extends Dialog {
 //                        driveRoute.getBenutzer().getEmail(),
 //                        routeString.getRoute()
 //                );
-            } catch (DuplicateRequestException | InvalidAddressException ex) {
+            } catch (DuplicateRequestException ex) {
                 if(Objects.equals(ex.getClass().getSimpleName(), "DuplicateRequestException")){
                     NotificationError.show("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
                 }

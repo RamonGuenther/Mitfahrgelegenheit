@@ -8,6 +8,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
@@ -24,24 +25,19 @@ import java.util.List;
 
 
 /**
- * TODO: Grid: Nullwerte abfangen?
- *      -
- */
-
-/**
  * Die Klasse OwnDriveOffersView erstellt eine View für die Auflistung
  * der eigenen Fahrtangebote
  *
  * @author Ramon Günther
  */
-@com.vaadin.flow.router.Route(value = "eigeneFahrtangebote", layout = MainLayout.class)
+@Route(value = "eigeneFahrtangebote", layout = MainLayout.class)
 @PageTitle("Eigene Fahrtangebote")
 @CssImport("/themes/mitfahrgelegenheit/views/own-drive-offers-view.css")
 public class OwnDriveOffersView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
     private final UserService userService;
-    private MailService mailService;
+    private final MailService mailService;
     private final DriveRequestService driveRequestService;
 
     /**
@@ -68,8 +64,6 @@ public class OwnDriveOffersView extends VerticalLayout {
 
         List<DriveRoute> driveListTo = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.OUTWARD_TRIP);
         List<DriveRoute> driveListBack = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.RETURN_TRIP);
-
-
 
         RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");

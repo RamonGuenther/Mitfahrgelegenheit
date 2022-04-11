@@ -1,6 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.theme.Theme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
@@ -27,7 +28,6 @@ import java.util.List;
 @SpringBootApplication
 @EnableAsync
 @CssImport(value = "/themes/mitfahrgelegenheit/components/petrol-buttons.css", themeFor = "vaadin-button")
-
 public class MitfahrgelegenheitApplication {
 
     @Autowired
@@ -90,9 +90,28 @@ public class MitfahrgelegenheitApplication {
         );
         userService.save(user2);
 
+
+
         User user3 = new User(
                 3L,
-                "user3",
+                "mapet001",
+                passwordEncoder.encode("1234"),
+                "Maren",
+                "Peterson",
+                new Address("58636", "Iserlohn", "Schulstraße", "95"),
+                new Languages("Deutsch"),
+                "Iserlohn",
+                "Informatik und Naturwissenschaften",
+                "peterson.maren@fh-swf.de",
+                new UserRating(),
+                LocalDateTime.now(),
+                true
+        );
+        userService.save(user3);
+
+        User user4 = new User(
+                4L,
+                "user4",
                 passwordEncoder.encode("1234"),
                 "Max",
                 "Mustermann",
@@ -106,7 +125,7 @@ public class MitfahrgelegenheitApplication {
                 false
         );
 
-        userService.save(user3);
+        userService.save(user4);
 
 
         /**
@@ -181,6 +200,7 @@ public class MitfahrgelegenheitApplication {
 
         driveRouteService.save(driveRoute2);
 
+
         /**
          *  Rating
          */
@@ -217,6 +237,22 @@ public class MitfahrgelegenheitApplication {
                 "",
                 LocalDateTime.now(),
                 new Stopover(new Address("58095", "Hagen", "Diesterwegstraße", "6"),
+                        LocalDateTime.now())
+        );
+
+        driveRoute2.addDriveRequest(driveRequest);
+        driveRequestService.save(driveRequest);
+        driveRouteService.save(driveRoute2);
+
+
+        driveRequest = new DriveRequest(
+                driveRoute2,
+                RequestState.OPEN,
+                user3,
+                "Maren",
+                "",
+                LocalDateTime.now(),
+                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"),
                         LocalDateTime.now())
         );
 

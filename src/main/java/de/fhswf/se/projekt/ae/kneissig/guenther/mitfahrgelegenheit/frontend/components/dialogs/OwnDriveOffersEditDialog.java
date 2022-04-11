@@ -4,9 +4,12 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
@@ -23,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+
 /**
  * Die Klasse OwnDriveOffersEditDialog erstellt einen Dialog für die Bearbeitung
  * des jeweils ausgewähltem Fahrtangebot aus der Tabelle von der View OfferDriveView.
@@ -33,6 +37,7 @@ import java.time.LocalTime;
 public class OwnDriveOffersEditDialog extends Dialog {
 
     private final DriveRouteService driveRouteService;
+
     private final HorizontalLayout defaultButtonLayout;
     private final TextArea note;
     private final DriveRoute driveRoute;
@@ -48,8 +53,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
 
-        this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
+        this.driveRouteService = driveRouteService;
 
         switch (driveRoute.getDriveType()) {
             case OUTWARD_TRIP -> {
@@ -71,8 +76,17 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
         note = new TextArea("Anmerkung");
         note.setReadOnly(true);
-        note.setValue(driveRoute.getNote() == null ? "" : driveRoute.getNote());
-        note.setId("own-drive-offers-edit-dialog-change_note");
+        note.setValue(driveRoute.getNote());
+        note.setId("own-drive-offers-edit-dialog-note");
+
+        HorizontalLayout passengerBadgeLayout = new HorizontalLayout(new Label("Mitfahrer:    "));
+        passengerBadgeLayout.setId("own-drive-offers-edit-dialog-passenger_badge_layout");
+
+        for (Booking booking : driveRoute.getBookings()) {
+            Span pending = new Span(booking.getPassenger().getFullName());
+            pending.getElement().getThemeList().add("badge");
+            passengerBadgeLayout.add(pending);
+        }
 
         Button editButton = new Button("Bearbeiten");
         editButton.setIcon(VaadinIcon.PENCIL.create());
@@ -86,7 +100,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
         defaultButtonLayout = new HorizontalLayout(editButton, closeButton);
         defaultButtonLayout.setId("own-drive-offers-edit-dialog-default_button_layout");
 
-        add(note, defaultButtonLayout);
+        add(note, passengerBadgeLayout, defaultButtonLayout);
         open();
     }
 
@@ -106,8 +120,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
         deleteButton.setId("own-drive-offers-edit-dialog-delete_button");
         deleteButton.setClassName("own-drive-offers-edit-dialog-buttons_edit");
         deleteButton.addClickListener(e -> {
-            DeleteDialog deleteDialog = new DeleteDialog(driveRoute, driveRouteService);
-            deleteDialog.open();
+            DeleteDriveDialog deleteDriveDialog = new DeleteDriveDialog(driveRoute, driveRouteService);
+            deleteDriveDialog.open();
         });
 
         HorizontalLayout editButtonLayout = new HorizontalLayout();
@@ -131,14 +145,13 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 });
             }
             case RETURN_TRIP -> {
-                formLayoutDriveRouteBottom.setReadOnly(true);
+                formLayoutDriveRouteBottom.setReadOnly(false);
                 saveButton.addClickListener(event -> saveFormLayoutBottom());
                 cancelButton.addClickListener(event -> {
                     formLayoutDriveRouteBottom.setReadOnly(true);
                     note.setReadOnly(true);
                     remove(editButtonLayout);
                     add(defaultButtonLayout);
-
                 });
             }
 
