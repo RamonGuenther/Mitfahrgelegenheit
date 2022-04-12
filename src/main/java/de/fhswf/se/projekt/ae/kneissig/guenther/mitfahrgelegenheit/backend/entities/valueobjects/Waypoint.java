@@ -17,18 +17,14 @@ public abstract class Waypoint {
     @Embedded
     protected Address address;
 
-    @Column(name = "time")
-    protected LocalDateTime time;
 
-    public Waypoint(Address address, LocalDateTime time) {
+    public Waypoint(Address address) {
         this.address = address;
-        this.time = time;
     }
 
     @PersistenceConstructor
     protected Waypoint() {
         this.address = null;
-        this.time = null;
     }
 
     public Address getAddress() {
@@ -39,30 +35,11 @@ public abstract class Waypoint {
         this.address = address;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-
     public String getFullAddressToString(){
         return address.getStreet() + " " +
                 address.getHouseNumber() + ", " +
                 address.getPostal() + " " +
                 address.getPlace();
-    }
-
-    public String getFormattedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return time.format(formatter);
-    }
-
-    public String getFormattedTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return time.format(formatter) + " Uhr";
     }
 
     @Override

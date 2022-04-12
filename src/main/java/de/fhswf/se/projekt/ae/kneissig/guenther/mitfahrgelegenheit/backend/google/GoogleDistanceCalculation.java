@@ -65,7 +65,7 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
 
         for (String res : result) {
             AddressConverter addressConverter = new AddressConverter(res);
-            newStopoverList.add(new Stopover(new Address(addressConverter.getPostalCode(), addressConverter.getPlace(), addressConverter.getStreet(), addressConverter.getNumber()), LocalDateTime.now()));
+            newStopoverList.add(new Stopover(new Address(addressConverter.getPostalCode(), addressConverter.getPlace(), addressConverter.getStreet(), addressConverter.getNumber())));
         }
 
         RouteString routeString = new RouteString(start, destination, newStopoverList);

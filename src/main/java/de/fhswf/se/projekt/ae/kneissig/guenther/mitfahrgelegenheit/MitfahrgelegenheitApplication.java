@@ -53,10 +53,10 @@ public class MitfahrgelegenheitApplication {
     @PostConstruct
     public void initData() throws DuplicateRequestException, DuplicateBookingException {
 
-        /**
-         * Benutzer
-         */
-        User user1 = new User(
+        /*-------------------------------------------------------------------------------------------------------------
+                                                       User
+        -------------------------------------------------------------------------------------------------------------*/
+        User ramon = new User(
                 1L,
                 "rague002",
                 passwordEncoder.encode("1234"),
@@ -71,9 +71,9 @@ public class MitfahrgelegenheitApplication {
                 LocalDateTime.now(),
                 true
         );
-        userService.save(user1);
+        userService.save(ramon);
 
-        User user2 = new User(
+        User ivonne = new User(
                 2L,
                 "ivkne001",
                 passwordEncoder.encode("1234"),
@@ -88,11 +88,11 @@ public class MitfahrgelegenheitApplication {
                 LocalDateTime.now(),
                 true
         );
-        userService.save(user2);
+        userService.save(ivonne);
 
 
 
-        User user3 = new User(
+        User maren = new User(
                 3L,
                 "mapet001",
                 passwordEncoder.encode("1234"),
@@ -107,10 +107,31 @@ public class MitfahrgelegenheitApplication {
                 LocalDateTime.now(),
                 true
         );
-        userService.save(user3);
+        userService.save(maren);
 
-        User user4 = new User(
+
+        User sebastian = new User(
                 4L,
+                "serap001",
+                passwordEncoder.encode("1234"),
+                "Sebastian",
+                "Rapp",
+                new Address("58097", "Hagen", "Kratzkopfstraße", "10"),
+                new Languages("Deutsch"),
+                "Iserlohn",
+                "Informatik und Naturwissenschaften",
+                "rapp.sebastian@fh-swf.de",
+                new UserRating(),
+                LocalDateTime.now(),
+                false
+        );
+
+        userService.save(sebastian);
+
+
+
+        User emptyUser = new User(
+                5L,
                 "user4",
                 passwordEncoder.encode("1234"),
                 "Max",
@@ -125,80 +146,94 @@ public class MitfahrgelegenheitApplication {
                 false
         );
 
-        userService.save(user4);
+        userService.save(emptyUser);
 
 
-        /**
-         * Fahrten
-         */
 
-        Start start = new Start(new Address("58636", "Iserlohn", "Sundernallee", "75"), LocalDateTime.now());
-        Destination destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"), LocalDateTime.now());
+        /*-------------------------------------------------------------------------------------------------------------
+                                                       Fahrtangebote
+        -------------------------------------------------------------------------------------------------------------*/
 
-//		AddressConverter converterStart = new AddressConverter(start.getAdresse().getAddress());
-//		AddressConverter converterZiel = new AddressConverter(destination.getAdresse().getAddress());
-        List<Stopover> test = new ArrayList<>();
-        Stopover test1 = new Stopover(new Address(
-                "58636",
-                "Iserlohn",
-                "Frauenstuhlweg",
-                "31"
-        ), LocalDateTime.now());
-        test.add(test1);
+       /*-------------------------------------------------------------------------------------------------------------
+                                                          Ramon
+        -------------------------------------------------------------------------------------------------------------*/
 
-        RouteString routeString = new RouteString(start, destination, test);
+        Start start = new Start(new Address("58636", "Iserlohn", "Sundernallee", "75"));
+        Destination destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
+        List<Stopover> stopoverList = new ArrayList<>();
 
-        DriveRoute driveRoute = new DriveRoute(
+        RouteString routeString = new RouteString(start, destination, stopoverList);
+
+        DriveRoute driveRouteR1 = new DriveRoute(
                 start,
                 destination,
+                LocalDateTime.of(2022, 4, 1, 14, 30),
                 false,
                 4,
-                user1,
+                ramon,
                 LocalDateTime.now(),
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
         );
 
-        driveRouteService.save(driveRoute);
+        driveRouteService.save(driveRouteR1);
 
 
-        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"), LocalDateTime.now());
-        destination = new Destination(new Address("58636", "Iserlohn", "Schulstraße", "95"), LocalDateTime.now());
+        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
+        destination = new Destination(new Address("58636", "Iserlohn", "Sundernallee", "75"));
 
-        routeString = new RouteString(start, destination, test);
+        routeString = new RouteString(start, destination, stopoverList);
 
-        DriveRoute driveRoute1 = new DriveRoute(
+        DriveRoute driveRouteR2 = new DriveRoute(
                 start,
                 destination,
+                LocalDateTime.of(2022, 4, 1, 14, 30),
                 false,
                 4,
-                user1,
+                ramon,
                 LocalDateTime.now(),
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
         );
 
 
-        driveRouteService.save(driveRoute1);
+        driveRouteService.save(driveRouteR2);
 
 
-        start = new Start(new Address("58636", "Iserlohn", "Schulstraße", "95"),
-                LocalDateTime.of(2022, 4, 1, 14, 30));
-        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"
-        ), LocalDateTime.of(2022, 4, 20, 14, 30));
+        start = new Start(new Address("58636", "Iserlohn", "Schulstraße", "95"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
 
-        DriveRoute driveRoute2 = new DriveRoute(
+        DriveRoute driveRouteR3 = new DriveRoute(
                 start,
                 destination,
+                LocalDateTime.of(2022, 4, 1, 14, 30),
                 false,
                 5,
-                user1,
+                ramon,
                 LocalDateTime.of(2022, 4, 1, 14, 30),
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
         );
 
-        driveRouteService.save(driveRoute2);
+        driveRouteService.save(driveRouteR3);
+
+
+        start = new Start(new Address("58636", "Iserlohn", "Schulstraße", "95"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
+
+        DriveRoute DriveRouteR4 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 4, 1, 14, 30),
+                false,
+                5,
+                ramon,
+                LocalDateTime.of(2022, 4, 1, 14, 30),
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteService.save(DriveRouteR4);
 
 
         /**
@@ -219,30 +254,29 @@ public class MitfahrgelegenheitApplication {
 
         userRating.addDriverRating(rating);
 
-        user1.setUserRating(userRating);
+        ramon.setUserRating(userRating);
 
-        userService.save(user1);
+        userService.save(ramon);
 
-        System.out.println(user1.getUserRating().getAverageDriverRating());
+        System.out.println(ramon.getUserRating().getAverageDriverRating());
 
         /**
          * REQUEST
          */
 
         DriveRequest driveRequest = new DriveRequest(
-                driveRoute2,
+                driveRouteR3,
                 RequestState.OPEN,
-                user2,
+                ivonne,
                 "Apfel Birne und so",
                 "",
                 LocalDateTime.now(),
-                new Stopover(new Address("58095", "Hagen", "Diesterwegstraße", "6"),
-                        LocalDateTime.now())
+                new Stopover(new Address("58095", "Hagen", "Diesterwegstraße", "6"))
         );
 
-        driveRoute2.addDriveRequest(driveRequest);
+        driveRouteR3.addDriveRequest(driveRequest);
         driveRequestService.save(driveRequest);
-        driveRouteService.save(driveRoute2);
+        driveRouteService.save(driveRouteR3);
 
 
 //        driveRequest = new DriveRequest(

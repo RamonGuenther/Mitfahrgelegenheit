@@ -167,13 +167,14 @@ public class OfferDriveView extends VerticalLayout{
 
             User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-            Start start = new Start(firstAddress, driveTime.atDate(driveDate));
-            Destination destination = new Destination(secondAddress, driveTime.atDate(driveDate));
+            Start start = new Start(firstAddress);
+            Destination destination = new Destination(secondAddress);
 
             RouteString routeString = new RouteString(start, destination, Collections.emptyList());
             driveRouteService.save(new DriveRoute(
                     start,
                     destination,
+                    driveTime.atDate(driveDate),
                     fuelParticipation,
                     carSeatCount,
                     user,

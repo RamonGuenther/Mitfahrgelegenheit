@@ -23,7 +23,6 @@ public class DriveRoute {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "time", column = @Column(name = "start_zeit")),
             @AttributeOverride(name = "address.postal", column = @Column(name = "start_plz")),
             @AttributeOverride(name = "address.street", column = @Column(name = "start_strasse")),
             @AttributeOverride(name = "address.place", column = @Column(name = "start_ort")),
@@ -33,7 +32,6 @@ public class DriveRoute {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "time", column = @Column(name = "ziel_zeit")),
             @AttributeOverride(name = "address.postal", column = @Column(name = "ziel_plz")),
             @AttributeOverride(name = "address.street", column = @Column(name = "ziel_strasse")),
             @AttributeOverride(name = "address.place", column = @Column(name = "ziel_ort")),
@@ -47,6 +45,8 @@ public class DriveRoute {
     private User driver;
 
     private LocalDateTime creationDate;
+
+    private LocalDateTime drivingTime;
 
     private DriveType driveType;
 
@@ -68,12 +68,13 @@ public class DriveRoute {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.REMOVE)
     private Set<Booking> bookings;
 
-    public DriveRoute(Start start, Destination destination, boolean fuelParticipation, Integer seatCount, User driver,
+    public DriveRoute(Start start, Destination destination, LocalDateTime drivingTime, boolean fuelParticipation, Integer seatCount, User driver,
             LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
 
         this.start = start;
         this.note = "";
         this.destination = destination;
+        this.drivingTime = drivingTime;
         this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
         this.driver = driver;
@@ -85,26 +86,26 @@ public class DriveRoute {
         id = hashCode();
     }
 
-    //TODO: Regelmäßige Fahrt Konstruktor brauch ich den überhaupt oder kann ich den hier einfach für alles nutzen und bei null wird halt null einegtragen? XD
-    public DriveRoute(Start start, Destination destination, boolean isRegularDrive, LocalDateTime regularDriveDateEnd,
-                      DayOfWeek regularDriveDay, boolean fuelParticipation, Integer seatCount, User driver,
-                      LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
-
-        this.start = start;
-        this.destination = destination;
-        this.isRegularDrive = isRegularDrive;
-        this.regularDriveDateEnd = regularDriveDateEnd;
-        this.regularDriveDay = regularDriveDay;
-        this.fuelParticipation = fuelParticipation;
-        this.seatCount = seatCount;
-        this.driver = driver;
-        this.creationDate = creationDate;
-        this.driveType = driveType;
-        this.currentRouteLink = currentRouteLink;
-        driveRequests = new HashSet<>();
-        bookings = new HashSet<>();
-        id = hashCode();
-    }
+//    //TODO: Regelmäßige Fahrt Konstruktor brauch ich den überhaupt oder kann ich den hier einfach für alles nutzen und bei null wird halt null einegtragen? XD
+//    public DriveRoute(Start start, Destination destination, boolean isRegularDrive, LocalDateTime regularDriveDateEnd,
+//                      DayOfWeek regularDriveDay, boolean fuelParticipation, Integer seatCount, User driver,
+//                      LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
+//
+//        this.start = start;
+//        this.destination = destination;
+//        this.isRegularDrive = isRegularDrive;
+//        this.regularDriveDateEnd = regularDriveDateEnd;
+//        this.regularDriveDay = regularDriveDay;
+//        this.fuelParticipation = fuelParticipation;
+//        this.seatCount = seatCount;
+//        this.driver = driver;
+//        this.creationDate = creationDate;
+//        this.driveType = driveType;
+//        this.currentRouteLink = currentRouteLink;
+//        driveRequests = new HashSet<>();
+//        bookings = new HashSet<>();
+//        id = hashCode();
+//    }
 
 
     //TODO: Update Konstruktor -> vllt doch über setter? oder überall über Konstruktor
@@ -112,6 +113,7 @@ public class DriveRoute {
             Integer id,
             Start start,
             Destination destination,
+            LocalDateTime drivingTime,
             boolean fuelParticipation,
             Integer seatCount,
             User driver,
@@ -126,6 +128,7 @@ public class DriveRoute {
         this.seatCount = seatCount;
         this.driver = driver;
         this.creationDate = creationDate;
+        this.drivingTime = drivingTime;
         this.driveType = driveType;
         this.note = note;
     }
@@ -203,6 +206,10 @@ public class DriveRoute {
         return bookings.stream().toList();
     }
 
+    public LocalDateTime getDrivingTime() {
+        return drivingTime;
+    }
+
     public void addDriveRequest(DriveRequest driveRequest) throws DuplicateRequestException {
         nullCheck(driveRequest);
 
@@ -272,6 +279,18 @@ public class DriveRoute {
         driveRequests.clear();
         bookings.clear();
     }
+
+    public String getFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return drivingTime.format(formatter);
+    }
+
+    public String getFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return drivingTime.format(formatter) + " Uhr";
+    }
+
+
 
     @Override
     public boolean equals(Object obj) {

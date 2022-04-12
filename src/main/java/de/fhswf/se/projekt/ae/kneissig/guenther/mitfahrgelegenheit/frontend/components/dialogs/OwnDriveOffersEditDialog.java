@@ -196,8 +196,9 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
             DriveRoute updateDriveRoute = new DriveRoute(
                     driveRoute.getId(),
-                    new Start(firstAddress, driveTime.atDate(driveDate)),
-                    new Destination(secondAddress, driveTime.atDate(driveDate)),
+                    new Start(firstAddress),
+                    new Destination(secondAddress),
+                    driveTime.atDate(driveDate),
                     fuelParticipation,
                     carSeatCount,
                     user,

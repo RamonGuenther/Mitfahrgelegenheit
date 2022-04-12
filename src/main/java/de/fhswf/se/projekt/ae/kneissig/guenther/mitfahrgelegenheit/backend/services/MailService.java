@@ -63,7 +63,7 @@ public class MailService {
         mimeMessageHelper.setText(
                 "<h2> Hallo " + driveRoute.getDriver().getFirstName() + ",</h2>" +
                         "<h2>" + passenger +
-                        ". hat die Mitfahrt am " + driveRoute.getStart().getFormattedDate() + " abgesagt</h2>" +
+                        ". hat die Mitfahrt am " + driveRoute.getFormattedDate() + " abgesagt</h2>" +
                         "<p>Deine Route sieht jetzt folgendermaßen aus: </p>" +
                         "<a href=" + driveRoute.getCurrentRouteLink() + "> Route anzeigen </a>" +
                         "<p> Dies ist eine automatisch generierte E-Mail von einer System-E-Mail-Adresse. Bitte antworten Sie\n" +

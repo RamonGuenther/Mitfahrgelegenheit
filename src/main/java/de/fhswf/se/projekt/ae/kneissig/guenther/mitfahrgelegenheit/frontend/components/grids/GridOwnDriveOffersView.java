@@ -52,7 +52,7 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
                 + ziel.getZiel().getAddress().getPostal() + " "
                 + ziel.getZiel().getAddress().getPlace()).setHeader("Zieladresse");
 
-        addColumn(new LocalDateTimeRenderer<>(item -> item.getZiel().getTime(),
+        addColumn(new LocalDateTimeRenderer<>(DriveRoute::getDrivingTime,
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader(zeitpunkt);
 
 

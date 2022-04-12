@@ -139,8 +139,8 @@ public class FormLayoutDriveRoute extends FormLayout {
                     AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
 
                     RouteString routeString = new RouteString(
-                            new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber()), LocalDateTime.now()),
-                            new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber()), LocalDateTime.now()),
+                            new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber())),
+                            new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber())),
                             Collections.emptyList());
 
                     UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
@@ -235,8 +235,8 @@ public class FormLayoutDriveRoute extends FormLayout {
         setCheckboxFuelParticipation(driveRoute.isFuelParticipation());
         setSitzplaetze(driveRoute.getSeatCount().toString());
         setFhLocation(driveRoute.getZiel().getAddress().getPlace());
-        setDriveTime(driveRoute.getZiel().getTime().toLocalTime());
-        setDriveDateStart(driveRoute.getZiel().getTime().toLocalDate());
+        setDriveTime(driveRoute.getDrivingTime().toLocalTime());
+        setDriveDateStart(driveRoute.getDrivingTime().toLocalDate());
         setAddress(driveRoute.getStart().getAddress().getStreet() + " "
                 + driveRoute.getStart().getAddress().getHouseNumber() + ", "
                 + driveRoute.getStart().getAddress().getPostal() + " "

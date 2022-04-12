@@ -63,11 +63,11 @@ public class DriveRequestDialog extends Dialog {
                 List<Stopover> stopoverList = new ArrayList<>();
                 Address address = new Address(textFieldAddress.getPostal(), textFieldAddress.getPlace(), textFieldAddress.getStreet(), textFieldAddress.getNumber());
 
-                stopoverList.add(new Stopover(address, LocalDateTime.now()));
+                stopoverList.add(new Stopover(address));
 
                 RouteString routeString = new RouteString(driveRoute.getStart(), driveRoute.getZiel(), stopoverList);
 
-                DriveRequest driveRequest = new DriveRequest(driveRoute, RequestState.OPEN, currentUser, textAreaMessage.getValue(), "Apfel", LocalDateTime.now(), new Stopover(new Address(), null));
+                DriveRequest driveRequest = new DriveRequest(driveRoute, RequestState.OPEN, currentUser, textAreaMessage.getValue(), "Apfel", LocalDateTime.now(), new Stopover(new Address()));
                 driveRoute.addDriveRequest(driveRequest);
                 driveRequestService.save(driveRequest);
                 driveRouteService.save(driveRoute);

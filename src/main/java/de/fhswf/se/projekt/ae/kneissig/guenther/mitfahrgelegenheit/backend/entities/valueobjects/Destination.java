@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 @Embeddable
 public class Destination extends Waypoint
 {
-    public Destination(Address address, LocalDateTime time)
+    public Destination(Address address)
     {
-        super(address, time);
+        super(address);
     }
 
     protected Destination()
     {
-        super(null, null);
+        super(null);
     }
 
 }

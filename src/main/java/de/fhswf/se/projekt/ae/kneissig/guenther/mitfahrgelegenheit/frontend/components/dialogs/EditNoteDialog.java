@@ -33,6 +33,7 @@ public class EditNoteDialog extends Dialog {
                     driveRoute.getId(),
                     driveRoute.getStart(),
                     driveRoute.getDestination(),
+                    driveRoute.getDrivingTime(),
                     driveRoute.isFuelParticipation(),
                     driveRoute.getSeatCount(),
                     driveRoute.getDriver(),

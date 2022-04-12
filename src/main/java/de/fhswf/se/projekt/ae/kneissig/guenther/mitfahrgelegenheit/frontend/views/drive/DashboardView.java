@@ -47,7 +47,7 @@ public class DashboardView extends VerticalLayout {
     private TextArea passengerViewNoteTextArea;
     private Button buttonNewNote;
 
-    public DashboardView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService){
+    public DashboardView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService) {
         this.userService = userService;
         this.driveRouteService = driveRouteService;
         this.bookingService = bookingService;
@@ -57,7 +57,7 @@ public class DashboardView extends VerticalLayout {
         driverValues();
     }
 
-    private void createDashboardView(){
+    private void createDashboardView() {
         H1 title = new H1("Meine nächsten Fahrten");
 
         /*-------------------------------------------------------------------------------------------------------------
@@ -180,35 +180,27 @@ public class DashboardView extends VerticalLayout {
         add(div);
     }
 
-    private void driverValues(){
+    private void driverValues() {
 
         this.driverRoute = driveRouteService.findNextDriveRouteByUserComparedByTime(userService.getCurrentUser());
 
-        if(driverRoute != null){
-            switch (driverRoute.getDriveType()){
-                case OUTWARD_TRIP -> {
-                    driverViewDateValue.setText(driverRoute.getZiel().getFormattedDate() + ", " + driverRoute.getZiel().getFormattedTime());
-                    driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
-                    driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
-                    driverViewNoteTextArea.setValue(driverRoute.getNote());
-                }
-                case RETURN_TRIP -> {
-                    driverViewDateValue.setText(driverRoute.getZiel().getFormattedDate() + ", " + driverRoute.getStart().getFormattedTime());
-                    driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
-                    driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
-                    driverViewNoteTextArea.setValue(driverRoute.getNote());
-                }
-            }
-            buttonNewNote.setEnabled(true);
+        if (driverRoute != null) {
+            driverViewDateValue.setText(driverRoute.getFormattedDate() + ", " + driverRoute.getFormattedTime());
+            driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
+            driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
+            driverViewNoteTextArea.setValue(driverRoute.getNote());
         }
+
+        buttonNewNote.setEnabled(true);
     }
 
-    private void passengerValues(){
+
+    private void passengerValues() {
         this.passengerRoute = bookingService.findNextBookingByUserComparedByTime(userService.getCurrentUser());
 
-        if(passengerRoute != null){
+        if (passengerRoute != null) {
             passengerViewDriverValue.setText(passengerRoute.getDriveRoute().getDriver().getFullName());
-            passengerViewDateValue.setText(passengerRoute.getStopover().getFormattedDate() + ", " + passengerRoute.getStopover().getFormattedTime());
+            passengerViewDateValue.setText(passengerRoute.getDriveRoute().getFormattedDate() + ", " + passengerRoute.getDriveRoute().getFormattedTime());
             passengerViewStartValue.setText(passengerRoute.getDriveRoute().getStart().getFullAddressToString());
             passengerViewDestinationValue.setText(passengerRoute.getDriveRoute().getZiel().getFullAddressToString());
             passengerViewNoteTextArea.setValue(passengerRoute.getDriveRoute().getNote());

@@ -78,9 +78,7 @@ public class BookingsView extends VerticalLayout {
         gridBookings = new Grid();
         gridBookings.setItems(bookingsOutwardTrip);
 
-        gridBookings.addColumn(new LocalDateTimeRenderer<>(item -> item.getDriveRoute().getDriveType()
-                .equals(DriveType.OUTWARD_TRIP) ?
-                item.getDriveRoute().getZiel().getTime() : item.getDriveRoute().getStart().getTime() ,
+        gridBookings.addColumn(new LocalDateTimeRenderer<>(item -> item.getDriveRoute().getDrivingTime(),
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader("Tag / Uhrzeit");
 
         gridBookings.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");

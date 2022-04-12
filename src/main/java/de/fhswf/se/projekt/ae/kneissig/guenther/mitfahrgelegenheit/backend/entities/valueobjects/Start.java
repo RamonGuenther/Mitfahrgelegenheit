@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 @Embeddable
 public class Start extends Waypoint {
 
-    public Start(Address address, LocalDateTime time) {
-        super(address, time);
+    public Start(Address address) {
+        super(address);
     }
 
     protected Start() {

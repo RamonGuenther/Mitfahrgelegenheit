@@ -1,7 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.BookingRepository;
@@ -32,7 +31,7 @@ public class BookingService {
 
     public Booking findNextBookingByUserComparedByTime(User user){
         List<Booking> bookings = repository.findAllByPassenger(user);
-        bookings.sort(Comparator.comparing(booking -> booking.getStopover().getTime()));
+        bookings.sort(Comparator.comparing(booking -> booking.getDriveRoute().getDrivingTime()));
 
         if(bookings.size() > 0){
             return bookings.get(0);

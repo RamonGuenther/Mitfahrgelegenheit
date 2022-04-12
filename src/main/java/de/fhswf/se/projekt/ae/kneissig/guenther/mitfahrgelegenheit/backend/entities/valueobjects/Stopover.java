@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 
 @Embeddable
 public class Stopover extends Waypoint {
-    public Stopover(Address address, LocalDateTime time) {
-        super(address, time);
+    public Stopover(Address address) {
+        super(address);
     }
 
     protected Stopover() {
-        super(null,null);
+        super(null);
     }
 }
