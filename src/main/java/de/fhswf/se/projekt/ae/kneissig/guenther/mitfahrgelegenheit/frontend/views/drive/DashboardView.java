@@ -190,13 +190,13 @@ public class DashboardView extends VerticalLayout {
                     driverViewDateValue.setText(driverRoute.getZiel().getFormattedDate() + ", " + driverRoute.getZiel().getFormattedTime());
                     driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
                     driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
-                    driverViewNoteTextArea.setValue(driverRoute.getNote() == null ? "" : driverRoute.getNote());
+                    driverViewNoteTextArea.setValue(driverRoute.getNote());
                 }
                 case RETURN_TRIP -> {
                     driverViewDateValue.setText(driverRoute.getZiel().getFormattedDate() + ", " + driverRoute.getStart().getFormattedTime());
                     driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
                     driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
-                    driverViewNoteTextArea.setValue(driverRoute.getNote() == null ? "" : driverRoute.getNote());
+                    driverViewNoteTextArea.setValue(driverRoute.getNote());
                 }
             }
             buttonNewNote.setEnabled(true);
@@ -207,11 +207,11 @@ public class DashboardView extends VerticalLayout {
         this.passengerRoute = bookingService.findNextBookingByUserComparedByTime(userService.getCurrentUser());
 
         if(passengerRoute != null){
-            passengerViewDriverValue.setText(passengerRoute.getDriveRoute().getDriver().getFirstName() + " " + passengerRoute.getDriveRoute().getDriver().getLastName().substring(0,1) + ".");
+            passengerViewDriverValue.setText(passengerRoute.getDriveRoute().getDriver().getFullName());
             passengerViewDateValue.setText(passengerRoute.getStopover().getFormattedDate() + ", " + passengerRoute.getStopover().getFormattedTime());
             passengerViewStartValue.setText(passengerRoute.getDriveRoute().getStart().getFullAddressToString());
             passengerViewDestinationValue.setText(passengerRoute.getDriveRoute().getZiel().getFullAddressToString());
-            passengerViewNoteTextArea.setValue(passengerRoute.getDriveRoute().getNote() == null ? "" : passengerRoute.getDriveRoute().getNote());
+            passengerViewNoteTextArea.setValue(passengerRoute.getDriveRoute().getNote());
         }
     }
 

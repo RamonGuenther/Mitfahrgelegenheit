@@ -38,7 +38,7 @@ public class EditNoteDialog extends Dialog {
                     driveRoute.getDriver(),
                     driveRoute.getCreationDate(),
                     driveRoute.getDriveType(),
-                    note.getValue().isEmpty() ? "" : note.getValue()
+                    note.getValue()
             );
             driveRouteService.save(routeWithNewNote);
             this.close();

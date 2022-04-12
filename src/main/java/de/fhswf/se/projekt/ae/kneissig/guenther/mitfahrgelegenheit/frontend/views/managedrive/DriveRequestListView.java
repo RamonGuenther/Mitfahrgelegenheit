@@ -24,6 +24,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.SearchDriveResultViewDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -59,7 +60,7 @@ public class DriveRequestListView extends VerticalLayout {
         driverGrid.setClassName("drive-request-list-view-grids");
         driverGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
 
-        driverGrid.setItems(driveRequestService.findAllDriveRequestsDriver(userService.getCurrentUser()));
+        driverGrid.setItems(driveRequestService.findAllDriveRequestsDriver(userService.getCurrentUser()).orElse(Collections.emptyList()));
         driverGrid.addColumn(DriveRequest::getFormattedDate).setHeader("Datum");
         driverGrid.addColumn(DriveRequest::getFormattedTime).setHeader("Uhrzeit");
         driverGrid.addColumn(passenger ->passenger.getPassenger().getFullName()).setHeader("Mitfahrer");
@@ -77,7 +78,7 @@ public class DriveRequestListView extends VerticalLayout {
         passengerGrid.setClassName("drive-request-list-view-grids");
 
 
-        passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()));
+        passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()).orElse(Collections.emptyList()));
 
         passengerGrid.addColumn(name ->name.getDriveRoute().getDriver().getFullName()).setHeader("Name");
         passengerGrid.addColumn(DriveRequest::getFormattedDate).setHeader("Datum");
@@ -101,7 +102,7 @@ public class DriveRequestListView extends VerticalLayout {
                 driveRouteService.save(item.getDriveRoute());
                 driveRequestService.delete(item);
                 System.out.println("Ich setze die Items");
-                passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()));
+                passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()).orElse(Collections.emptyList()));
             });
             return showDriveRequestButton;
         }).setHeader("");

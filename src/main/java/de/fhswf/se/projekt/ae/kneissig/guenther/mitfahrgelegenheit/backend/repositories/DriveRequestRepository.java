@@ -6,11 +6,12 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DriveRequestRepository extends JpaRepository<DriveRequest, Integer> {
 
-    List<DriveRequest> findAllByDriveRoute_DriverAndRequestState(User driver, RequestState requestState);
+    Optional<List<DriveRequest>> findAllByDriveRoute_DriverAndRequestState(User driver, RequestState requestState);
 
-    List<DriveRequest> findAllByPassenger(User passenger);
+    Optional<List<DriveRequest>> findAllByPassenger(User passenger);
 
 }

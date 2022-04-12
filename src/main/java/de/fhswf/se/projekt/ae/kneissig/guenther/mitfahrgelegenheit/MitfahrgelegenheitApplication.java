@@ -245,20 +245,20 @@ public class MitfahrgelegenheitApplication {
         driveRouteService.save(driveRoute2);
 
 
-        driveRequest = new DriveRequest(
-                driveRoute2,
-                RequestState.OPEN,
-                user3,
-                "Maren",
-                "",
-                LocalDateTime.now(),
-                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"),
-                        LocalDateTime.now())
-        );
-
-        driveRoute2.addDriveRequest(driveRequest);
-        driveRequestService.save(driveRequest);
-        driveRouteService.save(driveRoute2);
+//        driveRequest = new DriveRequest(
+//                driveRoute2,
+//                RequestState.OPEN,
+//                user3,
+//                "Maren",
+//                "",
+//                LocalDateTime.now(),
+//                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"),
+//                        LocalDateTime.now())
+//        );
+//
+//        driveRoute2.addDriveRequest(driveRequest);
+//        driveRequestService.save(driveRequest);
+//        driveRouteService.save(driveRoute2);
 
 
         /**

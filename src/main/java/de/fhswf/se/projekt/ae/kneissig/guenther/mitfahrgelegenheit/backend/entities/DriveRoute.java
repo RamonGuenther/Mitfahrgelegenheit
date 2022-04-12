@@ -132,8 +132,7 @@ public class DriveRoute {
 
     @PersistenceConstructor
     public DriveRoute() {
-        driveRequests = new HashSet<>();
-        bookings = new HashSet<>();
+
     }
 
     public Integer getId() {
@@ -219,6 +218,9 @@ public class DriveRoute {
 
         System.out.println("Vor delete: " + driveRequests.size());
 
+        System.out.println(driveRequest.equals(driveRequests.iterator().next()));
+        System.out.println(driveRequest.hashCode() + ":" +  driveRequests.iterator().next().hashCode());
+
 
         List<DriveRequest> driveRequestList = new ArrayList<>(driveRequests);
 
@@ -230,7 +232,10 @@ public class DriveRoute {
         }
 
         driveRequests = new HashSet<>(driveRequestList);
+
 //        driveRequests.remove(driveRequest);
+
+        System.out.println("Ist es leer? : " +driveRequests.isEmpty());
         System.out.println("Nach delete: " + driveRequests.size());
     }
 

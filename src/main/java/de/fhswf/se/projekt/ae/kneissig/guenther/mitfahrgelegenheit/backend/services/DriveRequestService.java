@@ -7,6 +7,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repos
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DriveRequestService {
@@ -26,11 +27,11 @@ public class DriveRequestService {
         repository.delete(driveRequest);
     }
 
-    public List<DriveRequest> findAllDriveRequestsDriver(User driver){
+    public Optional<List<DriveRequest>> findAllDriveRequestsDriver(User driver){
         return repository.findAllByDriveRoute_DriverAndRequestState(driver, RequestState.OPEN);
     }
 
-    public List<DriveRequest> findAllDriveRequestsPassenger(User passenger){
+    public Optional<List<DriveRequest>> findAllDriveRequestsPassenger(User passenger){
         return repository.findAllByPassenger(passenger);
     }
 }
