@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-    List<Booking> findAllByPassengerAndDriveRoute_DriveType(User passenger, DriveType driveType);
+    Optional<List<Booking>> findAllByPassengerAndDriveRoute_DriveType(User passenger, DriveType driveType);
 
     Optional<List<Booking>> findAllByPassenger(User passenger);
 

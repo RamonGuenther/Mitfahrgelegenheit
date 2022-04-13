@@ -45,7 +45,6 @@ public class User {
                 String universityLocation,
                 String faculty,
                 String email,
-                UserRating userRating,
                 LocalDateTime lastLogin,
                 boolean firstLogin) {
         this.id = id;
@@ -64,7 +63,7 @@ public class User {
     }
 
     public User() {
-
+        lastLogin = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -167,8 +166,8 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getFullName(){
-        return firstName + " " +lastName.charAt(0) + ". ";
+    public String getFullName() {
+        return firstName + " " + lastName.charAt(0) + ". ";
     }
 
     public void setUserRating(UserRating userRating) {

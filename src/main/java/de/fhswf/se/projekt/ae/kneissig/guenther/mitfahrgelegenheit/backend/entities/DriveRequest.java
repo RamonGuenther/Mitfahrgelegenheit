@@ -2,10 +2,13 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
 @Entity
 public class DriveRequest {
@@ -29,13 +32,16 @@ public class DriveRequest {
     @Embedded
     private Stopover stopover;
 
-    public DriveRequest(DriveRoute driveRoute, RequestState requestState, User passenger, String note, String currentRouteLink, LocalDateTime requestTime, Stopover stopover) {
+    public DriveRequest(DriveRoute driveRoute, User passenger, String note, String currentRouteLink, Stopover stopover) {
+
+        nullCheck(driveRoute, passenger, stopover);
+
         this.driveRoute = driveRoute;
-        this.requestState = requestState;
+        this.requestState = RequestState.OPEN;
         this.passenger = passenger;
         this.note = note;
         this.currentRouteLink = currentRouteLink;
-        this.requestTime = requestTime;
+        this.requestTime = LocalDateTime.now();
         this.stopover = stopover;
     }
 

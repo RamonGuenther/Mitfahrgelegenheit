@@ -27,7 +27,7 @@ public class DriveRouteService {
         repository.save(driveRoute);
     }
 
-    public void delete(DriveRoute driveRoute){
+    public void delete(DriveRoute driveRoute) {
         repository.delete(driveRoute);
     }
 
@@ -39,26 +39,26 @@ public class DriveRouteService {
         return repository.findAllByDriver(user).orElse(Collections.emptyList());
     }
 
-    public List<DriveRoute> getByUserAndDriveType(User user, DriveType fahrtenTyp) {
+    public Optional<List<DriveRoute>> getByUserAndDriveType(User user, DriveType fahrtenTyp) {
         return repository.findAllByDriverAndDriveType(user, fahrtenTyp);
     }
 
-    public List<DriveRoute> getOtherUsersDriveRoutesByDriveType(DriveType driveType, String startPlace, String destinationPlace, String benutzerUsername) {
+    public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveType(DriveType driveType, String startPlace, String destinationPlace, String benutzerUsername) {
         return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, destinationPlace, benutzerUsername);
     }
 
-    public List<DriveRoute> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(DriveType driveType, String startPlace, String benutzerUsername) {
+    public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(DriveType driveType, String startPlace, String benutzerUsername) {
         return repository.findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, benutzerUsername);
     }
 
-    public List<DriveRoute> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(DriveType driveType, String destinationPlace, String benutzerUsername) {
+    public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(DriveType driveType, String destinationPlace, String benutzerUsername) {
         return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
     }
 
-    public List<DriveRoute> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
-        List<DriveRoute> routen = getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername());
+    public Optional<List<DriveRoute>> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
+        List<DriveRoute> routen = getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList());
 
-        return routen.size() > 0 ? routen : switch (driveType) {
+        return routen.size() > 0 ? Optional.of(routen) : switch (driveType) {
             case OUTWARD_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, destinationPlace, user.getUsername());
             case RETURN_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, startPlace, user.getUsername());
         };
@@ -67,7 +67,7 @@ public class DriveRouteService {
     //TODO: Anschauen ob es noch Sinn ergibt, vllt Sql sortieren nach driveDate --  equals.currenttime ist unnötig? xD
     public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
         List<DriveRoute> driveRoutes = new ArrayList<>();
-        List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace);
+        List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace).orElse(Collections.emptyList());
 
         switch (driveType) {
             case OUTWARD_TRIP -> {
@@ -115,14 +115,14 @@ public class DriveRouteService {
         return driveRoutes;
     }
 
-    public DriveRoute getNextDriveRouteByUser(User user) {
+    public Optional<DriveRoute> getNextDriveRouteByUser(User user) {
         List<DriveRoute> outwardTrips = repository.findAllByDriver(user).orElse(Collections.emptyList());
         outwardTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
         outwardTrips = outwardTrips.stream().filter(driveRoute ->
                 driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDateTime.now().toLocalDate()) ||
-                driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
-                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime())).collect(Collectors.toList());
+                        driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
+                                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime())).collect(Collectors.toList());
 
-        return outwardTrips.size() > 0 ? outwardTrips.get(0) : null;
+        return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
     }
 }

@@ -10,8 +10,8 @@ public class Rating {
     private int punctuality;
     private int reliability;
 
-    public Rating(LocalDate date, int punctuality, int reliability) {
-        this.date = date;
+    public Rating(int punctuality, int reliability) {
+        this.date = LocalDate.now();
         this.punctuality = punctuality;
         this.reliability = reliability;
     }

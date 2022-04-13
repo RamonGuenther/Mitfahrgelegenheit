@@ -24,6 +24,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.BookingsView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.OwnDriveOffersView;
 
+import java.util.Optional;
+
 @RouteAlias(value = "", layout = MainLayout.class)
 @Route(value = "dashboard", layout = MainLayout.class)
 @PageTitle("Dashboard")
@@ -182,21 +184,20 @@ public class DashboardView extends VerticalLayout {
 
     private void driverValues() {
 
-        this.driverRoute = driveRouteService.getNextDriveRouteByUser(userService.getCurrentUser());
+        driveRouteService.getNextDriveRouteByUser(userService.getCurrentUser()).ifPresent(driveRoute -> this.driverRoute = driveRoute);
 
         if (driverRoute != null) {
             driverViewDateValue.setText(driverRoute.getFormattedDate() + ", " + driverRoute.getFormattedTime());
             driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
             driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
             driverViewNoteTextArea.setValue(driverRoute.getNote());
+            buttonNewNote.setEnabled(true);
         }
-
-        buttonNewNote.setEnabled(true);
     }
 
 
     private void passengerValues() {
-        this.passengerRoute = bookingService.getNextBookingByUser(userService.getCurrentUser());
+        bookingService.getNextBookingByUser(userService.getCurrentUser()).ifPresent(passengerRoute -> this.passengerRoute = passengerRoute);
 
         if (passengerRoute != null) {
             passengerViewDriverValue.setText(passengerRoute.getDriveRoute().getDriver().getFullName());

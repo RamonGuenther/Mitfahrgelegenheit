@@ -7,6 +7,8 @@ import java.awt.print.Book;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
+
 @Entity
 public class Booking {
 
@@ -20,22 +22,23 @@ public class Booking {
     @ManyToOne
     private DriveRoute driveRoute;
 
-    private final LocalDateTime dateOfBooking;
+    private LocalDateTime dateOfBooking;
 
     @Embedded
     private Stopover stopover;
 
-    public Booking(DriveRoute driveRoute,User passenger, LocalDateTime dateOfBooking, Stopover stopover)
+    public Booking(DriveRoute driveRoute,User passenger, Stopover stopover)
     {
+        nullCheck(driveRoute, passenger, stopover);
+
         this.driveRoute = driveRoute;
         this.passenger = passenger;
-        this.dateOfBooking = dateOfBooking;
+        this.dateOfBooking = LocalDateTime.now();
         this.stopover = stopover;
     }
 
     public Booking() {
-        passenger = null;
-        dateOfBooking = null;
+
     }
 
     public Integer getId() {

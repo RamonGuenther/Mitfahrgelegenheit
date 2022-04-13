@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.security;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * Quelle: https://www.baeldung.com/spring_redirect_after_login
@@ -60,6 +62,9 @@ public class ApplicationUrlAuthenticationSuccessHandler implements Authenticatio
             return USERDATA_NEEDED_URL;
         }
         else{
+            User user = userService.findBenutzerByUsername(authentication.getName());
+            user.setLastLogin(LocalDateTime.now());
+            userService.save(user);
             return DEFAULT_SUCCESS_URL;
         }
     }

@@ -70,7 +70,9 @@ public class DriveRoute {
     private Set<Booking> bookings;
 
     public DriveRoute(Start start, Destination destination, LocalDateTime drivingTime, boolean fuelParticipation, Integer seatCount, User driver,
-                      LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
+                       DriveType driveType, String currentRouteLink) {
+
+        nullCheck(start,destination,drivingTime,seatCount, driver);
 
         this.start = start;
         this.destination = destination;
@@ -78,7 +80,7 @@ public class DriveRoute {
         this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
         this.driver = driver;
-        this.creationDate = creationDate;
+        this.creationDate = LocalDateTime.now();
         this.currentRouteLink = currentRouteLink;
         this.driveType = driveType;
         this.note = "";
@@ -120,6 +122,8 @@ public class DriveRoute {
             DriveType driveType,
             String note
     ) {
+        nullCheck(start,destination,drivingTime,seatCount, driver);
+
         this.id = id;
         this.start = start;
         this.destination = destination;

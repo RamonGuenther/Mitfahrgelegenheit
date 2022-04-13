@@ -29,11 +29,11 @@ public class BookingService {
         repository.delete(booking);
     }
 
-    public List<Booking> getAllByPassengerAndDriveType(User user, DriveType driveType){
+    public Optional<List<Booking>> getAllByPassengerAndDriveType(User user, DriveType driveType){
         return repository.findAllByPassengerAndDriveRoute_DriveType(user, driveType);
     }
 
-    public Booking getNextBookingByUser(User user){
+    public Optional<Booking> getNextBookingByUser(User user){
         List<Booking> bookings = repository.findAllByPassenger(user).orElse(Collections.emptyList());
         bookings.sort(Comparator.comparing(booking -> booking.getDriveRoute().getDrivingTime()));
         bookings = bookings.stream().filter(booking ->
@@ -41,7 +41,7 @@ public class BookingService {
                 booking.getDriveRoute().getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
                 booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime())).collect(Collectors.toList());
 
-        return bookings.size() > 0 ? bookings.get(0) : null;
+        return bookings.size() > 0 ? Optional.of(bookings.get(0)) : Optional.empty();
     }
 
     public Optional<List<Booking>> getCompletedDriveRoutesByDriver(User user){

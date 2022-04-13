@@ -120,7 +120,7 @@ public class DriveRequestManageDialog extends Dialog {
         driveRequestService.save(driveRequest);
         if (requestState == RequestState.ACCEPTED) {
             try {
-                Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
+                Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(),  driveRequest.getStopover());
                 bookingService.save(newBooking);
                 driveRequest.getDriveRoute().addBooking(newBooking);
 

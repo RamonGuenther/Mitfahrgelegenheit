@@ -7,8 +7,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repos
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
 @Service
 public class UserService {
 
@@ -31,7 +29,7 @@ public class UserService {
     }
 
     public void rateUser(User userToRate, int ratingPuncuality, int ratingReliability, Role role){
-        Rating rating = new Rating(LocalDate.now(),ratingPuncuality, ratingReliability);
+        Rating rating = new Rating(ratingPuncuality, ratingReliability);
 
         switch (role){
             case DRIVER -> userToRate.getUserRating().addDriverRating(rating);

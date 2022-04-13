@@ -34,6 +34,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +59,7 @@ public class BookingsView extends VerticalLayout {
     private Grid<Booking> gridBookings;
     private RadioButtonGroup<String> radioButtonGroup;
 
-    public BookingsView(DriveRouteService driveRouteService, UserService userService, MailService mailService, BookingService bookingService){
+    public BookingsView(DriveRouteService driveRouteService, UserService userService, MailService mailService, BookingService bookingService) {
         this.driveRouteService = driveRouteService;
         this.mailService = mailService;
         this.bookingService = bookingService;
@@ -66,13 +68,13 @@ public class BookingsView extends VerticalLayout {
         createBookingsView();
     }
 
-    private void createBookingsView(){
+    private void createBookingsView() {
 
         H1 title = new H1("Meine Mitfahrgelegenheiten");
 
-        List<Booking> bookingsOutwardTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP)
+        List<Booking> bookingsOutwardTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList())
                 .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
-        List<Booking> bookingsReturnTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP)
+        List<Booking> bookingsReturnTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList())
                 .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
 
         radioButtonGroup = new RadioButtonGroup<>();
@@ -108,7 +110,7 @@ public class BookingsView extends VerticalLayout {
         add(div);
     }
 
-    private Button createLeaveDriveButton(Booking booking){
+    private Button createLeaveDriveButton(Booking booking) {
         Icon icon = new Icon(VaadinIcon.EXIT);
         Button button = new Button("Aussteigen");
         button.setIcon(icon);
@@ -135,8 +137,8 @@ public class BookingsView extends VerticalLayout {
                 driveRouteService.save(driveRoute);
 
                 gridBookings.setItems(radioButtonGroup.getValue().equals(OUTWARD_TRIP) ?
-                        bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP) :
-                        bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP));
+                        bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList()) :
+                        bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList()));
 
                 NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
 

@@ -178,7 +178,6 @@ public class OfferDriveView extends VerticalLayout{
                     fuelParticipation,
                     carSeatCount,
                     user,
-                    LocalDateTime.now(),
                     fahrtenTyp,
                     routeString.getRoute()
             ));

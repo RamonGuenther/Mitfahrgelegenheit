@@ -14,13 +14,13 @@ public interface DriveRouteRepository extends JpaRepository<DriveRoute, Integer>
 
     Optional<List<DriveRoute>> findAllByDriver(User driver);
 
-    List<DriveRoute> findAllByDriverAndDriveType(User driver, DriveType driveType);
+    Optional<List<DriveRoute>> findAllByDriverAndDriveType(User driver, DriveType driveType);
 
-    List<DriveRoute> findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(DriveType driveType, String startPlace, String username);
+    Optional<List<DriveRoute>>findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(DriveType driveType, String startPlace, String username);
 
-    List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(DriveType driveType, String destinationPlace, String username);
+    Optional<List<DriveRoute>> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(DriveType driveType, String destinationPlace, String username);
 
-    List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(
+    Optional<List<DriveRoute>>findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(
             DriveType driveType, String destinationPlace, String startPlace, String username);
 
     @Query("SELECT dr FROM DriveRoute dr WHERE dr.driver = :user and dr.drivingTime < :date")
