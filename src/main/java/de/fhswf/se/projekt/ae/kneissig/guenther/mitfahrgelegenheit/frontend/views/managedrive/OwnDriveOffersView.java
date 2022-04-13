@@ -62,8 +62,8 @@ public class OwnDriveOffersView extends VerticalLayout {
 
         User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        List<DriveRoute> driveListTo = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.OUTWARD_TRIP);
-        List<DriveRoute> driveListBack = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.RETURN_TRIP);
+        List<DriveRoute> driveListTo = driveRouteService.getByUserAndDriveType(user, DriveType.OUTWARD_TRIP);
+        List<DriveRoute> driveListBack = driveRouteService.getByUserAndDriveType(user, DriveType.RETURN_TRIP);
 
         RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");

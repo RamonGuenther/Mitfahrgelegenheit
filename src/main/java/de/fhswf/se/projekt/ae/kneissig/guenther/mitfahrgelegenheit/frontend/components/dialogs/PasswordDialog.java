@@ -28,6 +28,8 @@ public class PasswordDialog extends Dialog {
     public PasswordDialog(UserService userService, BCryptPasswordEncoder passwordEncoder){
 
         setId("password-dialog");
+        setCloseOnEsc(false);
+        setCloseOnOutsideClick(false);
 
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;

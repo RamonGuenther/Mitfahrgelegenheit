@@ -30,10 +30,12 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 //TODO:
@@ -45,9 +47,11 @@ import java.util.List;
 @CssImport("/themes/mitfahrgelegenheit/views/manage-drive-views.css")
 public class BookingsView extends VerticalLayout {
 
+    private static final String OUTWARD_TRIP = "Hinfahrt";
+    private static final String RETURN_TRIP = "Rückfahrt";
+
     private final DriveRouteService driveRouteService;
-    private final UserService userService;
-    private MailService mailService;
+    private final MailService mailService;
     private final BookingService bookingService;
     private final User user;
     private Grid<Booking> gridBookings;
@@ -56,7 +60,6 @@ public class BookingsView extends VerticalLayout {
     public BookingsView(DriveRouteService driveRouteService, UserService userService, MailService mailService, BookingService bookingService){
         this.driveRouteService = driveRouteService;
         this.mailService = mailService;
-        this.userService = userService;
         this.bookingService = bookingService;
         this.user = userService.getCurrentUser();
 
@@ -67,15 +70,17 @@ public class BookingsView extends VerticalLayout {
 
         H1 title = new H1("Meine Mitfahrgelegenheiten");
 
-        List<Booking> bookingsOutwardTrip = bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.OUTWARD_TRIP);
-        List<Booking> bookingsReturnTrip = bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.RETURN_TRIP);
+        List<Booking> bookingsOutwardTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP)
+                .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
+        List<Booking> bookingsReturnTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP)
+                .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
 
         radioButtonGroup = new RadioButtonGroup<>();
-        radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
-        radioButtonGroup.setValue("Hinfahrt");
+        radioButtonGroup.setItems(OUTWARD_TRIP, RETURN_TRIP);
+        radioButtonGroup.setValue(OUTWARD_TRIP);
         radioButtonGroup.setClassName("radiobutton-group");
 
-        gridBookings = new Grid();
+        gridBookings = new Grid<>();
         gridBookings.setItems(bookingsOutwardTrip);
 
         gridBookings.addColumn(new LocalDateTimeRenderer<>(item -> item.getDriveRoute().getDrivingTime(),
@@ -92,13 +97,8 @@ public class BookingsView extends VerticalLayout {
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case "Hinfahrt":
-                    gridBookings.setItems(bookingsOutwardTrip);
-                    break;
-
-                case "Rückfahrt":
-                    gridBookings.setItems(bookingsReturnTrip);
-                    break;
+                case OUTWARD_TRIP -> gridBookings.setItems(bookingsOutwardTrip);
+                case RETURN_TRIP -> gridBookings.setItems(bookingsReturnTrip);
             }
         });
 
@@ -134,9 +134,9 @@ public class BookingsView extends VerticalLayout {
                 driveRoute.setCurrentRouteLink(result);
                 driveRouteService.save(driveRoute);
 
-                gridBookings.setItems(radioButtonGroup.getValue().equals("Hinfahrt") ?
-                        bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.OUTWARD_TRIP) :
-                        bookingService.findAllByPassengerAndDriveRoute_DriveType(user, DriveType.RETURN_TRIP));
+                gridBookings.setItems(radioButtonGroup.getValue().equals(OUTWARD_TRIP) ?
+                        bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP) :
+                        bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP));
 
                 NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
 

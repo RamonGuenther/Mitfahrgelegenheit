@@ -84,6 +84,7 @@ import menuBarButtonCss from './components/menu-bar-button.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
 import petrolButtonsCss from './components/petrol-buttons.css';
 import profileDoubleRatingsCss from './components/profile-double-ratings.css';
+import ratingsDialogCss from './components/ratings-dialog.css';
 import searchDriveResultViewDialogCss from './components/search-drive-result-view-dialog.css';
 
 window.Vaadin = window.Vaadin || {};
@@ -174,6 +175,12 @@ export const applyTheme = (target) => {
       'profile-double-ratings',
       css`
         ${unsafeCSS(profileDoubleRatingsCss.toString())}
+      `
+    );
+    registerStyles(
+      'ratings-dialog',
+      css`
+        ${unsafeCSS(ratingsDialogCss.toString())}
       `
     );
     registerStyles(

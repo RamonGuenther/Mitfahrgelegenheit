@@ -14,7 +14,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridBookmarkSearchDriveResult;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -136,7 +135,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                         Integer.parseInt(time.substring(3)))
         );
 
-        driveList = driveRouteService.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive);
+        driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive);
 //        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
 
 

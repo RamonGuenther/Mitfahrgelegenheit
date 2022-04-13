@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * TODO: Andere Namen für die Methoden ausdenken und Validieren in Searchdrive ob es überhaupt funktioniert also findRouten
+ * TODO: Validieren in Searchdrive ob es überhaupt funktioniert also findRouten
  */
 @Service
 public class DriveRouteService {
@@ -30,41 +31,41 @@ public class DriveRouteService {
         repository.delete(driveRoute);
     }
 
-    public List<DriveRoute> findAllFahrerRoutenByBenutzer(User user) {
-        return repository.findAllByDriver(user);
-    }
-
-    public List<DriveRoute> findAllByBenutzerAndFahrtenTyp(User user, DriveType fahrtenTyp) {
-        return repository.findAllByDriverAndDriveType(user, fahrtenTyp);
-    }
-
-    public List<DriveRoute> findAllByFahrtenTypAndStart_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String startPlace, String benutzerUsername) {
-        return repository.findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, benutzerUsername);
-    }
-
-    public List<DriveRoute> findAllByFahrtenTypAndZiel_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String destinationPlace, String benutzerUsername) {
-        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
-    }
-
-    public List<DriveRoute> findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(DriveType driveType, String startPlace, String destinationPlace, String benutzerUsername) {
-        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, destinationPlace, benutzerUsername);
-    }
-
-    public List<DriveRoute> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
-        List<DriveRoute> routen = findAllByFahrtenTypAndZiel_Adresse_OrtAndStart_Adresse_OrtAndBenutzerUsernameNot(driveType, startPlace, destinationPlace, user.getUsername());
-
-        return routen.size() > 0 ? routen : switch (driveType) {
-            case OUTWARD_TRIP -> findAllByFahrtenTypAndStart_Adresse_OrtAndBenutzerUsernameNot(driveType, destinationPlace, user.getUsername());
-            case RETURN_TRIP -> findAllByFahrtenTypAndZiel_Adresse_OrtAndBenutzerUsernameNot(driveType, startPlace, user.getUsername());
-        };
-    }
-
     public Optional<DriveRoute> findById(Integer id) {
         return repository.findById(id);
     }
 
-    //TODO: Anschauen ob es noch Sinn ergibt, vllt Sql sortieren nach driveDate
-    public List<DriveRoute> findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNotAndDestination_Time(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
+    public List<DriveRoute> getDriveRoutesByUser(User user) {
+        return repository.findAllByDriver(user).orElse(Collections.emptyList());
+    }
+
+    public List<DriveRoute> getByUserAndDriveType(User user, DriveType fahrtenTyp) {
+        return repository.findAllByDriverAndDriveType(user, fahrtenTyp);
+    }
+
+    public List<DriveRoute> getOtherUsersDriveRoutesByDriveType(DriveType driveType, String startPlace, String destinationPlace, String benutzerUsername) {
+        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, destinationPlace, benutzerUsername);
+    }
+
+    public List<DriveRoute> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(DriveType driveType, String startPlace, String benutzerUsername) {
+        return repository.findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, benutzerUsername);
+    }
+
+    public List<DriveRoute> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(DriveType driveType, String destinationPlace, String benutzerUsername) {
+        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
+    }
+
+    public List<DriveRoute> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
+        List<DriveRoute> routen = getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername());
+
+        return routen.size() > 0 ? routen : switch (driveType) {
+            case OUTWARD_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, destinationPlace, user.getUsername());
+            case RETURN_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, startPlace, user.getUsername());
+        };
+    }
+
+    //TODO: Anschauen ob es noch Sinn ergibt, vllt Sql sortieren nach driveDate --  equals.currenttime ist unnötig? xD
+    public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
         List<DriveRoute> driveRoutes = new ArrayList<>();
         List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace);
 
@@ -114,26 +115,14 @@ public class DriveRouteService {
         return driveRoutes;
     }
 
-    public DriveRoute findNextDriveRouteByUserComparedByTime(User user) {
-
-        List<DriveRoute> outwardTrips = repository.findAllByDriverAndDriveType(user, DriveType.OUTWARD_TRIP);
+    public DriveRoute getNextDriveRouteByUser(User user) {
+        List<DriveRoute> outwardTrips = repository.findAllByDriver(user).orElse(Collections.emptyList());
         outwardTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
+        outwardTrips = outwardTrips.stream().filter(driveRoute ->
+                driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDateTime.now().toLocalDate()) ||
+                driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
+                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime())).collect(Collectors.toList());
 
-        List<DriveRoute> returnTrips = repository.findAllByDriverAndDriveType(user, DriveType.RETURN_TRIP);
-        returnTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
-
-        if (!outwardTrips.isEmpty() && !returnTrips.isEmpty()) {
-            if (outwardTrips.get(0).getDrivingTime().isBefore(returnTrips.get(0).getDrivingTime())) {
-                return outwardTrips.get(0);
-            } else {
-                return returnTrips.get(0);
-            }
-        } else if (outwardTrips.isEmpty() && !returnTrips.isEmpty()) {
-            return returnTrips.get(0);
-        } else if (returnTrips.isEmpty() && !outwardTrips.isEmpty()) {
-            return outwardTrips.get(0);
-        } else {
-            return null;
-        }
+        return outwardTrips.size() > 0 ? outwardTrips.get(0) : null;
     }
 }

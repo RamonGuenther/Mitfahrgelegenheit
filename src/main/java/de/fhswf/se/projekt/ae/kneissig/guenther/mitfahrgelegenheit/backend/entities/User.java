@@ -60,6 +60,7 @@ public class User {
         this.languages = languages;
         this.lastLogin = lastLogin;
         this.firstLogin = firstLogin;
+        this.userRating = new UserRating();
     }
 
     public User() {

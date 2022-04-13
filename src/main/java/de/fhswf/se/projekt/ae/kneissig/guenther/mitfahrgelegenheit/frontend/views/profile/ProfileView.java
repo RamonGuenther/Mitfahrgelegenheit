@@ -2,7 +2,6 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.vie
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -31,7 +30,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -149,8 +147,8 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
         H2 labelProfileGrid = new H2("Fahrtangebote von " + user.getFirstName());
 
-        List<DriveRoute> driveListTo = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.OUTWARD_TRIP);
-        List<DriveRoute> driveListBack = driveRouteService.findAllByBenutzerAndFahrtenTyp(user, DriveType.RETURN_TRIP);
+        List<DriveRoute> driveListTo = driveRouteService.getByUserAndDriveType(user, DriveType.OUTWARD_TRIP);
+        List<DriveRoute> driveListBack = driveRouteService.getByUserAndDriveType(user, DriveType.RETURN_TRIP);
 
         RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
@@ -189,7 +187,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         profileRatings.getAverageRatingsDriver().getPunctuality().setRating(user.getUserRating().getAverageDriverRatingPunctuality());
         profileRatings.getAverageRatingsDriver().getReliability().setRating(user.getUserRating().getAverageDriverRatingReliability());
         profileRatings.getAverageRatingsPassenger().getPunctuality().setRating(user.getUserRating().getAveragePassengerRatingPunctuality());
-        profileRatings.getAverageRatingsPassenger().getPunctuality().setRating(user.getUserRating().getAveragePassengerRatingReliability());
+        profileRatings.getAverageRatingsPassenger().getReliability().setRating(user.getUserRating().getAveragePassengerRatingReliability());
 
         HorizontalLayout profileRatingLayout = new HorizontalLayout(profileRatings);
         profileRatingLayout.setId("profileRatingLayout");

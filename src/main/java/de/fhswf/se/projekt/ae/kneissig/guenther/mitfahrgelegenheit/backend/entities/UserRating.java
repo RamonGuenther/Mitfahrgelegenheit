@@ -98,7 +98,7 @@ public class UserRating {
             result += r.getPunctuality();
         }
 
-        return (int) Math.round( result / (driverRatings.size()));
+        return (int) Math.round( result / (passengerRatings.size()));
     }
 
     public Integer getAveragePassengerRatingReliability(){
@@ -107,6 +107,6 @@ public class UserRating {
             result += r.getReliability();
         }
 
-        return (int) Math.round( result / (driverRatings.size()));
+        return (int) Math.round( result / (passengerRatings.size()));
     }
 }

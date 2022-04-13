@@ -182,7 +182,7 @@ public class DashboardView extends VerticalLayout {
 
     private void driverValues() {
 
-        this.driverRoute = driveRouteService.findNextDriveRouteByUserComparedByTime(userService.getCurrentUser());
+        this.driverRoute = driveRouteService.getNextDriveRouteByUser(userService.getCurrentUser());
 
         if (driverRoute != null) {
             driverViewDateValue.setText(driverRoute.getFormattedDate() + ", " + driverRoute.getFormattedTime());
@@ -196,7 +196,7 @@ public class DashboardView extends VerticalLayout {
 
 
     private void passengerValues() {
-        this.passengerRoute = bookingService.findNextBookingByUserComparedByTime(userService.getCurrentUser());
+        this.passengerRoute = bookingService.getNextBookingByUser(userService.getCurrentUser());
 
         if (passengerRoute != null) {
             passengerViewDriverValue.setText(passengerRoute.getDriveRoute().getDriver().getFullName());

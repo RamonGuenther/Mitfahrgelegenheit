@@ -1,32 +1,27 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.RatingButton;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.ReportButton;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.completeddrive.Role;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.Role;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.RatingDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -34,25 +29,34 @@ import java.util.List;
  * Die Klasse CompletedDriveView erstellt eine View für das anzeigen
  * der abgeschlossenen Fahrten, aus Fahrer- und Mitfahrersicht, um
  * eine Person zu bewerten oder zu melden.
- *
- * @author Ramon Günther
  */
 @com.vaadin.flow.router.Route(value = "abgeschlosseneFahrten", layout = MainLayout.class)
 @PageTitle("Abgeschlossene Fahrten")
 @CssImport("/themes/mitfahrgelegenheit/views/completed-drive-view.css")
 public class CompletedDriveView extends VerticalLayout {
 
-    private Label personName;
-    private StarsRating passengerRating;
-    private RadioButtonGroup<String> radioButtonGrid;
-    private Role role;
-    private RatingButton ratingButton;
-    private ReportButton reportButton;
+    private static final String OFFERED_DRIVES = "angebotene Fahrten";
+    private static final String BOOKED_DRIVES = "mitgefahrene Fahrten";
+
+    private final UserService userService;
+    private final DriveRouteService driveRouteService;
+    private final BookingService bookingService;
+
+    private final User user;
+    private Grid<Booking> completedDrivesGrid;
+    private RadioButtonGroup<String> radioButtonGroup;
+    private RatingDialog ratingDialog;
+
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig
      */
-    CompletedDriveView() {
+    CompletedDriveView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService) {
+        this.userService = userService;
+        this.driveRouteService = driveRouteService;
+        this.bookingService = bookingService;
+        this.user = userService.getCurrentUser();
+
         createCompletedDriveView();
     }
 
@@ -61,147 +65,68 @@ public class CompletedDriveView extends VerticalLayout {
      * zum hinzufügen der Komponenten für das Layout, aufgerufen.
      */
     private void createCompletedDriveView() {
-        HorizontalLayout content = new HorizontalLayout();
-        content.setId("completeDriveContent");
-        createGrids(content);
-        createFormlayout(content);
-        radioButtonGrid.setValue("angebotene Fahrten");
 
-        ratingButton.addClickListener(e -> ratingButton.ratingButtonEvent(role));
-        reportButton.addClickListener(e -> reportButton.reportButtonEvent());
-
-        add(content);
-
-    }
-
-
-    /**
-     * In der Methode createGrids werden die Tabellen,
-     * dem Layout auf der linken Seite hinzugefügt.
-     *
-     * @param horizontalLayout horizontales Layout das die Komponenten übergibt
-     */
-    private void createGrids(HorizontalLayout horizontalLayout) {
-        VerticalLayout verticalLayout = new VerticalLayout();
         H1 title = new H1("Abgeschlossene Fahrten");
-        title.setId("titleCompletedDrive");
 
-        List<DriveRoute> driveList = new ArrayList<>();
+        List<Booking> completedDriveListDriver = bookingService.getCompletedDriveRoutesByDriver(this.user).orElse(Collections.emptyList());
+        List<Booking> completedDriveListPassenger = bookingService.getCompletedDriveRoutesByPassenger(this.user).orElse(Collections.emptyList());
 
-
-        Grid<DriveRoute> gridUp = new Grid<>(DriveRoute.class);
-        gridUp.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        gridUp.setClassName("gridCompletedDrive");
-
-
-
-        Grid<DriveRoute> gridDown = new Grid<>(DriveRoute.class);
-        gridDown.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        gridDown.setClassName("gridCompletedDrive");
-
-
-        radioButtonGrid = new RadioButtonGroup<>();
-        radioButtonGrid.setItems("angebotene Fahrten", "mitgefahrende Fahrten");
-
-        radioButtonGrid.addValueChangeListener(event -> {
-            String choice = event.getValue();
-            switch (choice) {
-                case "angebotene Fahrten":
-                    role = Role.FAHRER;
-                    verticalLayout.remove(gridDown);
-                    verticalLayout.add(gridUp);
-                    personName.setText("Fahrt mit Ivonnilein");
-                    break;
-
-                case "mitgefahrende Fahrten":
-                    role = Role.MITFAHRER;
-                    personName.setText("Fahrt von Ramonilein");
-                    verticalLayout.remove(gridUp);
-                    verticalLayout.add(gridDown);
-                    break;
-
-                default:
-                    break;
+        radioButtonGroup = new RadioButtonGroup<>();
+        radioButtonGroup.setItems(OFFERED_DRIVES, BOOKED_DRIVES);
+        radioButtonGroup.setValue(OFFERED_DRIVES);
+        radioButtonGroup.setClassName("radiobutton-group");
+        radioButtonGroup.addValueChangeListener(event -> {
+            switch (event.getValue()) {
+                case OFFERED_DRIVES -> completedDrivesGrid.setItems(completedDriveListDriver);
+                case BOOKED_DRIVES -> completedDrivesGrid.setItems(completedDriveListPassenger);
             }
         });
 
-        verticalLayout.add(title, radioButtonGrid);
+        completedDrivesGrid = new Grid<>();
+        completedDrivesGrid.setItems(completedDriveListDriver);
 
+        completedDrivesGrid.addColumn(new LocalDateTimeRenderer<>(item -> item.getDriveRoute().getDrivingTime(),
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader("Tag / Uhrzeit");
+        completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
+        completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getZiel().getFullAddressToString()).setHeader("Ziel");
+        completedDrivesGrid.addComponentColumn(booking ->
+                radioButtonGroup.getValue().equals(OFFERED_DRIVES) ?
+                    new Anchor("/profil/" + booking.getPassenger().getUsername(), booking.getPassenger().getFirstName()) :
+                    new Anchor("/profil/" + booking.getDriveRoute().getDriver().getUsername(), booking.getDriveRoute().getDriver().getFirstName()))
+                .setHeader("Benutzer");
+        completedDrivesGrid.addComponentColumn(this::createRatingButton).setHeader("Bewertung");
+        completedDrivesGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        horizontalLayout.add(verticalLayout);
+        Div div = new Div(title, radioButtonGroup, completedDrivesGrid);
+        div.setClassName("content");
 
+        add(div);
     }
 
-    /**
-     * In der Methode createFormLayout werden die Komponenten für eine
-     * nähere Detailansicht der Tabelle, dem Layout auf der rechten Seite hinzugefügt.
-     *
-     * @param horizontalLayout horizontales Layout das die Komponenten übergibt
-     */
-    private void createFormlayout(HorizontalLayout horizontalLayout) {
 
-        LocalTime time = LocalTime.of(12, 45);
-        LocalDate dateExample = LocalDate.of(2021, 7, 8);
+    private Button createRatingButton(Booking booking){
+        Icon icon = new Icon(VaadinIcon.STAR);
+        Button button = new Button("Bewerten");
+        button.setIcon(icon);
 
-        personName = new Label();
+        button.addClickListener(event -> {
+            switch (radioButtonGroup.getValue()){
+                case OFFERED_DRIVES -> ratingDialog = new RatingDialog(userService,
+                        booking.getPassenger(),
+                        driveRouteService,
+                        bookingService,
+                        booking,
+                        Role.PASSENGER);
+                case BOOKED_DRIVES -> ratingDialog = new RatingDialog(userService,
+                        booking.getDriveRoute().getDriver(),
+                        driveRouteService,
+                        bookingService,
+                        booking,
+                        Role.DRIVER);
+            }
+            ratingDialog.open();
+        });
 
-        passengerRating = new StarsRating(0);
-        passengerRating.setId("ratingCompletedDrive");
-        passengerRating.setManual(true);
-
-        HorizontalLayout header = new HorizontalLayout(personName, passengerRating);
-
-        DatePicker date = new DatePicker("Datum");
-        date.setReadOnly(true);
-
-        date.setValue(dateExample);
-
-        TimePicker driveTimeLeft = new TimePicker("An/Abfahrt");
-        driveTimeLeft.setReadOnly(true);
-        driveTimeLeft.setValue(time);
-
-        TextField driveStartPoint = new TextField("Von");
-        driveStartPoint.setReadOnly(true);
-
-
-        TextField driveEndPoint = new TextField("Nach");
-        driveEndPoint.setReadOnly(true);
-
-
-        Anchor anchorGoogleMaps = new Anchor("https://www.youtube.com/watch?v=d3-iRa4C_sE");
-        anchorGoogleMaps.removeAll();
-        Button buttonDetourRoute = new Button("Route anzeigen", new Icon(VaadinIcon.CAR));
-        buttonDetourRoute.setId("buttonGoogleMapsCompletedDrive");
-        anchorGoogleMaps.add(buttonDetourRoute);
-        anchorGoogleMaps.setTarget("_blank");
-        anchorGoogleMaps.setId("anchorGoogleMapsCompletedDrive");
-
-        ratingButton = new RatingButton();
-
-        reportButton = new ReportButton();
-
-
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setId("buttonLayoutCompletedDrive");
-        buttonLayout.add(ratingButton, reportButton);
-
-
-        FormLayout formLayout = new FormLayout(header, date, driveTimeLeft, driveStartPoint, driveEndPoint, anchorGoogleMaps);
-        formLayout.setId("contentRightCompletedDrive");
-
-        formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1, FormLayout.ResponsiveStep.LabelsPosition.TOP),
-                new FormLayout.ResponsiveStep("490px", 4, FormLayout.ResponsiveStep.LabelsPosition.TOP));
-
-        formLayout.setColspan(header, 4);
-        formLayout.setColspan(date, 2);
-        formLayout.setColspan(driveTimeLeft, 2);
-        formLayout.setColspan(driveStartPoint, 4);
-        formLayout.setColspan(driveEndPoint, 4);
-        formLayout.setColspan(anchorGoogleMaps, 4);
-
-
-        VerticalLayout verticalLayout = new VerticalLayout(formLayout, buttonLayout);
-        horizontalLayout.add(verticalLayout);
-
+        return button;
     }
 }
