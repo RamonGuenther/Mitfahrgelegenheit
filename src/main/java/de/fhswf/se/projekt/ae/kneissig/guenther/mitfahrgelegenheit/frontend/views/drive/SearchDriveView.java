@@ -93,7 +93,6 @@ public class SearchDriveView extends VerticalLayout {
 
         Button buttonSearch = new Button("Fahrt suchen");
         buttonSearch.setId("buttonSearch");
-        buttonSearch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         buttonSearch.addClickListener(searchEvent -> {
                     try {
                         AddressConverter converter = new AddressConverter(address.getValue());

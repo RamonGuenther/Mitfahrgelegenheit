@@ -2,17 +2,16 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 @Entity
 public class DriveRequest {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
@@ -20,9 +19,6 @@ public class DriveRequest {
 
     @ManyToOne
     private DriveRoute driveRoute;
-
-    @NaturalId
-    private String businessKey;
 
     private RequestState requestState;
 
@@ -41,8 +37,6 @@ public class DriveRequest {
         this.currentRouteLink = currentRouteLink;
         this.requestTime = requestTime;
         this.stopover = stopover;
-        businessKey = passenger.getUsername();
-        id= hashCode();
     }
 
     public DriveRequest() {
@@ -104,36 +98,11 @@ public class DriveRequest {
         return requestTime.format(formatter) + " Uhr";
     }
 
-    public String getBusinessKey() {
-        return businessKey;
-    }
-
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof DriveRequest) && businessKey.equals(((DriveRequest) o).businessKey);
+        return (o instanceof DriveRequest) && id.equals(((DriveRequest) o).id);
     }
 
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(passenger, driveRoute);
-    }
-
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof DriveRequest that)) return false;
-//        if (!getId().equals(that.getId())) return false;
-//        if (!getPassenger().equals(that.getPassenger())) return false;
-//        return Objects.equals(getBusinessKey(),that.getBusinessKey());
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        System.out.println(businessKey);
-//        return Objects.hash(businessKey);
-//    }
 }
 

@@ -19,6 +19,7 @@ import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backen
 public class DriveRoute {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Embedded
@@ -69,21 +70,20 @@ public class DriveRoute {
     private Set<Booking> bookings;
 
     public DriveRoute(Start start, Destination destination, LocalDateTime drivingTime, boolean fuelParticipation, Integer seatCount, User driver,
-            LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
+                      LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
 
         this.start = start;
-        this.note = "";
         this.destination = destination;
         this.drivingTime = drivingTime;
         this.fuelParticipation = fuelParticipation;
         this.seatCount = seatCount;
         this.driver = driver;
         this.creationDate = creationDate;
-        this.driveType = driveType;
         this.currentRouteLink = currentRouteLink;
+        this.driveType = driveType;
+        this.note = "";
         driveRequests = new HashSet<>();
         bookings = new HashSet<>();
-        id = hashCode();
     }
 
 //    //TODO: Regelmäßige Fahrt Konstruktor brauch ich den überhaupt oder kann ich den hier einfach für alles nutzen und bei null wird halt null einegtragen? XD
@@ -104,7 +104,6 @@ public class DriveRoute {
 //        this.currentRouteLink = currentRouteLink;
 //        driveRequests = new HashSet<>();
 //        bookings = new HashSet<>();
-//        id = hashCode();
 //    }
 
 
@@ -210,74 +209,43 @@ public class DriveRoute {
         return drivingTime;
     }
 
-    public void addDriveRequest(DriveRequest driveRequest) throws DuplicateRequestException {
-        nullCheck(driveRequest);
+    public void addDriveRequest(DriveRequest newDriveRequest) throws DuplicateRequestException {
+        nullCheck(newDriveRequest);
 
-        if (driveRequests.contains(driveRequest))
+        Optional<DriveRequest> any = driveRequests.stream().filter(r -> r.getPassenger().equals(newDriveRequest.getPassenger()) &&
+                r.getDriveRoute().equals(newDriveRequest.getDriveRoute())).findAny();
+
+        if (any.isPresent()) {
             throw new DuplicateRequestException();
-
-        driveRequests.add(driveRequest);
-    }
-
-    //FIXME
-    public void removeDriveRequest(DriveRequest driveRequest) {
-        nullCheck(driveRequest);
-
-        System.out.println("Vor delete: " + driveRequests.size());
-
-        System.out.println(driveRequest.equals(driveRequests.iterator().next()));
-        System.out.println(driveRequest.hashCode() + ":" +  driveRequests.iterator().next().hashCode());
-
-
-        List<DriveRequest> driveRequestList = new ArrayList<>(driveRequests);
-
-        for (int i = 0; i < driveRequestList.size(); i++) {
-            if (Objects.equals(driveRequestList.get(i).getId(), driveRequest.getId())) {
-                driveRequestList.remove(i);
-                break;
-            }
         }
 
-        driveRequests = new HashSet<>(driveRequestList);
+        driveRequests.add(newDriveRequest);
+    }
 
-//        driveRequests.remove(driveRequest);
-
-        System.out.println("Ist es leer? : " +driveRequests.isEmpty());
+    public void removeDriveRequest(DriveRequest driveRequest) {
+        nullCheck(driveRequest);
+        System.out.println("Vor delete: " + driveRequests.size());
+        driveRequests.remove(driveRequest);
         System.out.println("Nach delete: " + driveRequests.size());
     }
 
     public void addBooking(Booking newBooking) throws DuplicateBookingException {
         nullCheck(newBooking);
 
-        if (bookings.contains(newBooking))
+        Optional<Booking> any = bookings.stream().filter(r -> r.getPassenger().equals(newBooking.getPassenger()) &&
+                r.getDriveRoute().equals(newBooking.getDriveRoute())).findAny();
+
+        if (any.isPresent())
             throw new DuplicateBookingException();
 
         bookings.add(newBooking);
     }
 
-    //FIXME
     public void removeBooking(Booking booking) {
         nullCheck(booking);
-
         System.out.println("Vor delete: " + bookings.size());
-
-        List<Booking> bookings = new ArrayList<>(this.bookings);
-
-        for (int i = 0; i < bookings.size(); i++) {
-            if (Objects.equals(bookings.get(i).getId(), booking.getId())) {
-                bookings.remove(i);
-                break;
-            }
-        }
-
-        this.bookings = new HashSet<>(bookings);
-//        bookings.remove(booking);
+        bookings.remove(booking);
         System.out.println("Nach delete: " + this.bookings.size());
-    }
-
-    public void deleteRequestsAndBookings(){
-        driveRequests.clear();
-        bookings.clear();
     }
 
     public String getFormattedDate() {
@@ -289,7 +257,6 @@ public class DriveRoute {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return drivingTime.format(formatter) + " Uhr";
     }
-
 
 
     @Override

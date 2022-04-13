@@ -11,6 +11,7 @@ import java.util.Objects;
 public class Booking {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
@@ -30,7 +31,6 @@ public class Booking {
         this.passenger = passenger;
         this.dateOfBooking = dateOfBooking;
         this.stopover = stopover;
-        id = hashCode();
     }
 
     public Booking() {
@@ -64,11 +64,6 @@ public class Booking {
     @Override
     public boolean equals(Object o) {
         return (o instanceof Booking) && id.equals(((Booking) o).id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(passenger,driveRoute);
     }
 
 }
