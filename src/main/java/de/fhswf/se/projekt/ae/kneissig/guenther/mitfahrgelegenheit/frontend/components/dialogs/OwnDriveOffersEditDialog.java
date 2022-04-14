@@ -9,6 +9,8 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.router.RouteParam;
+import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
@@ -20,6 +22,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 
 
 import java.time.LocalDate;
@@ -85,6 +88,11 @@ public class OwnDriveOffersEditDialog extends Dialog {
         for (Booking booking : driveRoute.getBookings()) {
             Span pending = new Span(booking.getPassenger().getFullName());
             pending.getElement().getThemeList().add("badge");
+            pending.getStyle().set("cursor","pointer");
+            pending.addClickListener(e ->{
+                UI.getCurrent().navigate(ProfileView.class,
+                        new RouteParameters(new RouteParam("username", booking.getPassenger().getUsername())));
+            });
             passengerBadgeLayout.add(pending);
         }
 

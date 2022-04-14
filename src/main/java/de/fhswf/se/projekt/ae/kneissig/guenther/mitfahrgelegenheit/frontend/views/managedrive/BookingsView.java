@@ -74,6 +74,7 @@ public class BookingsView extends VerticalLayout {
 
         List<Booking> bookingsOutwardTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList())
                 .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
+
         List<Booking> bookingsReturnTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList())
                 .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
 

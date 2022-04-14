@@ -81,15 +81,14 @@ public class OwnDriveOffersView extends VerticalLayout {
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case "Hinfahrt":
+                case "Hinfahrt" -> {
                     div.remove(gridRueckfahrt);
                     div.add(gridHinfahrt);
-                    break;
-
-                case "Rückfahrt":
+                }
+                case "Rückfahrt" -> {
                     div.remove(gridHinfahrt);
                     div.add(gridRueckfahrt);
-                    break;
+                }
             }
         });
 

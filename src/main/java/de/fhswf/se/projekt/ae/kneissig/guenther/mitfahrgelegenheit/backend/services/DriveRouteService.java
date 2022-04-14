@@ -6,6 +6,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.DriveRouteRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,6 +56,7 @@ public class DriveRouteService {
         return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
     }
 
+    //FIXME Macht er falsch rum also wenn iserlohn als startadresse zum fh standort hagen zeigt er FH standort iserlohn
     public Optional<List<DriveRoute>> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
         List<DriveRoute> routen = getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList());
 
@@ -64,52 +66,46 @@ public class DriveRouteService {
         };
     }
 
-    //TODO: Anschauen ob es noch Sinn ergibt, vllt Sql sortieren nach driveDate --  equals.currenttime ist unnötig? xD
+
     public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
         List<DriveRoute> driveRoutes = new ArrayList<>();
-        List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace).orElse(Collections.emptyList());
+        List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(filter -> filter.getDrivingTime().toLocalDate().isAfter(LocalDate.now()))
+                .collect(Collectors.toList());
+
+        if (regularDrive) {
+            unfilteredRoutes = unfilteredRoutes.stream()
+                    .filter(driveRoute -> driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) ||
+                            driveRoute.getDrivingTime().toLocalDate().isAfter(datetime.toLocalDate()))
+                    .collect(Collectors.toList());
+        } else {
+            unfilteredRoutes = unfilteredRoutes.stream()
+                    .filter(driveRoute -> driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()))
+                    .collect(Collectors.toList());
+
+            System.out.println(unfilteredRoutes.size());
+        }
 
         switch (driveType) {
             case OUTWARD_TRIP -> {
-                if (regularDrive) {
-                    for (DriveRoute route : unfilteredRoutes) {
-                        if (route.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) ||
-                                route.getDrivingTime().toLocalDate().isAfter(datetime.toLocalDate()) &&
-                                        route.getDrivingTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
-                                route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
-                            driveRoutes.add(route);
-                        }
-                    }
-                } else {
-                    for (DriveRoute route : unfilteredRoutes) {
-                        if (route.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) &&
-                                route.getDrivingTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
-                                route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
-                            driveRoutes.add(route);
-                        }
+                for (DriveRoute route : unfilteredRoutes) {
+                    if (route.getDrivingTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
+                            route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
+                        driveRoutes.add(route);
                     }
                 }
             }
             case RETURN_TRIP -> {
-                if (regularDrive) {
-                    for (DriveRoute route : unfilteredRoutes) {
-                        if (route.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) ||
-                                route.getDrivingTime().toLocalDate().isAfter(datetime.toLocalDate()) &&
-                                        route.getDrivingTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
-                                route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
-                            driveRoutes.add(route);
-                        }
-                    }
-                } else {
-                    for (DriveRoute route : unfilteredRoutes) {
-                        if (route.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) &&
-                                route.getDrivingTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
-                                route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
-                            driveRoutes.add(route);
-                        }
+                for (DriveRoute route : unfilteredRoutes) {
+                    if (route.getDrivingTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
+                            route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
+                        driveRoutes.add(route);
                     }
                 }
             }
+
         }
 
         return driveRoutes;

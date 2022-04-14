@@ -13,6 +13,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
@@ -55,7 +56,7 @@ public class DriveRequestDialog extends Dialog {
                     return;
                 }
 
-//                addressPatternCheck(textFieldAddress.getValue());
+                addressPatternCheck(textFieldAddress.getValue());
 
                 List<Stopover> stopoverList = new ArrayList<>();
                 Address address = new Address(textFieldAddress.getPostal(), textFieldAddress.getPlace(), textFieldAddress.getStreet(), textFieldAddress.getNumber());
@@ -64,7 +65,7 @@ public class DriveRequestDialog extends Dialog {
 
                 RouteString routeString = new RouteString(driveRoute.getStart(), driveRoute.getZiel(), stopoverList);
 
-                DriveRequest driveRequest = new DriveRequest(driveRoute, currentUser, textAreaMessage.getValue(), "Apfel", new Stopover(new Address()));
+                DriveRequest driveRequest = new DriveRequest(driveRoute, currentUser, textAreaMessage.getValue(), routeString.getRoute(), new Stopover(address));
                 driveRoute.addDriveRequest(driveRequest);
                 driveRequestService.save(driveRequest);
                 driveRouteService.save(driveRoute);
@@ -78,7 +79,7 @@ public class DriveRequestDialog extends Dialog {
 //                        driveRoute.getBenutzer().getEmail(),
 //                        routeString.getRoute()
 //                );
-            } catch (DuplicateRequestException ex) {
+            } catch (DuplicateRequestException | InvalidAddressException ex) {
                 if(Objects.equals(ex.getClass().getSimpleName(), "DuplicateRequestException")){
                     NotificationError.show("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
                 }

@@ -65,9 +65,11 @@ public class FormLayoutDriveRoute extends FormLayout {
         fhLocation.setRequiredIndicatorVisible(true);
 
         driveDateStart = new DatePicker("Tag der Fahrt");
+        driveDateStart.setMin(LocalDate.now());
         driveDateStart.setRequiredIndicatorVisible(true);
 
         driveDateEnd = new DatePicker("Zeitraum bis");
+        driveDateEnd.setMin(LocalDate.now());
         driveDateEnd.setReadOnly(true);
 
         checkboxRegularDrive = new Checkbox("Regelmäßige Fahrt");

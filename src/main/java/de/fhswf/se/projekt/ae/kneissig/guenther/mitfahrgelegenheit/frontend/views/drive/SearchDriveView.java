@@ -24,6 +24,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
 import java.time.Duration;
+import java.time.LocalDate;
 
 /**
  * Die Klasse SearchDriveView erstellt eine View zum Suchen einer
@@ -79,6 +80,7 @@ public class SearchDriveView extends VerticalLayout {
         address.setId("textfieldStart");
 
         date = new DatePicker("Datum");
+        date.setMin(LocalDate.now());
         date.setId("datepicker");
 
         fhLocation = new SelectUniversityLocation();

@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
@@ -20,9 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
-/**
- * TODO: - Name passt nicht mehr da dieses Grid auch für SearchDriveResult benutzt wird.
- */
 public class GridOwnDriveOffersView extends Grid<DriveRoute> {
 
     private final DriveRouteService driveRouteService;
@@ -39,7 +37,7 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
 
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
-        //TODO Abfrage Absicherung
+
         setItems(driveList);
 
         addColumn(start -> start.getStart().getAddress().getStreet() + " "
@@ -52,14 +50,19 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
                 + ziel.getZiel().getAddress().getPostal() + " "
                 + ziel.getZiel().getAddress().getPlace()).setHeader("Zieladresse");
 
+
+
         addColumn(new LocalDateTimeRenderer<>(DriveRoute::getDrivingTime,
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader(zeitpunkt);
 
 
+        addColumn(DriveRoute::getSeatCount).setHeader("Sitzplaetze");
+
+        addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriver().getUsername(),
+                driver.getDriver().getFullName())).setHeader("Fahrer");
+
         getColumns().get(0).setFooter("Anzahl:  " + driveList.size());
 
-        addColumn(DriveRoute::getSeatCount).setHeader("Sitzplaetze");
-        addColumn(DriveRoute::getDriveType).setHeader("Fahrentyp");
 
         addComponentColumn(this::createButtons);
 
@@ -81,7 +84,7 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
                 SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute,userService, driveRouteService, mailService, driveRequestService);
             }
             else if(UI.getCurrent().getId().get().equals(PageId.PROFILE.label)){
-                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute,userService, driveRouteService, mailService, driveRequestService);
             }
             else{
                 throw new IllegalArgumentException("Fehler in " + getClass().getSimpleName() + "lol");

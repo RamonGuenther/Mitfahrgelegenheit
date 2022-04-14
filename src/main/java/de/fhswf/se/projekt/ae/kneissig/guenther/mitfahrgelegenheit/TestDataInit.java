@@ -2,6 +2,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
@@ -87,7 +88,7 @@ public class TestDataInit {
                 new Languages("Deutsch"),
                 "Meschede",
                 "Ingenieur- und Wirtschaftswissenschaften",
-                "peterson.maren@fh-swf.de",
+                "kneissig.ivonne@fh-swf.de",
                 LocalDateTime.now(),
                 true
         );
@@ -104,7 +105,7 @@ public class TestDataInit {
                 new Languages("Deutsch"),
                 "Hagen",
                 "Technische Betriebswirtschaft",
-                "rapp.sebastian@fh-swf.de",
+                "guenther.ramonantonio@fh-swf.de",
                 LocalDateTime.now(),
                 true
         );
@@ -520,6 +521,7 @@ public class TestDataInit {
         /**
          * BOOKING
          */
+
 //        driveRequest.setRequestState(RequestState.ACCEPTED);
 //        driveRequestService.save(driveRequest);
 //        Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());

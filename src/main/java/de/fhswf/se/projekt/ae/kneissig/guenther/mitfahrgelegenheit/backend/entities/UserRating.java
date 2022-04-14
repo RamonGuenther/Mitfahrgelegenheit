@@ -18,7 +18,7 @@ public class UserRating {
     @ElementCollection
     private List<Rating> driverRatings;
 
-    @LazyCollection(LazyCollectionOption.FALSE) //TODO: Was is das ????
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ElementCollection
     private List<Rating> passengerRatings;
 

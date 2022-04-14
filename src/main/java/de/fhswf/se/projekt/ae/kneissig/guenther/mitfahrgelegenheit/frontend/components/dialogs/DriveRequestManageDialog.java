@@ -90,11 +90,8 @@ public class DriveRequestManageDialog extends Dialog {
         TextArea textArea = new TextArea("Nachricht: ");
         textArea.setReadOnly(true);
         textArea.setId("drive-request-manage-dialog-text_area");
-        textArea.setValue(driveRequest.getNote());
+        textArea.setValue(driveRequest.getNote().isEmpty() ? "Keine Nachricht" : driveRequest.getNote());
 
-        if (!driveRequest.getNote().isEmpty() || !driveRequest.getNote().equals("")) {
-            add(textArea);
-        }
 
         Button acceptButton = new Button("Akzeptieren");
         acceptButton.setClassName("drive-request-manage-dialog-buttons");
@@ -112,7 +109,7 @@ public class DriveRequestManageDialog extends Dialog {
 
         cancelButton.addClickListener(e -> close());
 
-        add(buttonLayout);
+        add(textArea,buttonLayout);
     }
 
     private void saveDriveRequest(RequestState requestState) {
