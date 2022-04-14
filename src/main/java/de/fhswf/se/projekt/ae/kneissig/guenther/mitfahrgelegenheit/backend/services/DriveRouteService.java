@@ -125,4 +125,11 @@ public class DriveRouteService {
 
         return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
     }
+
+    public void cleanCompletedDriveRoutesByUser(User user) {
+        List<DriveRoute> driveRoutes = repository.findAllByDriverAndDrivingTimeBeforeAndAndBookings_Empty(user, LocalDateTime.now()).orElse(Collections.emptyList());
+        for (DriveRoute driveRoute : driveRoutes) {
+            delete(driveRoute);
+        }
+    }
 }

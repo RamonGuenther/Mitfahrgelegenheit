@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -8,6 +9,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.Role;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
@@ -17,6 +19,10 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils
 
 @CssImport("/themes/mitfahrgelegenheit/components/ratings-dialog.css")
 public class RatingDialog extends Dialog {
+
+    private final StarsRating ratingReliability;
+    private final StarsRating ratingPuncuality;
+    private final Button buttonSaveRating;
 
     public RatingDialog(UserService userService,
                         User userToRate,
@@ -34,31 +40,47 @@ public class RatingDialog extends Dialog {
         FormLayout ratings = new FormLayout();
         ratings.setId("ratings-form");
 
-        StarsRating ratingPuncuality = new StarsRating(0);
+        ratingPuncuality = new StarsRating(0);
         ratings.addFormItem(ratingPuncuality, "Pünktlichkeit");
         ratingPuncuality.setId("rating-stars-punctuality");
+        ratingPuncuality.addValueChangeListener(event -> setSaveButtonEnabled());
 
-        StarsRating ratingReliability = new StarsRating(0);
+        ratingReliability = new StarsRating(0);
         ratings.addFormItem(ratingReliability, "Zuverlässigkeit");
         ratingReliability.setId("rating-stars-reliability");
+        ratingReliability.addValueChangeListener(event -> setSaveButtonEnabled());
 
-        Button buttonSavePassword = new Button("Speichern");
-        buttonSavePassword.setClassName("rating-buttons");
-        buttonSavePassword.addClickListener(event -> {
+        buttonSaveRating = new Button("Speichern");
+        buttonSaveRating.setEnabled(false);
+        buttonSaveRating.setClassName("rating-buttons");
+        buttonSaveRating.addClickListener(event -> {
             userService.rateUser(userToRate,
                     ratingPuncuality.getRating(),
                     ratingReliability.getRating(),
                     role);
 
-           // Todo Bookings löschen?! Problem, weil Fahrer und Mitfahrer bewerten müssen!
+           switch (role){
+               case DRIVER -> booking.setRatedByDriver(true);
+               case PASSENGER -> booking.setRatedByPassenger(true);
+           }
 
-            this.close();
+           if(booking.isRatedByDriver() && booking.isRatedByPassenger()){
+               DriveRoute driveRoute = booking.getDriveRoute();
+               driveRoute.removeBooking(booking);
+               driveRouteService.save(driveRoute);
+               bookingService.delete(booking);
+           }
+           else{
+               bookingService.save(booking);
+           }
+           this.close();
+            UI.getCurrent().getPage().reload();
         });
         Button buttonCancel = new Button("Abbrechen");
         buttonCancel.setClassName("rating-buttons");
         buttonCancel.addClickListener(event -> close());
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(buttonSavePassword, buttonCancel);
+        HorizontalLayout buttonLayout = new HorizontalLayout(buttonSaveRating, buttonCancel);
         buttonLayout.setId("rating-button-layout");
 
         VerticalLayout dialogLayout = new VerticalLayout(
@@ -68,6 +90,12 @@ public class RatingDialog extends Dialog {
         );
 
         add(dialogLayout);
+    }
+
+    private void setSaveButtonEnabled(){
+        if(ratingPuncuality.getRating() != 0 && ratingReliability.getRating() != 0){
+            buttonSaveRating.setEnabled(true);
+        }
     }
 
 }

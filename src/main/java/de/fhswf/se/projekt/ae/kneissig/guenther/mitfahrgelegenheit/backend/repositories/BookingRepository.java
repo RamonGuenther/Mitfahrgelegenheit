@@ -16,9 +16,9 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Optional<List<Booking>> findAllByPassenger(User passenger);
 
-    @Query("SELECT b FROM Booking b WHERE b.driveRoute.driver = :user and b.driveRoute.drivingTime < :date")
-    Optional<List<Booking>> findAllByDriverAndDrivingTime(User user, LocalDateTime date);
+    @Query("SELECT b FROM Booking b WHERE b.driveRoute.driver = :user and b.driveRoute.drivingTime < :date and b.ratedByDriver = false")
+    Optional<List<Booking>> findAllByDriverAndDrivingTimeAndRatedByDriver(User user, LocalDateTime date);
 
-    @Query("SELECT b FROM Booking b WHERE b.passenger = :user and b.driveRoute.drivingTime < :date")
-    Optional<List<Booking>> findAllByPassengerAndDrivingTime(User user, LocalDateTime date);
+    @Query("SELECT b FROM Booking b WHERE b.passenger = :user and b.driveRoute.drivingTime < :date and b.ratedByPassenger = false")
+    Optional<List<Booking>> findAllByPassengerAndDrivingTimeAndRatedByPassenger(User user, LocalDateTime date);
 }

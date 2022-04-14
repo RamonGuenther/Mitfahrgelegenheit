@@ -122,6 +122,7 @@ public class BookingsView extends VerticalLayout {
 
             try {
                 driveRoute.removeBooking(booking);
+                driveRouteService.save(driveRoute);
                 bookingService.delete(booking);
 
                 List<Stopover> stopoverList = new ArrayList<>();
@@ -134,17 +135,16 @@ public class BookingsView extends VerticalLayout {
                 String result = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList);
 
                 driveRoute.setCurrentRouteLink(result);
-                driveRouteService.save(driveRoute);
 
                 gridBookings.setItems(radioButtonGroup.getValue().equals(OUTWARD_TRIP) ?
                         bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList()) :
                         bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList()));
 
                 NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
+//              TODO: Am Ende wieder einkommentieren =)
+//                mailService.sendBookingCancellation(driveRoute, passenger);
 
-                mailService.sendBookingCancellation(driveRoute, passenger);
-
-            } catch (MessagingException | IOException | InterruptedException | InvalidAddressException | ApiException e) {
+            } catch (IOException | InterruptedException | InvalidAddressException | ApiException e) {
                 e.printStackTrace();
             }
         });

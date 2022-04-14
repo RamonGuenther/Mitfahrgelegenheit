@@ -46,6 +46,8 @@ public class CompletedDriveView extends VerticalLayout {
     private Grid<Booking> completedDrivesGrid;
     private RadioButtonGroup<String> radioButtonGroup;
     private RatingDialog ratingDialog;
+    private List<Booking> completedDriveListDriver;
+    private List<Booking> completedDriveListPassenger;
 
 
     /**
@@ -56,6 +58,8 @@ public class CompletedDriveView extends VerticalLayout {
         this.driveRouteService = driveRouteService;
         this.bookingService = bookingService;
         this.user = userService.getCurrentUser();
+
+        driveRouteService.cleanCompletedDriveRoutesByUser(user);
 
         createCompletedDriveView();
     }
@@ -68,8 +72,8 @@ public class CompletedDriveView extends VerticalLayout {
 
         H1 title = new H1("Abgeschlossene Fahrten");
 
-        List<Booking> completedDriveListDriver = bookingService.getCompletedDriveRoutesByDriver(this.user).orElse(Collections.emptyList());
-        List<Booking> completedDriveListPassenger = bookingService.getCompletedDriveRoutesByPassenger(this.user).orElse(Collections.emptyList());
+        completedDriveListDriver = bookingService.getCompletedDriveRoutesByDriver(this.user).orElse(Collections.emptyList());
+        completedDriveListPassenger = bookingService.getCompletedDriveRoutesByPassenger(this.user).orElse(Collections.emptyList());
 
         radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems(OFFERED_DRIVES, BOOKED_DRIVES);
@@ -116,13 +120,13 @@ public class CompletedDriveView extends VerticalLayout {
                         driveRouteService,
                         bookingService,
                         booking,
-                        Role.PASSENGER);
+                        Role.DRIVER);
                 case BOOKED_DRIVES -> ratingDialog = new RatingDialog(userService,
                         booking.getDriveRoute().getDriver(),
                         driveRouteService,
                         bookingService,
                         booking,
-                        Role.DRIVER);
+                        Role.PASSENGER);
             }
             ratingDialog.open();
         });

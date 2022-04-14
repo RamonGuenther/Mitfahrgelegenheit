@@ -45,10 +45,10 @@ public class BookingService {
     }
 
     public Optional<List<Booking>> getCompletedDriveRoutesByDriver(User user){
-        return repository.findAllByDriverAndDrivingTime(user, LocalDateTime.now());
+        return repository.findAllByDriverAndDrivingTimeAndRatedByDriver(user, LocalDateTime.now());
     }
 
     public Optional<List<Booking>> getCompletedDriveRoutesByPassenger(User user){
-        return repository.findAllByPassengerAndDrivingTime(user, LocalDateTime.now());
+        return repository.findAllByPassengerAndDrivingTimeAndRatedByPassenger(user, LocalDateTime.now());
     }
 }

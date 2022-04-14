@@ -3,9 +3,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 
 import javax.persistence.*;
-import java.awt.print.Book;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
@@ -27,6 +25,10 @@ public class Booking {
     @Embedded
     private Stopover stopover;
 
+    private boolean ratedByPassenger;
+
+    private boolean ratedByDriver;
+
     public Booking(DriveRoute driveRoute,User passenger, Stopover stopover)
     {
         nullCheck(driveRoute, passenger, stopover);
@@ -35,6 +37,8 @@ public class Booking {
         this.passenger = passenger;
         this.dateOfBooking = LocalDateTime.now();
         this.stopover = stopover;
+        this.ratedByDriver = false;
+        this.ratedByPassenger = false;
     }
 
     public Booking() {
@@ -50,7 +54,6 @@ public class Booking {
         return passenger;
     }
 
-
     public LocalDateTime getDateOfBooking()
     {
         return dateOfBooking;
@@ -62,6 +65,22 @@ public class Booking {
 
     public DriveRoute getDriveRoute() {
         return driveRoute;
+    }
+
+    public boolean isRatedByPassenger() {
+        return ratedByPassenger;
+    }
+
+    public void setRatedByPassenger(boolean ratedByPassenger) {
+        this.ratedByPassenger = ratedByPassenger;
+    }
+
+    public boolean isRatedByDriver() {
+        return ratedByDriver;
+    }
+
+    public void setRatedByDriver(boolean ratedByDriver) {
+        this.ratedByDriver = ratedByDriver;
     }
 
     @Override
