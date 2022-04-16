@@ -14,6 +14,7 @@ import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.DashboardView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.OfferDriveView;
@@ -41,8 +42,10 @@ public class MainLayout extends AppLayout {
     /**
      * Die Konstruktor erstellt eine Menüleiste für die Applikation.
      */
+    private UserService userService;
 
-    public MainLayout(){
+    public MainLayout(UserService userService){
+        this.userService = userService;
         setId("app");
         createMenuBar();
     }
@@ -120,7 +123,7 @@ public class MainLayout extends AppLayout {
         abmelden.addClickListener(e -> UI.getCurrent().getPage().setLocation("/logout"));
 
         //Button für dunkel/hellen Modus
-        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme();
+        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme(userService);
 
         HorizontalLayout header = new HorizontalLayout();
         header.add(logoFH, menuBar, themeChangeButton);
