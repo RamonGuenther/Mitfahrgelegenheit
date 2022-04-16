@@ -17,11 +17,13 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.OwnDriveOffersEditDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.SearchDriveResultViewDialog;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class GridOwnDriveOffersView extends Grid<DriveRoute> {
+public class DriveRouteGrid extends Grid<DriveRoute> {
 
     private final DriveRouteService driveRouteService;
 
@@ -29,16 +31,16 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
 
-    public GridOwnDriveOffersView(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
+    public DriveRouteGrid(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
         this.driveRouteService = driveRouteService;
-        this.userService= userService;
+        this.userService = userService;
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
 
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
 
-        setItems(driveList);
+        setItems(driveList.stream().filter(driveRoute -> driveRoute.getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
 
         addColumn(start -> start.getStart().getAddress().getStreet() + " "
                 + start.getStart().getAddress().getHouseNumber() + ", "
@@ -49,7 +51,6 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
                 + ziel.getZiel().getAddress().getHouseNumber() + ", "
                 + ziel.getZiel().getAddress().getPostal() + " "
                 + ziel.getZiel().getAddress().getPlace()).setHeader("Zieladresse");
-
 
 
         addColumn(new LocalDateTimeRenderer<>(DriveRoute::getDrivingTime,
@@ -75,18 +76,15 @@ public class GridOwnDriveOffersView extends Grid<DriveRoute> {
         Button button = new Button();
         button.setIcon(icon);
 
-        button.addClickListener(e->{
+        button.addClickListener(e -> {
 
-            if(UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
-                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService);
-            }
-            else if(UI.getCurrent().getId().get().equals(PageId.SEARCH_DRIVE_RESULT_VIEW.label)){
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute,userService, driveRouteService, mailService, driveRequestService);
-            }
-            else if(UI.getCurrent().getId().get().equals(PageId.PROFILE.label)){
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute,userService, driveRouteService, mailService, driveRequestService);
-            }
-            else{
+            if (UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
+                OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService, mailService);
+            } else if (UI.getCurrent().getId().get().equals(PageId.SEARCH_DRIVE_RESULT_VIEW.label)) {
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService);
+            } else if (UI.getCurrent().getId().get().equals(PageId.PROFILE.label)) {
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService);
+            } else {
                 throw new IllegalArgumentException("Fehler in " + getClass().getSimpleName() + "lol");
             }
 

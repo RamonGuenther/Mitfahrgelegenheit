@@ -29,7 +29,7 @@ public class RatingDialog extends Dialog {
                         DriveRouteService driveRouteService,
                         BookingService bookingService,
                         Booking booking,
-                        Role role){
+                        Role role) {
         setId("rating-dialog");
         setCloseOnEsc(false);
         setCloseOnOutsideClick(false);
@@ -59,21 +59,21 @@ public class RatingDialog extends Dialog {
                     ratingReliability.getRating(),
                     role);
 
-           switch (role){
-               case DRIVER -> booking.setRatedByDriver(true);
-               case PASSENGER -> booking.setRatedByPassenger(true);
-           }
+            switch (role) {
+                case DRIVER -> booking.setRatedByPassenger(true);
+                case PASSENGER -> booking.setRatedByDriver(true);
 
-           if(booking.isRatedByDriver() && booking.isRatedByPassenger()){
-               DriveRoute driveRoute = booking.getDriveRoute();
-               driveRoute.removeBooking(booking);
-               driveRouteService.save(driveRoute);
-               bookingService.delete(booking);
-           }
-           else{
-               bookingService.save(booking);
-           }
-           this.close();
+            }
+
+            if (booking.isRatedByDriver() && booking.isRatedByPassenger()) {
+                DriveRoute driveRoute = booking.getDriveRoute();
+                driveRoute.removeBooking(booking);
+                driveRouteService.save(driveRoute);
+                bookingService.delete(booking);
+            } else {
+                bookingService.save(booking);
+            }
+            this.close();
             UI.getCurrent().getPage().reload();
         });
         Button buttonCancel = new Button("Abbrechen");
@@ -92,8 +92,8 @@ public class RatingDialog extends Dialog {
         add(dialogLayout);
     }
 
-    private void setSaveButtonEnabled(){
-        if(ratingPuncuality.getRating() != 0 && ratingReliability.getRating() != 0){
+    private void setSaveButtonEnabled() {
+        if (ratingPuncuality.getRating() != 0 && ratingReliability.getRating() != 0) {
             buttonSaveRating.setEnabled(true);
         }
     }

@@ -17,6 +17,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
@@ -76,25 +77,17 @@ public class OfferDriveView extends VerticalLayout{
         this.userService = userService;
 
         createOfferDriveView();
+
         layoutOption.setValue("Hinfahrt");
 
         createButton.addClickListener(e -> {
 
             switch (layoutOption.getValue()) {
-                case "Hinfahrt" -> {
-                    saveFormLayoutTop();
-                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                }
-                case "Rückfahrt" -> {
-                    saveFormLayoutBottom();
-                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-
-                }
+                case "Hinfahrt" -> saveFormLayoutTop();
+                case "Rückfahrt" -> saveFormLayoutBottom();
                 case "Hin- & Rückfahrt" -> {
                     saveFormLayoutTop();
                     saveFormLayoutBottom();
-                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                 }
             }
         });
@@ -105,6 +98,8 @@ public class OfferDriveView extends VerticalLayout{
      * für das Layout, hinzugefügt.
      */
     private void createOfferDriveView() {
+        User user = userService.getCurrentUser();
+
         Div div = new Div();
         div.setId("offer-drive-view-layout");
 
@@ -130,14 +125,22 @@ public class OfferDriveView extends VerticalLayout{
         layoutOption.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt" -> {
+                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formlayoutTop.setFhLocation(user.getUniversityLocation());
                     div.removeAll();
                     div.add(title, layoutOption, formlayoutTop, buttonLayout);
                 }
                 case "Rückfahrt" -> {
+                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutBottom.setFhLocation(user.getUniversityLocation());
                     div.removeAll();
                     div.add(title, layoutOption, formLayoutBottom, buttonLayout);
                 }
                 case "Hin- & Rückfahrt" -> {
+                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formlayoutTop.setFhLocation(user.getUniversityLocation());
+                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutBottom.setFhLocation(user.getUniversityLocation());
                     div.removeAll();
                     div.add(title, layoutOption, formlayoutTop, formLayoutBottom, buttonLayout);
                 }
@@ -150,11 +153,33 @@ public class OfferDriveView extends VerticalLayout{
     }
 
     private void saveFormLayoutTop() {
-        saveDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(),formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
+        try {
+            if (formlayoutTop.checkData()) {
+                NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
+                return;
+            }
+            saveDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
+            formlayoutTop.clearFields();
+        }
+        catch (InvalidDateException ex){
+            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+            ex.printStackTrace();
+        }
     }
 
     private void saveFormLayoutBottom() {
-        saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(),formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP,formLayoutBottom.getDriveDateStart());
+        try {
+            if (formLayoutBottom.checkData()) {
+                NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
+                return;
+            }
+            saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP, formLayoutBottom.getDriveDateStart());
+            formLayoutBottom.clearFields();
+        }
+        catch (InvalidDateException ex){
+            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+            ex.printStackTrace();
+        }
     }
 
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {

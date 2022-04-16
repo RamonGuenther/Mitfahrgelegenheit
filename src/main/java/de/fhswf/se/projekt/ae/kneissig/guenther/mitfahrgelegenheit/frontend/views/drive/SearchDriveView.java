@@ -16,6 +16,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
@@ -25,6 +26,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Objects;
+
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
 
 /**
  * Die Klasse SearchDriveView erstellt eine View zum Suchen einer
@@ -80,6 +84,7 @@ public class SearchDriveView extends VerticalLayout {
         address.setId("textfieldStart");
 
         date = new DatePicker("Datum");
+        date.setErrorMessage("Datum darf nicht in der Vergangenheit liegen");
         date.setMin(LocalDate.now());
         date.setId("datepicker");
 
@@ -97,6 +102,9 @@ public class SearchDriveView extends VerticalLayout {
         buttonSearch.setId("buttonSearch");
         buttonSearch.addClickListener(searchEvent -> {
                     try {
+
+                        localDateCheck(date.getValue());
+
                         AddressConverter converter = new AddressConverter(address.getValue());
 
                         if (fhLocation.getValue() != null && !address.getValue().equals("")) {
@@ -111,11 +119,16 @@ public class SearchDriveView extends VerticalLayout {
                                     ));
                         } else {
                             NotificationError.show("Bitte Start- und Zieladresse angeben.");
-
                         }
-                    } catch (InvalidAddressException ex) {
-                        NotificationError.show("Keine gültige Adresse.");
+                    } catch (InvalidAddressException | InvalidDateException ex) {
                         ex.printStackTrace();
+                        if (Objects.equals(ex.getClass().getSimpleName(), "InvalidAddressException")) {
+                            NotificationError.show("Keine gültige Adresse.");
+                        } else if (Objects.equals(ex.getClass().getSimpleName(), "InvalidDateException")) {
+                            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+                        }
+                        else
+                            NotificationError.show("Unbekannter Fehler.");
                     }
                 }
         );

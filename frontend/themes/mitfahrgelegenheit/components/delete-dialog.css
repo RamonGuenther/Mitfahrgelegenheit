@@ -3,10 +3,18 @@
     font-weight: bold;
 }
 
+#delete-drive-dialog-optional_message{
+    width: 500px;
+    height: 100px;
+    margin-top: -10px;
+}
+
 
 #delete-dialog-checkbox{
 
 }
+
+
 
 .delete-dialog-buttons{
     width: 150px;

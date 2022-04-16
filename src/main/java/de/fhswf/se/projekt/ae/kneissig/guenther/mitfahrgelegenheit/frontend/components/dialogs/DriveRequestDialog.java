@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs;
 
+import com.google.maps.errors.ApiException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -7,6 +8,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
@@ -14,6 +16,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.google.GoogleDistanceCalculation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
@@ -21,7 +24,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,17 +63,29 @@ public class DriveRequestDialog extends Dialog {
 
                 addressPatternCheck(textFieldAddress.getValue());
 
-                List<Stopover> stopoverList = new ArrayList<>();
                 Address address = new Address(textFieldAddress.getPostal(), textFieldAddress.getPlace(), textFieldAddress.getStreet(), textFieldAddress.getNumber());
+
+
+                List<Stopover> stopoverList = new ArrayList<>();
 
                 stopoverList.add(new Stopover(address));
 
-                RouteString routeString = new RouteString(driveRoute.getStart(), driveRoute.getZiel(), stopoverList);
 
-                DriveRequest driveRequest = new DriveRequest(driveRoute, currentUser, textAreaMessage.getValue(), routeString.getRoute(), new Stopover(address));
+                for (Booking routeBooking : driveRoute.getBookings()) {
+                    stopoverList.add(routeBooking.getStopover());
+                }
+
+                GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
+                String googleMapsLink = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList);
+
+                //TODO: Vllt umdrehen das schon vorher bekannt ob anfrage schon gestellt bevor Google api gedöns
+                DriveRequest driveRequest = new DriveRequest(driveRoute, currentUser, textAreaMessage.getValue(), googleMapsLink, new Stopover(address));
+
                 driveRoute.addDriveRequest(driveRequest);
                 driveRequestService.save(driveRequest);
                 driveRouteService.save(driveRoute);
+
+                NotificationSuccess.show("Die Fahrt wurde angefragt");
 
                 close();
 
@@ -80,16 +97,16 @@ public class DriveRequestDialog extends Dialog {
 //                        routeString.getRoute()
 //                );
             } catch (DuplicateRequestException | InvalidAddressException ex) {
-                if(Objects.equals(ex.getClass().getSimpleName(), "DuplicateRequestException")){
+                if (Objects.equals(ex.getClass().getSimpleName(), "DuplicateRequestException")) {
                     NotificationError.show("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
-                }
-                else if(Objects.equals(ex.getClass().getSimpleName(), "InvalidAddressException")){
+                } else if (Objects.equals(ex.getClass().getSimpleName(), "InvalidAddressException")) {
                     NotificationError.show("Keine gültige Adresse.");
-                }
-                else{
+                } else {
                     NotificationError.show("Unbekannter Fehler.");
                 }
                 ex.printStackTrace();
+            } catch (IOException | InterruptedException | ApiException ioException) {
+                ioException.printStackTrace();
             }
 
         });

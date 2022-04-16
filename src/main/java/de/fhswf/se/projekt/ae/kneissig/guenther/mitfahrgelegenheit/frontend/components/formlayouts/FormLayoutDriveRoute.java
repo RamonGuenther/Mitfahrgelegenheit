@@ -20,17 +20,21 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.CheckboxRegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
 
 @CssImport("/themes/mitfahrgelegenheit/components/form-layout-drive-route.css")
 public class FormLayoutDriveRoute extends FormLayout {
@@ -42,6 +46,7 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final DatePicker driveDateStart;
     private final DatePicker driveDateEnd;
     private final Checkbox checkboxRegularDrive;
+    private final Button buttonDetourRoute;
 
 
     private Checkbox checkboxFuelParticipation;
@@ -88,7 +93,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         carSeatCount.setLabel("Anzahl Sitzplätze");
         carSeatCount.setItems("1", "2", "3", "4");
 
-        Button buttonDetourRoute = new Button("Route anzeigen", new Icon(VaadinIcon.CAR));
+        buttonDetourRoute = new Button("Route anzeigen", new Icon(VaadinIcon.CAR));
         buttonDetourRoute.setId("form-layout-drive-route-google_maps_button");
 
         setResponsiveSteps(new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
@@ -202,6 +207,9 @@ public class FormLayoutDriveRoute extends FormLayout {
         return driveDays.getValue();
     }
 
+    public Button getButtonDetourRoute() {
+        return buttonDetourRoute;
+    }
 
     public void setSitzplaetze(String anzahl) {
         carSeatCount.setValue(anzahl);
@@ -246,6 +254,21 @@ public class FormLayoutDriveRoute extends FormLayout {
                 + "Deutschland");
     }
 
+    public boolean checkData() throws InvalidDateException {
+
+        if (!driveDateStart.isEmpty())
+            localDateCheck(getDriveDateStart()); //TODO: auch für Regulardateend da
+
+        if (checkboxRegularDrive.getValue()) {
+            return address.getValue().isEmpty() || fhLocation.isEmpty() || driveDateStart.isEmpty() ||
+                    driveTime.isEmpty() || carSeatCount.isEmpty() || driveDateEnd.isEmpty() || driveDays.isEmpty();
+
+        } else {
+            return address.getValue().isEmpty() || fhLocation.isEmpty() || driveDateStart.isEmpty() ||
+                    driveTime.isEmpty() || carSeatCount.isEmpty();
+        }
+    }
+
     public void setReadOnly(boolean readOnly) {
         address.setReadOnly(readOnly);
         address.setReadOnly(readOnly);
@@ -253,10 +276,26 @@ public class FormLayoutDriveRoute extends FormLayout {
         driveTime.setReadOnly(readOnly);
         carSeatCount.setReadOnly(readOnly);
         driveDateStart.setReadOnly(readOnly);
-        driveDateEnd.setReadOnly(readOnly);
-        checkboxRegularDrive.setReadOnly(readOnly);
         checkboxFuelParticipation.setReadOnly(readOnly);
-        driveDays.setReadOnly(readOnly);
+        checkboxRegularDrive.setReadOnly(readOnly);
+
+        if (checkboxRegularDrive.getValue()) { //FIXME WENN wir Reguläre haben damit das dann auch richtig reagiert beim bearbeiten der Fahrt!!
+            driveDateEnd.setReadOnly(readOnly);
+            driveDays.setReadOnly(readOnly);
+        }
+    }
+
+    public void clearFields() {
+        address.setValue(" ");
+        address.setOptions(Collections.emptyList());
+        fhLocation.clear();
+        driveTime.clear();
+        carSeatCount.clear();
+        driveDateStart.clear();
+        driveDateEnd.clear();
+        checkboxRegularDrive.clear();
+        checkboxFuelParticipation.clear();
+        driveDays.clear();
     }
 
 }

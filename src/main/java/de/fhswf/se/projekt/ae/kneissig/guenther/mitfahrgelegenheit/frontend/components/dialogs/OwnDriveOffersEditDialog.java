@@ -18,7 +18,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
@@ -28,6 +30,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
 
 
 /**
@@ -40,6 +44,7 @@ import java.time.LocalTime;
 public class OwnDriveOffersEditDialog extends Dialog {
 
     private final DriveRouteService driveRouteService;
+    private final MailService mailService;
 
     private final HorizontalLayout defaultButtonLayout;
     private final TextArea note;
@@ -52,12 +57,13 @@ public class OwnDriveOffersEditDialog extends Dialog {
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService) {
+    public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService, MailService mailService) {
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
 
         this.driveRoute = driveRoute;
         this.driveRouteService = driveRouteService;
+        this.mailService = mailService;
 
         switch (driveRoute.getDriveType()) {
             case OUTWARD_TRIP -> {
@@ -65,6 +71,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteTop.setTitle("Hinfahrt bearbeiten");
                 formLayoutDriveRouteTop.setReadOnly(true);
                 formLayoutDriveRouteTop.setData(driveRoute);
+                formLayoutDriveRouteTop.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
                 add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
@@ -72,6 +79,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteBottom.setTitle("Rückfahrt bearbeiten");
                 formLayoutDriveRouteBottom.setReadOnly(true);
                 formLayoutDriveRouteBottom.setData(driveRoute);
+                formLayoutDriveRouteBottom.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
                 add(formLayoutDriveRouteBottom);
             }
         }
@@ -88,10 +96,11 @@ public class OwnDriveOffersEditDialog extends Dialog {
         for (Booking booking : driveRoute.getBookings()) {
             Span pending = new Span(booking.getPassenger().getFullName());
             pending.getElement().getThemeList().add("badge");
-            pending.getStyle().set("cursor","pointer");
-            pending.addClickListener(e ->{
+            pending.getStyle().set("cursor", "pointer");
+            pending.addClickListener(e -> {
                 UI.getCurrent().navigate(ProfileView.class,
                         new RouteParameters(new RouteParam("username", booking.getPassenger().getUsername())));
+                close();
             });
             passengerBadgeLayout.add(pending);
         }
@@ -128,7 +137,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
         deleteButton.setId("own-drive-offers-edit-dialog-delete_button");
         deleteButton.setClassName("own-drive-offers-edit-dialog-buttons_edit");
         deleteButton.addClickListener(e -> {
-            DeleteDriveDialog deleteDriveDialog = new DeleteDriveDialog(driveRoute, driveRouteService);
+            DeleteDriveDialog deleteDriveDialog = new DeleteDriveDialog(driveRoute, driveRouteService, mailService);
             deleteDriveDialog.open();
         });
 
@@ -143,7 +152,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
         switch (fahrtenTyp) {
             case OUTWARD_TRIP -> {
-                formLayoutDriveRouteTop.setReadOnly(false);
+                formLayoutDriveRouteTop.setReadOnly(driveRoute.getBookings().size() > 0);
                 saveButton.addClickListener(event -> saveFormLayoutTop());
                 cancelButton.addClickListener(event -> {
                     formLayoutDriveRouteTop.setReadOnly(true);
@@ -153,7 +162,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 });
             }
             case RETURN_TRIP -> {
-                formLayoutDriveRouteBottom.setReadOnly(false);
+                formLayoutDriveRouteBottom.setReadOnly(driveRoute.getBookings().size() > 0);
                 saveButton.addClickListener(event -> saveFormLayoutBottom());
                 cancelButton.addClickListener(event -> {
                     formLayoutDriveRouteBottom.setReadOnly(true);
@@ -168,27 +177,51 @@ public class OwnDriveOffersEditDialog extends Dialog {
     }
 
     private void saveFormLayoutTop() {
-        saveDrive(formLayoutDriveRouteTop.getAddress(),
-                formLayoutDriveRouteTop.getFhLocation(),
-                formLayoutDriveRouteTop.getDriveTime(),
-                formLayoutDriveRouteTop.getCheckboxFuelParticipation(),
-                formLayoutDriveRouteTop.getCarSeatCount(),
-                DriveType.OUTWARD_TRIP,
-                formLayoutDriveRouteTop.getDriveDateStart(),
-                note.getValue()
-        );
+        try {
+            if (formLayoutDriveRouteTop.checkData()) {
+                NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
+                return;
+            }
+
+            saveDrive(formLayoutDriveRouteTop.getAddress(),
+                    formLayoutDriveRouteTop.getFhLocation(),
+                    formLayoutDriveRouteTop.getDriveTime(),
+                    formLayoutDriveRouteTop.getCheckboxFuelParticipation(),
+                    formLayoutDriveRouteTop.getCarSeatCount(),
+                    DriveType.OUTWARD_TRIP,
+                    formLayoutDriveRouteTop.getDriveDateStart(),
+                    note.getValue()
+            );
+        }
+        catch (InvalidDateException ex){
+            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+            ex.printStackTrace();
+        }
+
+
     }
 
     private void saveFormLayoutBottom() {
-        saveDrive(formLayoutDriveRouteBottom.getFhLocation(),
-                formLayoutDriveRouteBottom.getAddress(),
-                formLayoutDriveRouteBottom.getDriveTime(),
-                formLayoutDriveRouteBottom.getCheckboxRegularDrive(),
-                formLayoutDriveRouteBottom.getCarSeatCount(),
-                DriveType.RETURN_TRIP,
-                formLayoutDriveRouteBottom.getDriveDateStart(),
-                note.getValue()
-        );
+        try {
+            if (formLayoutDriveRouteBottom.checkData()) {
+                NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
+                return;
+            }
+            saveDrive(formLayoutDriveRouteBottom.getFhLocation(),
+                    formLayoutDriveRouteBottom.getAddress(),
+                    formLayoutDriveRouteBottom.getDriveTime(),
+                    formLayoutDriveRouteBottom.getCheckboxRegularDrive(),
+                    formLayoutDriveRouteBottom.getCarSeatCount(),
+                    DriveType.RETURN_TRIP,
+                    formLayoutDriveRouteBottom.getDriveDateStart(),
+                    note.getValue()
+            );
+        }
+        catch (InvalidDateException ex){
+            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+            ex.printStackTrace();
+        }
+
     }
 
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, boolean fuelParticipation,

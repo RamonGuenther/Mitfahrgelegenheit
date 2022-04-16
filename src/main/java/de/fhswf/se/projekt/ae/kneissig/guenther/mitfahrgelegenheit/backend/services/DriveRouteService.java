@@ -11,9 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * TODO: Validieren in Searchdrive ob es überhaupt funktioniert also findRouten
- */
+
 @Service
 public class DriveRouteService {
 
@@ -45,7 +43,7 @@ public class DriveRouteService {
     }
 
     public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveType(DriveType driveType, String startPlace, String destinationPlace, String benutzerUsername) {
-        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, destinationPlace, benutzerUsername);
+        return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, startPlace, benutzerUsername);
     }
 
     public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(DriveType driveType, String startPlace, String benutzerUsername) {
@@ -56,13 +54,12 @@ public class DriveRouteService {
         return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, benutzerUsername);
     }
 
-    //FIXME Macht er falsch rum also wenn iserlohn als startadresse zum fh standort hagen zeigt er FH standort iserlohn
     public Optional<List<DriveRoute>> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
         List<DriveRoute> routen = getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList());
 
         return routen.size() > 0 ? Optional.of(routen) : switch (driveType) {
-            case OUTWARD_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, destinationPlace, user.getUsername());
-            case RETURN_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, startPlace, user.getUsername());
+            case OUTWARD_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, destinationPlace, user.getUsername());
+            case RETURN_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, startPlace, user.getUsername());
         };
     }
 
@@ -107,6 +104,11 @@ public class DriveRouteService {
             }
 
         }
+
+        driveRoutes = driveRoutes
+                .stream()
+                .filter(filter -> filter.getSeatCount() > filter.getBookings().size())
+                .collect(Collectors.toList());
 
         return driveRoutes;
     }
