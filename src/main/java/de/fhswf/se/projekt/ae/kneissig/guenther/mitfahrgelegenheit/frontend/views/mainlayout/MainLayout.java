@@ -36,7 +36,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @PWA(name = "Mitfahrgelegenheiten", shortName = "Mitfahrgelegenheiten", enableInstallPrompt = false)
 @Theme(themeFolder = "mitfahrgelegenheit")
 @CssImport("/themes/mitfahrgelegenheit/views/main-view.css")
-@CssImport(value = "/themes/mitfahrgelegenheit/components/menu-bar-button.css", themeFor = "vaadin-menu-bar-button")
+@CssImport(value = "/themes/mitfahrgelegenheit/menu-bar-button.css", themeFor = "vaadin-menu-bar-button")
 public class MainLayout extends AppLayout {
 
     /**

@@ -1,0 +1,3 @@
+:host([checked]) [part="radio"]{
+    background-color: #3e5365;
+}

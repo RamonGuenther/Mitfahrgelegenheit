@@ -5,3 +5,7 @@
 #drive-request-list-view-layout{
     margin: auto;
 }
+
+#drive-request-list-view-delete_button{
+    background-color: #c54a4a;
+}

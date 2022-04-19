@@ -7,7 +7,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableAsync
-@CssImport(value = "/themes/mitfahrgelegenheit/components/petrol-buttons.css", themeFor = "vaadin-button")
+@CssImport(value = "/themes/mitfahrgelegenheit/buttons.css", themeFor = "vaadin-button")
+@CssImport(value = "/themes/mitfahrgelegenheit/radiobutton.css", themeFor = "vaadin-radio-button")
+@CssImport(value = "/themes/mitfahrgelegenheit/checkbox.css", themeFor = "vaadin-checkbox")
 public class MitfahrgelegenheitApplication {
 
     public static void main(String[] args) {

@@ -2,7 +2,13 @@
     background-color: #364a59;
     color: white;
 }
+
 :host(:hover) {
     opacity: 90%;
     cursor: pointer;
 }
+
+:host([checked]) [part="radio"]{
+    background-color: #F59F26;
+}
+

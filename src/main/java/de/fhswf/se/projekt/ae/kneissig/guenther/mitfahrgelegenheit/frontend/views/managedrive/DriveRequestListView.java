@@ -101,6 +101,7 @@ public class DriveRequestListView extends VerticalLayout {
 
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.TRASH.create());
+            showDriveRequestButton.setId("drive-request-list-view-delete_button");
             showDriveRequestButton.addClickListener(e -> {
                 item.getDriveRoute().removeDriveRequest(item);
                 driveRouteService.save(item.getDriveRoute());

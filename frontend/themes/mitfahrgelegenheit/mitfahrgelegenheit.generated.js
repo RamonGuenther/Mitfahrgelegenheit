@@ -80,9 +80,7 @@ import driveRequestDialogCss from './components/drive-request-dialog.css';
 import driveRequestManageDialogCss from './components/drive-request-manage-dialog.css';
 import editNoteDialogCss from './components/edit-note-dialog.css';
 import formLayoutDriveRouteCss from './components/form-layout-drive-route.css';
-import menuBarButtonCss from './components/menu-bar-button.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
-import petrolButtonsCss from './components/petrol-buttons.css';
 import profileDoubleRatingsCss from './components/profile-double-ratings.css';
 import ratingsDialogCss from './components/ratings-dialog.css';
 import searchDriveResultViewDialogCss from './components/search-drive-result-view-dialog.css';
@@ -154,21 +152,9 @@ export const applyTheme = (target) => {
       `
     );
     registerStyles(
-      'menu-bar-button',
-      css`
-        ${unsafeCSS(menuBarButtonCss.toString())}
-      `
-    );
-    registerStyles(
       'own-drive-offers-edit-dialog',
       css`
         ${unsafeCSS(ownDriveOffersEditDialogCss.toString())}
-      `
-    );
-    registerStyles(
-      'petrol-buttons',
-      css`
-        ${unsafeCSS(petrolButtonsCss.toString())}
       `
     );
     registerStyles(

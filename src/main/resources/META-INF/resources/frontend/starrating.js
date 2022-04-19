@@ -44,7 +44,7 @@ class StarsRating extends LitElement {
           display: block;
           font-size: 2em;
           --star-size: 1em;
-          --star-color: #FFD700;
+          --star-color: #F59F26;;
         }
         fieldset,
         label {

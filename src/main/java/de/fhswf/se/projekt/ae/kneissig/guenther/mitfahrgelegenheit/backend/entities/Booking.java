@@ -4,6 +4,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
@@ -88,4 +89,8 @@ public class Booking {
         return (o instanceof Booking) && id.equals(((Booking) o).id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(passenger, driveRoute);
+    }
 }

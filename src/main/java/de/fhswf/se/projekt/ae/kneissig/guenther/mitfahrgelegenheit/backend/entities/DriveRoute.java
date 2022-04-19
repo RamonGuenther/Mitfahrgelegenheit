@@ -246,23 +246,10 @@ public class DriveRoute {
         bookings.add(newBooking);
     }
 
-    //FIXME: TOBI FRAGEN
     public void removeBooking(Booking booking) {
         nullCheck(booking);
-
         System.out.println("Vor delete: " + bookings.size());
-
-        List<Booking> bookings = new ArrayList<>(this.bookings);
-
-        for (int i = 0; i < bookings.size(); i++) {
-            if (Objects.equals(bookings.get(i).getId(), booking.getId())) {
-                bookings.remove(i);
-                break;
-            }
-        }
-
-        this.bookings = new HashSet<>(bookings);
-//        bookings.remove(booking);
+        bookings.remove(booking);
         System.out.println("Nach delete: " + this.bookings.size());
     }
 
