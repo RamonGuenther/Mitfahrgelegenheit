@@ -1,7 +1,10 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils;
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
@@ -47,6 +50,12 @@ public class ValidationUtility {
         Matcher addressMatcher = pattern.matcher(replacedAddress);
         if(!addressMatcher.find()){
             throw new InvalidAddressException();
+        }
+    }
+
+    public static void localDateCheck(LocalDate input) throws InvalidDateException {
+        if(input.isBefore(LocalDate.now())){
+            throw new InvalidDateException();
         }
     }
 

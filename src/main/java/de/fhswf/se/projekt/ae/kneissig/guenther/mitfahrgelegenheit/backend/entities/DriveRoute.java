@@ -69,10 +69,11 @@ public class DriveRoute {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.REMOVE)
     private Set<Booking> bookings;
 
+    //FIXME Driving time überprüfung ob Vergangenheit auch bei Edit
     public DriveRoute(Start start, Destination destination, LocalDateTime drivingTime, boolean fuelParticipation, Integer seatCount, User driver,
-                       DriveType driveType, String currentRouteLink) {
+                      DriveType driveType, String currentRouteLink) {
 
-        nullCheck(start,destination,drivingTime,seatCount, driver);
+        nullCheck(start, destination, drivingTime, seatCount, driver);
 
         this.start = start;
         this.destination = destination;
@@ -122,7 +123,7 @@ public class DriveRoute {
             DriveType driveType,
             String note
     ) {
-        nullCheck(start,destination,drivingTime,seatCount, driver);
+        nullCheck(start, destination, drivingTime, seatCount, driver);
 
         this.id = id;
         this.start = start;
@@ -236,8 +237,8 @@ public class DriveRoute {
     public void addBooking(Booking newBooking) throws DuplicateBookingException {
         nullCheck(newBooking);
 
-        Optional<Booking> any = bookings.stream().filter(r -> r.getPassenger().equals(newBooking.getPassenger()) &&
-                r.getDriveRoute().equals(newBooking.getDriveRoute())).findAny();
+        Optional<Booking> any = bookings.stream().filter(b -> b.getPassenger().equals(newBooking.getPassenger()) &&
+                b.getDriveRoute().equals(newBooking.getDriveRoute())).findAny();
 
         if (any.isPresent())
             throw new DuplicateBookingException();
@@ -245,10 +246,23 @@ public class DriveRoute {
         bookings.add(newBooking);
     }
 
+    //FIXME: TOBI FRAGEN
     public void removeBooking(Booking booking) {
         nullCheck(booking);
+
         System.out.println("Vor delete: " + bookings.size());
-        bookings.remove(booking);
+
+        List<Booking> bookings = new ArrayList<>(this.bookings);
+
+        for (int i = 0; i < bookings.size(); i++) {
+            if (Objects.equals(bookings.get(i).getId(), booking.getId())) {
+                bookings.remove(i);
+                break;
+            }
+        }
+
+        this.bookings = new HashSet<>(bookings);
+//        bookings.remove(booking);
         System.out.println("Nach delete: " + this.bookings.size());
     }
 

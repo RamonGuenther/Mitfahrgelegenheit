@@ -1,0 +1,17 @@
+.button-switch-theme-icons{
+    height: 40px;
+    width: 40px;
+}
+
+.button-switch-theme-button_position {
+    margin-top: 60px;
+    margin-left:2%;
+}
+
+#button-switch-theme-light_mode{
+    color:black;
+}
+
+#button-switch-theme-dark_mode{
+    color:  #f1c40f ;
+}

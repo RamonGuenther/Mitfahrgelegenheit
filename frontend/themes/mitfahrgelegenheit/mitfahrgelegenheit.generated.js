@@ -72,7 +72,7 @@ import '@vaadin/vaadin-lumo-styles/color.js';
 import '@vaadin/vaadin-lumo-styles/spacing.js';
 import '@vaadin/vaadin-lumo-styles/badge.js';
 import averageRatingsCss from './components/average-ratings.css';
-import button_switch_themeCss from './components/button_switch_theme.css';
+import buttonSwitchThemeCss from './components/button-switch-theme.css';
 import changePasswordDialogCss from './components/change-password-dialog.css';
 import deleteDialogCss from './components/delete-dialog.css';
 import driveDetailsDialogCss from './components/drive-details-dialog.css';
@@ -106,9 +106,9 @@ export const applyTheme = (target) => {
       `
     );
     registerStyles(
-      'button_switch_theme',
+      'button-switch-theme',
       css`
-        ${unsafeCSS(button_switch_themeCss.toString())}
+        ${unsafeCSS(buttonSwitchThemeCss.toString())}
       `
     );
     registerStyles(

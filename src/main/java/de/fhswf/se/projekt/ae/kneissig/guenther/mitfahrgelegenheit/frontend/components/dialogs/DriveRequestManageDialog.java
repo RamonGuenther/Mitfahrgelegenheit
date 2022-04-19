@@ -28,6 +28,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 
 import java.io.IOException;
@@ -85,16 +86,16 @@ public class DriveRequestManageDialog extends Dialog {
         formLayoutDriveRoute.setReadOnly(true);
         formLayoutDriveRoute.setData(driveRoute);
         formLayoutDriveRoute.remove(formLayoutDriveRoute.getTitle());
+        formLayoutDriveRoute.getButtonDetourRoute().setText("Route mit Zwischenstopp anzeigen");
+        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRequest.getCurrentRouteLink(), "_blank"));
+
         add(titleLayout, formLayoutDriveRoute);
 
         TextArea textArea = new TextArea("Nachricht: ");
         textArea.setReadOnly(true);
         textArea.setId("drive-request-manage-dialog-text_area");
-        textArea.setValue(driveRequest.getNote());
+        textArea.setValue(driveRequest.getNote().isEmpty() ? "Keine Nachricht" : driveRequest.getNote());
 
-        if (!driveRequest.getNote().isEmpty() || !driveRequest.getNote().equals("")) {
-            add(textArea);
-        }
 
         Button acceptButton = new Button("Akzeptieren");
         acceptButton.setClassName("drive-request-manage-dialog-buttons");
@@ -112,15 +113,21 @@ public class DriveRequestManageDialog extends Dialog {
 
         cancelButton.addClickListener(e -> close());
 
-        add(buttonLayout);
+        add(textArea, buttonLayout);
     }
 
     private void saveDriveRequest(RequestState requestState) {
+
+        if(driveRequest.getDriveRoute().getSeatCount().equals(driveRequest.getDriveRoute().getBookings().size())){
+            NotificationError.show("Keine Sitzplätze mehr verfügbar.");
+            return;
+        }
+
         driveRequest.setRequestState(requestState);
         driveRequestService.save(driveRequest);
         if (requestState == RequestState.ACCEPTED) {
             try {
-                Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(),  driveRequest.getStopover());
+                Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), driveRequest.getStopover());
                 bookingService.save(newBooking);
                 driveRequest.getDriveRoute().addBooking(newBooking);
 
@@ -142,11 +149,9 @@ public class DriveRequestManageDialog extends Dialog {
             } catch (DuplicateBookingException | InvalidAddressException | IOException | InterruptedException | ApiException e) {
                 e.printStackTrace();
             }
-            driveRouteService.save(driveRequest.getDriveRoute());
-            System.out.println(driveRouteService.findById(driveRequest.getDriveRoute().getId()).get().getDriveRequests().get(0).getRequestState().label);
-            close();
-            UI.getCurrent().getPage().reload();
-
         }
+        driveRouteService.save(driveRequest.getDriveRoute());
+        close();
+        UI.getCurrent().getPage().reload();
     }
 }

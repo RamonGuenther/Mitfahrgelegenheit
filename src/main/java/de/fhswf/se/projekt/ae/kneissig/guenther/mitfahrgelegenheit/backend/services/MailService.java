@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.awt.print.Book;
+import java.util.List;
 
 @Component
 public class MailService {
@@ -17,12 +20,12 @@ public class MailService {
     JavaMailSender javaMailSender;
 
     @Async
-    public void sendSimpleMessage(String passengerName, String driverName, String message, String email, String route) throws MessagingException {
+    public void sendDriveRequestMail(String passengerName, String driverName, String message, String email, String route) throws MessagingException {
 
         System.out.println("Hallo: " + route);
 
         MimeMessage mail = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail,true, "UTF-8");
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true, "UTF-8");
 
         mimeMessageHelper.setFrom("drive.together@outlook.de");
         mimeMessageHelper.setTo(email);
@@ -54,7 +57,7 @@ public class MailService {
     public void sendBookingCancellation(DriveRoute driveRoute, String passenger) throws MessagingException {
 
         MimeMessage mail = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail,true, "UTF-8");
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true, "UTF-8");
 
         mimeMessageHelper.setFrom("drive.together@outlook.de");
         mimeMessageHelper.setTo(driveRoute.getDriver().getEmail());
@@ -62,7 +65,7 @@ public class MailService {
         mimeMessageHelper.setText(
                 "<h2> Hallo " + driveRoute.getDriver().getFirstName() + ",</h2>" +
                         "<h2>" + passenger +
-                        ". hat die Mitfahrt am " + driveRoute.getFormattedDate() + " abgesagt</h2>" +
+                        " hat die Mitfahrt am " + driveRoute.getFormattedDate() + " abgesagt</h2>" +
                         "<p>Deine Route sieht jetzt folgendermaßen aus: </p>" +
                         "<a href=" + driveRoute.getCurrentRouteLink() + "> Route anzeigen </a>" +
                         "<p> Dies ist eine automatisch generierte E-Mail von einer System-E-Mail-Adresse. Bitte antworten Sie\n" +
@@ -70,4 +73,44 @@ public class MailService {
 
         javaMailSender.send(mail);
     }
+
+
+    @Async
+    public void sendDriveDeleteMessage(DriveRoute driveRoute, String message) throws MessagingException {
+
+        List<Booking> bookings = driveRoute.getBookings();
+
+        for (Booking booking : bookings) {
+
+            MimeMessage mail = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true, "UTF-8");
+
+            mimeMessageHelper.setFrom("drive.together@outlook.de");
+            mimeMessageHelper.setTo(booking.getPassenger().getEmail());
+
+            if (message.isEmpty()) {
+                mimeMessageHelper.setText(
+                        "<h2> Hallo " + booking.getPassenger().getFirstName() + ",</h2>" +
+                                "<h2>" + driveRoute.getDriver().getFullName() +
+                                " hat die Fahrt für den " + driveRoute.getFormattedDate() + " abgesagt.</h2>" +
+                                "<a href=" + driveRoute.getCurrentRouteLink() + "> Route anzeigen </a>" +
+                                "<p> Dies ist eine automatisch generierte E-Mail von einer System-E-Mail-Adresse. Bitte antworten Sie\n" +
+                                "nicht auf diese E-Mail.</p>", true);
+
+            } else {
+                mimeMessageHelper.setText(
+                        "<h2> Hallo " + booking.getPassenger().getFirstName() + ",</h2>" +
+                                "<h2>" + driveRoute.getDriver().getFullName() +
+                                " hat die Fahrt für den " + driveRoute.getFormattedDate() + " abgesagt.</h2>" +
+                                "<p> Nachricht des Fahrers: " + message + "</p>" +
+                                "<a href=" + driveRoute.getCurrentRouteLink() + "> Route anzeigen </a>" +
+                                "<p> Dies ist eine automatisch generierte E-Mail von einer System-E-Mail-Adresse. Bitte antworten Sie\n" +
+                                "nicht auf diese E-Mail.</p>", true);
+            }
+
+            javaMailSender.send(mail);
+        }
+    }
+
+
 }

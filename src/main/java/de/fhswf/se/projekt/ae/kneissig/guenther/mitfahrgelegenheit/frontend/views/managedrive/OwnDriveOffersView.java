@@ -17,7 +17,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.DriveRouteGrid;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -70,9 +70,9 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService);
+        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService);
         gridHinfahrt.setId("gridOwnOffersView");
-        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
+        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
         gridRueckfahrt.setId("gridOwnOffersView");
 
         Div div = new Div(title, radioButtonGroup, gridHinfahrt);
@@ -81,15 +81,14 @@ public class OwnDriveOffersView extends VerticalLayout {
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case "Hinfahrt":
+                case "Hinfahrt" -> {
                     div.remove(gridRueckfahrt);
                     div.add(gridHinfahrt);
-                    break;
-
-                case "Rückfahrt":
+                }
+                case "Rückfahrt" -> {
                     div.remove(gridHinfahrt);
                     div.add(gridRueckfahrt);
-                    break;
+                }
             }
         });
 

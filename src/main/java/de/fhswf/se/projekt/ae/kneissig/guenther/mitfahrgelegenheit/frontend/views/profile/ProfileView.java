@@ -23,7 +23,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.PasswordDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutProfileData;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.GridOwnDriveOffersView;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.DriveRouteGrid;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileRatings;
@@ -33,6 +33,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -61,7 +62,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     /**
      * Der Konstruktor initialisiert die Services für die ProfileView.
      */
-    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService){
+    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
         UI.getCurrent().setId(PageId.PROFILE.label);
         this.driveRouteService = driveRouteService;
         this.userService = userService;
@@ -73,7 +74,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      * In der Methode createOwnProfileView werden die einzelnen Komponenten
      * der Benutzerdaten des eigenen Profils erstellt und zusammengefügt.
      */
-    private void createOwnProfileView(){
+    private void createOwnProfileView() {
 
         Button editProfileButton = new Button("Profil bearbeiten");
         editProfileButton.addClassName("profile-data-buttons");
@@ -119,7 +120,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             });
         });
 
-        changePasswordButton.addClickListener(changePasswordEvent ->{
+        changePasswordButton.addClickListener(changePasswordEvent -> {
             PasswordDialog passwordDialog = new PasswordDialog(userService, passwordEncoder);
             passwordDialog.open();
         });
@@ -130,7 +131,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      * In der Methode createOtherUserProfileView werden die einzelnen Komponenten
      * der Benutzerdaten für das Profil eines anderen Benutzers erstellt und zusammengefügt.
      */
-    private void createOtherUserProfileView(){
+    private void createOtherUserProfileView() {
         profileDataForm = new FormLayoutProfileData();
         profileDataForm.createOtherUserProfileLayout();
         profileDataForm.setClassName("profile-data-form");
@@ -144,20 +145,27 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      * für eine Auflistung der Fahrtangebote eines anderen Benutzers erstellt und
      * zusammengefügt.
      */
-    private void createUsersDriveOffersGrid(){
+    private void createUsersDriveOffersGrid() {
 
         H2 labelProfileGrid = new H2("Fahrtangebote von " + user.getFirstName());
 
-        List<DriveRoute> driveListTo = driveRouteService.getByUserAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList());
-        List<DriveRoute> driveListBack = driveRouteService.getByUserAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList());
+        List<DriveRoute> driveListTo = driveRouteService.getByUserAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList())
+                .stream()
+                .filter(filter -> filter.getSeatCount() > filter.getBookings().size())
+                .collect(Collectors.toList());
+
+        List<DriveRoute> driveListBack = driveRouteService.getByUserAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList())
+                .stream()
+                .filter(filter -> filter.getSeatCount() > filter.getBookings().size())
+                .collect(Collectors.toList());
 
         RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        GridOwnDriveOffersView gridHinfahrt = new GridOwnDriveOffersView("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService);
+        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService);
         gridHinfahrt.addClassName("profilegrid");
-        GridOwnDriveOffersView gridRueckfahrt = new GridOwnDriveOffersView("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
+        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
         gridRueckfahrt.addClassName("profilegrid");
         Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
         div.setId("profile-drive_offers_layout");
@@ -182,7 +190,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      * In der Methode createRatingsView werden die einzelnen Komponenten
      * der Benutzerbewertungen des Benutzers erstellt und zusammengefügt.
      */
-    private void createRatingsView(){
+    private void createRatingsView() {
 
         ProfileRatings profileRatings = new ProfileRatings(user);
         profileRatings.getAverageRatingsDriver().getPunctuality().setRating(user.getUserRating().getAverageDriverRatingPunctuality());
@@ -201,8 +209,8 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      * normalen Textfeld zur Anzeige der Straße und einem Autocomplete-Adressfeld für die
      * Eingabe einer neuen Adresse.
      */
-    private void editAddress(){
-        if(profileDataForm == null){
+    private void editAddress() {
+        if (profileDataForm == null) {
             throw new IllegalArgumentException("ProfileView: FormLayout is null");
         }
 
@@ -230,11 +238,11 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      * Die Methode saveProfileData speichert die aktualisierten Benutzerdaten, wenn der Benutzer
      * sein Profil editiert.
      *
-     * @param editProfileButtonLayout       Buttons während des Editierens
-     * @param profileButtonLayout           Standard-Buttons für das Profil
+     * @param editProfileButtonLayout Buttons während des Editierens
+     * @param profileButtonLayout     Standard-Buttons für das Profil
      */
-    private void saveProfileData(HorizontalLayout editProfileButtonLayout, HorizontalLayout profileButtonLayout){
-        if(profileDataForm.isValuePresent()){
+    private void saveProfileData(HorizontalLayout editProfileButtonLayout, HorizontalLayout profileButtonLayout) {
+        if (profileDataForm.isValuePresent()) {
             user.setFirstName(profileDataForm.getFirstName().getValue());
             user.setLastName(profileDataForm.getLastName().getValue());
             user.setEmail(profileDataForm.getEmail().getValue());
@@ -242,7 +250,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             user.setFaculty((profileDataForm.getSelectFaculty().getValue()));
             user.setLanguages(new Languages(profileDataForm.getSelectLanguage().getValue(),
                     profileDataForm.getMultiSelectLanguage().getSelectedItems()));
-            if(!profileDataForm.getGoogleAddress().getValue().isEmpty()){
+            if (!profileDataForm.getGoogleAddress().getValue().isEmpty()) {
                 user.setAddress(new Address(
                         profileDataForm.getGoogleAddress().getPostal(),
                         profileDataForm.getGoogleAddress().getPlace(),
@@ -257,8 +265,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             profileDataForm.remove(editProfileButtonLayout);
             profileDataForm.addComponentAtIndex(10, profileButtonLayout);
             profileDataForm.setColspan(profileButtonLayout, 4);
-        }
-        else{
+        } else {
             NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
         }
     }
@@ -266,11 +273,10 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
-        if(beforeEnterEvent.getRouteParameters().get("username").isPresent()){
-            if(username != null && !username.equals(beforeEnterEvent.getRouteParameters().get("username").get())){
+        if (beforeEnterEvent.getRouteParameters().get("username").isPresent()) {
+            if (username != null && !username.equals(beforeEnterEvent.getRouteParameters().get("username").get())) {
                 UI.getCurrent().getPage().reload();
-            }
-            else{
+            } else {
                 username = beforeEnterEvent.getRouteParameters().get("username").get();
             }
         }
@@ -294,11 +300,10 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
         add(header);
 
-        if(user.getId().equals(userService.getCurrentUser().getId())){
+        if (user.getId().equals(userService.getCurrentUser().getId())) {
             title.setText("Mein Profil");
             createOwnProfileView();
-        }
-        else{
+        } else {
             title.setText("Profil von " + user.getFirstName());
             createOtherUserProfileView();
             profileDataForm.setLastNameValue(user.getLastName().charAt(0) + ".");

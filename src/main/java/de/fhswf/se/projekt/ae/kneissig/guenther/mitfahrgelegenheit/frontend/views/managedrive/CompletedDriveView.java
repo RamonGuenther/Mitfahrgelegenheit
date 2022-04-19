@@ -120,13 +120,13 @@ public class CompletedDriveView extends VerticalLayout {
                         driveRouteService,
                         bookingService,
                         booking,
-                        Role.DRIVER);
+                        Role.PASSENGER);
                 case BOOKED_DRIVES -> ratingDialog = new RatingDialog(userService,
                         booking.getDriveRoute().getDriver(),
                         driveRouteService,
                         bookingService,
                         booking,
-                        Role.PASSENGER);
+                        Role.DRIVER);
             }
             ratingDialog.open();
         });

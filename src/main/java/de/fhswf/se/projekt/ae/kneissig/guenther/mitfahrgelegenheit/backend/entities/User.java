@@ -35,6 +35,8 @@ public class User {
     @Embedded
     private UserRating userRating;
 
+    private boolean isDarkMode;
+
     public User(Long id,
                 String username,
                 String password,
@@ -60,6 +62,7 @@ public class User {
         this.lastLogin = lastLogin;
         this.firstLogin = firstLogin;
         this.userRating = new UserRating();
+        this.isDarkMode = false;
     }
 
     public User() {
@@ -164,6 +167,15 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+
+    public boolean isDarkMode() {
+        return isDarkMode;
+    }
+
+    public void setDarkMode(boolean darkMode) {
+        isDarkMode = darkMode;
     }
 
     public String getFullName() {
