@@ -120,10 +120,6 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
         User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        switch (typ) {
-            case "Hinfahrt" -> fahrtenTyp = DriveType.OUTWARD_TRIP;
-            case "Rückfahrt" -> fahrtenTyp = DriveType.RETURN_TRIP;
-        }
 
         LocalDateTime dateTime = LocalDateTime.of(
                 LocalDate.of(
@@ -135,7 +131,17 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                         Integer.parseInt(time.substring(3)))
         );
 
-        driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive);
+        switch (typ) {
+            case "Hinfahrt" -> {
+                fahrtenTyp = DriveType.OUTWARD_TRIP;
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive);
+            }
+            case "Rückfahrt" -> {
+                fahrtenTyp = DriveType.RETURN_TRIP;
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, fhStandort, adresse, user, dateTime, regularDrive);
+            }
+        }
+
 //        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
 
 

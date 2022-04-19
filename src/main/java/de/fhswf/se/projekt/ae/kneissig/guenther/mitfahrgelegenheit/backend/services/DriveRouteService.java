@@ -59,8 +59,8 @@ public class DriveRouteService {
         List<DriveRoute> routen = getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList());
 
         return routen.size() > 0 ? Optional.of(routen) : switch (driveType) {
-            case OUTWARD_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, destinationPlace, user.getUsername());
-            case RETURN_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, startPlace, user.getUsername());
+            case OUTWARD_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, destinationPlace, user.getUsername());
+            case RETURN_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, startPlace, user.getUsername());
         };
     }
 
@@ -111,7 +111,6 @@ public class DriveRouteService {
                 }
             }
         }
-
         return driveRoutes;
     }
 

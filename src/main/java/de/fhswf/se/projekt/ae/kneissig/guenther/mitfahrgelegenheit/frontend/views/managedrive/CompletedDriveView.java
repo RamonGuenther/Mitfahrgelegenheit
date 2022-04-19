@@ -96,7 +96,7 @@ public class CompletedDriveView extends VerticalLayout {
         completedDrivesGrid.addComponentColumn(booking ->
                 radioButtonGroup.getValue().equals(OFFERED_DRIVES) ?
                     new Anchor("/profil/" + booking.getPassenger().getUsername(), booking.getPassenger().getFirstName()) :
-                    new Anchor("/profil/" + booking.getDriveRoute().getDriver().getUsername(), booking.getDriveRoute().getDriver().getFirstName()))
+                    new Anchor("/profil/" + booking.getDriveRoute().getDriver().getUsername(), booking.getDriveRoute().getDriver().getFullName()))
                 .setHeader("Benutzer");
         completedDrivesGrid.addComponentColumn(this::createRatingButton).setHeader("Bewertung");
         completedDrivesGrid.getColumns().forEach(col -> col.setAutoWidth(true));

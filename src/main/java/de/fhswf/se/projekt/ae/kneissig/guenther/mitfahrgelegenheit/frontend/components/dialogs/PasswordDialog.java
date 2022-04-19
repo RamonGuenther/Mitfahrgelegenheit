@@ -11,6 +11,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @CssImport("/themes/mitfahrgelegenheit/components/change-password-dialog.css")
@@ -65,6 +66,7 @@ public class PasswordDialog extends Dialog {
                 if(passwordCheck()){
                     user.setPassword(passwordEncoder.encode(newPasswordSecondEntry.getValue()));
                     userService.save(user);
+                    NotificationSuccess.show("Das Passwort wurde geändert");
                     close();
                 }
             }
