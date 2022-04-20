@@ -52,12 +52,14 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
                 + ziel.getZiel().getAddress().getPostal() + " "
                 + ziel.getZiel().getAddress().getPlace()).setHeader("Zieladresse");
 
+//        addColumn(new LocalDateTimeRenderer<>(DriveRoute::getDrivingTime,
+//                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader(zeitpunkt);
 
-        addColumn(new LocalDateTimeRenderer<>(DriveRoute::getDrivingTime,
-                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader(zeitpunkt);
+        addColumn(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay() == null ?
+                driveRoute.getFormattedDate() + ", " + driveRoute.getFormattedTime() :
+                driveRoute.getRegularDrive().getRegularDriveDay().label + ", " + driveRoute.getDrivingTime().toLocalTime().toString() + " Uhr");
 
-
-        addColumn(DriveRoute::getSeatCount).setHeader("Sitzplaetze");
+        addColumn(DriveRoute::getSeatCount).setHeader("Sitzplätze");
 
         addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriver().getUsername(),
                 driver.getDriver().getFullName())).setHeader("Fahrer");

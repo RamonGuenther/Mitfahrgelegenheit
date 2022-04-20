@@ -1,17 +1,42 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums;
 
 public enum DayOfWeek {
-    NON_REGULAR_DRIVE("Keine regelmäßige Fahrt"),
     MONDAY("Mo"),
-    TUESDAY("DI"),
-    WEDNESDAY("MI"),
-    THURSDAY("DO"),
-    FRIDAY("FR"),
-    SATURDAY("SA");
+    TUESDAY("Di"),
+    WEDNESDAY("Mi"),
+    THURSDAY("Do"),
+    FRIDAY("Fr"),
+    SATURDAY("Sa");
 
     public final String label;
 
     DayOfWeek(String label) {
         this.label = label;
+    }
+
+    public static DayOfWeek getDayOfWeek(String label){
+        switch (label){
+            case "Mo" -> {
+                return MONDAY;
+            }
+            case "Di" -> {
+                return TUESDAY;
+            }
+            case "Mi" -> {
+                return WEDNESDAY;
+            }
+            case "Do" -> {
+                return THURSDAY;
+            }
+            case "Fr" -> {
+                return FRIDAY;
+            }
+            case "Sa" -> {
+                return SATURDAY;
+            }
+            default -> {
+                return MONDAY;
+            }
+        }
     }
 }

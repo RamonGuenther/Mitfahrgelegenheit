@@ -1,0 +1,63 @@
+package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
+
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+/**
+ * Die Klasse RegularDrive enthält die Daten, die zum Erstellen einer regelmäßigen
+ * Fahrt zusätzlich benötigt werden.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
+
+@Embeddable
+public class RegularDrive {
+
+    private DayOfWeek regularDriveDay;
+
+    private LocalDate regularDriveDateEnd;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ElementCollection
+    private Set<LocalDateTime> driveDates;
+
+    public RegularDrive(DayOfWeek regularDriveDay, LocalDate regularDriveDateStart, LocalDate regularDriveDateEnd) {
+        this.regularDriveDay = regularDriveDay;
+        this.regularDriveDateEnd = regularDriveDateEnd;
+        this.driveDates = driveDates;
+    }
+
+    public RegularDrive() {
+
+    }
+
+    public DayOfWeek getRegularDriveDay() {
+        return regularDriveDay;
+    }
+
+    public void setRegularDriveDay(DayOfWeek regularDriveDay) {
+        this.regularDriveDay = regularDriveDay;
+    }
+
+    public LocalDate getRegularDriveDateEnd() {
+        return regularDriveDateEnd;
+    }
+
+    public void setRegularDriveDateEnd(LocalDate regularDriveDateEnd) {
+        this.regularDriveDateEnd = regularDriveDateEnd;
+    }
+
+    public Set<LocalDateTime> getDriveDates() {
+        return driveDates;
+    }
+
+    public void setDriveDates(Set<LocalDateTime> driveDates) {
+        this.driveDates = driveDates;
+    }
+}

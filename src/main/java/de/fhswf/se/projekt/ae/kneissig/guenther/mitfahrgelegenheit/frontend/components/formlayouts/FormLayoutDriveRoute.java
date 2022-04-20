@@ -11,28 +11,27 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.CheckboxRegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
 
@@ -49,9 +48,9 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final Button buttonDetourRoute;
 
 
-    private Checkbox checkboxFuelParticipation;
-    private final CheckboxRegularDrive driveDays;
-    private H2 title;
+    private final Checkbox checkboxFuelParticipation;
+    private final RadioButtonGroup<String> driveDays;
+    private final H2 title;
 
     /**
      * Der Konstruktor erstellt das FormLayout für
@@ -83,7 +82,13 @@ public class FormLayoutDriveRoute extends FormLayout {
         driveTime = new TimePicker("Ankunftzeit");
         driveTime.setStep(Duration.ofMinutes(15));
 
-        driveDays = new CheckboxRegularDrive();
+        driveDays = new RadioButtonGroup<>();
+        driveDays.setItems(DayOfWeek.MONDAY.label,
+                DayOfWeek.TUESDAY.label,
+                DayOfWeek.WEDNESDAY.label,
+                DayOfWeek.THURSDAY.label,
+                DayOfWeek.FRIDAY.label,
+                DayOfWeek.SATURDAY.label);
         driveDays.setReadOnly(true);
 
         driveTime.setRequiredIndicatorVisible(true);
@@ -203,8 +208,8 @@ public class FormLayoutDriveRoute extends FormLayout {
         return checkboxFuelParticipation.getValue();
     }
 
-    public Set<String> getDriveDays() {
-        return driveDays.getValue();
+    public RadioButtonGroup<String> getDriveDays() {
+        return driveDays;
     }
 
     public Button getButtonDetourRoute() {
@@ -235,13 +240,26 @@ public class FormLayoutDriveRoute extends FormLayout {
         this.checkboxFuelParticipation.setValue(isChecked);
     }
 
+    public void setDriveDateEnd(LocalDate day){
+        driveDateEnd.setValue(day);
+    }
+
+    public void setCheckboxRegularDrive(boolean isChecked){
+        checkboxRegularDrive.setValue(isChecked);
+    }
+
+    public void setDriveDay(String driveDay){
+        driveDays.setValue(driveDay);
+    }
+
+
+
 
     //TODO: MUSS MIT ALLEN DATEN PASSIEREN AUCH BEI NULL
     public void setData(DriveRoute driveRoute) {
         if (driveRoute == null) {
             throw new IllegalArgumentException();
         }
-
         setCheckboxFuelParticipation(driveRoute.isFuelParticipation());
         setSitzplaetze(driveRoute.getSeatCount().toString());
         setFhLocation(driveRoute.getZiel().getAddress().getPlace());
@@ -252,6 +270,15 @@ public class FormLayoutDriveRoute extends FormLayout {
                 + driveRoute.getStart().getAddress().getPostal() + " "
                 + driveRoute.getStart().getAddress().getPlace() + ", "
                 + "Deutschland");
+
+        if(driveRoute.getRegularDrive().getRegularDriveDay() != null){
+            setDriveDateEnd(driveRoute.getRegularDrive().getRegularDriveDateEnd());
+            driveDateEnd.setReadOnly(true);
+            setCheckboxRegularDrive(true);
+            checkboxRegularDrive.setReadOnly(true);
+            setDriveDay(driveRoute.getRegularDrive().getRegularDriveDay().label);
+            driveDays.setReadOnly(true);
+        }
     }
 
     public boolean checkData() throws InvalidDateException {

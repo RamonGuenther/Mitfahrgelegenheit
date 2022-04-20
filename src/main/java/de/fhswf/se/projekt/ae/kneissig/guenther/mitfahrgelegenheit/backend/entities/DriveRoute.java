@@ -1,6 +1,5 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
 
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
@@ -53,11 +52,8 @@ public class DriveRoute {
 
     private boolean fuelParticipation;
 
-    private boolean isRegularDrive;
-
-    private DayOfWeek regularDriveDay;
-
-    private LocalDateTime regularDriveDateEnd;
+    @Embedded
+    private RegularDrive regularDrive;
 
     private String note;
 
@@ -85,6 +81,27 @@ public class DriveRoute {
         this.currentRouteLink = currentRouteLink;
         this.driveType = driveType;
         this.note = "";
+        this.regularDrive = null;
+        driveRequests = new HashSet<>();
+        bookings = new HashSet<>();
+    }
+
+    public DriveRoute(Start start, Destination destination, LocalDateTime drivingTime, boolean fuelParticipation, Integer seatCount, User driver,
+                      DriveType driveType, String currentRouteLink, RegularDrive regularDrive) {
+
+        nullCheck(start, destination, drivingTime, seatCount, driver);
+
+        this.start = start;
+        this.destination = destination;
+        this.drivingTime = drivingTime;
+        this.fuelParticipation = fuelParticipation;
+        this.seatCount = seatCount;
+        this.driver = driver;
+        this.creationDate = LocalDateTime.now();
+        this.currentRouteLink = currentRouteLink;
+        this.driveType = driveType;
+        this.note = "";
+        this.regularDrive = regularDrive;
         driveRequests = new HashSet<>();
         bookings = new HashSet<>();
     }
@@ -166,10 +183,6 @@ public class DriveRoute {
         return fuelParticipation;
     }
 
-    public DayOfWeek getRegularDriveDay() {
-        return regularDriveDay;
-    }
-
     public String getNote() {
         return note;
     }
@@ -198,20 +211,16 @@ public class DriveRoute {
         return driveType;
     }
 
-    public boolean isRegularDrive() {
-        return isRegularDrive;
-    }
-
-    public LocalDateTime getRegularDriveDateEnd() {
-        return regularDriveDateEnd;
-    }
-
     public List<Booking> getBookings() {
         return bookings.stream().toList();
     }
 
     public LocalDateTime getDrivingTime() {
         return drivingTime;
+    }
+
+    public RegularDrive getRegularDrive() {
+        return regularDrive;
     }
 
     public void addDriveRequest(DriveRequest newDriveRequest) throws DuplicateRequestException {
@@ -244,6 +253,7 @@ public class DriveRoute {
             throw new DuplicateBookingException();
 
         bookings.add(newBooking);
+        bookings.add(new RegularDriveSingleDayBooking());
     }
 
     public void removeBooking(Booking booking) {
