@@ -248,7 +248,7 @@ public class OfferDriveView extends VerticalLayout{
 
             RouteString routeString = new RouteString(start, destination, Collections.emptyList());
 
-            RegularDrive regularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(dayOfWeek), driveDateStart, driveDateEnd);
+            RegularDrive regularDrive = new RegularDrive(DayOfWeek.getDayOfWeekByShortName(dayOfWeek), driveDateStart, driveDateEnd);
             driveRouteService.save(new DriveRoute(
                     start,
                     destination,

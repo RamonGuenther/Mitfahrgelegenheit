@@ -1,12 +1,12 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums;
 
 public enum DayOfWeek {
-    MONDAY("Mo"),
-    TUESDAY("Di"),
-    WEDNESDAY("Mi"),
-    THURSDAY("Do"),
-    FRIDAY("Fr"),
-    SATURDAY("Sa");
+    MONDAY("Montag"),
+    TUESDAY("Dienstag"),
+    WEDNESDAY("Mittwoch"),
+    THURSDAY("Donnerstag"),
+    FRIDAY("Freitag"),
+    SATURDAY("Samstag");
 
     public final String label;
 
@@ -14,24 +14,50 @@ public enum DayOfWeek {
         this.label = label;
     }
 
-    public static DayOfWeek getDayOfWeek(String label){
+    public static DayOfWeek getDayOfWeekByShortName(String label){
         switch (label){
-            case "Mo" -> {
+            case "Montag" -> {
                 return MONDAY;
             }
-            case "Di" -> {
+            case "Dienstag" -> {
                 return TUESDAY;
             }
-            case "Mi" -> {
+            case "Mittwoch" -> {
                 return WEDNESDAY;
             }
-            case "Do" -> {
+            case "Donnerstag" -> {
                 return THURSDAY;
             }
-            case "Fr" -> {
+            case "Freitag" -> {
                 return FRIDAY;
             }
-            case "Sa" -> {
+            case "Samstag" -> {
+                return SATURDAY;
+            }
+            default -> {
+                return MONDAY;
+            }
+        }
+    }
+
+    public static DayOfWeek getDayOfWeekByLongName(String label){
+        switch (label){
+            case "Montags" -> {
+                return MONDAY;
+            }
+            case "Dienstags" -> {
+                return TUESDAY;
+            }
+            case "Mittwochs" -> {
+                return WEDNESDAY;
+            }
+            case "Donnerstags" -> {
+                return THURSDAY;
+            }
+            case "Freitags" -> {
+                return FRIDAY;
+            }
+            case "Samstags" -> {
                 return SATURDAY;
             }
             default -> {

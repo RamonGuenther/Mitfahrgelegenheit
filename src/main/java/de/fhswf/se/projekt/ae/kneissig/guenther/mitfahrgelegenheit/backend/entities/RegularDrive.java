@@ -5,8 +5,12 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -25,12 +29,13 @@ public class RegularDrive {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ElementCollection
-    private Set<LocalDateTime> driveDates;
+    private Set<LocalDate> driveDates;
 
     public RegularDrive(DayOfWeek regularDriveDay, LocalDate regularDriveDateStart, LocalDate regularDriveDateEnd) {
         this.regularDriveDay = regularDriveDay;
         this.regularDriveDateEnd = regularDriveDateEnd;
-        this.driveDates = driveDates;
+        this.driveDates = new HashSet<>();
+        calculateDriveDates(regularDriveDateStart);
     }
 
     public RegularDrive() {
@@ -53,11 +58,26 @@ public class RegularDrive {
         this.regularDriveDateEnd = regularDriveDateEnd;
     }
 
-    public Set<LocalDateTime> getDriveDates() {
+    public Set<LocalDate> getDriveDates() {
         return driveDates;
     }
 
-    public void setDriveDates(Set<LocalDateTime> driveDates) {
+    public void setDriveDates(Set<LocalDate> driveDates) {
         this.driveDates = driveDates;
+    }
+
+    private void calculateDriveDates(LocalDate regularDriveDateStart){
+        LocalDate currentDate = regularDriveDateStart;
+       
+        while (!currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.GERMANY).equals(regularDriveDay.label)){
+            currentDate = currentDate.plusDays(1);
+
+        }
+
+        while(currentDate.isBefore(regularDriveDateEnd)){
+            driveDates.add(currentDate);
+            System.out.println(currentDate);
+            currentDate = currentDate.plusDays(7);
+        }
     }
 }

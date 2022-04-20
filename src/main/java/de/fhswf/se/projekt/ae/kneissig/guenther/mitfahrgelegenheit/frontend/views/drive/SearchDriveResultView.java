@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
@@ -33,7 +34,7 @@ import java.util.List;
  *
  * @author Ramon Günther
  */
-@Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/datum/:datum/uhrzeit/:uhrzeit/:regelmaessig/search", layout = MainLayout.class)
+@Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/datum/:datum/uhrzeit/:uhrzeit/:regelmaessig/wochentag/:wochentag/search", layout = MainLayout.class)
 @PageTitle("Ergebnis Fahrtensuche")
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-result-view.css")
 public class SearchDriveResultView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver {
@@ -42,8 +43,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
     private final DriveRouteService driveRouteService;
     private final UserService userService;
-    private MailService mailService;
-    private DriveRequestService driveRequestService;
+    private final MailService mailService;
+    private final DriveRequestService driveRequestService;
 
     private List<DriveRoute> driveList;
     private DriveType fahrtenTyp;
@@ -53,6 +54,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private String date;
     private String time;
     private boolean regularDrive;
+    private DayOfWeek dayOfWeek;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
@@ -115,6 +117,13 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         if (beforeEnterEvent.getRouteParameters().get("regelmaessig").isPresent()) {
             regularDrive = Boolean.parseBoolean(beforeEnterEvent.getRouteParameters().get("regelmaessig").get());
         }
+
+
+        if (beforeEnterEvent.getRouteParameters().get("wochentag").isPresent()) {
+            if(!beforeEnterEvent.getRouteParameters().get("wochentag").get().equals("")){
+                dayOfWeek = DayOfWeek.getDayOfWeekByLongName(beforeEnterEvent.getRouteParameters().get("wochentag").get());
+            }
+        }
     }
 
     @Override
@@ -141,11 +150,6 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                 driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, fhStandort, adresse, user, dateTime, regularDrive);
             }
         }
-
-//        driveList = driveRouteService.findRouten(user, fahrtenTyp, fhStandort, adresse);
-
-
-        //If fahrten leer notification und zur Searchdrive zurück
 
         CreateSearchDriveResultView();
     }
