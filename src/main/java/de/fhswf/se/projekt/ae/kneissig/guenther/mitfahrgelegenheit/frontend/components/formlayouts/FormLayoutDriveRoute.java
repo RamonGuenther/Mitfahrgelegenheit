@@ -83,12 +83,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         driveTime.setStep(Duration.ofMinutes(15));
 
         driveDays = new RadioButtonGroup<>();
-        driveDays.setItems(DayOfWeek.MONDAY.label,
-                DayOfWeek.TUESDAY.label,
-                DayOfWeek.WEDNESDAY.label,
-                DayOfWeek.THURSDAY.label,
-                DayOfWeek.FRIDAY.label,
-                DayOfWeek.SATURDAY.label);
+        driveDays.setItems(DayOfWeek.getDayOfWeekList());
         driveDays.setReadOnly(true);
 
         driveTime.setRequiredIndicatorVisible(true);
@@ -200,7 +195,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         return driveDateEnd.getValue();
     }
 
-    public Boolean getCheckboxRegularDrive() {
+    public Boolean getCheckboxRegularDriveValue() {
         return checkboxRegularDrive.getValue();
     }
 

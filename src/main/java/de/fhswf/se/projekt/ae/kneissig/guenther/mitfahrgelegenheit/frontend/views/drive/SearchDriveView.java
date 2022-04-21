@@ -16,6 +16,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -64,7 +65,6 @@ public class SearchDriveView extends VerticalLayout {
         this.userService = userService;
         setId("searchView");
         createSearchView();
-//        GoogleDistanceCalculation distance = new GoogleDistanceCalculation();
     }
 
     /**
@@ -100,8 +100,8 @@ public class SearchDriveView extends VerticalLayout {
                 fhLocation.setUniversityLocationAddress(fhLocation.getValue()));
 
         dayOfWeek = new Select<>();
-        dayOfWeek.setItems("Montags", "Dienstags", "Mittwochs", "Donnerstags", "Freitags", "Samstags");
-        dayOfWeek.setValue("Montags");
+        dayOfWeek.setItems(DayOfWeek.getDayOfWeekList());
+        dayOfWeek.setValue(DayOfWeek.MONDAY.label);
         dayOfWeek.setLabel("Wochentag");
         dayOfWeek.setPlaceholder("Wochentag auswählen");
 

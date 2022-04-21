@@ -31,8 +31,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
-
 
 /**
  * Die Klasse OwnDriveOffersEditDialog erstellt einen Dialog für die Bearbeitung
@@ -210,7 +208,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
             saveDrive(formLayoutDriveRouteBottom.getFhLocation(),
                     formLayoutDriveRouteBottom.getAddress(),
                     formLayoutDriveRouteBottom.getDriveTime(),
-                    formLayoutDriveRouteBottom.getCheckboxRegularDrive(),
+                    formLayoutDriveRouteBottom.getCheckboxRegularDriveValue(),
                     formLayoutDriveRouteBottom.getCarSeatCount(),
                     DriveType.RETURN_TRIP,
                     formLayoutDriveRouteBottom.getDriveDateStart(),

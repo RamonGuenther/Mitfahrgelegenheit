@@ -13,6 +13,7 @@ import java.time.LocalDate;
  */
 
 @Entity
+//public class RegularDriveSingleDayBooking{
 public class RegularDriveSingleDayBooking extends Booking{
 
     public LocalDate driveDate;

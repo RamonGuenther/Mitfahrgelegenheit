@@ -106,27 +106,6 @@ public class DriveRoute {
         bookings = new HashSet<>();
     }
 
-//    //TODO: Regelmäßige Fahrt Konstruktor brauch ich den überhaupt oder kann ich den hier einfach für alles nutzen und bei null wird halt null einegtragen? XD
-//    public DriveRoute(Start start, Destination destination, boolean isRegularDrive, LocalDateTime regularDriveDateEnd,
-//                      DayOfWeek regularDriveDay, boolean fuelParticipation, Integer seatCount, User driver,
-//                      LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
-//
-//        this.start = start;
-//        this.destination = destination;
-//        this.isRegularDrive = isRegularDrive;
-//        this.regularDriveDateEnd = regularDriveDateEnd;
-//        this.regularDriveDay = regularDriveDay;
-//        this.fuelParticipation = fuelParticipation;
-//        this.seatCount = seatCount;
-//        this.driver = driver;
-//        this.creationDate = creationDate;
-//        this.driveType = driveType;
-//        this.currentRouteLink = currentRouteLink;
-//        driveRequests = new HashSet<>();
-//        bookings = new HashSet<>();
-//    }
-
-
     //TODO: Update Konstruktor -> vllt doch über setter? oder überall über Konstruktor
     public DriveRoute(
             Integer id,
@@ -236,6 +215,10 @@ public class DriveRoute {
         driveRequests.add(newDriveRequest);
     }
 
+    public void setRegularDrive(RegularDrive regularDrive) {
+        this.regularDrive = regularDrive;
+    }
+
     public void removeDriveRequest(DriveRequest driveRequest) {
         nullCheck(driveRequest);
         System.out.println("Vor delete: " + driveRequests.size());
@@ -253,7 +236,6 @@ public class DriveRoute {
             throw new DuplicateBookingException();
 
         bookings.add(newBooking);
-        bookings.add(new RegularDriveSingleDayBooking());
     }
 
     public void removeBooking(Booking booking) {

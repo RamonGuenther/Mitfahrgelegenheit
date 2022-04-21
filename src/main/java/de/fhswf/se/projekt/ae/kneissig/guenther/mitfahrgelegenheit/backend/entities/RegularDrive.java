@@ -5,9 +5,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.HashSet;
 import java.util.Locale;
@@ -68,15 +66,13 @@ public class RegularDrive {
 
     private void calculateDriveDates(LocalDate regularDriveDateStart){
         LocalDate currentDate = regularDriveDateStart;
-       
+
         while (!currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.GERMANY).equals(regularDriveDay.label)){
             currentDate = currentDate.plusDays(1);
-
         }
 
         while(currentDate.isBefore(regularDriveDateEnd)){
             driveDates.add(currentDate);
-            System.out.println(currentDate);
             currentDate = currentDate.plusDays(7);
         }
     }

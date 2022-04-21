@@ -153,13 +153,13 @@ public class OfferDriveView extends VerticalLayout{
         add(div);
     }
 
-    private void saveFormLayoutTop() {
+    private void saveFormLayoutTop() { //FIXME ich muss vorher schon alle Werte haben
         try {
             if (formlayoutTop.checkData()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
-            if(formlayoutTop.getCheckboxRegularDrive()){
+            if(formlayoutTop.getCheckboxRegularDriveValue()){
                 saveRegularDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart(), formlayoutTop.getDriveDateEnd(), formlayoutTop.getDriveDays().getValue());
             }
             else{
@@ -179,7 +179,7 @@ public class OfferDriveView extends VerticalLayout{
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
-            if(formLayoutBottom.getCheckboxRegularDrive()){
+            if(formLayoutBottom.getCheckboxRegularDriveValue()){
                 saveRegularDrive(formLayoutBottom.getFhLocation(),formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP, formLayoutBottom.getDriveDateStart(), formLayoutBottom.getDriveDateEnd(), formLayoutBottom.getDriveDays().getValue());
             }
             else{
@@ -248,7 +248,7 @@ public class OfferDriveView extends VerticalLayout{
 
             RouteString routeString = new RouteString(start, destination, Collections.emptyList());
 
-            RegularDrive regularDrive = new RegularDrive(DayOfWeek.getDayOfWeekByShortName(dayOfWeek), driveDateStart, driveDateEnd);
+            RegularDrive regularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(dayOfWeek), driveDateStart, driveDateEnd);
             driveRouteService.save(new DriveRoute(
                     start,
                     destination,

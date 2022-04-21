@@ -121,7 +121,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
         if (beforeEnterEvent.getRouteParameters().get("wochentag").isPresent()) {
             if(!beforeEnterEvent.getRouteParameters().get("wochentag").get().equals("")){
-                dayOfWeek = DayOfWeek.getDayOfWeekByLongName(beforeEnterEvent.getRouteParameters().get("wochentag").get());
+                dayOfWeek = DayOfWeek.getDayOfWeek(beforeEnterEvent.getRouteParameters().get("wochentag").get());
             }
         }
     }

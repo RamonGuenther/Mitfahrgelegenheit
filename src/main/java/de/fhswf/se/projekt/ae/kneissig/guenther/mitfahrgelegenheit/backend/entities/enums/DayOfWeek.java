@@ -1,5 +1,8 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum DayOfWeek {
     MONDAY("Montag"),
     TUESDAY("Dienstag"),
@@ -14,7 +17,7 @@ public enum DayOfWeek {
         this.label = label;
     }
 
-    public static DayOfWeek getDayOfWeekByShortName(String label){
+    public static DayOfWeek getDayOfWeek(String label){
         switch (label){
             case "Montag" -> {
                 return MONDAY;
@@ -34,35 +37,16 @@ public enum DayOfWeek {
             case "Samstag" -> {
                 return SATURDAY;
             }
-            default -> {
-                return MONDAY;
-            }
         }
+        return MONDAY;
     }
 
-    public static DayOfWeek getDayOfWeekByLongName(String label){
-        switch (label){
-            case "Montags" -> {
-                return MONDAY;
-            }
-            case "Dienstags" -> {
-                return TUESDAY;
-            }
-            case "Mittwochs" -> {
-                return WEDNESDAY;
-            }
-            case "Donnerstags" -> {
-                return THURSDAY;
-            }
-            case "Freitags" -> {
-                return FRIDAY;
-            }
-            case "Samstags" -> {
-                return SATURDAY;
-            }
-            default -> {
-                return MONDAY;
-            }
+    public static List<String> getDayOfWeekList() {
+        List<String> result = new ArrayList<>();
+
+        for(DayOfWeek dayOfWeek : DayOfWeek.values()){
+            result.add(dayOfWeek.label);
         }
+        return result;
     }
 }

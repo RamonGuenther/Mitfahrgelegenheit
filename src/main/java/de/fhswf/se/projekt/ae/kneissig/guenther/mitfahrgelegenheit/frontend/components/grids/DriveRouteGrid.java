@@ -52,12 +52,9 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
                 + ziel.getZiel().getAddress().getPostal() + " "
                 + ziel.getZiel().getAddress().getPlace()).setHeader("Zieladresse");
 
-//        addColumn(new LocalDateTimeRenderer<>(DriveRoute::getDrivingTime,
-//                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader(zeitpunkt);
-
         addColumn(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay() == null ?
                 driveRoute.getFormattedDate() + ", " + driveRoute.getFormattedTime() :
-                driveRoute.getRegularDrive().getRegularDriveDay().label + ", " + driveRoute.getDrivingTime().toLocalTime().toString() + " Uhr");
+                driveRoute.getRegularDrive().getRegularDriveDay().label + "s, " + driveRoute.getDrivingTime().toLocalTime().toString() + " Uhr").setHeader(zeitpunkt);
 
         addColumn(DriveRoute::getSeatCount).setHeader("Sitzplätze");
 
@@ -66,11 +63,9 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
 
         getColumns().get(0).setFooter("Anzahl:  " + driveList.size());
 
-
         addComponentColumn(this::createButtons);
 
         getColumns().forEach(col -> col.setAutoWidth(true));
-
     }
 
     private Button createButtons(DriveRoute driveRoute) {
