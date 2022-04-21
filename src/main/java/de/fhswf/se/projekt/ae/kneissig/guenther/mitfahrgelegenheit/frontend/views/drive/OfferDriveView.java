@@ -36,13 +36,13 @@ import java.util.Collections;
 
 
 /*
-* FIXME:
-*
-* TODO:
-*       - Sunderweg, Bielefeld, Deutschland Ohne PLZ!! wenn man keine Hausnummer angbit. können wir die API so einstellen das es unserem Format entspricht oder Validierung in dem Textfeld
-*       - Krayer Str., Essen, Deutschland
-*
-* */
+ * FIXME:
+ *
+ * TODO:
+ *       - Sunderweg, Bielefeld, Deutschland Ohne PLZ!! wenn man keine Hausnummer angbit. können wir die API so einstellen das es unserem Format entspricht oder Validierung in dem Textfeld
+ *       - Krayer Str., Essen, Deutschland
+ *
+ * */
 
 
 /**
@@ -54,7 +54,7 @@ import java.util.Collections;
 @Route(value = "fahrtAnbieten", layout = MainLayout.class)
 @PageTitle("Fahrt Anbieten")
 @CssImport("/themes/mitfahrgelegenheit/views/offer-drive-view.css")
-public class OfferDriveView extends VerticalLayout{
+public class OfferDriveView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
 
@@ -159,15 +159,11 @@ public class OfferDriveView extends VerticalLayout{
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
-            if(formlayoutTop.getCheckboxRegularDriveValue()){
-                saveRegularDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart(), formlayoutTop.getDriveDateEnd(), formlayoutTop.getDriveDays().getValue());
-            }
-            else{
-                saveSingleDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
-            }
+
+            saveSingleDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
+
             formlayoutTop.clearFields();
-        }
-        catch (InvalidDateException ex){
+        } catch (InvalidDateException ex) {
             NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
             ex.printStackTrace();
         }
@@ -179,22 +175,18 @@ public class OfferDriveView extends VerticalLayout{
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
-            if(formLayoutBottom.getCheckboxRegularDriveValue()){
-                saveRegularDrive(formLayoutBottom.getFhLocation(),formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP, formLayoutBottom.getDriveDateStart(), formLayoutBottom.getDriveDateEnd(), formLayoutBottom.getDriveDays().getValue());
-            }
-            else{
-                saveSingleDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP, formLayoutBottom.getDriveDateStart());
-            }
+
+            saveSingleDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP, formLayoutBottom.getDriveDateStart());
+
             formLayoutBottom.clearFields();
-        }
-        catch (InvalidDateException ex){
+        } catch (InvalidDateException ex) {
             NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
             ex.printStackTrace();
         }
     }
 
     private void saveSingleDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
-        try{
+        try {
             AddressConverter converter = new AddressConverter(address);
             Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
 
@@ -207,7 +199,8 @@ public class OfferDriveView extends VerticalLayout{
             Destination destination = new Destination(secondAddress);
 
             RouteString routeString = new RouteString(start, destination, Collections.emptyList());
-            driveRouteService.save(new DriveRoute(
+
+            DriveRoute newDriveRoute = new DriveRoute(
                     start,
                     destination,
                     driveTime.atDate(driveDate),
@@ -216,56 +209,24 @@ public class OfferDriveView extends VerticalLayout{
                     user,
                     fahrtenTyp,
                     routeString.getRoute()
-            ));
+            );
+
+            if (fahrtenTyp.equals(DriveType.OUTWARD_TRIP)) {
+                if(formlayoutTop.getCheckboxRegularDriveValue()){
+                    newDriveRoute.setRegularDrive(new RegularDrive(DayOfWeek.getDayOfWeek(formlayoutTop.getDriveDays()),formlayoutTop.getDriveDateStart(),formlayoutTop.getDriveDateEnd()));
+                }
+            }
+            else{
+                if(formLayoutBottom.getCheckboxRegularDriveValue()){
+                    newDriveRoute.setRegularDrive(new RegularDrive(DayOfWeek.getDayOfWeek(formLayoutBottom.getDriveDays()),formLayoutBottom.getDriveDateStart(),formLayoutBottom.getDriveDateEnd()));
+                }
+            }
+
+            driveRouteService.save(newDriveRoute);
 
             NotificationSuccess.show("Fahrt wurde erstellt!");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             NotificationError.show(e.getMessage());
         }
     }
-
-    private void saveRegularDrive(String address,
-                                  String fhLocation,
-                                  LocalTime driveTime,
-                                  Boolean fuelParticipation,
-                                  Integer carSeatCount,
-                                  DriveType fahrtenTyp,
-                                  LocalDate driveDateStart,
-                                  LocalDate driveDateEnd,
-                                  String dayOfWeek) {
-        try{
-            AddressConverter converter = new AddressConverter(address);
-            Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
-
-            converter = new AddressConverter(fhLocation);
-            Address secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
-
-            User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-            Start start = new Start(firstAddress);
-            Destination destination = new Destination(secondAddress);
-
-            RouteString routeString = new RouteString(start, destination, Collections.emptyList());
-
-            RegularDrive regularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(dayOfWeek), driveDateStart, driveDateEnd);
-            driveRouteService.save(new DriveRoute(
-                    start,
-                    destination,
-                    driveTime.atDate(driveDateStart),
-                    fuelParticipation,
-                    carSeatCount,
-                    user,
-                    fahrtenTyp,
-                    routeString.getRoute(),
-                    regularDrive
-            ));
-
-            NotificationSuccess.show("Regelmäßige Fahrt wurde erstellt!");
-        }
-        catch(Exception e){
-            NotificationError.show(e.getMessage());
-        }
-    }
-
 }

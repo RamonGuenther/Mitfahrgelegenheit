@@ -42,15 +42,9 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
 
         setItems(driveList.stream().filter(driveRoute -> driveRoute.getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
 
-        addColumn(start -> start.getStart().getAddress().getStreet() + " "
-                + start.getStart().getAddress().getHouseNumber() + ", "
-                + start.getStart().getAddress().getPostal() + " "
-                + start.getStart().getAddress().getPlace()).setHeader("Startadresse");
+        addColumn(start -> start.getStart().getFullAddressToString()).setHeader("Startadresse");
 
-        addColumn(ziel -> ziel.getZiel().getAddress().getStreet() + " "
-                + ziel.getZiel().getAddress().getHouseNumber() + ", "
-                + ziel.getZiel().getAddress().getPostal() + " "
-                + ziel.getZiel().getAddress().getPlace()).setHeader("Zieladresse");
+        addColumn(ziel -> ziel.getDestination().getFullAddressToString()).setHeader("Zieladresse");
 
         addColumn(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay() == null ?
                 driveRoute.getFormattedDate() + ", " + driveRoute.getFormattedTime() :

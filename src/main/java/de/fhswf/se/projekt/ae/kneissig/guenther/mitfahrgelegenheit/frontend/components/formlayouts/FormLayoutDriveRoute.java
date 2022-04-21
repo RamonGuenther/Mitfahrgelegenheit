@@ -167,10 +167,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         return title;
     }
 
-    public void setTitle(String text) {
-        this.title.setText(text);
-    }
-
     public String getAddress() {
         return address.getValue();
     }
@@ -203,15 +199,19 @@ public class FormLayoutDriveRoute extends FormLayout {
         return checkboxFuelParticipation.getValue();
     }
 
-    public RadioButtonGroup<String> getDriveDays() {
-        return driveDays;
+    public String getDriveDays() {
+        return driveDays.getValue();
     }
 
     public Button getButtonDetourRoute() {
         return buttonDetourRoute;
     }
 
-    public void setSitzplaetze(String anzahl) {
+    public void setTitle(String text) {
+        this.title.setText(text);
+    }
+
+    public void setSeatCount(String anzahl) {
         carSeatCount.setValue(anzahl);
     }
 
@@ -248,23 +248,24 @@ public class FormLayoutDriveRoute extends FormLayout {
     }
 
 
-
-
     //TODO: MUSS MIT ALLEN DATEN PASSIEREN AUCH BEI NULL
     public void setData(DriveRoute driveRoute) {
         if (driveRoute == null) {
             throw new IllegalArgumentException();
         }
         setCheckboxFuelParticipation(driveRoute.isFuelParticipation());
-        setSitzplaetze(driveRoute.getSeatCount().toString());
-        setFhLocation(driveRoute.getZiel().getAddress().getPlace());
+        setSeatCount(driveRoute.getSeatCount().toString());
         setDriveTime(driveRoute.getDrivingTime().toLocalTime());
         setDriveDateStart(driveRoute.getDrivingTime().toLocalDate());
-        setAddress(driveRoute.getStart().getAddress().getStreet() + " "
-                + driveRoute.getStart().getAddress().getHouseNumber() + ", "
-                + driveRoute.getStart().getAddress().getPostal() + " "
-                + driveRoute.getStart().getAddress().getPlace() + ", "
-                + "Deutschland");
+
+        if(driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)){
+            setFhLocation(driveRoute.getDestination().getAddress().getPlace());
+            setAddress(driveRoute.getStart().getFullAddressToString());
+        }
+        else{
+            setFhLocation(driveRoute.getStart().getAddress().getPlace());
+            setAddress(driveRoute.getDestination().getFullAddressToString());
+        }
 
         if(driveRoute.getRegularDrive().getRegularDriveDay() != null){
             setDriveDateEnd(driveRoute.getRegularDrive().getRegularDriveDateEnd());
@@ -279,9 +280,13 @@ public class FormLayoutDriveRoute extends FormLayout {
     public boolean checkData() throws InvalidDateException {
 
         if (!driveDateStart.isEmpty())
-            localDateCheck(getDriveDateStart()); //TODO: auch für Regulardateend da
+                localDateCheck(getDriveDateStart());
 
         if (checkboxRegularDrive.getValue()) {
+
+            if(!driveDateEnd.isEmpty())
+                localDateCheck(getDriveDateEnd());
+
             return address.getValue().isEmpty() || fhLocation.isEmpty() || driveDateStart.isEmpty() ||
                     driveTime.isEmpty() || carSeatCount.isEmpty() || driveDateEnd.isEmpty() || driveDays.isEmpty();
 
@@ -291,19 +296,19 @@ public class FormLayoutDriveRoute extends FormLayout {
         }
     }
 
-    public void setReadOnly(boolean readOnly) {
-        address.setReadOnly(readOnly);
-        address.setReadOnly(readOnly);
-        fhLocation.setReadOnly(readOnly);
-        driveTime.setReadOnly(readOnly);
-        carSeatCount.setReadOnly(readOnly);
-        driveDateStart.setReadOnly(readOnly);
-        checkboxFuelParticipation.setReadOnly(readOnly);
-        checkboxRegularDrive.setReadOnly(readOnly);
+    public void setReadOnly(boolean isReadOnly) {
+        address.setReadOnly(isReadOnly);
+        address.setReadOnly(isReadOnly);
+        fhLocation.setReadOnly(isReadOnly);
+        driveTime.setReadOnly(isReadOnly);
+        carSeatCount.setReadOnly(isReadOnly);
+        driveDateStart.setReadOnly(isReadOnly);
+        checkboxFuelParticipation.setReadOnly(isReadOnly);
+        checkboxRegularDrive.setReadOnly(isReadOnly);
 
-        if (checkboxRegularDrive.getValue()) { //FIXME WENN wir Reguläre haben damit das dann auch richtig reagiert beim bearbeiten der Fahrt!!
-            driveDateEnd.setReadOnly(readOnly);
-            driveDays.setReadOnly(readOnly);
+        if (checkboxRegularDrive.getValue()) {
+            driveDateEnd.setReadOnly(isReadOnly);
+            driveDays.setReadOnly(isReadOnly);
         }
     }
 

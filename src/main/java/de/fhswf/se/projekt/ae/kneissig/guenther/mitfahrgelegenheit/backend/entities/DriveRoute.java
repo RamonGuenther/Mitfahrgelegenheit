@@ -86,26 +86,6 @@ public class DriveRoute {
         bookings = new HashSet<>();
     }
 
-    public DriveRoute(Start start, Destination destination, LocalDateTime drivingTime, boolean fuelParticipation, Integer seatCount, User driver,
-                      DriveType driveType, String currentRouteLink, RegularDrive regularDrive) {
-
-        nullCheck(start, destination, drivingTime, seatCount, driver);
-
-        this.start = start;
-        this.destination = destination;
-        this.drivingTime = drivingTime;
-        this.fuelParticipation = fuelParticipation;
-        this.seatCount = seatCount;
-        this.driver = driver;
-        this.creationDate = LocalDateTime.now();
-        this.currentRouteLink = currentRouteLink;
-        this.driveType = driveType;
-        this.note = "";
-        this.regularDrive = regularDrive;
-        driveRequests = new HashSet<>();
-        bookings = new HashSet<>();
-    }
-
     //TODO: Update Konstruktor -> vllt doch über setter? oder überall über Konstruktor
     public DriveRoute(
             Integer id,
@@ -144,10 +124,6 @@ public class DriveRoute {
 
     public Start getStart() {
         return start;
-    }
-
-    public Destination getZiel() {
-        return destination;
     }
 
     public Destination getDestination() {

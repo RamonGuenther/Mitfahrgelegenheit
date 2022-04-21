@@ -31,7 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-
+//TODO: WIe bei OfferDrive if und dann über setter ein neues Regular Objekt da machen und aus den Feldern ziehen!
 /**
  * Die Klasse OwnDriveOffersEditDialog erstellt einen Dialog für die Bearbeitung
  * des jeweils ausgewähltem Fahrtangebot aus der Tabelle von der View OfferDriveView.
@@ -67,16 +67,16 @@ public class OwnDriveOffersEditDialog extends Dialog {
             case OUTWARD_TRIP -> {
                 formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                 formLayoutDriveRouteTop.setTitle("Hinfahrt bearbeiten");
-                formLayoutDriveRouteTop.setReadOnly(true);
                 formLayoutDriveRouteTop.setData(driveRoute);
+                formLayoutDriveRouteTop.setReadOnly(true);
                 formLayoutDriveRouteTop.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
                 add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
                 formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                 formLayoutDriveRouteBottom.setTitle("Rückfahrt bearbeiten");
-                formLayoutDriveRouteBottom.setReadOnly(true);
                 formLayoutDriveRouteBottom.setData(driveRoute);
+                formLayoutDriveRouteBottom.setReadOnly(true);
                 formLayoutDriveRouteBottom.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
                 add(formLayoutDriveRouteBottom);
             }

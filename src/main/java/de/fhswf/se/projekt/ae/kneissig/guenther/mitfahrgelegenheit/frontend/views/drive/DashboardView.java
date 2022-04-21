@@ -189,7 +189,7 @@ public class DashboardView extends VerticalLayout {
         if (driverRoute != null) {
             driverViewDateValue.setText(driverRoute.getFormattedDate() + ", " + driverRoute.getFormattedTime());
             driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
-            driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
+            driverViewDestinationValue.setText(driverRoute.getDestination().getFullAddressToString());
             driverViewNoteTextArea.setValue(driverRoute.getNote());
             buttonNewNote.setEnabled(true);
         }
@@ -203,7 +203,7 @@ public class DashboardView extends VerticalLayout {
             passengerViewDriverValue.setText(passengerRoute.getDriveRoute().getDriver().getFullName());
             passengerViewDateValue.setText(passengerRoute.getDriveRoute().getFormattedDate() + ", " + passengerRoute.getDriveRoute().getFormattedTime());
             passengerViewStartValue.setText(passengerRoute.getDriveRoute().getStart().getFullAddressToString());
-            passengerViewDestinationValue.setText(passengerRoute.getDriveRoute().getZiel().getFullAddressToString());
+            passengerViewDestinationValue.setText(passengerRoute.getDriveRoute().getDestination().getFullAddressToString());
             passengerViewNoteTextArea.setValue(passengerRoute.getDriveRoute().getNote());
         }
     }

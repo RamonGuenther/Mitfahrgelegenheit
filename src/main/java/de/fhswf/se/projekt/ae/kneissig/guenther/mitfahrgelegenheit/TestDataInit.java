@@ -306,9 +306,10 @@ public class TestDataInit {
                 1,
                 ivonne,
                 DriveType.RETURN_TRIP,
-                routeString.getRoute(),
-                regularDriveI5
+                routeString.getRoute()
         );
+
+        driveRouteI5.setRegularDrive(regularDriveI5);
 
         driveRouteService.save(driveRouteI5);
 
