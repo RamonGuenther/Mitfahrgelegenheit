@@ -80,12 +80,16 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
      * In der Methode createGridLayout werden die Komponenten der Tabelle,
      * dem Layout hinzugefügt.
      */
-    private void createGridLayout() { //Hier entsteht grid , dann klicken wir eine Sache an die runter zu createGridDetailsLayout gebracht werden muss
+    private void createGridLayout() {
         Div div = new Div();
         div.setId("search-drive-result-view-content-div");
 
         H1 title = new H1(TITEL_GRID);
-        DriveRouteGrid grid = new DriveRouteGrid("Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService);
+        DriveRouteGrid grid = new DriveRouteGrid("Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService, regularDrive,
+                LocalDate.of(
+                        Integer.parseInt(date.substring(0, 4)),
+                        date.substring(5,6).contains("0") ? Integer.parseInt(date.substring(6,7)) : Integer.parseInt(date.substring(5,7)),
+                        date.substring(8,9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))));
         grid.setId("gridOwnOffersView");
         div.add(title, grid);
         add(div);

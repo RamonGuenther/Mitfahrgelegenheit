@@ -7,7 +7,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
@@ -20,24 +19,28 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 
+import java.time.LocalDate;
+
 @CssImport("/themes/mitfahrgelegenheit/components/search-drive-result-view-dialog.css")
 public class SearchDriveResultViewDialog extends Dialog {
 
     private final UserService userService;
     private final DriveRouteService driveRouteService;
-
-
-    private final DriveRoute driveRoute;
-
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
 
-    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService) {
+    private final DriveRoute driveRoute;
+    private final LocalDate singleDriveDate;
+    private final boolean regularDrive;
+
+    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService, boolean regularDrive, LocalDate singleDriveDate) {
         this.userService = userService;
         this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
+        this.singleDriveDate = singleDriveDate;
+        this.regularDrive = regularDrive;
 
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
@@ -100,7 +103,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         Button closeButton = new Button("Schließen");
         closeButton.setClassName("search-drive-result-view-dialog-buttons");
-        closeButton.addClickListener(e-> close());
+        closeButton.addClickListener(e -> close());
 
         requestButton.addClickListener(e -> {
             close();
@@ -109,7 +112,9 @@ public class SearchDriveResultViewDialog extends Dialog {
                     userService,
                     driveRouteService,
                     mailService,
-                    driveRequestService
+                    driveRequestService,
+                    regularDrive,
+                    singleDriveDate
             );
             driveRequestDialog.open();
         });

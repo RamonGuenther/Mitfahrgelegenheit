@@ -3,13 +3,13 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Booking {
 
     @Id
@@ -23,12 +23,12 @@ public class Booking {
     private DriveRoute driveRoute;
 
     private LocalDateTime dateOfBooking;
+    private LocalDate regularDriveSingleDriveDate;
 
     @Embedded
     private Stopover stopover;
 
     private boolean ratedByPassenger;
-
     private boolean ratedByDriver;
 
     public Booking(DriveRoute driveRoute,User passenger, Stopover stopover)
@@ -83,6 +83,14 @@ public class Booking {
 
     public void setRatedByDriver(boolean ratedByDriver) {
         this.ratedByDriver = ratedByDriver;
+    }
+
+    public LocalDate getRegularDriveSingleDriveDate() {
+        return regularDriveSingleDriveDate;
+    }
+
+    public void setRegularDriveSingleDriveDate(LocalDate regularDriveSingleDriveDate) {
+        this.regularDriveSingleDriveDate = regularDriveSingleDriveDate;
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
@@ -23,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.List;
-
 
 /**
  * Die Klasse CompletedDriveView erstellt eine View für das anzeigen
@@ -48,7 +46,6 @@ public class CompletedDriveView extends VerticalLayout {
     private RatingDialog ratingDialog;
     private List<Booking> completedDriveListDriver;
     private List<Booking> completedDriveListPassenger;
-
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig
@@ -89,8 +86,13 @@ public class CompletedDriveView extends VerticalLayout {
         completedDrivesGrid = new Grid<>();
         completedDrivesGrid.setItems(completedDriveListDriver);
 
-        completedDrivesGrid.addColumn(new LocalDateTimeRenderer<>(item -> item.getDriveRoute().getDrivingTime(),
-                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader("Tag / Uhrzeit");
+//        completedDrivesGrid.addColumn(booking -> booking.getRegularDriveSingleDriveDate() == null ?
+//                        booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime() :
+//                        booking.getRegularDriveSingleDriveDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) + ", " + booking.getDriveRoute().getFormattedTime())
+//                .setHeader("Tag / Uhrzeit");
+        completedDrivesGrid.addColumn(booking -> setDateTimeColumn(booking)).setHeader("Tag / Uhrzeit");
+
+
         completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
         completedDrivesGrid.addComponentColumn(booking ->
@@ -132,5 +134,22 @@ public class CompletedDriveView extends VerticalLayout {
         });
 
         return button;
+    }
+
+    private String setDateTimeColumn(Booking booking){
+
+        String dateTime = new String();
+
+        if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() == null){
+            dateTime = booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime();
+        }
+        else if(booking.getRegularDriveSingleDriveDate() != null){
+            dateTime = booking.getRegularDriveSingleDriveDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) + ", " + booking.getDriveRoute().getFormattedTime();
+        }
+        else if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() != null){
+            dateTime = booking.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + booking.getDriveRoute().getFormattedTime();
+        }
+
+        return dateTime;
     }
 }

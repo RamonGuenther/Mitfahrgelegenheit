@@ -2,12 +2,11 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
-import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
@@ -25,10 +24,10 @@ public class DriveRequest {
     private DriveRoute driveRoute;
 
     private RequestState requestState;
-
     private String note;
     private String currentRouteLink;
     private LocalDateTime requestTime;
+    private LocalDate regularDriveSingleDriveDate;
 
     @Embedded
     private Stopover stopover;
@@ -94,6 +93,13 @@ public class DriveRequest {
         return id;
     }
 
+    public LocalDate getRegularDriveSingleDriveDate() {
+        return regularDriveSingleDriveDate;
+    }
+
+    public void setRegularDriveSingleDriveDate(LocalDate regularDriveSingleDriveDate) {
+        this.regularDriveSingleDriveDate = regularDriveSingleDriveDate;
+    }
 
     public String getFormattedDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -104,7 +110,6 @@ public class DriveRequest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return requestTime.format(formatter) + " Uhr";
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -8,10 +8,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
@@ -27,6 +24,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +34,9 @@ import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backen
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-dialog.css")
 public class DriveRequestDialog extends Dialog {
 
-    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService) {
+    private DriveRequest driveRequest;
+
+    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService, boolean regularDrive, LocalDate singleDriveDate) {
         setCloseOnEsc(false);
         setCloseOnOutsideClick(false);
 
@@ -65,11 +65,9 @@ public class DriveRequestDialog extends Dialog {
 
                 Address address = new Address(textFieldAddress.getPostal(), textFieldAddress.getPlace(), textFieldAddress.getStreet(), textFieldAddress.getNumber());
 
-
                 List<Stopover> stopoverList = new ArrayList<>();
 
                 stopoverList.add(new Stopover(address));
-
 
                 for (Booking routeBooking : driveRoute.getBookings()) {
                     stopoverList.add(routeBooking.getStopover());
@@ -79,8 +77,13 @@ public class DriveRequestDialog extends Dialog {
                 String googleMapsLink = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList);
 
                 //TODO: Vllt umdrehen das schon vorher bekannt ob anfrage schon gestellt bevor Google api gedöns
-                DriveRequest driveRequest = new DriveRequest(driveRoute, currentUser, textAreaMessage.getValue(), googleMapsLink, new Stopover(address));
+                driveRequest = new DriveRequest(driveRoute, currentUser, textAreaMessage.getValue(), googleMapsLink, new Stopover(address));
 
+                /*  Wenn der User keine regelmäßige Fahrt sucht, aber eine Anfrage für eine Einzelfahrt bei einer regelmäßigen Fahrt stellt,
+                    muss das gewünschte Datum für die Buchung später mit festgehalten werden. */
+                if(!regularDrive && driveRoute.getRegularDrive().getRegularDriveDateEnd() != null){
+                    driveRequest.setRegularDriveSingleDriveDate(singleDriveDate);
+                }
                 driveRoute.addDriveRequest(driveRequest);
                 driveRequestService.save(driveRequest);
                 driveRouteService.save(driveRoute);

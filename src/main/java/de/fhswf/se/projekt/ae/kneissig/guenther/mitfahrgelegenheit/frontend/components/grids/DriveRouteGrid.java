@@ -7,7 +7,6 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
@@ -17,9 +16,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.OwnDriveOffersEditDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.SearchDriveResultViewDialog;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,12 +28,16 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
     private final UserService userService;
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
+    private final LocalDate singleDriveDate;
+    private final boolean regularDrive;
 
-    public DriveRouteGrid(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
+    public DriveRouteGrid(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService, boolean regularDrive, LocalDate singleDriveDate) {
         this.driveRouteService = driveRouteService;
         this.userService = userService;
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
+        this.singleDriveDate = singleDriveDate;
+        this.regularDrive = regularDrive;
 
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
@@ -72,9 +74,9 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
             if (UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
                 OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService, mailService);
             } else if (UI.getCurrent().getId().get().equals(PageId.SEARCH_DRIVE_RESULT_VIEW.label)) {
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, regularDrive, singleDriveDate);
             } else if (UI.getCurrent().getId().get().equals(PageId.PROFILE.label)) {
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, regularDrive, singleDriveDate);
             } else {
                 throw new IllegalArgumentException("Fehler in " + getClass().getSimpleName() + "lol");
             }

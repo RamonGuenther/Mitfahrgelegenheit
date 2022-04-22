@@ -11,7 +11,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
@@ -28,13 +27,13 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,10 +72,25 @@ public class BookingsView extends VerticalLayout {
         H1 title = new H1("Meine Mitfahrgelegenheiten");
 
         List<Booking> bookingsOutwardTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList())
-                .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
+                .stream().filter(booking ->
+                        booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now()) &&
+                        booking.getRegularDriveSingleDriveDate() == null ||
+                        booking.getRegularDriveSingleDriveDate() != null &&
+                        booking.getRegularDriveSingleDriveDate().equals(LocalDate.now()) &&
+                        booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalTime.now()) ||
+                        booking.getRegularDriveSingleDriveDate() != null &&
+                        booking.getRegularDriveSingleDriveDate().isAfter(LocalDate.now())
+                ).collect(Collectors.toList());
 
         List<Booking> bookingsReturnTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList())
-                .stream().filter(booking -> booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
+                .stream().filter(booking ->
+                        booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now()) &&
+                        booking.getRegularDriveSingleDriveDate() == null ||
+                        booking.getRegularDriveSingleDriveDate() != null &&
+                        booking.getRegularDriveSingleDriveDate().equals(LocalDate.now()) &&
+                        booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalTime.now()) ||
+                        booking.getRegularDriveSingleDriveDate() != null &&
+                        booking.getRegularDriveSingleDriveDate().isAfter(LocalDate.now())).collect(Collectors.toList());
 
         radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems(OUTWARD_TRIP, RETURN_TRIP);
@@ -86,8 +100,12 @@ public class BookingsView extends VerticalLayout {
         gridBookings = new Grid<>();
         gridBookings.setItems(bookingsOutwardTrip);
 
-        gridBookings.addColumn(new LocalDateTimeRenderer<>(item -> item.getDriveRoute().getDrivingTime(),
-                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader("Tag / Uhrzeit");
+//        gridBookings.addColumn(booking -> booking.getRegularDriveSingleDriveDate() == null ?
+//                        booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime() :
+//                        booking.getRegularDriveSingleDriveDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) + ", " + booking.getDriveRoute().getFormattedTime())
+//                .setHeader("Tag / Uhrzeit");
+
+        gridBookings.addColumn(booking -> setDateTimeColumn(booking)).setHeader("Tag / Uhrzeit");
 
         gridBookings.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         gridBookings.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
@@ -151,6 +169,23 @@ public class BookingsView extends VerticalLayout {
         });
 
         return button;
+    }
+
+    private String setDateTimeColumn(Booking booking){
+
+        String dateTime = new String();
+
+        if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() == null){
+            dateTime = booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime();
+        }
+        else if(booking.getRegularDriveSingleDriveDate() != null){
+            dateTime = booking.getRegularDriveSingleDriveDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) + ", " + booking.getDriveRoute().getFormattedTime();
+        }
+        else if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() != null){
+            dateTime = booking.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + booking.getDriveRoute().getFormattedTime();
+        }
+
+        return dateTime;
     }
 }
 

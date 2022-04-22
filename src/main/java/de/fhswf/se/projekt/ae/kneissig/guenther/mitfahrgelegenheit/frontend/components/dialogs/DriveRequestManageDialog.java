@@ -89,7 +89,6 @@ public class DriveRequestManageDialog extends Dialog {
         textArea.setId("drive-request-manage-dialog-text_area");
         textArea.setValue(driveRequest.getNote().isEmpty() ? "Keine Nachricht" : driveRequest.getNote());
 
-
         Button acceptButton = new Button("Akzeptieren");
         acceptButton.setClassName("drive-request-manage-dialog-buttons");
         Button declineButton = new Button("Ablehnen");
@@ -121,6 +120,13 @@ public class DriveRequestManageDialog extends Dialog {
         if (requestState == RequestState.ACCEPTED) {
             try {
                 Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), driveRequest.getStopover());
+
+                /*  Wenn eine Einzelfahrt bei einer regelmäßigen Fahrt gebucht wird, muss das Datum, an dem der Mitfahrer mitfährt,
+                    in der Buchung festgehalten werden. So kann am Ende geprüft werden, wann die Buchung abgelaufen ist und der
+                    Platz im Auto wieder freigegeben wird.*/
+                if(driveRequest.getRegularDriveSingleDriveDate() != null){
+                    newBooking.setRegularDriveSingleDriveDate(driveRequest.getRegularDriveSingleDriveDate());
+                }
                 bookingService.save(newBooking);
                 driveRequest.getDriveRoute().addBooking(newBooking);
 

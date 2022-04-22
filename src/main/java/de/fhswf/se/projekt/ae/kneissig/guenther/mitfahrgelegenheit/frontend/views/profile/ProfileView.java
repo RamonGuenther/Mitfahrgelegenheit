@@ -163,9 +163,10 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService);
+        // ToDo: Hintere Parameter sind ein bissl unglücklich, werden aber an anderer Stelle leider benötigt, damit im Request und Booking das richtige gespeichert werden kann.
+        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService, false, null);
         gridHinfahrt.addClassName("profilegrid");
-        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
+        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
         gridRueckfahrt.addClassName("profilegrid");
         Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
         div.setId("profile-drive_offers_layout");

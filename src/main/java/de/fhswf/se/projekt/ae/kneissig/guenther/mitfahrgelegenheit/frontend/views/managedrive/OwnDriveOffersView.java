@@ -70,9 +70,10 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService);
+        // ToDo: Hintere Parameter sind ein bissl unglücklich, werden aber an anderer Stelle leider benötigt, damit im Request und Booking das richtige gespeichert werden kann.
+        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService, false, null);
         gridHinfahrt.setId("gridOwnOffersView");
-        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
+        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
         gridRueckfahrt.setId("gridOwnOffersView");
 
         Div div = new Div(title, radioButtonGroup, gridHinfahrt);
