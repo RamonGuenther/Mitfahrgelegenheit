@@ -13,7 +13,9 @@ import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
@@ -31,7 +33,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-//TODO: WIe bei OfferDrive if und dann über setter ein neues Regular Objekt da machen und aus den Feldern ziehen!
 /**
  * Die Klasse OwnDriveOffersEditDialog erstellt einen Dialog für die Bearbeitung
  * des jeweils ausgewähltem Fahrtangebot aus der Tabelle von der View OfferDriveView.
@@ -192,7 +193,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
             );
         }
         catch (InvalidDateException ex){
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -216,7 +217,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
             );
         }
         catch (InvalidDateException ex){
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -245,6 +246,25 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     fahrtenTyp,
                     note
             );
+
+            if (fahrtenTyp.equals(DriveType.OUTWARD_TRIP)) {
+                if(formLayoutDriveRouteTop.getCheckboxRegularDriveValue()){
+                    updateDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formLayoutDriveRouteTop.getDriveDays()),
+                            formLayoutDriveRouteTop.getDriveDateStart(),
+                            formLayoutDriveRouteTop.getDriveDateEnd())
+                    );
+                }
+            }
+            else{
+                if(formLayoutDriveRouteBottom.getCheckboxRegularDriveValue()){
+                    updateDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formLayoutDriveRouteBottom.getDriveDays()),
+                            formLayoutDriveRouteBottom.getDriveDateStart(),
+                            formLayoutDriveRouteBottom.getDriveDateEnd())
+                    );
+                }
+            }
 
             driveRouteService.save(updateDriveRoute);
 

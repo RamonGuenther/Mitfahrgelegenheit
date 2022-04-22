@@ -4,10 +4,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.excep
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,13 +22,6 @@ public class ValidationUtility {
 
     public static void nullCheck(Object... os) throws IllegalArgumentException {
         Arrays.stream (os).forEach (ValidationUtility::nullCheck);
-    }
-
-    public static void nullElementCheck (Collection<?> os) throws IllegalArgumentException {
-        nullCheck (os);
-
-        if (os.stream ().anyMatch (Objects::isNull))
-            throw new IllegalArgumentException ();
     }
 
     public static void nullOrEmptyCheck (String s) throws IllegalArgumentException {
@@ -54,8 +44,8 @@ public class ValidationUtility {
     }
 
     public static void localDateCheck(LocalDate input) throws InvalidDateException {
-        if(input.isBefore(LocalDate.now())){
-            throw new InvalidDateException();
+        if(input.isBefore(LocalDate.now()) || input.equals(LocalDate.now())){
+            throw new InvalidDateException("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen");
         }
     }
 

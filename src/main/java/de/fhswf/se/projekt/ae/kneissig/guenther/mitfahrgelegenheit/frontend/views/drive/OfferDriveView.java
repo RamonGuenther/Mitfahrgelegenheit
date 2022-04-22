@@ -60,8 +60,8 @@ public class OfferDriveView extends VerticalLayout {
 
     private final UserService userService;
 
-    private FormLayoutDriveRoute formlayoutTop;
-    private FormLayoutDriveRoute formLayoutBottom;
+    private FormLayoutDriveRoute formlayoutDriveRouteTop;
+    private FormLayoutDriveRoute formLayoutDriveRouteBottom;
 
     private RadioButtonGroup<String> layoutOption;
 
@@ -106,8 +106,8 @@ public class OfferDriveView extends VerticalLayout {
 
         H1 title = new H1("Fahrt anbieten");
 
-        formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-        formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+        formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+        formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
 
         layoutOption = new RadioButtonGroup<>();
         layoutOption.setItems("Hinfahrt", "Rückfahrt", "Hin- & Rückfahrt");
@@ -126,24 +126,24 @@ public class OfferDriveView extends VerticalLayout {
         layoutOption.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt" -> {
-                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formlayoutTop.setFhLocation(user.getUniversityLocation());
+                    formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
                     div.removeAll();
-                    div.add(title, layoutOption, formlayoutTop, buttonLayout);
+                    div.add(title, layoutOption, formlayoutDriveRouteTop, buttonLayout);
                 }
                 case "Rückfahrt" -> {
-                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                    formLayoutBottom.setFhLocation(user.getUniversityLocation());
+                    formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
                     div.removeAll();
-                    div.add(title, layoutOption, formLayoutBottom, buttonLayout);
+                    div.add(title, layoutOption, formLayoutDriveRouteBottom, buttonLayout);
                 }
                 case "Hin- & Rückfahrt" -> {
-                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formlayoutTop.setFhLocation(user.getUniversityLocation());
-                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                    formLayoutBottom.setFhLocation(user.getUniversityLocation());
+                    formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
+                    formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
                     div.removeAll();
-                    div.add(title, layoutOption, formlayoutTop, formLayoutBottom, buttonLayout);
+                    div.add(title, layoutOption, formlayoutDriveRouteTop, formLayoutDriveRouteBottom, buttonLayout);
                 }
             }
         });
@@ -153,16 +153,19 @@ public class OfferDriveView extends VerticalLayout {
         add(div);
     }
 
-    private void saveFormLayoutTop() { //FIXME ich muss vorher schon alle Werte haben
+    private void saveFormLayoutTop() {
         try {
-            if (formlayoutTop.checkData()) {
+            if (formlayoutDriveRouteTop.checkData()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveSingleDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
+            saveDrive(formlayoutDriveRouteTop.getAddress(), formlayoutDriveRouteTop.getFhLocation(),
+                    formlayoutDriveRouteTop.getDriveTime(), formlayoutDriveRouteTop.getCheckboxFuelParticipation(),
+                    formlayoutDriveRouteTop.getCarSeatCount(), DriveType.OUTWARD_TRIP,
+                    formlayoutDriveRouteTop.getDriveDateStart());
 
-            formlayoutTop.clearFields();
+            formlayoutDriveRouteTop.clearFields();
         } catch (InvalidDateException ex) {
             NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
             ex.printStackTrace();
@@ -171,21 +174,25 @@ public class OfferDriveView extends VerticalLayout {
 
     private void saveFormLayoutBottom() {
         try {
-            if (formLayoutBottom.checkData()) {
+            if (formLayoutDriveRouteBottom.checkData()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveSingleDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP, formLayoutBottom.getDriveDateStart());
+            saveDrive(formLayoutDriveRouteBottom.getFhLocation(), formLayoutDriveRouteBottom.getAddress(),
+                    formLayoutDriveRouteBottom.getDriveTime(), formLayoutDriveRouteBottom.getCheckboxFuelParticipation(),
+                    formLayoutDriveRouteBottom.getCarSeatCount(), DriveType.RETURN_TRIP,
+                    formLayoutDriveRouteBottom.getDriveDateStart());
 
-            formLayoutBottom.clearFields();
+            formLayoutDriveRouteBottom.clearFields();
         } catch (InvalidDateException ex) {
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
     }
 
-    private void saveSingleDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
+    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation,
+                           Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
         try {
             AddressConverter converter = new AddressConverter(address);
             Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
@@ -212,13 +219,20 @@ public class OfferDriveView extends VerticalLayout {
             );
 
             if (fahrtenTyp.equals(DriveType.OUTWARD_TRIP)) {
-                if(formlayoutTop.getCheckboxRegularDriveValue()){
-                    newDriveRoute.setRegularDrive(new RegularDrive(DayOfWeek.getDayOfWeek(formlayoutTop.getDriveDays()),formlayoutTop.getDriveDateStart(),formlayoutTop.getDriveDateEnd()));
+                if (formlayoutDriveRouteTop.getCheckboxRegularDriveValue()) {
+                    newDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formlayoutDriveRouteTop.getDriveDays()),
+                            formlayoutDriveRouteTop.getDriveDateStart(),
+                            formlayoutDriveRouteTop.getDriveDateEnd())
+                    );
                 }
-            }
-            else{
-                if(formLayoutBottom.getCheckboxRegularDriveValue()){
-                    newDriveRoute.setRegularDrive(new RegularDrive(DayOfWeek.getDayOfWeek(formLayoutBottom.getDriveDays()),formLayoutBottom.getDriveDateStart(),formLayoutBottom.getDriveDateEnd()));
+            } else {
+                if (formLayoutDriveRouteBottom.getCheckboxRegularDriveValue()) {
+                    newDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formLayoutDriveRouteBottom.getDriveDays()),
+                            formLayoutDriveRouteBottom.getDriveDateStart(),
+                            formLayoutDriveRouteBottom.getDriveDateEnd())
+                    );
                 }
             }
 
