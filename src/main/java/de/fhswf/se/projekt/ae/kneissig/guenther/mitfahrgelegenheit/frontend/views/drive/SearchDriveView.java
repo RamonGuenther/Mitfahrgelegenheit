@@ -123,7 +123,7 @@ public class SearchDriveView extends VerticalLayout {
                                 date.setValue(LocalDate.now());
                             }
                             else{
-                                dayOfWeek.setValue("");
+                                dayOfWeek.setValue("keinTag");
                                 if (date.getValue() == null){
                                     NotificationError.show("Bitte ein Datum auswählen");
                                 }
@@ -139,6 +139,7 @@ public class SearchDriveView extends VerticalLayout {
                                             new RouteParam("regelmaessig", checkboxRegularDrive.getValue().toString()),
                                             new RouteParam("wochentag", dayOfWeek.getValue())
                                     ));
+
                         } else {
                             NotificationError.show("Bitte Start- und Zieladresse, sowie Datum/Zeit angeben.");
                         }
@@ -153,7 +154,6 @@ public class SearchDriveView extends VerticalLayout {
                     }
                 }
         );
-
 
         Label labelOwnDrive = new Label("Doch selber fahren?");
         labelOwnDrive.setId("labelOwnDrive");

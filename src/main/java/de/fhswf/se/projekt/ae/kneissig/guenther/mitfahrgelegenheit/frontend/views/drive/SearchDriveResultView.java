@@ -120,7 +120,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
 
         if (beforeEnterEvent.getRouteParameters().get("wochentag").isPresent()) {
-            if(!beforeEnterEvent.getRouteParameters().get("wochentag").get().equals("")){
+            if(!beforeEnterEvent.getRouteParameters().get("wochentag").get().equals("keinTag")){
                 dayOfWeek = DayOfWeek.getDayOfWeek(beforeEnterEvent.getRouteParameters().get("wochentag").get());
             }
         }
@@ -143,14 +143,13 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         switch (typ) {
             case "Hinfahrt" -> {
                 fahrtenTyp = DriveType.OUTWARD_TRIP;
-                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive);
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive, dayOfWeek);
             }
             case "Rückfahrt" -> {
                 fahrtenTyp = DriveType.RETURN_TRIP;
-                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, fhStandort, adresse, user, dateTime, regularDrive);
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, fhStandort, adresse, user, dateTime, regularDrive, dayOfWeek);
             }
         }
-
         CreateSearchDriveResultView();
     }
 }
