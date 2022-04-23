@@ -32,6 +32,7 @@
 .label{
     margin-top: 5px;
     font-weight: bold;
+    width: 75px;
 }
 
 .value{
@@ -50,3 +51,9 @@
 #note-header{
     margin-top: 0px;
 }
+
+.note-label{
+    margin-top: 5px;
+    font-weight: bold;
+}
+

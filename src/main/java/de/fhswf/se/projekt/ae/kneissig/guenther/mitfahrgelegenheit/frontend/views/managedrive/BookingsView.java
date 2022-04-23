@@ -179,7 +179,7 @@ public class BookingsView extends VerticalLayout {
             dateTime = booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime();
         }
         else if(booking.getRegularDriveSingleDriveDate() != null){
-            dateTime = booking.getRegularDriveSingleDriveDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) + ", " + booking.getDriveRoute().getFormattedTime();
+            dateTime = booking.getFormattedSingleDriveDate() + ", " + booking.getDriveRoute().getFormattedTime();
         }
         else if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() != null){
             dateTime = booking.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + booking.getDriveRoute().getFormattedTime();

@@ -113,13 +113,31 @@ public class DriveRouteService {
 //        return driveRoutes;
 //    }
 
-    public Optional<DriveRoute> getNextDriveRouteByUser(User user) {
-        List<DriveRoute> outwardTrips = repository.findAllByDriver(user).orElse(Collections.emptyList());
-        outwardTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
+    public Optional<DriveRoute> getNextSingleDriveRouteByUser(User user) {
+        List<DriveRoute> outwardTrips = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNull(user).orElse(Collections.emptyList());
+
         outwardTrips = outwardTrips.stream().filter(driveRoute ->
                 driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDateTime.now().toLocalDate()) ||
-                        driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
-                                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime())).collect(Collectors.toList());
+                driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
+                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime()))
+                .collect(Collectors.toList());
+
+        outwardTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
+
+        return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
+    }
+
+    public Optional<DriveRoute> getNextRegularDriveRouteByUser(User user){
+        List<DriveRoute> outwardTrips = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNotNull(user).orElse(Collections.emptyList());
+
+        outwardTrips = outwardTrips.stream().filter(driveRoute ->
+                driveRoute.getDrivingTime().toLocalDate().equals(LocalDate.now()) &&
+                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||
+                driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDate.now()) &&
+                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now())
+        ).collect(Collectors.toList());
+
+        outwardTrips.sort(Comparator.comparing(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay()));
 
         return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
     }

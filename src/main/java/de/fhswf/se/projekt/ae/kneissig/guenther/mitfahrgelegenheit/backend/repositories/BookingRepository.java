@@ -21,4 +21,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("SELECT b FROM Booking b WHERE b.passenger = :user and b.ratedByPassenger = false and b.driveRoute.drivingTime < :date or b.passenger = :user and b.ratedByPassenger = false and b.regularDriveSingleDriveDate < :date")
     Optional<List<Booking>> findAllByPassengerAndDrivingTimeAndRatedByPassenger(User user, LocalDateTime date);
+
+    Optional<List<Booking>> findAllByPassengerAndDriveRoute_RegularDrive_RegularDriveDateEnd_IsNotNull(User user);
 }

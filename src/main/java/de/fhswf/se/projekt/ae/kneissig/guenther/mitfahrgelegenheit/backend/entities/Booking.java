@@ -5,6 +5,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
@@ -101,5 +103,9 @@ public class Booking {
     @Override
     public int hashCode() {
         return Objects.hash(passenger, driveRoute);
+    }
+
+    public String getFormattedSingleDriveDate(){
+        return regularDriveSingleDriveDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
     }
 }
