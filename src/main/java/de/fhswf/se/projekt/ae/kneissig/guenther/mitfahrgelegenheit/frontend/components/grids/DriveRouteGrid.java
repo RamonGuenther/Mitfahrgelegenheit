@@ -29,15 +29,15 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
     private final LocalDate singleDriveDate;
-    private final boolean regularDrive;
+    private final boolean isUserSearchsRegularDrive;
 
-    public DriveRouteGrid(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService, boolean regularDrive, LocalDate singleDriveDate) {
+    public DriveRouteGrid(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService, boolean isUserSearchsRegularDrive, LocalDate singleDriveDate) {
         this.driveRouteService = driveRouteService;
         this.userService = userService;
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
         this.singleDriveDate = singleDriveDate;
-        this.regularDrive = regularDrive;
+        this.isUserSearchsRegularDrive = isUserSearchsRegularDrive;
 
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
@@ -74,9 +74,9 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
             if (UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
                 OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService, mailService);
             } else if (UI.getCurrent().getId().get().equals(PageId.SEARCH_DRIVE_RESULT_VIEW.label)) {
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, regularDrive, singleDriveDate);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, isUserSearchsRegularDrive, singleDriveDate);
             } else if (UI.getCurrent().getId().get().equals(PageId.PROFILE.label)) {
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, regularDrive, singleDriveDate);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, isUserSearchsRegularDrive, singleDriveDate);
             } else {
                 throw new IllegalArgumentException("Fehler in " + getClass().getSimpleName() + "lol");
             }

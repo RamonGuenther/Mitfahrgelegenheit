@@ -53,7 +53,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private String adresse;
     private String date;
     private String time;
-    private boolean regularDrive;
+    private boolean isUserSearchsRegularDrive;
     private DayOfWeek dayOfWeek;
 
     /**
@@ -85,7 +85,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         div.setId("search-drive-result-view-content-div");
 
         H1 title = new H1(TITEL_GRID);
-        DriveRouteGrid grid = new DriveRouteGrid("Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService, regularDrive,
+        DriveRouteGrid grid = new DriveRouteGrid("Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService, isUserSearchsRegularDrive,
                 LocalDate.of(
                         Integer.parseInt(date.substring(0, 4)),
                         date.substring(5,6).contains("0") ? Integer.parseInt(date.substring(6,7)) : Integer.parseInt(date.substring(5,7)),
@@ -119,7 +119,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         }
 
         if (beforeEnterEvent.getRouteParameters().get("regelmaessig").isPresent()) {
-            regularDrive = Boolean.parseBoolean(beforeEnterEvent.getRouteParameters().get("regelmaessig").get());
+            isUserSearchsRegularDrive = Boolean.parseBoolean(beforeEnterEvent.getRouteParameters().get("regelmaessig").get());
         }
 
 
@@ -147,11 +147,11 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         switch (typ) {
             case "Hinfahrt" -> {
                 fahrtenTyp = DriveType.OUTWARD_TRIP;
-                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, regularDrive, dayOfWeek);
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
             }
             case "Rückfahrt" -> {
                 fahrtenTyp = DriveType.RETURN_TRIP;
-                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, fhStandort, adresse, user, dateTime, regularDrive, dayOfWeek);
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, fhStandort, adresse, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
             }
         }
         CreateSearchDriveResultView();

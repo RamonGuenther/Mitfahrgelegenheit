@@ -31,16 +31,16 @@ public class SearchDriveResultViewDialog extends Dialog {
 
     private final DriveRoute driveRoute;
     private final LocalDate singleDriveDate;
-    private final boolean regularDrive;
+    private final boolean isUserSearchsRegularDrive;
 
-    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService, boolean regularDrive, LocalDate singleDriveDate) {
+    public SearchDriveResultViewDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService, boolean isUserSearchsRegularDrive, LocalDate singleDriveDate) {
         this.userService = userService;
         this.driveRouteService = driveRouteService;
         this.driveRoute = driveRoute;
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
         this.singleDriveDate = singleDriveDate;
-        this.regularDrive = regularDrive;
+        this.isUserSearchsRegularDrive = isUserSearchsRegularDrive;
 
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
@@ -76,15 +76,15 @@ public class SearchDriveResultViewDialog extends Dialog {
             case OUTWARD_TRIP -> {
                 FormLayoutDriveRoute formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                 formLayoutDriveRouteTop.remove(formLayoutDriveRouteTop.getTitle());
-                formLayoutDriveRouteTop.setReadOnly(true);
                 formLayoutDriveRouteTop.setData(driveRoute);
+                formLayoutDriveRouteTop.setReadOnly(true);
                 add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
                 FormLayoutDriveRoute formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                 formLayoutDriveRouteBottom.remove(formLayoutDriveRouteBottom.getTitle());
-                formLayoutDriveRouteBottom.setReadOnly(true);
                 formLayoutDriveRouteBottom.setData(driveRoute);
+                formLayoutDriveRouteBottom.setReadOnly(true);
                 add(formLayoutDriveRouteBottom);
             }
 
@@ -113,7 +113,7 @@ public class SearchDriveResultViewDialog extends Dialog {
                     driveRouteService,
                     mailService,
                     driveRequestService,
-                    regularDrive,
+                    isUserSearchsRegularDrive,
                     singleDriveDate
             );
             driveRequestDialog.open();

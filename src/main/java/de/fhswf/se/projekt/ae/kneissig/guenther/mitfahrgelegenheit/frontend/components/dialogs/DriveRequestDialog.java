@@ -36,7 +36,7 @@ public class DriveRequestDialog extends Dialog {
 
     private DriveRequest driveRequest;
 
-    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService, boolean regularDrive, LocalDate singleDriveDate) {
+    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService, boolean isUserSearchsRegularDrive, LocalDate singleDriveDate) {
         setCloseOnEsc(false);
         setCloseOnOutsideClick(false);
 
@@ -81,7 +81,7 @@ public class DriveRequestDialog extends Dialog {
 
                 /*  Wenn der User keine regelmäßige Fahrt sucht, aber eine Anfrage für eine Einzelfahrt bei einer regelmäßigen Fahrt stellt,
                     muss das gewünschte Datum für die Buchung später mit festgehalten werden. */
-                if(!regularDrive && driveRoute.getRegularDrive().getRegularDriveDateEnd() != null){
+                if(!isUserSearchsRegularDrive && driveRoute.getRegularDrive().getRegularDriveDateEnd() != null){
                     driveRequest.setRegularDriveSingleDriveDate(singleDriveDate);
                 }
                 driveRoute.addDriveRequest(driveRequest);
