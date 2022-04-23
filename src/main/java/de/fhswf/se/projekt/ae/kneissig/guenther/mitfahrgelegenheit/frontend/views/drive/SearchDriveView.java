@@ -31,8 +31,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
-import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
-import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.*;
 
 /**
  * Die Klasse SearchDriveView erstellt eine View zum Suchen einer
@@ -114,8 +113,8 @@ public class SearchDriveView extends VerticalLayout {
         //TODO: Wochentag mit übergeben
         buttonSearch.addClickListener(searchEvent -> {
                     try {
-                        //Todo: Ähm der kann doch weg oder? xD
-                        AddressConverter converter = new AddressConverter(address.getValue());
+
+                        addressPatternCheck(address.getValue());
 
                         if (fhLocation.getValue() != null && !address.getValue().equals("") && time.getValue()!= null) {
 

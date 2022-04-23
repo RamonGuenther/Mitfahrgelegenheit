@@ -21,6 +21,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
@@ -177,12 +178,12 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     private void saveFormLayoutTop() {
         try {
-            if (formLayoutDriveRouteTop.checkData()) {
+            if (formLayoutDriveRouteTop.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveDrive(formLayoutDriveRouteTop.getAddress(),
+            saveDrive(formLayoutDriveRouteTop.getAddressValue(),
                     formLayoutDriveRouteTop.getFhLocation(),
                     formLayoutDriveRouteTop.getDriveTime(),
                     formLayoutDriveRouteTop.getCheckboxFuelParticipation(),
@@ -192,7 +193,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     note.getValue()
             );
         }
-        catch (InvalidDateException ex){
+        catch (InvalidDateException | InvalidRegularDrivePeriod ex){
             NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
@@ -202,12 +203,12 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     private void saveFormLayoutBottom() {
         try {
-            if (formLayoutDriveRouteBottom.checkData()) {
+            if (formLayoutDriveRouteBottom.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
             saveDrive(formLayoutDriveRouteBottom.getFhLocation(),
-                    formLayoutDriveRouteBottom.getAddress(),
+                    formLayoutDriveRouteBottom.getAddressValue(),
                     formLayoutDriveRouteBottom.getDriveTime(),
                     formLayoutDriveRouteBottom.getCheckboxRegularDriveValue(),
                     formLayoutDriveRouteBottom.getCarSeatCount(),
@@ -216,7 +217,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     note.getValue()
             );
         }
-        catch (InvalidDateException ex){
+        catch (InvalidDateException | InvalidRegularDrivePeriod ex){
             NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }

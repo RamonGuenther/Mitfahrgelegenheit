@@ -20,6 +20,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
@@ -155,37 +156,37 @@ public class OfferDriveView extends VerticalLayout {
 
     private void saveFormLayoutTop() {
         try {
-            if (formlayoutDriveRouteTop.checkData()) {
+            if (formlayoutDriveRouteTop.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveDrive(formlayoutDriveRouteTop.getAddress(), formlayoutDriveRouteTop.getFhLocation(),
+            saveDrive(formlayoutDriveRouteTop.getAddressValue(), formlayoutDriveRouteTop.getFhLocation(),
                     formlayoutDriveRouteTop.getDriveTime(), formlayoutDriveRouteTop.getCheckboxFuelParticipation(),
                     formlayoutDriveRouteTop.getCarSeatCount(), DriveType.OUTWARD_TRIP,
                     formlayoutDriveRouteTop.getDriveDateStart());
 
             formlayoutDriveRouteTop.clearFields();
-        } catch (InvalidDateException ex) {
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+        } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
     }
 
     private void saveFormLayoutBottom() {
         try {
-            if (formLayoutDriveRouteBottom.checkData()) {
+            if (formLayoutDriveRouteBottom.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveDrive(formLayoutDriveRouteBottom.getFhLocation(), formLayoutDriveRouteBottom.getAddress(),
+            saveDrive(formLayoutDriveRouteBottom.getFhLocation(), formLayoutDriveRouteBottom.getAddressValue(),
                     formLayoutDriveRouteBottom.getDriveTime(), formLayoutDriveRouteBottom.getCheckboxFuelParticipation(),
                     formLayoutDriveRouteBottom.getCarSeatCount(), DriveType.RETURN_TRIP,
                     formLayoutDriveRouteBottom.getDriveDateStart());
 
             formLayoutDriveRouteBottom.clearFields();
-        } catch (InvalidDateException ex) {
+        } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
             NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
@@ -237,8 +238,8 @@ public class OfferDriveView extends VerticalLayout {
             }
 
             driveRouteService.save(newDriveRoute);
+            NotificationSuccess.show("Das Fahrtangebot wurde erstellt.");
 
-            NotificationSuccess.show("Fahrt wurde erstellt!");
         } catch (Exception e) {
             NotificationError.show(e.getMessage());
         }

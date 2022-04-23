@@ -80,7 +80,7 @@ public class DriveRequestManageDialog extends Dialog {
         formLayoutDriveRoute.setData(driveRoute);
         formLayoutDriveRoute.remove(formLayoutDriveRoute.getTitle());
         formLayoutDriveRoute.getButtonDetourRoute().setText("Route mit Zwischenstopp anzeigen");
-        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRequest.getCurrentRouteLink(), "_blank"));
+        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRequest.getCurrentRouteLink(), "_blank")); //FIXME
 
         add(titleLayout, formLayoutDriveRoute);
 

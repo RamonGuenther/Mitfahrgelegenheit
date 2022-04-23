@@ -32,6 +32,8 @@ public class TextFieldAddress extends Autocomplete {
      */
     public TextFieldAddress(String label) {
         setLabel(label);
+        setErrorMessage("Adresse bitte angeben");
+
         GoogleAddressAutocomplete googleAddressAutocomplete = new GoogleAddressAutocomplete();
 
         addChangeListener(event -> {
