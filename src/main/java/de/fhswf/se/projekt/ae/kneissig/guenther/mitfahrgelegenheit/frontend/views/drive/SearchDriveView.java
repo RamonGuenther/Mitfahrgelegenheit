@@ -28,8 +28,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.*;
 
@@ -45,15 +43,14 @@ import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backen
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-view.css")
 public class SearchDriveView extends VerticalLayout {
 
-    private final UserService userService;
-    private Checkbox checkboxRegularDrive;
-    private RadioButtonGroup<String> radioDriveDirection;
-    private TextFieldAddress address;
-    private DatePicker date;
-    private SelectUniversityLocation fhLocation;
-    private TimePicker time;
-
-    private Select<String> dayOfWeek;
+    private final Checkbox checkboxRegularDrive;
+    private final RadioButtonGroup<String> radioDriveDirection;
+    private final TextFieldAddress address;
+    private final DatePicker date;
+    private final SelectUniversityLocation fhLocation;
+    private final TimePicker time;
+    private final Select<String> dayOfWeek;
+    private AddressConverter addressConverter;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zum Suchen
@@ -61,42 +58,33 @@ public class SearchDriveView extends VerticalLayout {
      */
 
     public SearchDriveView(UserService userService) {
-        this.userService = userService;
-        setId("searchView");
-        createSearchView();
-    }
-
-    /**
-     * In der Methode createSearchView werden die einzelnen Komponenten
-     * der View erzeugt und zusammengefügt.
-     */
-
-    private void createSearchView() {
 
         H1 title = new H1("Mitfahrgelegenheit suchen");
-        title.setId("titleFahrtSuchen");
 
         checkboxRegularDrive = new Checkbox("Regelmäßige Fahrten");
-        checkboxRegularDrive.setId("checkBoxRegularDrive");
 
         radioDriveDirection = new RadioButtonGroup<>();
         radioDriveDirection.setItems("Hinfahrt", "Rückfahrt");
         radioDriveDirection.setValue("Hinfahrt");
-        radioDriveDirection.setId("radioDriveDirection");
 
         address = new TextFieldAddress("Von");
-        address.setId("textfieldStart");
-
-        date = new DatePicker("Datum");
-        date.setErrorMessage("Datum darf nicht in der Vergangenheit liegen");
-        date.setMin(LocalDate.now());
-        date.setId("datepicker");
+        address.setValue(userService.getCurrentUser().getAddress().toString());
+        address.setErrorMessage("Adresse bitte eintragen");
+        address.setRequiredIndicatorVisible(true);
 
         fhLocation = new SelectUniversityLocation();
         fhLocation.setValue(userService.getCurrentUser().getUniversityLocation());
-        fhLocation.setId("textfieldDestination");
-        fhLocation.addValueChangeListener(event ->
-                fhLocation.setUniversityLocationAddress(fhLocation.getValue()));
+        fhLocation.addValueChangeListener(event -> fhLocation.setUniversityLocationAddress(fhLocation.getValue()));
+
+        date = new DatePicker("Datum");
+        date.setErrorMessage("Datum bitte angeben");
+        date.setMin(LocalDate.now());
+        date.setRequiredIndicatorVisible(true);
+
+        time = new TimePicker("Ankunftzeit");
+        time.setStep(Duration.ofMinutes(15));
+        time.setErrorMessage("Ankunft/Abfahrtszeit bitte angeben");
+        time.setRequiredIndicatorVisible(true);
 
         dayOfWeek = new Select<>();
         dayOfWeek.setItems(DayOfWeek.getDayOfWeekList());
@@ -104,66 +92,43 @@ public class SearchDriveView extends VerticalLayout {
         dayOfWeek.setLabel("Wochentag");
         dayOfWeek.setPlaceholder("Wochentag auswählen");
 
-        time = new TimePicker("Ankunftzeit");
-        time.setId("timepicker");
-        time.setStep(Duration.ofMinutes(15));
+        Button searchButton = new Button("Fahrt suchen");
+        searchButton.setId("search-drive-view-search_button");
 
-        Button buttonSearch = new Button("Fahrt suchen");
-        buttonSearch.setId("buttonSearch");
-        //TODO: Wochentag mit übergeben
-        buttonSearch.addClickListener(searchEvent -> {
+        searchButton.addClickListener(searchEvent -> {
                     try {
 
-                        addressPatternCheck(address.getValue());
-
-                        if (fhLocation.getValue() != null && !address.getValue().equals("") && time.getValue()!= null) {
-
-                            if(checkboxRegularDrive.getValue()){
-                                date.setValue(LocalDate.now());
-                            }
-                            else{
-                                dayOfWeek.setValue("keinTag");
-                                if (date.getValue() == null){
-                                    NotificationError.show("Bitte ein Datum auswählen");
-                                }
-                                localDateCheck(date.getValue());
-                            }
-                            UI.getCurrent().navigate(SearchDriveResultView.class,
-                                    new RouteParameters(
-                                            new RouteParam("fahrtentyp", radioDriveDirection.getValue()),
-                                            new RouteParam("fhStandort", fhLocation.getValue()),
-                                            new RouteParam("adresse", address.getPlace()),
-                                            new RouteParam("datum", date.getValue().toString()),
-                                            new RouteParam("uhrzeit", time.getValue().toString()),
-                                            new RouteParam("regelmaessig", checkboxRegularDrive.getValue().toString()),
-                                            new RouteParam("wochentag", dayOfWeek.getValue())
-                                    ));
-
-                        } else {
-                            NotificationError.show("Bitte Start- und Zieladresse, sowie Datum/Zeit angeben.");
+                        if (checkInputFields()) {
+                            NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
+                            return;
                         }
+
+                        UI.getCurrent().navigate(SearchDriveResultView.class,
+                                new RouteParameters(
+                                        new RouteParam("fahrtentyp", radioDriveDirection.getValue()),
+                                        new RouteParam("fhStandort", fhLocation.getValue()),
+                                        new RouteParam("adresse", addressConverter.getPlace()),
+                                        new RouteParam("datum", date.isEmpty() || checkboxRegularDrive.getValue() ? "" : date.getValue().toString()),
+                                        new RouteParam("uhrzeit", time.getValue().toString()),
+                                        new RouteParam("regelmaessig", checkboxRegularDrive.getValue().toString()),
+                                        new RouteParam("wochentag", checkboxRegularDrive.getValue() ? dayOfWeek.getValue() : "")
+                                ));
+
                     } catch (InvalidAddressException | InvalidDateException ex) {
+                        NotificationError.show(ex.getMessage());
                         ex.printStackTrace();
-                        if (Objects.equals(ex.getClass().getSimpleName(), "InvalidAddressException")) {
-                            NotificationError.show("Keine gültige Adresse.");
-                        } else if (Objects.equals(ex.getClass().getSimpleName(), "InvalidDateException")) {
-                            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
-                        } else
-                            NotificationError.show("Unbekannter Fehler.");
                     }
                 }
         );
 
         Label labelOwnDrive = new Label("Doch selber fahren?");
-        labelOwnDrive.setId("labelOwnDrive");
 
         Button buttonOfferDrive = new Button("Fahrt anbieten");
-        buttonOfferDrive.setId("buttonOfferDrive");
         buttonOfferDrive.addClickListener(e -> UI.getCurrent().navigate(OfferDriveView.class));
 
         FormLayout formSearchDrive = new FormLayout(title, radioDriveDirection, checkboxRegularDrive,
                 address, date, fhLocation, time);
-        formSearchDrive.setId("formSearchDrive");
+        formSearchDrive.setId("search-drive-view-form_layout");
 
         formSearchDrive.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1, FormLayout.ResponsiveStep.LabelsPosition.TOP),
                 new FormLayout.ResponsiveStep("490px", 2, FormLayout.ResponsiveStep.LabelsPosition.TOP));
@@ -172,14 +137,38 @@ public class SearchDriveView extends VerticalLayout {
 
 
         FormLayout formOfferDriveQuestion = new FormLayout(labelOwnDrive, buttonOfferDrive);
-        formOfferDriveQuestion.setId("formOfferDriveQuestion");
+        formOfferDriveQuestion.setId("search-drive-view-form_offer_drive_question");
 
-        add(formSearchDrive, buttonSearch, formOfferDriveQuestion);
+        add(formSearchDrive, searchButton, formOfferDriveQuestion);
 
         radioDriveDirection.addValueChangeListener(event -> setAddressFields(formSearchDrive, address,
                 fhLocation, time, radioDriveDirection.getValue()));
 
         checkboxRegularDrive.addValueChangeListener(event -> setDateOrDayField(event.getValue(), formSearchDrive, date, dayOfWeek));
+    }
+
+    private boolean checkInputFields() throws InvalidDateException, InvalidAddressException {
+        setInputFieldsInvalid();
+        if (checkboxRegularDrive.getValue())
+            return address.getValue().isEmpty() || time.isEmpty();
+        else
+            return address.getValue().isEmpty() || date.isEmpty() || time.isEmpty();
+    }
+
+    private void setInputFieldsInvalid() throws InvalidDateException, InvalidAddressException {
+        if (address.getValue().isEmpty()) {
+            address.setInvalid(true);
+        } else {
+            addressConverter = new AddressConverter(address.getValue());
+        }
+        if (date.isEmpty()) {
+            date.setInvalid(true);
+        } else {
+            localDateCheck(date.getValue());
+        }
+        if (time.isEmpty()) {
+            time.setInvalid(true);
+        }
     }
 
     /**
@@ -226,11 +215,10 @@ public class SearchDriveView extends VerticalLayout {
 
         nullCheck(layout, date, dayOfWeek);
 
-        if(isRegulaDrive){
+        if (isRegulaDrive) {
             layout.remove(date);
             layout.addComponentAtIndex(4, dayOfWeek);
-        }
-        else{
+        } else {
             layout.remove(dayOfWeek);
             layout.addComponentAtIndex(4, date);
         }

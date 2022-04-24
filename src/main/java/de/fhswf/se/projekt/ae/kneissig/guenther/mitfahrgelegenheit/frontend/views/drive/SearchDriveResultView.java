@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TODO: Wieder so machen, dass man wenn keine Orte gefunden wurden die anderen angezeigt werden
@@ -55,6 +56,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private String time;
     private boolean isUserSearchsRegularDrive;
     private DayOfWeek dayOfWeek;
+    private LocalDateTime dateTime;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
@@ -86,7 +88,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
         H1 title = new H1(TITEL_GRID);
         DriveRouteGrid grid = new DriveRouteGrid("Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService, isUserSearchsRegularDrive,
-                LocalDate.of(
+                Objects.equals(date,"")? LocalDate.now() : LocalDate.of(
                         Integer.parseInt(date.substring(0, 4)),
                         date.substring(5,6).contains("0") ? Integer.parseInt(date.substring(6,7)) : Integer.parseInt(date.substring(5,7)),
                         date.substring(8,9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))));
@@ -134,15 +136,17 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
         User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        LocalDateTime dateTime = LocalDateTime.of(
-                LocalDate.of(
-                        Integer.parseInt(date.substring(0, 4)),
-                        date.substring(5,6).contains("0") ? Integer.parseInt(date.substring(6,7)) : Integer.parseInt(date.substring(5,7)),
-                        date.substring(8,9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))),
-                LocalTime.of(
-                        Integer.parseInt(time.substring(0, 2)),
-                        Integer.parseInt(time.substring(3)))
-        );
+        if(!Objects.equals(date, "")) {
+            dateTime = LocalDateTime.of(
+                    LocalDate.of(
+                            Integer.parseInt(date.substring(0, 4)),
+                            date.substring(5, 6).contains("0") ? Integer.parseInt(date.substring(6, 7)) : Integer.parseInt(date.substring(5, 7)),
+                            date.substring(8, 9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))),
+                    LocalTime.of(
+                            Integer.parseInt(time.substring(0, 2)),
+                            Integer.parseInt(time.substring(3)))
+            );
+        }
 
         switch (typ) {
             case "Hinfahrt" -> {
