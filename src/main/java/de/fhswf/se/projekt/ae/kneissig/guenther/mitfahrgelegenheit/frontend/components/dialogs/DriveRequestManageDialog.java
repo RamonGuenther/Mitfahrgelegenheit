@@ -76,11 +76,15 @@ public class DriveRequestManageDialog extends Dialog {
         titleLayout.setClassName("drive-request-manage-dialog-title_layout");
 
         FormLayoutDriveRoute formLayoutDriveRoute = new FormLayoutDriveRoute(driveRoute.getDriveType());
-        formLayoutDriveRoute.setReadOnly(true);
         formLayoutDriveRoute.setData(driveRoute);
+        formLayoutDriveRoute.setReadOnly(true);
         formLayoutDriveRoute.remove(formLayoutDriveRoute.getTitle());
         formLayoutDriveRoute.getButtonDetourRoute().setText("Route mit Zwischenstopp anzeigen");
-        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRequest.getCurrentRouteLink(), "_blank")); //FIXME
+        formLayoutDriveRoute.removeClickListener();
+        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> {
+            System.out.println("ROFL");
+            UI.getCurrent().getPage().open(driveRequest.getCurrentRouteLink(), "_blank");
+        }); //FIXME
 
         add(titleLayout, formLayoutDriveRoute);
 
@@ -141,8 +145,12 @@ public class DriveRequestManageDialog extends Dialog {
 
                 driveRequest.getDriveRoute().setCurrentRouteLink(result);
 
-            } catch (DuplicateBookingException | InvalidAddressException | IOException | InterruptedException | ApiException e) {
-                e.printStackTrace();
+            } catch (DuplicateBookingException | InvalidAddressException ex ) {
+                NotificationError.show(ex.getMessage());
+                ex.printStackTrace();
+            }
+            catch (IOException | InterruptedException | ApiException otherException){
+                otherException.printStackTrace();
             }
         }
         driveRouteService.save(driveRequest.getDriveRoute());

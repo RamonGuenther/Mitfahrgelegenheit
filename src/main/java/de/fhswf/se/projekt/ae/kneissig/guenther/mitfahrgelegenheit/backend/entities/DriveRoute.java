@@ -185,7 +185,7 @@ public class DriveRoute {
                 r.getDriveRoute().equals(newDriveRequest.getDriveRoute())).findAny();
 
         if (any.isPresent()) {
-            throw new DuplicateRequestException();
+            throw new DuplicateRequestException("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
         }
 
         driveRequests.add(newDriveRequest);
@@ -209,7 +209,7 @@ public class DriveRoute {
                 b.getDriveRoute().equals(newBooking.getDriveRoute())).findAny();
 
         if (any.isPresent())
-            throw new DuplicateBookingException();
+            throw new DuplicateBookingException("Mitfahrer wurde schon für das Fahrtangebot angenommen.");
 
         bookings.add(newBooking);
     }

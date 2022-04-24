@@ -58,7 +58,7 @@ public class Address {
 
     @Override
     public String toString(){
-        return street + " " + houseNumber + ", " + postal +" " + place + ", Deutschland";
+        return street + " " + houseNumber + ", " + postal +" " + place;
     }
 
 

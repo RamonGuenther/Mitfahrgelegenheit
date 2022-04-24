@@ -539,6 +539,18 @@ public class TestDataInit {
         driveRouteService.save(driveRouteR3);
 
 
+        driveRequest = new DriveRequest(
+                driveRouteI5,
+                ramon,
+                "regulär lel",
+                "pups",
+                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"))
+        );
+
+        driveRouteI5.addDriveRequest(driveRequest);
+        driveRequestService.save(driveRequest);
+        driveRouteService.save(driveRouteI5);
+
         /**
          * BOOKING
          */

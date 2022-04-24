@@ -12,6 +12,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.shared.Registration;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
@@ -58,6 +59,7 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final Checkbox checkboxFuelParticipation;
     private final RadioButtonGroup<String> driveDays;
     private final H2 title;
+    private Registration registration;
 
     public FormLayoutDriveRoute(DriveType driveType) {
 
@@ -156,7 +158,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         });
 
 
-        buttonDetourRoute.addClickListener(e -> {
+        registration = buttonDetourRoute.addClickListener(e -> {
             try {
                 if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
                     AddressConverter converterStart = new AddressConverter(address.getValue());
@@ -199,13 +201,13 @@ public class FormLayoutDriveRoute extends FormLayout {
             setAddress(driveRoute.getDestination().getFullAddressToString());
         }
 
+        System.out.println(checkboxRegularDrive.getValue() + " oben");
+
         if (driveRoute.getRegularDrive().getRegularDriveDay() != null) {
+            System.out.println("CHECK");
             setDriveDateEnd(driveRoute.getRegularDrive().getRegularDriveDateEnd());
-            driveDateEnd.setReadOnly(true);
             setCheckboxRegularDrive(true);
-            checkboxRegularDrive.setReadOnly(true);
             setDriveDay(driveRoute.getRegularDrive().getRegularDriveDay().label);
-            driveDays.setReadOnly(true);
         }
     }
 
@@ -275,7 +277,9 @@ public class FormLayoutDriveRoute extends FormLayout {
         checkboxFuelParticipation.setReadOnly(isReadOnly);
         checkboxRegularDrive.setReadOnly(isReadOnly);
 
+        System.out.println(checkboxRegularDrive.getValue());
         if (checkboxRegularDrive.getValue()) {
+            System.out.println("CHECK2");
             driveDateEnd.setReadOnly(isReadOnly);
             driveDays.setReadOnly(isReadOnly);
         }
@@ -385,5 +389,8 @@ public class FormLayoutDriveRoute extends FormLayout {
         driveDays.setValue(driveDay);
     }
 
+    public void removeClickListener() {
+        registration.remove();
+    }
 }
 

@@ -39,7 +39,7 @@ public class ValidationUtility {
         Pattern pattern = Pattern.compile(ADDRESS_PATTERN);
         Matcher addressMatcher = pattern.matcher(replacedAddress);
         if(!addressMatcher.find()){
-            throw new InvalidAddressException();
+            throw new InvalidAddressException("Keine gültige Adresse.");
         }
     }
 

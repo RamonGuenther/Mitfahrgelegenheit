@@ -155,6 +155,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteTop.setReadOnly(driveRoute.getBookings().size() > 0);
                 saveButton.addClickListener(event -> saveFormLayoutTop());
                 cancelButton.addClickListener(event -> {
+                    formLayoutDriveRouteTop.setData(driveRoute);
                     formLayoutDriveRouteTop.setReadOnly(true);
                     note.setReadOnly(true);
                     remove(editButtonLayout);
@@ -165,6 +166,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteBottom.setReadOnly(driveRoute.getBookings().size() > 0);
                 saveButton.addClickListener(event -> saveFormLayoutBottom());
                 cancelButton.addClickListener(event -> {
+                    formLayoutDriveRouteBottom.setData(driveRoute);
                     formLayoutDriveRouteBottom.setReadOnly(true);
                     note.setReadOnly(true);
                     remove(editButtonLayout);

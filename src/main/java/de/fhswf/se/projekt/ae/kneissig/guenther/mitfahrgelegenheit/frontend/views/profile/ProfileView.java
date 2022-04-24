@@ -164,23 +164,23 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         radioButtonGroup.setValue("Hinfahrt");
 
         // ToDo: Hintere Parameter sind ein bissl unglücklich, werden aber an anderer Stelle leider benötigt, damit im Request und Booking das richtige gespeichert werden kann.
-        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService, false, null);
-        gridHinfahrt.addClassName("profilegrid");
-        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
-        gridRueckfahrt.addClassName("profilegrid");
-        Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
+        DriveRouteGrid gridOutward = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService, false, null);
+        gridOutward.addClassName("profilegrid");
+        DriveRouteGrid gridReturn = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
+        gridReturn.addClassName("profilegrid");
+        Div div = new Div(labelProfileGrid, radioButtonGroup, gridOutward);
         div.setId("profile-drive_offers_layout");
         add(div);
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt" -> {
-                    div.remove(gridRueckfahrt);
-                    div.add(gridHinfahrt);
+                    div.remove(gridReturn);
+                    div.add(gridOutward);
                 }
                 case "Rückfahrt" -> {
-                    div.remove(gridHinfahrt);
-                    div.add(gridRueckfahrt);
+                    div.remove(gridOutward);
+                    div.add(gridReturn);
                 }
             }
         });

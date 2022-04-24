@@ -54,11 +54,9 @@ public class RegistrationView extends VerticalLayout {
     private void createRegistrationView() {
         Button submitButton = new Button("Speichern");
         submitButton.addClassName("profile-data-buttons");
-        submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button cancelButton = new Button("Abbrechen");
         cancelButton.addClassName("profile-data-buttons");
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         HorizontalLayout registrationButtonLayout = new HorizontalLayout(submitButton, cancelButton);
 

@@ -129,12 +129,14 @@ public class OfferDriveView extends VerticalLayout {
                 case "Hinfahrt" -> {
                     formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                     formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
+                    formlayoutDriveRouteTop.setAddress(user.getAddress().toString());
                     div.removeAll();
                     div.add(title, layoutOption, formlayoutDriveRouteTop, buttonLayout);
                 }
                 case "Rückfahrt" -> {
                     formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                     formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
+                    formLayoutDriveRouteBottom.setAddress(user.getAddress().toString());
                     div.removeAll();
                     div.add(title, layoutOption, formLayoutDriveRouteBottom, buttonLayout);
                 }

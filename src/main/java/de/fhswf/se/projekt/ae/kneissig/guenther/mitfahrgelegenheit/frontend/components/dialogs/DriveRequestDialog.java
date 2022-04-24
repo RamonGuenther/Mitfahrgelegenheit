@@ -48,6 +48,7 @@ public class DriveRequestDialog extends Dialog {
         TextFieldAddress textFieldAddress = new TextFieldAddress("Abholadresse");
         textFieldAddress.setRequiredIndicatorVisible(true);
         textFieldAddress.setId("drive-request-dialog-address");
+        textFieldAddress.setValue(currentUser.getAddress().toString());
 
         TextArea textAreaMessage = new TextArea("Nachricht");
         textAreaMessage.setId("drive-request-dialog-message");
@@ -100,18 +101,11 @@ public class DriveRequestDialog extends Dialog {
 //                        routeString.getRoute()
 //                );
             } catch (DuplicateRequestException | InvalidAddressException ex) {
-                if (Objects.equals(ex.getClass().getSimpleName(), "DuplicateRequestException")) {
-                    NotificationError.show("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
-                } else if (Objects.equals(ex.getClass().getSimpleName(), "InvalidAddressException")) {
-                    NotificationError.show("Keine gültige Adresse.");
-                } else {
-                    NotificationError.show("Unbekannter Fehler.");
-                }
+                NotificationError.show(ex.getMessage());
                 ex.printStackTrace();
-            } catch (IOException | InterruptedException | ApiException ioException) {
-                ioException.printStackTrace();
+            } catch (IOException | InterruptedException | ApiException otherException) {
+                otherException.printStackTrace();
             }
-
         });
 
         Button buttonCancel = new Button("Abbrechen");
