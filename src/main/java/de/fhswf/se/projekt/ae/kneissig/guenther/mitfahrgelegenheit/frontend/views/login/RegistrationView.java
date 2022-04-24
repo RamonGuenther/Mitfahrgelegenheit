@@ -13,6 +13,8 @@ import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidMailException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutProfileData;
@@ -76,28 +78,32 @@ public class RegistrationView extends VerticalLayout {
                         registrationForm.getPlace()));
 
         submitButton.addClickListener(e -> {
-            User user = userService.getCurrentUser();
-            Set<String> languages = registrationForm.getMultiSelectLanguage().getSelectedItems();
+            try {
+                User user = userService.getCurrentUser();
+                Set<String> languages = registrationForm.getMultiSelectLanguage().getSelectedItems();
 
-            if(registrationForm.isValuePresent()){
-                user.setFirstName(registrationForm.getFirstName().getValue());
-                user.setLastName(registrationForm.getLastName().getValue());
-                user.setAddress(new Address(registrationForm.getGoogleAddress().getPostal(),
-                        registrationForm.getGoogleAddress().getPlace(),
-                        registrationForm.getGoogleAddress().getStreet(),
-                        registrationForm.getGoogleAddress().getNumber()));
-                user.setLanguages(new Languages(registrationForm.getSelectLanguage().getValue(), languages));
-                user.setFaculty(registrationForm.getSelectFaculty().getValue());
-                user.setUniversityLocation(registrationForm.getSelectUniversityLocation().getValue());
-                user.setEmail(registrationForm.getEmail().getValue());
-                user.setLastLogin(LocalDateTime.now());
-                user.setFirstLogin(true);
+                if (registrationForm.isValuePresent()) {
+                    user.setFirstName(registrationForm.getFirstName().getValue());
+                    user.setLastName(registrationForm.getLastName().getValue());
+                    user.setAddress(new Address(registrationForm.getGoogleAddress().getPostal(),
+                            registrationForm.getGoogleAddress().getPlace(),
+                            registrationForm.getGoogleAddress().getStreet(),
+                            registrationForm.getGoogleAddress().getNumber()));
+                    user.setLanguages(new Languages(registrationForm.getSelectLanguage().getValue(), languages));
+                    user.setFaculty(registrationForm.getSelectFaculty().getValue());
+                    user.setUniversityLocation(registrationForm.getSelectUniversityLocation().getValue());
+                    user.setEmail(registrationForm.getEmail().getValue());
+                    user.setLastLogin(LocalDateTime.now());
+                    user.setFirstLogin(true);
 
-                userService.save(user);
-                UI.getCurrent().navigate(SearchDriveView.class);
-            }
-            else{
-                NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
+                    userService.save(user);
+                    UI.getCurrent().navigate(SearchDriveView.class);
+                } else {
+                    NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
+                }
+            }catch(InvalidMailException | InvalidAddressException ex){
+                NotificationError.show(ex.getMessage());
+                ex.printStackTrace();
             }
         });
 
@@ -131,18 +137,17 @@ public class RegistrationView extends VerticalLayout {
         place.setValue(address.getPlace());
 
         layout.remove(address);
-        layout.addComponentAtIndex(5, layout.getStreet());
+        layout.addComponentAtIndex(4, layout.getStreet());
         layout.setColspan(layout.getStreet(), 2);
 
-        TextFieldAddress changeAddressTextField = new TextFieldAddress("Adresse");
-        changeAddressTextField.addValueChangeListener(event -> setAddressFields(layout, changeAddressTextField,
+        address.addValueChangeListener(event -> setAddressFields(layout, address,
                 postal, place));
 
         layout.getStreet().addFocusListener(event -> {
             layout.remove(layout.getStreet());
-            layout.addComponentAtIndex(2, changeAddressTextField);
-            layout.setColspan(changeAddressTextField, 2);
-            changeAddressTextField.focus();
+            layout.addComponentAtIndex(4, address);
+            layout.setColspan(address, 2);
+//            changeAddressTextField.focus();
             postal.setValue("");
             place.setValue("");
         });
