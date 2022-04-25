@@ -87,6 +87,7 @@ public class FormLayoutProfileData extends FormLayout {
         selectFaculty = new SelectFaculty();
         selectFaculty.setReadOnly(true);
         selectFaculty.setErrorMessage("Fachbereich bitte angeben");
+        selectFaculty.addValueChangeListener(event-> selectFaculty.setInvalid(false));
 
         selectLanguage = new SelectLanguage();
         selectLanguage.addValueChangeListener(e-> selectLanguage.setInvalid(false));
@@ -168,16 +169,17 @@ public class FormLayoutProfileData extends FormLayout {
      * @return Alle notwendigen Felder ausgefüllt?
      */
     public boolean isValuePresent() throws InvalidMailException, InvalidAddressException {
-        setInputFieldsInvalid();
+        inputFieldInvalidCheck();
         return getStreet().getValue() != null && !getStreet().getValue().isEmpty() &&
                 getFirstName().getValue() != null && !getFirstName().getValue().isEmpty() &&
                 getLastName().getValue() != null && !getLastName().getValue().isEmpty() &&
                 getEmail().getValue() != null && !getEmail().getValue().isEmpty() &&
                 getSelectUniversityLocation().getValue() != null && !getSelectUniversityLocation().getValue().isEmpty() &&
+                getSelectFaculty().getValue() != null && !getSelectFaculty().getValue().isEmpty() &&
                 !getSelectLanguage().getValue().isEmpty();
     }
 
-    private void setInputFieldsInvalid() throws InvalidMailException, InvalidAddressException {
+    private void inputFieldInvalidCheck() throws InvalidMailException, InvalidAddressException {
         if (firstName.isEmpty()) {
             firstName.setInvalid(true);
         }
@@ -207,6 +209,17 @@ public class FormLayoutProfileData extends FormLayout {
         if (selectLanguage.isEmpty()) {
             selectLanguage.setInvalid(true);
         }
+    }
+
+    public void setInputFieldsInvalid(boolean isInvalid){
+        firstName.setInvalid(isInvalid);
+        lastName.setInvalid(isInvalid);
+        selectUniversityLocation.setInvalid(isInvalid);
+        selectFaculty.setInvalid(isInvalid);
+        email.setInvalid(isInvalid);
+        street.setInvalid(isInvalid);
+        selectLanguage.setInvalid(isInvalid);
+        multiSelectLanguage.setInvalid(isInvalid);
     }
 
     /**

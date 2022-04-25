@@ -37,6 +37,7 @@ import java.util.Set;
 public class RegistrationView extends VerticalLayout {
 
     private final UserService userService;
+    private FormLayoutProfileData registrationForm;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zum Anpassen der Benutzerdaten
@@ -65,17 +66,13 @@ public class RegistrationView extends VerticalLayout {
         H1 title = new H1("Benutzerdaten anpassen");
         title.setId("registration-data-title");
 
-        FormLayoutProfileData registrationForm = new FormLayoutProfileData(registrationButtonLayout);
+        registrationForm = new FormLayoutProfileData(registrationButtonLayout);
         registrationForm.createOwnProfileLayout();
         registrationForm.markFormComponentsAsRequired();
         registrationForm.setClassName("registration-data-form");
 
         registrationForm.getGoogleAddress().addValueChangeListener(event ->
-                setAddressFields(
-                        registrationForm,
-                        registrationForm.getGoogleAddress(),
-                        registrationForm.getPostal(),
-                        registrationForm.getPlace()));
+                editAddress());
 
         submitButton.addClickListener(e -> {
             try {
@@ -101,7 +98,7 @@ public class RegistrationView extends VerticalLayout {
                 } else {
                     NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
                 }
-            }catch(InvalidMailException | InvalidAddressException ex){
+            } catch (InvalidMailException | InvalidAddressException ex) {
                 NotificationError.show(ex.getMessage());
                 ex.printStackTrace();
             }
@@ -120,15 +117,15 @@ public class RegistrationView extends VerticalLayout {
      * in ein autocomplete Textfeld umgewandelt, um eine korrekte Adresseingabe
      * zu gewährleisten.
      *
-     * @param layout            Layout, dessen Komponenten verändert werden
-     * @param address           Autocomplete-Adressfeld, das ausgetauscht wird
-     * @param postal            Textfeld für die Postleitzahl, dessen Wert gesetzt
-     *                          werden soll
-     * @param place             Textfeld für den Ort, dessen Wert gesetzt werden soll
+     * @param layout  Layout, dessen Komponenten verändert werden
+     * @param address Autocomplete-Adressfeld, das ausgetauscht wird
+     * @param postal  Textfeld für die Postleitzahl, dessen Wert gesetzt
+     *                werden soll
+     * @param place   Textfeld für den Ort, dessen Wert gesetzt werden soll
      */
     private void setAddressFields(FormLayoutProfileData layout, TextFieldAddress address,
-                                  TextField postal, TextField place){
-        if(layout == null){
+                                  TextField postal, TextField place) {
+        if (layout == null) {
             throw new IllegalArgumentException("RegistrationView: FormLayout is null");
         }
 
@@ -147,9 +144,36 @@ public class RegistrationView extends VerticalLayout {
             layout.remove(layout.getStreet());
             layout.addComponentAtIndex(4, address);
             layout.setColspan(address, 2);
-//            changeAddressTextField.focus();
             postal.setValue("");
             place.setValue("");
+        });
+    }
+
+    //TODO: ALso so funktioniert es aufjedenfall :)
+    private void editAddress() {
+        if (registrationForm == null) {
+            throw new IllegalArgumentException("ProfileView: FormLayout is null");
+        }
+
+        registrationForm.getStreet().setValue(registrationForm.getGoogleAddress().getStreet());
+        registrationForm.getPlace().setValue(registrationForm.getGoogleAddress().getPlace());
+        registrationForm.getPostal().setValue(registrationForm.getGoogleAddress().getPostal());
+        registrationForm.remove(registrationForm.getGoogleAddress());
+        registrationForm.addComponentAtIndex(4, registrationForm.getStreet());
+        registrationForm.setColspan(registrationForm.getStreet(), 2);
+
+        registrationForm.getStreet().addFocusListener(focusEvent -> {
+            registrationForm.remove(registrationForm.getStreet());
+
+            registrationForm.remove(registrationForm.getGoogleAddress());
+            registrationForm.setGoogleAddress(new TextFieldAddress("Adresse"));
+            registrationForm.getGoogleAddress().addValueChangeListener(e-> editAddress());
+
+            registrationForm.addComponentAtIndex(4, registrationForm.getGoogleAddress());
+            registrationForm.setColspan(registrationForm.getGoogleAddress(), 2);
+
+            registrationForm.getPostal().setValue("");
+            registrationForm.getPlace().setValue("");
         });
     }
 }

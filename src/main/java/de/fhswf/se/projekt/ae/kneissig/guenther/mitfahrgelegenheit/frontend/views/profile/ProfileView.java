@@ -119,6 +119,12 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
                 profileDataForm.remove(editProfilButtonLayout);
                 profileDataForm.addComponentAtIndex(10, profileButtonLayout);
                 profileDataForm.setColspan(profileButtonLayout, 4);
+
+                profileDataForm.remove(profileDataForm.getGoogleAddress());
+                profileDataForm.addComponentAtIndex(4, profileDataForm.getStreet());
+                profileDataForm.setColspan(profileDataForm.getStreet(), 2);
+                profileDataForm.getSelectFaculty().setReadOnly(true);
+                profileDataForm.setInputFieldsInvalid(false); //Damit beim Abbrechen nichts mehr rot is
             });
         });
 
@@ -224,7 +230,6 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             profileDataForm.addComponentAtIndex(4, profileDataForm.getGoogleAddress());
             profileDataForm.setColspan(profileDataForm.getGoogleAddress(), 2);
 
-            profileDataForm.getGoogleAddress().focus();
             profileDataForm.getGoogleAddress().addValueChangeListener(event -> {
                 profileDataForm.getStreet().setValue(profileDataForm.getGoogleAddress().getStreet());
                 profileDataForm.getPlace().setValue(profileDataForm.getGoogleAddress().getPlace());
