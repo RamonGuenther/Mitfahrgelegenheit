@@ -18,7 +18,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
- * Quelle: https://www.baeldung.com/spring_redirect_after_login
+ * Die Klasse ApplicationUrlAuthenticationSuccessHandler kümmert sich um
+ * das richtige Routing nach dem Einloggen. Loggt sich ein Benutzer das
+ * erste Mal ein, wird er zu einer Registrierungsseite weitergeleitet.
+ * Andernfalls erscheint direkt die Startseite der Applikation.
+ *
+ * Quelle / Vorlage: https://www.baeldung.com/spring_redirect_after_login
  */
 public class ApplicationUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 

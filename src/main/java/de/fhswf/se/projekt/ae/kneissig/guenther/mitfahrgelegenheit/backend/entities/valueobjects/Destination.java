@@ -1,8 +1,13 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects;
 
 import javax.persistence.Embeddable;
-import java.time.LocalDateTime;
 
+/**
+ * Die Klasse Destination dient dazu, eine Adresse als Zieladresse
+ * einer Fahrt zu identifizieren.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Embeddable
 public class Destination extends Waypoint
 {

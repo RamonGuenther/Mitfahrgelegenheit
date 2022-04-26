@@ -10,6 +10,14 @@ import java.time.format.DateTimeFormatter;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
+/**
+ * Die Klasse DriveRequest repräsentiert eine Anfrage zu einem Fahrtangebot.
+ * Sie enthält zum Beispiel den Nutzer, der die Anfrage stellt, die Adresse, an der
+ * er abgeholt werden möchte, samt Link für googleMaps, ggf. eine Notiz und den
+ * aktuellen Status der Anfrage.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Entity
 public class DriveRequest {
 
@@ -75,10 +83,6 @@ public class DriveRequest {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public LocalDateTime getRequestTime() {
-        return requestTime;
     }
 
     public Stopover getStopover() {

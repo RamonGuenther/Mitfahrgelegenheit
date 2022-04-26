@@ -10,6 +10,11 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Die Klasse User enthält alle Daten zu einem Benutzer der Applikation
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Entity
 public class User {
     @Id
@@ -73,80 +78,32 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Address getAddress() {
         return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public Languages getLanguages() {
         return languages;
     }
 
-    public void setLanguages(Languages languages) {
-        this.languages = languages;
-    }
-
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(LocalDateTime lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public boolean isFirstLogin() {
-        return firstLogin;
-    }
-
-    public void setFirstLogin(boolean firstLogin) {
-        this.firstLogin = firstLogin;
+    public String getFaculty() {
+        return faculty;
     }
 
     public String getUniversityLocation() {
         return universityLocation;
     }
 
-    public void setUniversityLocation(String universityLocation) {
-        this.universityLocation = universityLocation;
-    }
-
-    public String getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(String faculty) {
-        this.faculty = faculty;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public UserRating getUserRating() {
@@ -157,33 +114,82 @@ public class User {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setLanguages(Languages languages) {
+        this.languages = languages;
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public void setFirstLogin(boolean firstLogin) {
+        this.firstLogin = firstLogin;
+    }
+
+    public void setUniversityLocation(String universityLocation) {
+        this.universityLocation = universityLocation;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    public void setDarkMode(boolean darkMode) {
+        isDarkMode = darkMode;
+    }
+
+    public void setUserRating(UserRating userRating) {
+        this.userRating = userRating;
+    }
+
+    public boolean isFirstLogin() {
+        return firstLogin;
+    }
 
     public boolean isDarkMode() {
         return isDarkMode;
     }
 
-    public void setDarkMode(boolean darkMode) {
-        isDarkMode = darkMode;
-    }
-
+    /**
+     * Die Methode getFullName gibt den Vornamen und den abgekürzten Nachnamen des
+     * Benutzers zurück
+     *
+     * @return      Vorname + gekürzter Nachname des Benutzers
+     */
     public String getFullName() {
         return firstName + " " + lastName.charAt(0) + ". ";
-    }
-
-    public void setUserRating(UserRating userRating) {
-        this.userRating = userRating;
     }
 
     @Override

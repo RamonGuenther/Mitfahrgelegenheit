@@ -3,6 +3,12 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Die Enumeration DayOfWeek dient als Wertebereich für die möglichen Wochentage,
+ * für die regelmäßige Fahrten angeboten werden können.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public enum DayOfWeek {
     MONDAY("Montag"),
     TUESDAY("Dienstag"),

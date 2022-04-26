@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TD
+ * Die Klasse UserRating Speichert alle Fahrer- und Mitfahrerbewertungen zu
+ * einem Benutzer.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @Embeddable
 public class UserRating {
@@ -21,11 +24,6 @@ public class UserRating {
     @LazyCollection(LazyCollectionOption.FALSE)
     @ElementCollection
     private List<Rating> passengerRatings;
-
-    public UserRating(List<Rating> driverRatings, List<Rating> passengerRatings) {
-        this.driverRatings = driverRatings;
-        this.passengerRatings = passengerRatings;
-    }
 
     public UserRating() {
        driverRatings = new ArrayList<>();
@@ -40,14 +38,6 @@ public class UserRating {
         return passengerRatings;
     }
 
-    public void addDriverRating(Rating rating){
-        driverRatings.add(rating);
-    }
-
-    public void addPassengerRating(Rating rating){
-        passengerRatings.add(rating);
-    }
-
     public int getDriverRatingAverage(){
         return  0;
     }
@@ -56,57 +46,95 @@ public class UserRating {
         return 0;
     }
 
+    public void addDriverRating(Rating rating){
+        driverRatings.add(rating);
+    }
+
+    public void addPassengerRating(Rating rating){
+        passengerRatings.add(rating);
+    }
+
+    /**
+     * Die Methode getAverageDriverRating berechnet den Gesamtdurchschnitt
+     * der Fahrerbewertungen eines Benutzers.
+     *
+     * @return      Gesamtdurchschnitt Fahrerbewertungen
+     */
     public Integer getAverageDriverRating(){
         double result = 0.0;
         for(Rating r: driverRatings){
             result += r.getPunctuality() + r.getReliability();
         }
-
         return (int) Math.round( result / (driverRatings.size() *2));
     }
 
+    /**
+     * Die Methode getAveragePassengerRating berechnet den Gesamtdurchschnitt
+     * der Mitfahrerbewertungen eines Benutzers.
+     *
+     * @return      Gesamtdurchschnitt Mitfahrerbewertungen
+     */
     public Integer getAveragePassengerRating(){
         double result = 0.0;
         for(Rating r: passengerRatings){
             result += r.getPunctuality() + r.getReliability();
         }
-
         return (int) Math.round( result / (passengerRatings.size() *2));
     }
 
+    /**
+     * Die Methode getAverageDriverRatingPunctuality berechnet den Durchschnitt der
+     * Pünktlichkeit der Fahrerbewertungen eines Benutzers.
+     *
+     * @return  Durchschnitt der Pünktlichkeit bei den Fahrerbewertungen
+     */
     public Integer getAverageDriverRatingPunctuality(){
         double result = 0.0;
         for(Rating r: driverRatings){
             result += r.getPunctuality();
         }
-
         return (int) Math.round( result / (driverRatings.size()));
     }
 
+    /**
+     * Die Methode getAverageDriverRatingReliability berechnet den Durchschnitt der
+     * Zuverlässigkeit der Fahrerbewertungen eines Benutzers.
+     *
+     * @return  Durchschnitt der Zuverlässigkeit bei den Fahrerbewertungen
+     */
     public Integer getAverageDriverRatingReliability(){
         double result = 0.0;
         for(Rating r: driverRatings){
             result += r.getReliability();
         }
-
         return (int) Math.round( result / (driverRatings.size()));
     }
 
+    /**
+     * Die Methode getAveragePassengerRatingPunctuality berechnet den Durchschnitt der
+     * Pünktlichkeit der Mitfahrerbewertungen eines Benutzers.
+     *
+     * @return  Durchschnitt der Pünktlichkeit bei den Mitfahrerbewertungen
+     */
     public Integer getAveragePassengerRatingPunctuality(){
         double result = 0.0;
         for(Rating r: passengerRatings){
             result += r.getPunctuality();
         }
-
         return (int) Math.round( result / (passengerRatings.size()));
     }
 
+    /**
+     * Die Methode getAveragePassengerRatingReliability berechnet den Durchschnitt der
+     * Zuverlässigkeit der Mitfahrerbewertungen eines Benutzers.
+     *
+     * @return  Durchschnitt der Zuverlässigkeit bei den Mitfahrerbewertungen
+     */
     public Integer getAveragePassengerRatingReliability(){
         double result = 0.0;
         for(Rating r: passengerRatings){
             result += r.getReliability();
         }
-
         return (int) Math.round( result / (passengerRatings.size()));
     }
 }

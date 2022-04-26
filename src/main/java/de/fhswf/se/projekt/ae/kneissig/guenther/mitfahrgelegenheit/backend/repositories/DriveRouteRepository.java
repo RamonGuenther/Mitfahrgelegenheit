@@ -9,6 +9,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Das DriveRouteRepository ist für die Datenbankabfragen der DriveRoute-Tabelle zuständig. Die
+ * Tabelle speichert die Fahrtangebote der Nutzer.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public interface DriveRouteRepository extends JpaRepository<DriveRoute, Integer> {
 
     Optional<List<DriveRoute>> findAllByDriver(User driver);

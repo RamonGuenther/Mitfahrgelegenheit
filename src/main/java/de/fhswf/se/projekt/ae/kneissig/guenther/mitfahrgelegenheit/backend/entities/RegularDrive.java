@@ -17,7 +17,6 @@ import java.util.Set;
  *
  * @author Ramon Günther & Ivonne Kneißig
  */
-
 @Embeddable
 public class RegularDrive {
 
@@ -44,26 +43,20 @@ public class RegularDrive {
         return regularDriveDay;
     }
 
-    public void setRegularDriveDay(DayOfWeek regularDriveDay) {
-        this.regularDriveDay = regularDriveDay;
-    }
-
     public LocalDate getRegularDriveDateEnd() {
         return regularDriveDateEnd;
-    }
-
-    public void setRegularDriveDateEnd(LocalDate regularDriveDateEnd) {
-        this.regularDriveDateEnd = regularDriveDateEnd;
     }
 
     public Set<LocalDate> getDriveDates() {
         return driveDates;
     }
 
-    public void setDriveDates(Set<LocalDate> driveDates) {
-        this.driveDates = driveDates;
-    }
-
+    /**
+     * Die Methode calculateDriveDates berechnet für eine regelmäßige Fahrt
+     * alle Daten, an denen die regelmäßige Fahrt stattfindet.
+     *
+     * @param regularDriveDateStart     Startdatum der regelmäßigen Fahrt
+     */
     private void calculateDriveDates(LocalDate regularDriveDateStart){
         LocalDate currentDate = regularDriveDateStart;
 

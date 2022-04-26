@@ -3,6 +3,13 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
+
+/**
+ * Die Klasse Address speichert die üblichen Komponenten einer Adresse
+ * (Straße, Hausnummer, Postleitzahl und Ort).
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Embeddable
 public class Address {
     private String postal;
@@ -60,8 +67,6 @@ public class Address {
     public String toString(){
         return street + " " + houseNumber + ", " + postal +" " + place;
     }
-
-
 
     @Override
     public int hashCode() {

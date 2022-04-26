@@ -1,6 +1,5 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.security;
 
-
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,6 @@ public class CustomRequestCache extends HttpSessionRequestCache {
      * @param request   Anfrage
      * @param response  Antwort
      */
-
     @Override
     public void saveRequest(HttpServletRequest request, HttpServletResponse response){
 

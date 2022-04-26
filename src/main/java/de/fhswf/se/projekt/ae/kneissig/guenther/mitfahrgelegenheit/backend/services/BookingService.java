@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Die Klasse BookingService dient als Schnittstelle zwischen der Applikation und
+ * der Datenbank. Sie bietet diverse Methoden zum Verwalten von Buchungen.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Service
 public class BookingService {
     private final BookingRepository repository;

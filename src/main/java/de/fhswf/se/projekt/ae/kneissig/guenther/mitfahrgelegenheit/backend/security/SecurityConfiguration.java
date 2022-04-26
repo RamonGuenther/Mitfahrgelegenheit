@@ -22,7 +22,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
-
     @Bean
     public UserDetailsService userDetailsService() {
         return new SecurityUserDetailsService();
@@ -32,7 +31,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -79,7 +77,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * von Spring Security aus
      * @param web   ...
      */
-
     @Override
     public void configure (WebSecurity web){
 

@@ -10,6 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Das BookingRepository ist für die Datenbankabfragen der Bookings-Tabelle zuständig. Die
+ * Tabelle speichert alle Fahrten-Buchungen von Benutzern.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Optional<List<Booking>> findAllByPassengerAndDriveRoute_DriveType(User passenger, DriveType driveType);

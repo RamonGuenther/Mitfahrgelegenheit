@@ -1,5 +1,11 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums;
 
+/**
+ * Die Enumeration Faculty gibt an, welche Fachbereiche es an der Fachhochschule
+ * Südwestfalen gibt.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public enum Faculty {
 
     ELEKTROTECHNIK_UND_INFORMATIONSTECHNIK("Elektrotechnik und Informationstechnik"),

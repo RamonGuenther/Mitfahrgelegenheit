@@ -14,6 +14,12 @@ import java.util.*;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
+/**
+ * Die Klasse DriveRoute repräsentiert ein Fahrtangebot eine Benutzers. Zu den Angaben der Fahrtangebots
+ * werden zusätzlich auch alle Anfragen und Buchungen zu dieser Fahrt gespeichert.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Entity
 public class DriveRoute {
 
@@ -65,9 +71,25 @@ public class DriveRoute {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = CascadeType.REMOVE)
     private Set<Booking> bookings;
 
-    //FIXME Driving time überprüfung ob Vergangenheit auch bei Edit
-    public DriveRoute(Start start, Destination destination, LocalDateTime drivingTime, boolean fuelParticipation, Integer seatCount, User driver,
-                      DriveType driveType, String currentRouteLink) {
+    /**
+     * Konstruktor zum Erstellen eines Fahrtagebots.
+     *
+     * @param start                 Startadresse der Fahrt
+     * @param destination           Zieladresse der Fahrt
+     * @param drivingTime           Datum und Uhrzeit der Fahrt
+     * @param fuelParticipation     Spritbeteiligung gewünscht
+     * @param seatCount             Anzahl der Sitzplätze
+     * @param driver                Fahrer
+     * @param driveType             Fahrtentyp
+     */
+    public DriveRoute(Start start,
+                      Destination destination,
+                      LocalDateTime drivingTime,
+                      boolean fuelParticipation,
+                      Integer seatCount,
+                      User driver,
+                      DriveType driveType,
+                      String currentRouteLink) {
 
         nullCheck(start, destination, drivingTime, seatCount, driver);
 
@@ -86,7 +108,21 @@ public class DriveRoute {
         bookings = new HashSet<>();
     }
 
-    //TODO: Update Konstruktor -> vllt doch über setter? oder überall über Konstruktor
+    /**
+     * Der Konstruktor ist zur Aktualisierung eines bestehenden
+     * Fahrtangebots.
+     *
+     * @param id                    ID des Fahrtangebots
+     * @param start                 Startadresse der Fahrt
+     * @param destination           Zieladresse der Fahrt
+     * @param drivingTime           Datum und Uhrzeit der Fahrt
+     * @param fuelParticipation     Spritbeteiligung gewünscht
+     * @param seatCount             Anzahl der Sitzplätze
+     * @param driver                Fahrer
+     * @param creationDate          Datum/Uhrzeit der Fahrterstellung
+     * @param driveType             Fahrtentyp
+     * @param note                  Notiz
+     */
     public DriveRoute(
             Integer id,
             Start start,
@@ -178,6 +214,26 @@ public class DriveRoute {
         return regularDrive;
     }
 
+    public void setRegularDrive(RegularDrive regularDrive) {
+        this.regularDrive = regularDrive;
+    }
+
+    public String getFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return drivingTime.format(formatter);
+    }
+
+    public String getFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return drivingTime.format(formatter) + " Uhr";
+    }
+
+    /**
+     * Die Methode addDriveRequest fügt Anfragenliste der Fahrt eine Fahrtanfrage hinzu.
+     *
+     * @param newDriveRequest               Anfrage zur Fahrt
+     * @throws DuplicateRequestException    Anfrage wurde bereits gestellt
+     */
     public void addDriveRequest(DriveRequest newDriveRequest) throws DuplicateRequestException {
         nullCheck(newDriveRequest);
 
@@ -191,10 +247,11 @@ public class DriveRoute {
         driveRequests.add(newDriveRequest);
     }
 
-    public void setRegularDrive(RegularDrive regularDrive) {
-        this.regularDrive = regularDrive;
-    }
-
+    /**
+     * Die Methode removeDriveRequest entfernt eine Fahrtanfrage aus der Anfragenliste der Fahrt.
+     *
+     * @param driveRequest              Anfrage die entfernt werden soll
+     */
     public void removeDriveRequest(DriveRequest driveRequest) {
         nullCheck(driveRequest);
         System.out.println("Vor delete: " + driveRequests.size());
@@ -202,6 +259,12 @@ public class DriveRoute {
         System.out.println("Nach delete: " + driveRequests.size());
     }
 
+    /**
+     * Die Methode addBooking fügt der Buchungsliste der Fahrt eine neue Buchung hinzu.
+     *
+     * @param newBooking                    Buchung eines Nutzers
+     * @throws DuplicateBookingException    Buchung bereits in der Liste vorhanden
+     */
     public void addBooking(Booking newBooking) throws DuplicateBookingException {
         nullCheck(newBooking);
 
@@ -214,23 +277,17 @@ public class DriveRoute {
         bookings.add(newBooking);
     }
 
+    /**
+     * Die Methode removeBooking entfernt eine Buchung aus der Buchungsliste einer Fahrt.
+     *
+     * @param booking                   Buchung, die aus der Buchungsliste entfernt werden soll
+     */
     public void removeBooking(Booking booking) {
         nullCheck(booking);
         System.out.println("Vor delete: " + bookings.size());
         bookings.remove(booking);
         System.out.println("Nach delete: " + this.bookings.size());
     }
-
-    public String getFormattedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return drivingTime.format(formatter);
-    }
-
-    public String getFormattedTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return drivingTime.format(formatter) + " Uhr";
-    }
-
 
     @Override
     public boolean equals(Object obj) {

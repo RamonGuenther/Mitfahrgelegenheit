@@ -2,21 +2,23 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+/**
+ * Die abstrakte Klasse Waypoint dient als Basis für die Start- und Ziel-
+ * adresse einer Fahrt, sowie deren Zwischenstops.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Embeddable
 @MappedSuperclass
 public abstract class Waypoint {
 
     @Embedded
     protected Address address;
-
 
     public Waypoint(Address address) {
         this.address = address;

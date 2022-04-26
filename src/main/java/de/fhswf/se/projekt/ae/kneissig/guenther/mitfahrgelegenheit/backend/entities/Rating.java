@@ -4,6 +4,12 @@ import javax.persistence.Embeddable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Die Klasse Rating stellt eine Bewertung zu einem Benutzer dar. Sie
+ * enthält das Datum der Bewertung und die Kriterien die Bewertet wurden.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Embeddable
 public class Rating {
     private LocalDate date;
@@ -30,6 +36,18 @@ public class Rating {
 
     public int getReliability() {
         return reliability;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setPunctuality(int punctuality) {
+        this.punctuality = punctuality;
+    }
+
+    public void setReliability(int reliability) {
+        this.reliability = reliability;
     }
 
     public String getFormattedDate() {

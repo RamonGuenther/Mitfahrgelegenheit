@@ -20,7 +20,6 @@ public final class SecurityUtils {
      * @param request   Anfrage
      * @return
      */
-
     static boolean isFrameworkInternalRequest(HttpServletRequest request){
         final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
 
@@ -33,7 +32,6 @@ public final class SecurityUtils {
      * Prüft ob der aktuelle Nutzer eingeloggt ist
      * @return  Gibt zurück, ob der Nutzer eingeloggt ist
      */
-
     static boolean isUserLoggedIn(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

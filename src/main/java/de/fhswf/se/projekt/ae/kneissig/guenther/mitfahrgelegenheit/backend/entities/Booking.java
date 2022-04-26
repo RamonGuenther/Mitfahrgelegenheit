@@ -9,6 +9,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Objects;
 
+/**
+ * Die Klasse Booking repräsentiert die Buchung einer Fahrt durch einen Benutzer.
+ * Sie enthält wichtige Angaben, wie z.B. den Mitfahrer, die Adresse des Mitfahrers
+ * und ob die Fahrt nach Abschluss von beiden Seiten aus bewertet wurde.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
 @Entity
@@ -23,12 +30,11 @@ public class Booking {
 
     @ManyToOne
     private DriveRoute driveRoute;
+    @Embedded
+    private Stopover stopover;
 
     private LocalDateTime dateOfBooking;
     private LocalDate regularDriveSingleDriveDate;
-
-    @Embedded
-    private Stopover stopover;
 
     private boolean ratedByPassenger;
     private boolean ratedByDriver;
