@@ -71,7 +71,7 @@ public class RegularDrive {
             currentDate = currentDate.plusDays(1);
         }
 
-        while(currentDate.isBefore(regularDriveDateEnd)){
+        while(currentDate.isBefore(regularDriveDateEnd) || currentDate.equals(regularDriveDateEnd)){
             driveDates.add(currentDate);
             currentDate = currentDate.plusDays(7);
         }

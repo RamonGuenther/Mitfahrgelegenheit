@@ -110,46 +110,13 @@ public class RegistrationView extends VerticalLayout {
     }
 
     /**
-     * Die Methode setAddressFields ersetzt das autocomplete Adressfeld
+     * Die Methode editAddress ersetzt das autocomplete Adressfeld
      * durch ein normales Textfeld mit der Straße und setzt die Werte für
      * Postleitzahl und Ort in den entsprechenden Textfeldern.
      * Wird der Inhalt des Textfeldes für die Straße geändert, wird es wieder
      * in ein autocomplete Textfeld umgewandelt, um eine korrekte Adresseingabe
      * zu gewährleisten.
-     *
-     * @param layout  Layout, dessen Komponenten verändert werden
-     * @param address Autocomplete-Adressfeld, das ausgetauscht wird
-     * @param postal  Textfeld für die Postleitzahl, dessen Wert gesetzt
-     *                werden soll
-     * @param place   Textfeld für den Ort, dessen Wert gesetzt werden soll
      */
-    private void setAddressFields(FormLayoutProfileData layout, TextFieldAddress address,
-                                  TextField postal, TextField place) {
-        if (layout == null) {
-            throw new IllegalArgumentException("RegistrationView: FormLayout is null");
-        }
-
-        layout.getStreet().setValue(address.getStreet());
-        postal.setValue(address.getPostal());
-        place.setValue(address.getPlace());
-
-        layout.remove(address);
-        layout.addComponentAtIndex(4, layout.getStreet());
-        layout.setColspan(layout.getStreet(), 2);
-
-        address.addValueChangeListener(event -> setAddressFields(layout, address,
-                postal, place));
-
-        layout.getStreet().addFocusListener(event -> {
-            layout.remove(layout.getStreet());
-            layout.addComponentAtIndex(4, address);
-            layout.setColspan(address, 2);
-            postal.setValue("");
-            place.setValue("");
-        });
-    }
-
-    //TODO: ALso so funktioniert es aufjedenfall :)
     private void editAddress() {
         if (registrationForm == null) {
             throw new IllegalArgumentException("ProfileView: FormLayout is null");

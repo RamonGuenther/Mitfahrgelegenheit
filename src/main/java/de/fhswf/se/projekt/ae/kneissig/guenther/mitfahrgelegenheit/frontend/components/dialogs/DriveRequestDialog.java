@@ -18,6 +18,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
@@ -63,9 +64,9 @@ public class DriveRequestDialog extends Dialog {
                     return;
                 }
 
-                addressPatternCheck(textFieldAddress.getValue());
+                AddressConverter addressConverter = new AddressConverter(textFieldAddress.getValue());
 
-                Address address = new Address(textFieldAddress.getPostal(), textFieldAddress.getPlace(), textFieldAddress.getStreet(), textFieldAddress.getNumber());
+                Address address = new Address(addressConverter.getPostalCode(), addressConverter.getPlace(), addressConverter.getStreet(), addressConverter.getNumber());
 
                 List<Stopover> stopoverList = new ArrayList<>();
 

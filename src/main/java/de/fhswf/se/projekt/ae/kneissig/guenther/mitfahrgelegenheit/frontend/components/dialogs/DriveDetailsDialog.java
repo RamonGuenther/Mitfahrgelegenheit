@@ -20,7 +20,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 @CssImport("/themes/mitfahrgelegenheit/components/drive-details-dialog.css")
 public class DriveDetailsDialog extends Dialog {
 
-    public DriveDetailsDialog(DriveRequest driveRequest){
+    public DriveDetailsDialog(DriveRequest driveRequest) {
         HorizontalLayout driverInformationLayout = new HorizontalLayout();
         driverInformationLayout.setClassName("drive-details-dialog-driver_information_layout");
 
@@ -47,46 +47,24 @@ public class DriveDetailsDialog extends Dialog {
         titleLayout.setClassName("drive-details-dialog-title_layout");
         add(titleLayout);
 
-        switch (driveRequest.getDriveRoute().getDriveType()) {
+        FormLayoutDriveRoute formLayoutDriveRouteTop = new FormLayoutDriveRoute(driveRequest.getDriveRoute().getDriveType());
+        formLayoutDriveRouteTop.remove(formLayoutDriveRouteTop.getTitle());
+        formLayoutDriveRouteTop.setData(driveRequest.getDriveRoute());
+        formLayoutDriveRouteTop.setReadOnly(true);
+        add(formLayoutDriveRouteTop);
 
-            case OUTWARD_TRIP -> {
-                FormLayoutDriveRoute formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                formLayoutDriveRouteTop.remove(formLayoutDriveRouteTop.getTitle());
-                formLayoutDriveRouteTop.setData(driveRequest.getDriveRoute());
-                formLayoutDriveRouteTop.setReadOnly(true);
-                add(formLayoutDriveRouteTop);
-
-                if(driveRequest.getRegularDriveSingleDriveDate() != null){
-                    Label singleDriveLabel = new Label("Achtung: Du hast deine Anfrage nur für den "
-                            + driveRequest.getFormattedSingleDriveDate() + " gestellt.");
-                    singleDriveLabel.setId("drive-request-manage-dialog-label_single_drive");
-                    formLayoutDriveRouteTop.addComponentAtIndex(10, singleDriveLabel);
-                    formLayoutDriveRouteTop.setColspan(singleDriveLabel,4);
-                }
-            }
-            case RETURN_TRIP -> {
-                FormLayoutDriveRoute formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                formLayoutDriveRouteBottom.remove(formLayoutDriveRouteBottom.getTitle());
-                formLayoutDriveRouteBottom.setData(driveRequest.getDriveRoute());
-                formLayoutDriveRouteBottom.setReadOnly(true);
-                add(formLayoutDriveRouteBottom);
-
-                if(driveRequest.getRegularDriveSingleDriveDate() != null){
-                    Label singleDriveLabel = new Label("Achtung: Du hast deine Anfrage nur für den "
-                            + driveRequest.getFormattedSingleDriveDate() + " gestellt.");
-                    singleDriveLabel.setId("drive-request-manage-dialog-label_single_drive");
-                    formLayoutDriveRouteBottom.addComponentAtIndex(10, singleDriveLabel);
-                    formLayoutDriveRouteBottom.setColspan(singleDriveLabel,4);
-                }
-            }
-
+        if (driveRequest.getRegularDriveSingleDriveDate() != null) {
+            Label singleDriveLabel = new Label("Achtung: Du hast deine Anfrage nur für den "
+                    + driveRequest.getFormattedSingleDriveDate() + " gestellt.");
+            singleDriveLabel.setId("drive-request-manage-dialog-label_single_drive");
+            formLayoutDriveRouteTop.addComponentAtIndex(10, singleDriveLabel);
+            formLayoutDriveRouteTop.setColspan(singleDriveLabel, 4);
         }
-
 
 
         Button closeButton = new Button("Schließen");
         closeButton.setId("drive-details-dialog-close_button");
-        closeButton.addClickListener(e-> close());
+        closeButton.addClickListener(e -> close());
         HorizontalLayout buttonLayout = new HorizontalLayout(closeButton);
         buttonLayout.setClassName("drive-details-dialog-button_layout");
         add(buttonLayout);

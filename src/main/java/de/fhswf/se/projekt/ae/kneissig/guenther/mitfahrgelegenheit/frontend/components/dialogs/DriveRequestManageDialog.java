@@ -112,7 +112,13 @@ public class DriveRequestManageDialog extends Dialog {
         HorizontalLayout buttonLayout = new HorizontalLayout(acceptButton, declineButton, cancelButton);
         buttonLayout.setClassName("drive-request-manage-dialog-button_layout");
 
-        acceptButton.addClickListener(e -> saveDriveRequest(RequestState.ACCEPTED));
+        acceptButton.addClickListener(e -> {
+            if(driveRequest.getDriveRoute().getSeatCount().equals(driveRequest.getDriveRoute().getBookings().size())){
+                NotificationError.show("Keine Sitzplätze mehr verfügbar.");
+                return;
+            }
+            saveDriveRequest(RequestState.ACCEPTED);
+        });
 
         declineButton.addClickListener(e -> saveDriveRequest(RequestState.REJECTED));
 
@@ -122,12 +128,6 @@ public class DriveRequestManageDialog extends Dialog {
     }
 
     private void saveDriveRequest(RequestState requestState) {
-
-        if(driveRequest.getDriveRoute().getSeatCount().equals(driveRequest.getDriveRoute().getBookings().size())){
-            NotificationError.show("Keine Sitzplätze mehr verfügbar.");
-            return;
-        }
-
         driveRequest.setRequestState(requestState);
         driveRequestService.save(driveRequest);
         if (requestState == RequestState.ACCEPTED) {

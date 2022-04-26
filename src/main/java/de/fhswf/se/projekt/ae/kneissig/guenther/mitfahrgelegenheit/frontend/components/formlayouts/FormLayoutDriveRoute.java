@@ -232,7 +232,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         } else {
             localDateCheck(getDriveDateEnd());
             RegularDrive newRegularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(getDriveDays()), getDriveDateStart(), getDriveDateEnd());
-            if(newRegularDrive.getDriveDates().size() < 2){ //FIXME
+            if(newRegularDrive.getDriveDates().size() < 2){
                 throw new InvalidRegularDrivePeriod("Bei dem angebenden Zeitraum für die Regelmäßige Fahrt, handelt es sich um eine Einzelfahrt!");
             }
         }
