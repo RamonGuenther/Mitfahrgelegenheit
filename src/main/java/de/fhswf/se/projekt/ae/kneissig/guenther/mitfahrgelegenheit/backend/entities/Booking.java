@@ -39,8 +39,7 @@ public class Booking {
     private boolean ratedByPassenger;
     private boolean ratedByDriver;
 
-    public Booking(DriveRoute driveRoute,User passenger, Stopover stopover)
-    {
+    public Booking(DriveRoute driveRoute, User passenger, Stopover stopover) {
         nullCheck(driveRoute, passenger, stopover);
 
         this.driveRoute = driveRoute;
@@ -59,14 +58,8 @@ public class Booking {
         return id;
     }
 
-    public User getPassenger()
-    {
+    public User getPassenger() {
         return passenger;
-    }
-
-    public LocalDateTime getDateOfBooking()
-    {
-        return dateOfBooking;
     }
 
     public Stopover getStopover() {
@@ -77,28 +70,36 @@ public class Booking {
         return driveRoute;
     }
 
-    public boolean isRatedByPassenger() {
-        return ratedByPassenger;
+    public LocalDate getRegularDriveSingleDriveDate() {
+        return regularDriveSingleDriveDate;
     }
 
-    public void setRatedByPassenger(boolean ratedByPassenger) {
-        this.ratedByPassenger = ratedByPassenger;
+    public LocalDateTime getDateOfBooking() {
+        return dateOfBooking;
+    }
+
+    public boolean isRatedByPassenger() {
+        return ratedByPassenger;
     }
 
     public boolean isRatedByDriver() {
         return ratedByDriver;
     }
 
+    public void setRatedByPassenger(boolean ratedByPassenger) {
+        this.ratedByPassenger = ratedByPassenger;
+    }
+
     public void setRatedByDriver(boolean ratedByDriver) {
         this.ratedByDriver = ratedByDriver;
     }
 
-    public LocalDate getRegularDriveSingleDriveDate() {
-        return regularDriveSingleDriveDate;
-    }
-
     public void setRegularDriveSingleDriveDate(LocalDate regularDriveSingleDriveDate) {
         this.regularDriveSingleDriveDate = regularDriveSingleDriveDate;
+    }
+
+    public String getFormattedSingleDriveDate() {
+        return regularDriveSingleDriveDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
     }
 
     @Override
@@ -111,7 +112,4 @@ public class Booking {
         return Objects.hash(passenger, driveRoute);
     }
 
-    public String getFormattedSingleDriveDate(){
-        return regularDriveSingleDriveDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
-    }
 }

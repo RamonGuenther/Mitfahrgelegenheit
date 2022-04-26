@@ -22,7 +22,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
     private String password;
-
     private String firstName;
     private String lastName;
 
@@ -31,15 +30,12 @@ public class User {
     private String email;
     private String universityLocation;
     private String faculty;
-
     @Embedded
     private Languages languages;
     private LocalDateTime lastLogin;
     private boolean firstLogin;
-
     @Embedded
     private UserRating userRating;
-
     private boolean isDarkMode;
 
     public User(Long id,
@@ -118,6 +114,14 @@ public class User {
         return lastName;
     }
 
+    public boolean isFirstLogin() {
+        return firstLogin;
+    }
+
+    public boolean isDarkMode() {
+        return isDarkMode;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -174,19 +178,11 @@ public class User {
         this.userRating = userRating;
     }
 
-    public boolean isFirstLogin() {
-        return firstLogin;
-    }
-
-    public boolean isDarkMode() {
-        return isDarkMode;
-    }
-
     /**
      * Die Methode getFullName gibt den Vornamen und den abgekürzten Nachnamen des
      * Benutzers zurück
      *
-     * @return      Vorname + gekürzter Nachname des Benutzers
+     * @return Vorname + gekürzter Nachname des Benutzers
      */
     public String getFullName() {
         return firstName + " " + lastName.charAt(0) + ". ";

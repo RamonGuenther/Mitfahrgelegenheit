@@ -14,10 +14,14 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DecimalStyle;
 import java.util.*;
 
+/**
+ * Die Klasse GoogleDistanceCalculation berechnet die Entfernung zwischen mehreren Adressen,
+ * um die optimale Route zurückzugeben.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public class GoogleDistanceCalculation implements GoogleApiKey {
 
     private final GeoApiContext context;
@@ -26,6 +30,19 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
         context = new GeoApiContext.Builder().apiKey(API_KEY).build();
     }
 
+    /**
+     * Berechnet die Entfernung zwischen Startadresse und den Zwischenstopps zu der Zieladresse, sortiert diese,
+     * und gibt anschließend eine Google Maps URL zurück.
+     *
+     * @param start        Startadresse
+     * @param destination  Zieladresse
+     * @param stopoverList Liste aus Zwischenstopps
+     * @return Google Maps URL
+     * @throws IOException             -
+     * @throws InterruptedException    -
+     * @throws ApiException            -
+     * @throws InvalidAddressException -
+     */
     public String calculate(Start start, Destination destination, List<Stopover> stopoverList) throws IOException, InterruptedException, ApiException, InvalidAddressException {
 
         String[] origins = new String[stopoverList.size() + 1];
@@ -53,7 +70,6 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
 
         List<String> result = new ArrayList<>();
 
-
         for (Map.Entry<Double, String> entry : sortedAddresses.entrySet()) {
             String value = entry.getValue();
             result.add(value);
@@ -69,7 +85,6 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
         }
 
         RouteString routeString = new RouteString(start, destination, newStopoverList);
-
 
         return routeString.getRoute();
     }

@@ -5,12 +5,15 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.excep
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Die Klasse AddressConverter zerlegt eine Adresse in ihre Einzelzeile,
+ * um diese mithilfe von Getter einzeln ansprechen zu können.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public class AddressConverter {
 
-//    private static final String ADDRESS_PATTERN = "(?<strasse>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<hausnummer>[\\s\\w]*) (?<postleitzahl>\\d{5}) (?<ort>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<land>[a-zA-Z]+)";
     private static final String ADDRESS_PATTERN = "(?<strasse>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<hausnummer>[\\s\\w]*) (?<postleitzahl>\\d{5}) (?<ort>[A-Za-z_äÄöÖüÜß\\s-.()]+)";
-
-
     private String street;
     private String number;
     private String postalCode;
@@ -37,6 +40,12 @@ public class AddressConverter {
         return place;
     }
 
+    /**
+     * Zerlegt eine Adresse in einem bestimmten Format, in ihre Einzelteile
+     *
+     * @param address Volle Adresse als String
+     * @throws InvalidAddressException -
+     */
     private void convert(String address) throws InvalidAddressException {
 
         String replacedAddress = address.replace(",", " ");

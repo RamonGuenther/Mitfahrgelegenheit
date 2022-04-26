@@ -7,15 +7,21 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Die Klasse GoogleAddressAutocomplete wird von der Klasse TextFieldAddress verwendet
+ * um dem Nutzer mithilfe der Google Places API, Adressen vorzuschlagen.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public class GoogleAddressAutocomplete implements GoogleApiKey{
     static final LatLng LOCATION = new LatLng(51.51589968326413, 7.457918235941882);
-
-    private GeoApiContext context;
+    private final GeoApiContext context;
     private AutocompletePrediction[] results;
-    private PlaceDetails placeDetails;
-    private PlaceAutocompleteRequest.SessionToken token;
+    private final PlaceAutocompleteRequest.SessionToken token;
 
     public GoogleAddressAutocomplete() {
         context = new GeoApiContext.Builder().apiKey(API_KEY).build();
@@ -23,8 +29,19 @@ public class GoogleAddressAutocomplete implements GoogleApiKey{
         token = new PlaceAutocompleteRequest.SessionToken();
     }
 
-    public List<String> findStreets(List<String> daten, String eventValue) throws IOException, InterruptedException, ApiException {
-        results = PlacesApi.placeAutocomplete(context, eventValue, token)
+    /**
+     * Gibt eine Liste aus Strings zurück, die Straßenvorschläge der Google API enthält.
+     *
+     * @param input Eingabe des Nutzers
+     * @return Eine Liste von Vorschlägen der Google API
+     *
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ApiException -
+     */
+    public List<String> findStreets(String input) throws IOException, InterruptedException, ApiException {
+        List<String> newPredictions = new ArrayList<>();
+        results = PlacesApi.placeAutocomplete(context, input, token)
                 .location(LOCATION)
                 .offset(10)
                 .radius(169991)
@@ -34,10 +51,10 @@ public class GoogleAddressAutocomplete implements GoogleApiKey{
                 .await();
 
         for (AutocompletePrediction s : results) {
-            placeDetails = PlacesApi.placeDetails(context, s.placeId, token).language("DE").await();
-            daten.add(placeDetails.formattedAddress);
+            PlaceDetails placeDetails = PlacesApi.placeDetails(context, s.placeId, token).language("DE").await();
+            newPredictions.add(placeDetails.formattedAddress);
         }
 
-        return daten;
+        return newPredictions;
     }
 }

@@ -73,18 +73,6 @@ public class DriveRequest {
         return currentRouteLink;
     }
 
-    public void setRequestState(RequestState requestState) {
-        this.requestState = requestState;
-    }
-
-    public void setPassenger(User passenger) {
-        this.passenger = passenger;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
     public Stopover getStopover() {
         return stopover;
     }
@@ -101,6 +89,14 @@ public class DriveRequest {
         return regularDriveSingleDriveDate;
     }
 
+    public void setRequestState(RequestState requestState) {
+        this.requestState = requestState;
+    }
+
+    public void setPassenger(User passenger) {
+        this.passenger = passenger;
+    }
+
     public void setRegularDriveSingleDriveDate(LocalDate regularDriveSingleDriveDate) {
         this.regularDriveSingleDriveDate = regularDriveSingleDriveDate;
     }
@@ -115,7 +111,7 @@ public class DriveRequest {
         return requestTime.format(formatter) + " Uhr";
     }
 
-    public String getFormattedSingleDriveDate(){
+    public String getFormattedSingleDriveDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return regularDriveSingleDriveDate.format(formatter);
     }

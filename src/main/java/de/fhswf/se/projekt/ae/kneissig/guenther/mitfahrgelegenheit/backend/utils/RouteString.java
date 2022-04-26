@@ -9,15 +9,15 @@ import java.util.List;
  * welche die Website google-Maps öffnet und die Route für
  * die übergebenen Adressen anzeigt.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 public class RouteString {
 
     private String route;
 
-    private Start startAddress;
-    private Destination destinationAddress;
-    private List<Stopover> stopoverAddresses;
+    private final Start startAddress;
+    private final Destination destinationAddress;
+    private final List<Stopover> stopoverAddresses;
 
     public RouteString(Start startAddress, Destination destinationAddress, List<Stopover> stopoverAddresses){
         this.startAddress = startAddress;
@@ -49,7 +49,7 @@ public class RouteString {
                         stopoverAddresses.get(i).getAddress().getPlace() + "+";
                 if(stopoverAddresses.size() > 1 && i < stopoverAddresses.size() - 1){
                     route = route + "|";
-                };
+                }
             }
         }
 
@@ -69,18 +69,6 @@ public class RouteString {
      */
     public String getRoute() {
         return route;
-    }
-
-    /**
-     * Setter-Methode für die Routen-URL
-     *
-     * @param route         Routen-URL für google-Maps
-     */
-    public void setRoute(String route) {
-        if(route.isEmpty()){
-            throw new IllegalArgumentException("Fehler: String für Routen-URL ist leer");
-        }
-        this.route = route;
     }
 
 }

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class TextFieldAddress extends Autocomplete {
 
-    private List<String> daten;
+    private List<String> predictions;
 
     private String number;
     private String street;
@@ -39,9 +39,9 @@ public class TextFieldAddress extends Autocomplete {
         addChangeListener(event -> {
             if (getValue().length() > 10) {
                 try {
-                    daten = new ArrayList<>();
-                    daten = googleAddressAutocomplete.findStreets(daten, getValue());
-                    setOptions(daten);
+                    predictions = new ArrayList<>();
+                    predictions = googleAddressAutocomplete.findStreets(getValue());
+                    setOptions(predictions);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -50,8 +50,8 @@ public class TextFieldAddress extends Autocomplete {
         addValueChangeListener(
                 event -> {
                     try {
-                        if (daten != null) {
-                            for (String str : daten) {
+                        if (predictions != null) {
+                            for (String str : predictions) {
                                 if (str.equals(event.getValue())) {
                                     AddressConverter converter = new AddressConverter(this.getValue());
                                     street = converter.getStreet();
