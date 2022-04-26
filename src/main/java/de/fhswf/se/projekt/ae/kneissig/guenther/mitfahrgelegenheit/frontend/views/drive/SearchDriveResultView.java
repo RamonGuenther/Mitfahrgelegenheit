@@ -88,10 +88,10 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
         H1 title = new H1(TITEL_GRID);
         DriveRouteGrid grid = new DriveRouteGrid("Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService, isUserSearchsRegularDrive,
-                Objects.equals(date,"keinDatum")? LocalDate.now() : LocalDate.of(
+                LocalDate.of(
                         Integer.parseInt(date.substring(0, 4)),
-                        date.substring(5,6).contains("0") ? Integer.parseInt(date.substring(6,7)) : Integer.parseInt(date.substring(5,7)),
-                        date.substring(8,9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))));
+                        date.substring(5, 6).contains("0") ? Integer.parseInt(date.substring(6, 7)) : Integer.parseInt(date.substring(5, 7)),
+                        date.substring(8, 9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))));
         grid.setId("gridOwnOffersView");
         div.add(title, grid);
         add(div);
@@ -126,7 +126,7 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
 
 
         if (beforeEnterEvent.getRouteParameters().get("wochentag").isPresent()) {
-            if(!beforeEnterEvent.getRouteParameters().get("wochentag").get().equals("keinTag")){
+            if (!beforeEnterEvent.getRouteParameters().get("wochentag").get().equals("keinTag")) {
                 dayOfWeek = DayOfWeek.getDayOfWeek(beforeEnterEvent.getRouteParameters().get("wochentag").get());
             }
         }
@@ -136,17 +136,16 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
         User user = userService.findBenutzerByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        if(!Objects.equals(date, "keinDatum")) {
-            dateTime = LocalDateTime.of(
-                    LocalDate.of(
-                            Integer.parseInt(date.substring(0, 4)),
-                            date.substring(5, 6).contains("0") ? Integer.parseInt(date.substring(6, 7)) : Integer.parseInt(date.substring(5, 7)),
-                            date.substring(8, 9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))),
-                    LocalTime.of(
-                            Integer.parseInt(time.substring(0, 2)),
-                            Integer.parseInt(time.substring(3)))
-            );
-        }
+        dateTime = LocalDateTime.of(
+                LocalDate.of(
+                        Integer.parseInt(date.substring(0, 4)),
+                        date.substring(5, 6).contains("0") ? Integer.parseInt(date.substring(6, 7)) : Integer.parseInt(date.substring(5, 7)),
+                        date.substring(8, 9).contains("0") ? Integer.parseInt(date.substring(9)) : Integer.parseInt(date.substring(8))),
+                LocalTime.of(
+                        Integer.parseInt(time.substring(0, 2)),
+                        Integer.parseInt(time.substring(3)))
+        );
+
 
         switch (typ) {
             case "Hinfahrt" -> {

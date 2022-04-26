@@ -108,7 +108,7 @@ public class SearchDriveView extends VerticalLayout {
                                         new RouteParam("fahrtentyp", radioDriveDirection.getValue()),
                                         new RouteParam("fhStandort", fhLocation.getValue()),
                                         new RouteParam("adresse", addressConverter.getPlace()),
-                                        new RouteParam("datum", date.isEmpty() || checkboxRegularDrive.getValue() ? "keinDatum" : date.getValue().toString()),
+                                        new RouteParam("datum", date.isEmpty() || checkboxRegularDrive.getValue() ? LocalDate.now().toString() : date.getValue().toString()),
                                         new RouteParam("uhrzeit", time.getValue().toString()),
                                         new RouteParam("regelmaessig", checkboxRegularDrive.getValue().toString()),
                                         new RouteParam("wochentag", checkboxRegularDrive.getValue() ? dayOfWeek.getValue() : "keinTag")
@@ -161,10 +161,12 @@ public class SearchDriveView extends VerticalLayout {
         } else {
             addressConverter = new AddressConverter(address.getValue());
         }
-        if (date.isEmpty()) {
-            date.setInvalid(true);
-        } else {
-            localDateCheck(date.getValue());
+        if(!checkboxRegularDrive.getValue()){
+            if (date.isEmpty()) {
+                date.setInvalid(true);
+            } else {
+                localDateCheck(date.getValue());
+            }
         }
         if (time.isEmpty()) {
             time.setInvalid(true);

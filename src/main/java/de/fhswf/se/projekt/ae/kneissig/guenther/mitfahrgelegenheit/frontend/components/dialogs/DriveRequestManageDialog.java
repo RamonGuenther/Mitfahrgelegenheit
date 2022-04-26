@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -87,6 +88,14 @@ public class DriveRequestManageDialog extends Dialog {
         }); //FIXME
 
         add(titleLayout, formLayoutDriveRoute);
+
+        if(driveRequest.getRegularDriveSingleDriveDate() != null){
+            Label singleDriveLabel = new Label("Achtung: " + driveRequest.getPassenger().getFirstName() +
+                    " möchte nur am " + driveRequest.getFormattedSingleDriveDate() + " mitfahren.");
+            singleDriveLabel.setId("drive-request-manage-dialog-label_single_drive");
+            formLayoutDriveRoute.addComponentAtIndex(10, singleDriveLabel);
+            formLayoutDriveRoute.setColspan(singleDriveLabel,4);
+        }
 
         TextArea textArea = new TextArea("Nachricht: ");
         textArea.setReadOnly(true);

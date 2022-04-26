@@ -111,6 +111,11 @@ public class DriveRequest {
         return requestTime.format(formatter) + " Uhr";
     }
 
+    public String getFormattedSingleDriveDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return regularDriveSingleDriveDate.format(formatter);
+    }
+
     @Override
     public boolean equals(Object o) {
         return (o instanceof DriveRequest) && id.equals(((DriveRequest) o).id);

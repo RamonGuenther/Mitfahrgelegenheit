@@ -150,6 +150,7 @@ public class DriveRouteService {
     }
 
     public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive, DayOfWeek dayOfWeek) {
+
         List<DriveRoute> driveRoutes = new ArrayList<>();
         List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace)
                 .orElse(Collections.emptyList())

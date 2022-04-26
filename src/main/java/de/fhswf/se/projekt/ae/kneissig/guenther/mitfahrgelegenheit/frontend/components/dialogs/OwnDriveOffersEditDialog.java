@@ -94,7 +94,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
         passengerBadgeLayout.setId("own-drive-offers-edit-dialog-passenger_badge_layout");
 
         for (Booking booking : driveRoute.getBookings()) {
-            Span pending = new Span(booking.getPassenger().getFullName());
+            Span pending = new Span(booking.getRegularDriveSingleDriveDate() == null ? booking.getPassenger().getFullName() :
+                    booking.getPassenger().getFullName() + " (nur am " + booking.getFormattedSingleDriveDate() + ")");
             pending.getElement().getThemeList().add("badge");
             pending.getStyle().set("cursor", "pointer");
             pending.addClickListener(e -> {

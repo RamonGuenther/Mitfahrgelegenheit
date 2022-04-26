@@ -44,11 +44,13 @@ public class DashboardView extends VerticalLayout {
     private Label driverViewDestinationValue;
     private TextArea driverViewNoteTextArea;
     private Anchor passengerViewDriverValue;
+    private Label passengerViewDriverValueLabel;
     private Label passengerViewDateValue;
     private Label passengerViewStartValue;
     private Label passengerViewDestinationValue;
     private TextArea passengerViewNoteTextArea;
     private Button buttonNewNote;
+    private VerticalLayout driverLabels;
 
 
     public DashboardView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService) {
@@ -107,6 +109,8 @@ public class DashboardView extends VerticalLayout {
         passengerViewDriverValue = new Anchor();
         passengerViewDriverValue.setText("-");
         passengerViewDriverValue.setClassName("value");
+        passengerViewDriverValueLabel = new Label("-");
+        passengerViewDriverValueLabel.setClassName("value");
         passengerViewDateValue = new Label("-");
         passengerViewDateValue.setClassName("value");
         passengerViewStartValue = new Label("-");
@@ -116,6 +120,7 @@ public class DashboardView extends VerticalLayout {
 
         VerticalLayout passengerValues = new VerticalLayout(
                 passengerViewDriverValue,
+                passengerViewDriverValueLabel,
                 passengerViewDateValue,
                 passengerViewStartValue,
                 passengerViewDestinationValue
@@ -149,7 +154,7 @@ public class DashboardView extends VerticalLayout {
         Label driverViewDestination = new Label("Ziel:");
         driverViewDestination.setClassName("label");
 
-        VerticalLayout driverLabels = new VerticalLayout(
+        driverLabels = new VerticalLayout(
                 driverViewDate,
                 driverViewStart,
                 driverViewDestination);
@@ -206,7 +211,7 @@ public class DashboardView extends VerticalLayout {
 
         if (driverSingleRoute != null) {
             driverViewDateValue.setText(driverSingleRoute.getFormattedDate() + ", " + driverSingleRoute.getFormattedTime());
-            setBasicDriverValues(driverSingleRoute);
+            setDriverValues(driverSingleRoute);
         }
         else{
             clearDriverValues();
@@ -220,7 +225,7 @@ public class DashboardView extends VerticalLayout {
             passengerViewDateValue.setText(passengerSingleRoute.getRegularDriveSingleDriveDate() == null ?
                     passengerSingleRoute.getDriveRoute().getFormattedDate() + ", " + passengerSingleRoute.getDriveRoute().getFormattedTime() :
                     passengerSingleRoute.getFormattedSingleDriveDate() + ", " + passengerSingleRoute.getDriveRoute().getFormattedTime());
-            setBasicPassengerValues(passengerSingleRoute);
+            setPassengerValues(passengerSingleRoute);
         }
         else{
             clearPassengerValues();
@@ -232,7 +237,7 @@ public class DashboardView extends VerticalLayout {
 
         if (driverRegularRoute != null) {
             driverViewDateValue.setText(driverRegularRoute.getRegularDrive().getRegularDriveDay().label + ", " + driverRegularRoute.getFormattedTime());
-            setBasicDriverValues(driverRegularRoute);
+            setDriverValues(driverRegularRoute);
         }
         else{
             clearDriverValues();
@@ -244,14 +249,16 @@ public class DashboardView extends VerticalLayout {
 
         if (passengerRegularRoute != null) {
             passengerViewDateValue.setText(passengerRegularRoute.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + passengerRegularRoute.getDriveRoute().getFormattedTime());
-            setBasicPassengerValues(passengerRegularRoute);
+            setPassengerValues(passengerRegularRoute);
         }
         else{
             clearPassengerValues();
         }
     }
 
-    private void setBasicPassengerValues(Booking booking){
+    private void setPassengerValues(Booking booking){
+        passengerViewDriverValueLabel.setVisible(false);
+        passengerViewDriverValue.setVisible(true);
         passengerViewDriverValue.setHref("/profil/" + booking.getDriveRoute().getDriver().getUsername());
         passengerViewDriverValue.setText(booking.getDriveRoute().getDriver().getFullName());
         passengerViewStartValue.setText(booking.getDriveRoute().getStart().getFullAddressToString());
@@ -259,7 +266,7 @@ public class DashboardView extends VerticalLayout {
         passengerViewNoteTextArea.setValue(booking.getDriveRoute().getNote());
     }
 
-    private void setBasicDriverValues(DriveRoute driveRoute){
+    private void setDriverValues(DriveRoute driveRoute){
         driverViewStartValue.setText(driveRoute.getStart().getFullAddressToString());
         driverViewDestinationValue.setText(driveRoute.getDestination().getFullAddressToString());
         driverViewNoteTextArea.setValue(driveRoute.getNote());
@@ -268,11 +275,15 @@ public class DashboardView extends VerticalLayout {
 
     private void clearPassengerValues(){
         passengerViewDateValue.setText("-");
-        passengerViewDriverValue.setHref("");
-        passengerViewDriverValue.setText("-");
         passengerViewStartValue.setText("-");
         passengerViewDestinationValue.setText("-");
         passengerViewNoteTextArea.setValue("");
+
+        passengerViewDriverValueLabel.setVisible(true);
+        passengerViewDriverValueLabel.setText("-");
+        passengerViewDriverValue.setVisible(false);
+//        driverLabels.remove(passengerViewDriverValue);
+//        driverLabels.addComponentAtIndex(0, );
     }
 
     private void clearDriverValues(){

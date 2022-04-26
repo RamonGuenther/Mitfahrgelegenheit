@@ -36,3 +36,8 @@
 .drive-request-manage-dialog-button_layout{
 
 }
+
+#drive-request-manage-dialog-label_single_drive{
+    margin-top: 20px;
+    color: #c54a4a;
+}
