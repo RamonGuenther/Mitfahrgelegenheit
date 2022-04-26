@@ -9,9 +9,12 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.page.LoadingIndicatorConfiguration;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
+import com.vaadin.flow.server.InitialPageSettings;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -37,7 +40,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Theme(themeFolder = "mitfahrgelegenheit")
 @CssImport("/themes/mitfahrgelegenheit/views/main-view.css")
 @CssImport(value = "/themes/mitfahrgelegenheit/menu-bar-button.css", themeFor = "vaadin-menu-bar-button")
-public class MainLayout extends AppLayout {
+public class MainLayout extends AppLayout implements PageConfigurator {
 
     /**
      * Die Konstruktor erstellt eine Menüleiste für die Applikation.
@@ -136,5 +139,12 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
         setId("testi");
 
+    }
+
+    @Override
+    public void configurePage(InitialPageSettings initialPageSettings) {
+        LoadingIndicatorConfiguration conf = initialPageSettings.getLoadingIndicatorConfiguration();
+        // disable default theme -> loading indicator will not be shown
+        conf.setApplyDefaultTheme(false);
     }
 }

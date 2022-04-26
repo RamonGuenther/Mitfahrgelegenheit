@@ -14,8 +14,6 @@ public class LoginView extends Div implements BeforeEnterObserver {
     private final LoginOverlay loginOverlay;
 
     public LoginView() {
-        getElement().getStyle().set("background", "#3e5365");
-
         LoginI18n i18n = LoginI18n.createDefault();
 
         LoginI18n.Form i18nForm = i18n.getForm();
