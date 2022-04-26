@@ -9,33 +9,40 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.shared.Registration;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Stopover;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.CheckboxRegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Objects;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
 
+/**
+ * Die Klasse FormLayoutDriveRoute ist eine Komponente, die mehrfach verwendet wird,
+ * um Fahrtangebote anzuzeigen oder zu bearbeiten.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/form-layout-drive-route.css")
 public class FormLayoutDriveRoute extends FormLayout {
 
@@ -49,14 +56,11 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final Button buttonDetourRoute;
 
 
-    private Checkbox checkboxFuelParticipation;
-    private final CheckboxRegularDrive driveDays;
-    private H2 title;
+    private final Checkbox checkboxFuelParticipation;
+    private final RadioButtonGroup<String> driveDays;
+    private final H2 title;
+    private Registration registration;
 
-    /**
-     * Der Konstruktor erstellt das FormLayout für
-     * die Klasse OfferDriveView
-     */
     public FormLayoutDriveRoute(DriveType driveType) {
 
         title = new H2("Hinfahrt erstellen");
@@ -68,30 +72,38 @@ public class FormLayoutDriveRoute extends FormLayout {
 
         fhLocation = new SelectUniversityLocation();
         fhLocation.setRequiredIndicatorVisible(true);
+        fhLocation.setErrorMessage("FH Standort bitte auswählen");
 
         driveDateStart = new DatePicker("Tag der Fahrt");
         driveDateStart.setMin(LocalDate.now());
         driveDateStart.setRequiredIndicatorVisible(true);
+        driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
 
         driveDateEnd = new DatePicker("Zeitraum bis");
         driveDateEnd.setMin(LocalDate.now());
         driveDateEnd.setReadOnly(true);
+        driveDateEnd.setErrorMessage("Enddatum der regelmäßigen Fahrt bitte angeben");
 
         checkboxRegularDrive = new Checkbox("Regelmäßige Fahrt");
         checkboxFuelParticipation = new Checkbox("Spritbeteiligung");
 
         driveTime = new TimePicker("Ankunftzeit");
         driveTime.setStep(Duration.ofMinutes(15));
-
-        driveDays = new CheckboxRegularDrive();
-        driveDays.setReadOnly(true);
-
+        driveTime.setErrorMessage("Ankunftszeit/Abfahrtszeit bitte angeben");
         driveTime.setRequiredIndicatorVisible(true);
+
+
+        driveDays = new RadioButtonGroup<>();
+        driveDays.setLabel("Wochentag der regelmäßigen Fahrt");
+        driveDays.setItems(DayOfWeek.getDayOfWeekList());
+        driveDays.setReadOnly(true);
 
         carSeatCount = new Select<>();
         carSeatCount.setRequiredIndicatorVisible(true);
-        carSeatCount.setLabel("Anzahl Sitzplätze");
-        carSeatCount.setItems("1", "2", "3", "4");
+        carSeatCount.setLabel("Anzahl der Sitzplätze");
+        carSeatCount.setItems("1", "2", "3", "4", "5");
+        carSeatCount.setErrorMessage("Anzahl Sitzplätze bitte angeben");
+        carSeatCount.setValue("3");
 
         buttonDetourRoute = new Button("Route anzeigen", new Icon(VaadinIcon.CAR));
         buttonDetourRoute.setId("form-layout-drive-route-google_maps_button");
@@ -125,7 +137,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         setColspan(checkboxFuelParticipation, 1);
         setColspan(buttonDetourRoute, 4);
 
-        /* Listener*/
 
         fhLocation.addValueChangeListener(e -> fhLocation.setUniversityLocationAddress(e.getValue()));
 
@@ -136,10 +147,18 @@ public class FormLayoutDriveRoute extends FormLayout {
             driveDateEnd.setRequiredIndicatorVisible(!checked);
             driveDays.setReadOnly(checked);
             driveDays.setRequiredIndicatorVisible(!checked);
+            if(event.getValue()){
+                driveDays.setValue(DayOfWeek.MONDAY.label);
+                driveDateStart.setErrorMessage("Startdatum der regelmäßigen Fahrt bitte angeben");
+            }
+            else {
+                driveDays.clear();
+                driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
+            }
         });
 
 
-        buttonDetourRoute.addClickListener(e -> {
+        registration = buttonDetourRoute.addClickListener(e -> {
             try {
                 if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
                     AddressConverter converterStart = new AddressConverter(address.getValue());
@@ -152,9 +171,7 @@ public class FormLayoutDriveRoute extends FormLayout {
 
                     UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
                 } else {
-                    Notification notification = new Notification("Bitte Start- und Zieladresse eingeben.", 3000);
-                    notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-                    notification.open();
+                    NotificationError.show("Bitte Start- und Zieladresse eingeben.");
                 }
             } catch (InvalidAddressException ex) {
                 ex.printStackTrace();
@@ -162,17 +179,138 @@ public class FormLayoutDriveRoute extends FormLayout {
         });
     }
 
+    /*-------------------------------------------------------------------------------------------------------------
+                                                 Methoden
+     -------------------------------------------------------------------------------------------------------------*/
+
+    public void setData(DriveRoute driveRoute) {
+        if (driveRoute == null) {
+            throw new IllegalArgumentException();
+        }
+
+        setCheckboxFuelParticipation(driveRoute.isFuelParticipation());
+        setSeatCount(driveRoute.getSeatCount().toString());
+        setDriveTime(driveRoute.getDrivingTime().toLocalTime());
+        setDriveDateStart(driveRoute.getDrivingTime().toLocalDate());
+
+        if (driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
+            setFhLocation(driveRoute.getDestination().getAddress().getPlace());
+            setAddress(driveRoute.getStart().getFullAddressToString());
+        } else {
+            setFhLocation(driveRoute.getStart().getAddress().getPlace());
+            setAddress(driveRoute.getDestination().getFullAddressToString());
+        }
+
+        System.out.println(checkboxRegularDrive.getValue() + " oben");
+
+        if (driveRoute.getRegularDrive().getRegularDriveDay() != null) {
+            System.out.println("CHECK");
+            setDriveDateEnd(driveRoute.getRegularDrive().getRegularDriveDateEnd());
+            setCheckboxRegularDrive(true);
+            setDriveDay(driveRoute.getRegularDrive().getRegularDriveDay().label);
+        }
+    }
+
+    public boolean checkInputFields() throws InvalidDateException, InvalidRegularDrivePeriod {
+
+        if (checkboxRegularDrive.getValue()) {
+            checkSingleDrive();
+            checkRegularDrive();
+            return address.getValue().isEmpty() || fhLocation.isEmpty() || driveDateStart.isEmpty() ||
+                    driveTime.isEmpty() || carSeatCount.isEmpty() || driveDateEnd.isEmpty() || driveDays.isEmpty();
+        } else {
+            checkSingleDrive();
+            return address.getValue().isEmpty() || fhLocation.isEmpty() || driveDateStart.isEmpty() ||
+                    driveTime.isEmpty() || carSeatCount.isEmpty();
+        }
+
+    }
+
+    private void checkRegularDrive() throws InvalidDateException, InvalidRegularDrivePeriod {
+        if (driveDateEnd.isEmpty()) {
+            driveDateEnd.setInvalid(true);
+        } else {
+            localDateCheck(getDriveDateEnd());
+            RegularDrive newRegularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(getDriveDays()), getDriveDateStart(), getDriveDateEnd());
+            if(newRegularDrive.getDriveDates().size() < 2){
+                throw new InvalidRegularDrivePeriod("Bei dem angebenden Zeitraum für die Regelmäßige Fahrt, handelt es sich um eine Einzelfahrt!");
+            }
+        }
+    }
+
+
+    private void checkSingleDrive() throws InvalidDateException {
+        if (address.getValue().isEmpty()) {
+            address.setInvalid(true);
+        }
+        if (fhLocation.isEmpty()) {
+            fhLocation.setInvalid(true);
+        }
+        if (driveDateStart.isEmpty()) {
+            driveDateStart.setInvalid(true);
+        }
+        else {
+            localDateCheck(getDriveDateStart());
+        }
+        if (driveTime.isEmpty()) {
+            driveTime.setInvalid(true);
+        }
+
+        if (carSeatCount.isEmpty()) {
+            carSeatCount.setInvalid(true);
+        }
+    }
+
+
+    /**
+     * Wechselt den Zustand der Komponenten auf dem FormLayout, zu "nur lesen" oder "bearbeitbar".
+     *
+     * @param isReadOnly boolean
+     */
+    public void setReadOnly(boolean isReadOnly) {
+        address.setReadOnly(isReadOnly);
+        address.setReadOnly(isReadOnly);
+        fhLocation.setReadOnly(isReadOnly);
+        driveTime.setReadOnly(isReadOnly);
+        carSeatCount.setReadOnly(isReadOnly);
+        driveDateStart.setReadOnly(isReadOnly);
+        checkboxFuelParticipation.setReadOnly(isReadOnly);
+        checkboxRegularDrive.setReadOnly(isReadOnly);
+
+        System.out.println(checkboxRegularDrive.getValue());
+        if (checkboxRegularDrive.getValue()) {
+            System.out.println("CHECK2");
+            driveDateEnd.setReadOnly(isReadOnly);
+            driveDays.setReadOnly(isReadOnly);
+        }
+    }
+
+    /**
+     * Löscht alle Eingabewerte bestimmter Komponenten auf dem Formlayout
+     */
+    public void clearFields() {
+        driveTime.clear();
+        driveDateStart.clear();
+        driveDateEnd.clear();
+        checkboxRegularDrive.clear();
+        checkboxFuelParticipation.clear();
+    }
+
+
+    /*-------------------------------------------------------------------------------------------------------------
+                                                 Getter/Setter
+    -------------------------------------------------------------------------------------------------------------*/
 
     public H2 getTitle() {
         return title;
     }
 
-    public void setTitle(String text) {
-        this.title.setText(text);
+    public String getAddressValue() {
+        return address.getValue();
     }
 
-    public String getAddress() {
-        return address.getValue();
+    public TextFieldAddress getAddress() {
+        return address;
     }
 
     public String getFhLocation() {
@@ -195,7 +333,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         return driveDateEnd.getValue();
     }
 
-    public Boolean getCheckboxRegularDrive() {
+    public Boolean getCheckboxRegularDriveValue() {
         return checkboxRegularDrive.getValue();
     }
 
@@ -203,7 +341,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         return checkboxFuelParticipation.getValue();
     }
 
-    public Set<String> getDriveDays() {
+    public String getDriveDays() {
         return driveDays.getValue();
     }
 
@@ -211,7 +349,11 @@ public class FormLayoutDriveRoute extends FormLayout {
         return buttonDetourRoute;
     }
 
-    public void setSitzplaetze(String anzahl) {
+    public void setTitle(String text) {
+        this.title.setText(text);
+    }
+
+    public void setSeatCount(String anzahl) {
         carSeatCount.setValue(anzahl);
     }
 
@@ -235,68 +377,20 @@ public class FormLayoutDriveRoute extends FormLayout {
         this.checkboxFuelParticipation.setValue(isChecked);
     }
 
-
-    //TODO: MUSS MIT ALLEN DATEN PASSIEREN AUCH BEI NULL
-    public void setData(DriveRoute driveRoute) {
-        if (driveRoute == null) {
-            throw new IllegalArgumentException();
-        }
-
-        setCheckboxFuelParticipation(driveRoute.isFuelParticipation());
-        setSitzplaetze(driveRoute.getSeatCount().toString());
-        setFhLocation(driveRoute.getZiel().getAddress().getPlace());
-        setDriveTime(driveRoute.getDrivingTime().toLocalTime());
-        setDriveDateStart(driveRoute.getDrivingTime().toLocalDate());
-        setAddress(driveRoute.getStart().getAddress().getStreet() + " "
-                + driveRoute.getStart().getAddress().getHouseNumber() + ", "
-                + driveRoute.getStart().getAddress().getPostal() + " "
-                + driveRoute.getStart().getAddress().getPlace() + ", "
-                + "Deutschland");
+    public void setDriveDateEnd(LocalDate day) {
+        driveDateEnd.setValue(day);
     }
 
-    public boolean checkData() throws InvalidDateException {
-
-        if (!driveDateStart.isEmpty())
-            localDateCheck(getDriveDateStart()); //TODO: auch für Regulardateend da
-
-        if (checkboxRegularDrive.getValue()) {
-            return address.getValue().isEmpty() || fhLocation.isEmpty() || driveDateStart.isEmpty() ||
-                    driveTime.isEmpty() || carSeatCount.isEmpty() || driveDateEnd.isEmpty() || driveDays.isEmpty();
-
-        } else {
-            return address.getValue().isEmpty() || fhLocation.isEmpty() || driveDateStart.isEmpty() ||
-                    driveTime.isEmpty() || carSeatCount.isEmpty();
-        }
+    public void setCheckboxRegularDrive(boolean isChecked) {
+        checkboxRegularDrive.setValue(isChecked);
     }
 
-    public void setReadOnly(boolean readOnly) {
-        address.setReadOnly(readOnly);
-        address.setReadOnly(readOnly);
-        fhLocation.setReadOnly(readOnly);
-        driveTime.setReadOnly(readOnly);
-        carSeatCount.setReadOnly(readOnly);
-        driveDateStart.setReadOnly(readOnly);
-        checkboxFuelParticipation.setReadOnly(readOnly);
-        checkboxRegularDrive.setReadOnly(readOnly);
-
-        if (checkboxRegularDrive.getValue()) { //FIXME WENN wir Reguläre haben damit das dann auch richtig reagiert beim bearbeiten der Fahrt!!
-            driveDateEnd.setReadOnly(readOnly);
-            driveDays.setReadOnly(readOnly);
-        }
+    public void setDriveDay(String driveDay) {
+        driveDays.setValue(driveDay);
     }
 
-    public void clearFields() {
-        address.setValue(" ");
-        address.setOptions(Collections.emptyList());
-        fhLocation.clear();
-        driveTime.clear();
-        carSeatCount.clear();
-        driveDateStart.clear();
-        driveDateEnd.clear();
-        checkboxRegularDrive.clear();
-        checkboxFuelParticipation.clear();
-        driveDays.clear();
+    public void removeClickListener() {
+        registration.remove();
     }
-
 }
 

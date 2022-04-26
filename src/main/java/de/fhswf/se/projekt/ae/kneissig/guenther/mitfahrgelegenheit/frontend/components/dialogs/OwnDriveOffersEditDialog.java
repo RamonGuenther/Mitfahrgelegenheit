@@ -13,12 +13,15 @@ import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
@@ -30,9 +33,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
-
 
 /**
  * Die Klasse OwnDriveOffersEditDialog erstellt einen Dialog für die Bearbeitung
@@ -69,16 +69,16 @@ public class OwnDriveOffersEditDialog extends Dialog {
             case OUTWARD_TRIP -> {
                 formLayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                 formLayoutDriveRouteTop.setTitle("Hinfahrt bearbeiten");
-                formLayoutDriveRouteTop.setReadOnly(true);
                 formLayoutDriveRouteTop.setData(driveRoute);
+                formLayoutDriveRouteTop.setReadOnly(true);
                 formLayoutDriveRouteTop.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
                 add(formLayoutDriveRouteTop);
             }
             case RETURN_TRIP -> {
                 formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                 formLayoutDriveRouteBottom.setTitle("Rückfahrt bearbeiten");
-                formLayoutDriveRouteBottom.setReadOnly(true);
                 formLayoutDriveRouteBottom.setData(driveRoute);
+                formLayoutDriveRouteBottom.setReadOnly(true);
                 formLayoutDriveRouteBottom.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
                 add(formLayoutDriveRouteBottom);
             }
@@ -94,7 +94,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
         passengerBadgeLayout.setId("own-drive-offers-edit-dialog-passenger_badge_layout");
 
         for (Booking booking : driveRoute.getBookings()) {
-            Span pending = new Span(booking.getPassenger().getFullName());
+            Span pending = new Span(booking.getRegularDriveSingleDriveDate() == null ? booking.getPassenger().getFullName() :
+                    booking.getPassenger().getFullName() + " (nur am " + booking.getFormattedSingleDriveDate() + ")");
             pending.getElement().getThemeList().add("badge");
             pending.getStyle().set("cursor", "pointer");
             pending.addClickListener(e -> {
@@ -155,6 +156,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteTop.setReadOnly(driveRoute.getBookings().size() > 0);
                 saveButton.addClickListener(event -> saveFormLayoutTop());
                 cancelButton.addClickListener(event -> {
+                    formLayoutDriveRouteTop.setData(driveRoute);
                     formLayoutDriveRouteTop.setReadOnly(true);
                     note.setReadOnly(true);
                     remove(editButtonLayout);
@@ -165,6 +167,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 formLayoutDriveRouteBottom.setReadOnly(driveRoute.getBookings().size() > 0);
                 saveButton.addClickListener(event -> saveFormLayoutBottom());
                 cancelButton.addClickListener(event -> {
+                    formLayoutDriveRouteBottom.setData(driveRoute);
                     formLayoutDriveRouteBottom.setReadOnly(true);
                     note.setReadOnly(true);
                     remove(editButtonLayout);
@@ -178,12 +181,12 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     private void saveFormLayoutTop() {
         try {
-            if (formLayoutDriveRouteTop.checkData()) {
+            if (formLayoutDriveRouteTop.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveDrive(formLayoutDriveRouteTop.getAddress(),
+            saveDrive(formLayoutDriveRouteTop.getAddressValue(),
                     formLayoutDriveRouteTop.getFhLocation(),
                     formLayoutDriveRouteTop.getDriveTime(),
                     formLayoutDriveRouteTop.getCheckboxFuelParticipation(),
@@ -193,8 +196,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     note.getValue()
             );
         }
-        catch (InvalidDateException ex){
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+        catch (InvalidDateException | InvalidRegularDrivePeriod ex){
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -203,22 +206,22 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     private void saveFormLayoutBottom() {
         try {
-            if (formLayoutDriveRouteBottom.checkData()) {
+            if (formLayoutDriveRouteBottom.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
             saveDrive(formLayoutDriveRouteBottom.getFhLocation(),
-                    formLayoutDriveRouteBottom.getAddress(),
+                    formLayoutDriveRouteBottom.getAddressValue(),
                     formLayoutDriveRouteBottom.getDriveTime(),
-                    formLayoutDriveRouteBottom.getCheckboxRegularDrive(),
+                    formLayoutDriveRouteBottom.getCheckboxRegularDriveValue(),
                     formLayoutDriveRouteBottom.getCarSeatCount(),
                     DriveType.RETURN_TRIP,
                     formLayoutDriveRouteBottom.getDriveDateStart(),
                     note.getValue()
             );
         }
-        catch (InvalidDateException ex){
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+        catch (InvalidDateException | InvalidRegularDrivePeriod ex){
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -247,6 +250,25 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     fahrtenTyp,
                     note
             );
+
+            if (fahrtenTyp.equals(DriveType.OUTWARD_TRIP)) {
+                if(formLayoutDriveRouteTop.getCheckboxRegularDriveValue()){
+                    updateDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formLayoutDriveRouteTop.getDriveDays()),
+                            formLayoutDriveRouteTop.getDriveDateStart(),
+                            formLayoutDriveRouteTop.getDriveDateEnd())
+                    );
+                }
+            }
+            else{
+                if(formLayoutDriveRouteBottom.getCheckboxRegularDriveValue()){
+                    updateDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formLayoutDriveRouteBottom.getDriveDays()),
+                            formLayoutDriveRouteBottom.getDriveDateStart(),
+                            formLayoutDriveRouteBottom.getDriveDateEnd())
+                    );
+                }
+            }
 
             driveRouteService.save(updateDriveRoute);
 

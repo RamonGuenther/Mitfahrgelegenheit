@@ -1,0 +1,20 @@
+#overlay {
+    background: #e5e7e9;
+}
+
+[part="brand"] {
+    margin-top: -20px;
+    background: #3e5365;
+}
+
+[part="form"] {
+    margin-bottom: -50px;
+}
+
+[part="description"] {
+    margin-left: 2px;
+}
+
+:host {
+    --_lumo-button-primary-background-color: #3e5365;
+}

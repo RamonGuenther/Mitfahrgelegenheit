@@ -1,7 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions;
 
-public class DuplicateRequestException extends Exception{
-    public DuplicateRequestException(String message) {
+public class InvalidPasswordException extends Exception{
+    public InvalidPasswordException(String message) {
         super(message);
     }
 }

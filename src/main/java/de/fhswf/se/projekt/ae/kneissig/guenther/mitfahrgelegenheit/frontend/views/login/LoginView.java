@@ -1,29 +1,42 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.login;
 
-import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.router.*;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 
 @Route("login")
 @PageTitle("Mitfahrgelegenheit | Login")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+@CssImport(value = "/themes/mitfahrgelegenheit/views/login-view.css", themeFor = "vaadin-login-overlay-wrapper")
+public class LoginView extends Div implements BeforeEnterObserver {
 
-    private LoginForm login;
+    private final LoginOverlay loginOverlay;
 
     public LoginView() {
-        getElement().getStyle().set("background", "#3e5365");
+        LoginI18n i18n = LoginI18n.createDefault();
 
-        setSizeFull();
+        LoginI18n.Form i18nForm = i18n.getForm();
+        i18nForm.setTitle("Anmelden");
+        i18nForm.setUsername("Benutzername");
+        i18nForm.setPassword("Passwort");
+        i18nForm.setSubmit("Anmelden");
+        i18nForm.setForgotPassword("Passwort vergessen?");
+        i18n.setForm(i18nForm);
 
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(FlexComponent.Alignment.CENTER);
+        LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
+        i18nErrorMessage.setTitle("Ungültige Anmeldeinformationen");
+        i18nErrorMessage.setMessage("Der Benutzername oder das Passwort ist falsch.");
+        i18n.setErrorMessage(i18nErrorMessage);
 
-        login = new LoginForm();
-        login.setAction("login");
+        loginOverlay = new LoginOverlay();
+        loginOverlay.setI18n(i18n);
+        loginOverlay.setAction("login");
+        loginOverlay.setTitle("Drive Together");
+        loginOverlay.setDescription("Bitte benutzen Sie ihren FH-Login");
+        loginOverlay.setOpened(true);
 
-        add(login);
+        add(loginOverlay);
     }
 
     @Override
@@ -32,7 +45,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
                 .getQueryParameters()
                 .getParameters()
                 .containsKey("error")) {
-            login.setError(true);
+            loginOverlay.setError(true);
         }
     }
 }

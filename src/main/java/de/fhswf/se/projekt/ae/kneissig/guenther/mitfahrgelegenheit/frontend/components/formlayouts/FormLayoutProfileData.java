@@ -5,7 +5,12 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidMailException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
+
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.addressPatternCheck;
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.emailPatternCheck;
 
 /**
  * Die Klasse FormLayoutProfileData erstellt das FormLayout zur Eingabe bzw.
@@ -31,13 +36,13 @@ public class FormLayoutProfileData extends FormLayout {
     private MultiSelectLanguage multiSelectLanguage;
     private HorizontalLayout buttonLayout;
 
-    public FormLayoutProfileData(HorizontalLayout buttonLayout){
+    public FormLayoutProfileData(HorizontalLayout buttonLayout) {
         this.buttonLayout = buttonLayout;
         this.buttonLayout.setClassName("profile-data-buttonlayout");
         createProfileDataForm();
     }
 
-    public FormLayoutProfileData(){
+    public FormLayoutProfileData() {
         this.buttonLayout = new HorizontalLayout();
         this.buttonLayout.setClassName("profile-data-buttonlayout");
         createProfileDataForm();
@@ -47,17 +52,20 @@ public class FormLayoutProfileData extends FormLayout {
      * Die Methode createProfileDataForm erzeugt die notwendigen Komponenten für
      * das FormLayout zum Anzeigen oder Bearbeiten von Profildaten.
      */
-    public void createProfileDataForm(){
+    public void createProfileDataForm() {
 
         firstName = new TextField("Vorname");
+        firstName.setErrorMessage("Vorname bitte angeben");
 
         lastName = new TextField("Nachname");
+        lastName.setErrorMessage("Nachname bitte angeben");
 
         email = new TextField("FH-Email");
         email.setPattern("^[a-z]+.[a-z]+([1-9][0-9]*)?@fh-swf.de$");
         email.setErrorMessage("Bitte gültige FH-Mail eingeben.");
 
         googleAddress = new TextFieldAddress("Adresse");
+        googleAddress.setErrorMessage("Adresse bitte angeben");
 
         street = new TextField("Straße / Hausnummer");
 
@@ -67,13 +75,24 @@ public class FormLayoutProfileData extends FormLayout {
         place = new TextField("Wohnort");
         place.setReadOnly(true);
 
-        selectFaculty = new SelectFaculty();
-
         selectUniversityLocation = new SelectUniversityLocation();
-        selectUniversityLocation.addValueChangeListener(event ->
-                selectFaculty.setSubjectAreaItems(selectUniversityLocation.getValue()));
+        selectUniversityLocation.setErrorMessage("FH Standort bitte angeben");
+        selectUniversityLocation.addValueChangeListener(event -> {
+            selectUniversityLocation.setInvalid(false);
+            selectFaculty.setReadOnly(false);
+            selectFaculty.setSubjectAreaItems(selectUniversityLocation.getValue());
+        });
+
+
+        selectFaculty = new SelectFaculty();
+        selectFaculty.setReadOnly(true);
+        selectFaculty.setErrorMessage("Fachbereich bitte angeben");
+        selectFaculty.addValueChangeListener(event-> selectFaculty.setInvalid(false));
 
         selectLanguage = new SelectLanguage();
+        selectLanguage.addValueChangeListener(e-> selectLanguage.setInvalid(false));
+        selectLanguage.setErrorMessage("Bitte die Hauptsprache angeben");
+        selectLanguage.setRequiredIndicatorVisible(true);
 
         multiSelectLanguage = new MultiSelectLanguage();
 
@@ -97,25 +116,23 @@ public class FormLayoutProfileData extends FormLayout {
      * Die Methode markFormComponentsAsRequired zeigt an, welche Felder vom Benutzer
      * ausgefüllt werden müssen.
      */
-    public void markFormComponentsAsRequired(){
-        firstName.setRequired(true);
-        lastName.setRequired(true);
-        email.setRequired(true);
+    public void markFormComponentsAsRequired() {
+        firstName.setRequiredIndicatorVisible(true);
+        lastName.setRequiredIndicatorVisible(true);
+        email.setRequiredIndicatorVisible(true);
         googleAddress.setRequiredIndicatorVisible(true);
-        postal.setRequired(true);
-        place.setRequired(true);
         selectUniversityLocation.setRequiredIndicatorVisible(true);
         selectLanguage.setRequiredIndicatorVisible(true);
+        selectFaculty.setRequiredIndicatorVisible(true);
     }
 
     /**
      * Mit der Methode showUserData werden die Felder des Formulars mit den
      * bereist vorhandenen Nutzerdaten ausgefüllt.
      *
-     * @param user      Benutzer, dessen Daten angezeigt werden sollen.
+     * @param user Benutzer, dessen Daten angezeigt werden sollen.
      */
-    public void showUserData(User user){
-
+    public void showUserData(User user) {
         lastName.setValue(user.getLastName());
         firstName.setValue(user.getFirstName());
         email.setValue(user.getEmail());
@@ -133,9 +150,9 @@ public class FormLayoutProfileData extends FormLayout {
      * Mit der Methode setReadOnly kann eingestellt werden, ob die Felder des
      * Formulars nur zu lesen sind, oder ob sie auch bearbeitet werden können.
      *
-     * @param value         true oder false
+     * @param value true oder false
      */
-    public void setReadOnly(boolean value){
+    public void setReadOnly(boolean value) {
         firstName.setReadOnly(value);
         lastName.setReadOnly(value);
         selectUniversityLocation.setReadOnly(value);
@@ -149,21 +166,66 @@ public class FormLayoutProfileData extends FormLayout {
     /**
      * Prüft, ob alle Felder, die ausgefüllt sein müssen, entsprechend Daten enthalten.
      *
-     * @return  Alle notwendigen Felder ausgefüllt?
+     * @return Alle notwendigen Felder ausgefüllt?
      */
-    public boolean isValuePresent(){
+    public boolean isValuePresent() throws InvalidMailException, InvalidAddressException {
+        inputFieldInvalidCheck();
         return getStreet().getValue() != null && !getStreet().getValue().isEmpty() &&
                 getFirstName().getValue() != null && !getFirstName().getValue().isEmpty() &&
                 getLastName().getValue() != null && !getLastName().getValue().isEmpty() &&
                 getEmail().getValue() != null && !getEmail().getValue().isEmpty() &&
                 getSelectUniversityLocation().getValue() != null && !getSelectUniversityLocation().getValue().isEmpty() &&
+                getSelectFaculty().getValue() != null && !getSelectFaculty().getValue().isEmpty() &&
                 !getSelectLanguage().getValue().isEmpty();
+    }
+
+    private void inputFieldInvalidCheck() throws InvalidMailException, InvalidAddressException {
+        if (firstName.isEmpty()) {
+            firstName.setInvalid(true);
+        }
+        if (lastName.isEmpty()) {
+            lastName.setInvalid(true);
+        }
+        if (email.isEmpty()) {
+            email.setInvalid(true);
+        }
+        else{
+            emailPatternCheck(email.getValue());
+        }
+        if (selectUniversityLocation.isEmpty()) {
+            selectUniversityLocation.setInvalid(true);
+        }
+        else {
+            if (selectFaculty.isEmpty()) {
+                selectFaculty.setInvalid(true);
+            }
+        }
+        if (googleAddress.getValue().isEmpty()) {
+            googleAddress.setInvalid(true);
+        }
+        else{
+            addressPatternCheck(googleAddress.getValue());
+        }
+        if (selectLanguage.isEmpty()) {
+            selectLanguage.setInvalid(true);
+        }
+    }
+
+    public void setInputFieldsInvalid(boolean isInvalid){
+        firstName.setInvalid(isInvalid);
+        lastName.setInvalid(isInvalid);
+        selectUniversityLocation.setInvalid(isInvalid);
+        selectFaculty.setInvalid(isInvalid);
+        email.setInvalid(isInvalid);
+        street.setInvalid(isInvalid);
+        selectLanguage.setInvalid(isInvalid);
+        multiSelectLanguage.setInvalid(isInvalid);
     }
 
     /**
      * Setzt das Formular für die Registierung oder das eigene Profil zusammen.
      */
-    public void createOwnProfileLayout(){
+    public void createOwnProfileLayout() {
         setColspan(selectLanguage, 1);
         setColspan(multiSelectLanguage, 1);
 
@@ -174,11 +236,11 @@ public class FormLayoutProfileData extends FormLayout {
     /**
      * Sett das Formular für das Profil eines anderen Benutzers zusammen.
      */
-    public void createOtherUserProfileLayout(){
+    public void createOtherUserProfileLayout() {
         setColspan(selectLanguage, 2);
         setColspan(multiSelectLanguage, 2);
 
-        add(firstName, lastName,selectUniversityLocation,
+        add(firstName, lastName, selectUniversityLocation,
                 selectFaculty, selectLanguage, multiSelectLanguage);
 
     }

@@ -52,7 +52,7 @@ public class AddressConverter {
             place = addressMatcher.group("ort").trim();
         }
         catch(Exception e){
-            throw new InvalidAddressException();
+            throw new InvalidAddressException("Keine gültige Adresse.");
         }
     }
 }

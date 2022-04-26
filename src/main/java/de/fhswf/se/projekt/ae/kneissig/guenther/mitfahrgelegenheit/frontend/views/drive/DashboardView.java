@@ -3,13 +3,11 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.vie
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -24,30 +22,36 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.BookingsView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.OwnDriveOffersView;
 
-import java.util.Optional;
-
 @RouteAlias(value = "", layout = MainLayout.class)
 @Route(value = "dashboard", layout = MainLayout.class)
 @PageTitle("Dashboard")
 @CssImport("/themes/mitfahrgelegenheit/views/dashboard-view.css")
 public class DashboardView extends VerticalLayout {
 
+    private static final String SINGLE_DRIVE = "Einzelfahrten";
+    private static final String REGULAR_DRIVE = "Regelmäßige Fahrten";
+
     private final UserService userService;
     private final DriveRouteService driveRouteService;
     private final BookingService bookingService;
 
-    private DriveRoute driverRoute;
-    private Booking passengerRoute;
+    private DriveRoute driverSingleRoute;
+    private Booking passengerSingleRoute;
+    private DriveRoute driverRegularRoute;
+    private Booking passengerRegularRoute;
     private Label driverViewDateValue;
     private Label driverViewStartValue;
     private Label driverViewDestinationValue;
     private TextArea driverViewNoteTextArea;
-    private Label passengerViewDriverValue;
+    private Anchor passengerViewDriverValue;
+    private Label passengerViewDriverValueLabel;
     private Label passengerViewDateValue;
     private Label passengerViewStartValue;
     private Label passengerViewDestinationValue;
     private TextArea passengerViewNoteTextArea;
     private Button buttonNewNote;
+    private VerticalLayout driverLabels;
+
 
     public DashboardView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService) {
         this.userService = userService;
@@ -55,12 +59,27 @@ public class DashboardView extends VerticalLayout {
         this.bookingService = bookingService;
 
         createDashboardView();
-        passengerValues();
-        driverValues();
+        passengerSingleDriveValues();
+        driverSingleDriveValues();
     }
 
     private void createDashboardView() {
         H1 title = new H1("Meine nächsten Fahrten");
+        RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
+        radioButtonGroup.setItems(SINGLE_DRIVE, REGULAR_DRIVE);
+        radioButtonGroup.setValue(SINGLE_DRIVE);
+        radioButtonGroup.addValueChangeListener(event -> {
+            switch (event.getValue()){
+                case SINGLE_DRIVE -> {
+                    passengerSingleDriveValues();
+                    driverSingleDriveValues();
+                }
+                case REGULAR_DRIVE -> {
+                    passengerRegularDriveValues();
+                    driverRegularDriveValues();
+                }
+            }
+        });
 
         /*-------------------------------------------------------------------------------------------------------------
                                                     Bereich Mitfahrt
@@ -73,7 +92,7 @@ public class DashboardView extends VerticalLayout {
 
         Label passengerViewDriver = new Label("Fahrt von: ");
         passengerViewDriver.setClassName("label");
-        Label passengerViewDate = new Label("Datum/Tag:");
+        Label passengerViewDate = new Label("Tag/Zeit:");
         passengerViewDate.setClassName("label");
         Label passengerViewStart = new Label("Start:");
         passengerViewStart.setClassName("label");
@@ -87,8 +106,11 @@ public class DashboardView extends VerticalLayout {
                 passengerViewDestination);
         passengerLabels.setClassName("labels-vl");
 
-        passengerViewDriverValue = new Label("-");
+        passengerViewDriverValue = new Anchor();
+        passengerViewDriverValue.setText("-");
         passengerViewDriverValue.setClassName("value");
+        passengerViewDriverValueLabel = new Label("-");
+        passengerViewDriverValueLabel.setClassName("value");
         passengerViewDateValue = new Label("-");
         passengerViewDateValue.setClassName("value");
         passengerViewStartValue = new Label("-");
@@ -98,6 +120,7 @@ public class DashboardView extends VerticalLayout {
 
         VerticalLayout passengerValues = new VerticalLayout(
                 passengerViewDriverValue,
+                passengerViewDriverValueLabel,
                 passengerViewDateValue,
                 passengerViewStartValue,
                 passengerViewDestinationValue
@@ -105,7 +128,7 @@ public class DashboardView extends VerticalLayout {
         passengerValues.setClassName("values-vl");
 
         Label labelPassengerNote = new Label("Letzte Notiz");
-        labelPassengerNote.setClassName("label");
+        labelPassengerNote.setClassName("note-label");
         passengerViewNoteTextArea = new TextArea();
         passengerViewNoteTextArea.setReadOnly(true);
         passengerViewNoteTextArea.setClassName("note");
@@ -124,14 +147,14 @@ public class DashboardView extends VerticalLayout {
         buttonDriverView.addClickListener(event -> UI.getCurrent().navigate(OwnDriveOffersView.class));
         HorizontalLayout headerDriverViewLayout = new HorizontalLayout(driverTitle, buttonDriverView);
 
-        Label driverViewDate = new Label("Datum/Tag:");
+        Label driverViewDate = new Label("Tag/Zeit:");
         driverViewDate.setClassName("label");
         Label driverViewStart = new Label("Start:");
         driverViewStart.setClassName("label");
         Label driverViewDestination = new Label("Ziel:");
         driverViewDestination.setClassName("label");
 
-        VerticalLayout driverLabels = new VerticalLayout(
+        driverLabels = new VerticalLayout(
                 driverViewDate,
                 driverViewStart,
                 driverViewDestination);
@@ -152,12 +175,12 @@ public class DashboardView extends VerticalLayout {
         driverValues.setClassName("values-vl");
 
         Label labelDriverNote = new Label("Letzte Notiz");
-        labelDriverNote.setClassName("label");
+        labelDriverNote.setClassName("note-label");
         buttonNewNote = new Button(VaadinIcon.PENCIL.create());
         buttonNewNote.setId("button-new-note");
         buttonNewNote.setEnabled(false);
         buttonNewNote.addClickListener(event -> {
-            EditNoteDialog dialog = new EditNoteDialog(driveRouteService, driverRoute);
+            EditNoteDialog dialog = new EditNoteDialog(driveRouteService, driverSingleRoute);
             dialog.open();
         });
 
@@ -176,37 +199,99 @@ public class DashboardView extends VerticalLayout {
                                                           Allgemein
         -------------------------------------------------------------------------------------------------------------*/
 
-        Div div = new Div(title, headerPassengerViewLayout, passengerViewLayout, headerDriverViewLayout, driverViewLayout);
+        Div div = new Div(title, radioButtonGroup, headerPassengerViewLayout, passengerViewLayout, headerDriverViewLayout, driverViewLayout);
         div.setClassName("content");
 
         add(div);
     }
 
-    private void driverValues() {
+    private void driverSingleDriveValues() {
 
-        driveRouteService.getNextDriveRouteByUser(userService.getCurrentUser()).ifPresent(driveRoute -> this.driverRoute = driveRoute);
+        driveRouteService.getNextSingleDriveRouteByUser(userService.getCurrentUser()).ifPresent(driveRoute -> this.driverSingleRoute = driveRoute);
 
-        if (driverRoute != null) {
-            driverViewDateValue.setText(driverRoute.getFormattedDate() + ", " + driverRoute.getFormattedTime());
-            driverViewStartValue.setText(driverRoute.getStart().getFullAddressToString());
-            driverViewDestinationValue.setText(driverRoute.getZiel().getFullAddressToString());
-            driverViewNoteTextArea.setValue(driverRoute.getNote());
-            buttonNewNote.setEnabled(true);
+        if (driverSingleRoute != null) {
+            driverViewDateValue.setText(driverSingleRoute.getFormattedDate() + ", " + driverSingleRoute.getFormattedTime());
+            setDriverValues(driverSingleRoute);
+        }
+        else{
+            clearDriverValues();
+        }
+    }
+    
+    private void passengerSingleDriveValues() {
+        bookingService.getNextSingleDriveBookingByPassenger(userService.getCurrentUser()).ifPresent(passengerRoute -> this.passengerSingleRoute = passengerRoute);
+
+        if (passengerSingleRoute != null) {
+            passengerViewDateValue.setText(passengerSingleRoute.getRegularDriveSingleDriveDate() == null ?
+                    passengerSingleRoute.getDriveRoute().getFormattedDate() + ", " + passengerSingleRoute.getDriveRoute().getFormattedTime() :
+                    passengerSingleRoute.getFormattedSingleDriveDate() + ", " + passengerSingleRoute.getDriveRoute().getFormattedTime());
+            setPassengerValues(passengerSingleRoute);
+        }
+        else{
+            clearPassengerValues();
         }
     }
 
+    private void driverRegularDriveValues(){
+        driveRouteService.getNextRegularDriveRouteByUser(userService.getCurrentUser()).ifPresent(driveRoute -> this.driverRegularRoute = driveRoute);
 
-    private void passengerValues() {
-        bookingService.getNextBookingByUser(userService.getCurrentUser()).ifPresent(passengerRoute -> this.passengerRoute = passengerRoute);
-
-        if (passengerRoute != null) {
-            passengerViewDriverValue.setText(passengerRoute.getDriveRoute().getDriver().getFullName());
-            passengerViewDateValue.setText(passengerRoute.getDriveRoute().getFormattedDate() + ", " + passengerRoute.getDriveRoute().getFormattedTime());
-            passengerViewStartValue.setText(passengerRoute.getDriveRoute().getStart().getFullAddressToString());
-            passengerViewDestinationValue.setText(passengerRoute.getDriveRoute().getZiel().getFullAddressToString());
-            passengerViewNoteTextArea.setValue(passengerRoute.getDriveRoute().getNote());
+        if (driverRegularRoute != null) {
+            driverViewDateValue.setText(driverRegularRoute.getRegularDrive().getRegularDriveDay().label + ", " + driverRegularRoute.getFormattedTime());
+            setDriverValues(driverRegularRoute);
+        }
+        else{
+            clearDriverValues();
         }
     }
 
+    private void passengerRegularDriveValues(){
+        bookingService.getNextRegularDriveBookingByPassenger(userService.getCurrentUser()).ifPresent(passengerRoute -> this.passengerRegularRoute = passengerRoute);
+
+        if (passengerRegularRoute != null) {
+            passengerViewDateValue.setText(passengerRegularRoute.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + passengerRegularRoute.getDriveRoute().getFormattedTime());
+            setPassengerValues(passengerRegularRoute);
+        }
+        else{
+            clearPassengerValues();
+        }
+    }
+
+    private void setPassengerValues(Booking booking){
+        passengerViewDriverValueLabel.setVisible(false);
+        passengerViewDriverValue.setVisible(true);
+        passengerViewDriverValue.setHref("/profil/" + booking.getDriveRoute().getDriver().getUsername());
+        passengerViewDriverValue.setText(booking.getDriveRoute().getDriver().getFullName());
+        passengerViewStartValue.setText(booking.getDriveRoute().getStart().getFullAddressToString());
+        passengerViewDestinationValue.setText(booking.getDriveRoute().getDestination().getFullAddressToString());
+        passengerViewNoteTextArea.setValue(booking.getDriveRoute().getNote());
+    }
+
+    private void setDriverValues(DriveRoute driveRoute){
+        driverViewStartValue.setText(driveRoute.getStart().getFullAddressToString());
+        driverViewDestinationValue.setText(driveRoute.getDestination().getFullAddressToString());
+        driverViewNoteTextArea.setValue(driveRoute.getNote());
+        buttonNewNote.setEnabled(true);
+    }
+
+    private void clearPassengerValues(){
+        passengerViewDateValue.setText("-");
+        passengerViewStartValue.setText("-");
+        passengerViewDestinationValue.setText("-");
+        passengerViewNoteTextArea.setValue("");
+
+        passengerViewDriverValueLabel.setVisible(true);
+        passengerViewDriverValueLabel.setText("-");
+        passengerViewDriverValue.setVisible(false);
+//        driverLabels.remove(passengerViewDriverValue);
+//        driverLabels.addComponentAtIndex(0, );
+    }
+
+    private void clearDriverValues(){
+        driverViewDateValue.setText("-");
+        driverViewStartValue.setText("-");
+        driverViewDestinationValue.setText("-");
+        driverViewNoteTextArea.setValue("");
+        buttonNewNote.setEnabled(false);
+    }
 }
 

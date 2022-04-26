@@ -1,6 +1,7 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -291,6 +293,25 @@ public class TestDataInit {
 
         driveRouteService.save(driveRouteI4);
 
+        RegularDrive regularDriveI5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+
+        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
+        destination = new Destination(new Address("58089", "Hagen", "Paschestraße", "28"));
+
+        DriveRoute driveRouteI5 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 5, 1, 16, 30),
+                true,
+                1,
+                ivonne,
+                DriveType.RETURN_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteI5.setRegularDrive(regularDriveI5);
+
+        driveRouteService.save(driveRouteI5);
 
         /*-------------------------------------------------------------------------------------------------------------
                                                     Fahrtangebote - Maren
@@ -517,6 +538,18 @@ public class TestDataInit {
         driveRequestService.save(driveRequest);
         driveRouteService.save(driveRouteR3);
 
+
+        driveRequest = new DriveRequest(
+                driveRouteI5,
+                ramon,
+                "regulär lel",
+                "pups",
+                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"))
+        );
+
+        driveRouteI5.addDriveRequest(driveRequest);
+        driveRequestService.save(driveRequest);
+        driveRouteService.save(driveRouteI5);
 
         /**
          * BOOKING

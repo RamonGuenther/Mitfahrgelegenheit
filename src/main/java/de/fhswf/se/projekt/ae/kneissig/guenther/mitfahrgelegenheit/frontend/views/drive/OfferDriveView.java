@@ -12,12 +12,15 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
@@ -29,19 +32,18 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 
 
 /*
-* FIXME:
-*
-* TODO:
-*       - Sunderweg, Bielefeld, Deutschland Ohne PLZ!! wenn man keine Hausnummer angbit. können wir die API so einstellen das es unserem Format entspricht oder Validierung in dem Textfeld
-*       - Krayer Str., Essen, Deutschland
-*
-* */
+ * FIXME:
+ *
+ * TODO:
+ *       - Sunderweg, Bielefeld, Deutschland Ohne PLZ!! wenn man keine Hausnummer angbit. können wir die API so einstellen das es unserem Format entspricht oder Validierung in dem Textfeld
+ *       - Krayer Str., Essen, Deutschland
+ *
+ * */
 
 
 /**
@@ -53,14 +55,14 @@ import java.util.Collections;
 @Route(value = "fahrtAnbieten", layout = MainLayout.class)
 @PageTitle("Fahrt Anbieten")
 @CssImport("/themes/mitfahrgelegenheit/views/offer-drive-view.css")
-public class OfferDriveView extends VerticalLayout{
+public class OfferDriveView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
 
     private final UserService userService;
 
-    private FormLayoutDriveRoute formlayoutTop;
-    private FormLayoutDriveRoute formLayoutBottom;
+    private FormLayoutDriveRoute formlayoutDriveRouteTop;
+    private FormLayoutDriveRoute formLayoutDriveRouteBottom;
 
     private RadioButtonGroup<String> layoutOption;
 
@@ -105,8 +107,8 @@ public class OfferDriveView extends VerticalLayout{
 
         H1 title = new H1("Fahrt anbieten");
 
-        formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-        formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+        formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+        formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
 
         layoutOption = new RadioButtonGroup<>();
         layoutOption.setItems("Hinfahrt", "Rückfahrt", "Hin- & Rückfahrt");
@@ -125,24 +127,26 @@ public class OfferDriveView extends VerticalLayout{
         layoutOption.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt" -> {
-                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formlayoutTop.setFhLocation(user.getUniversityLocation());
+                    formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
+                    formlayoutDriveRouteTop.setAddress(user.getAddress().toString());
                     div.removeAll();
-                    div.add(title, layoutOption, formlayoutTop, buttonLayout);
+                    div.add(title, layoutOption, formlayoutDriveRouteTop, buttonLayout);
                 }
                 case "Rückfahrt" -> {
-                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                    formLayoutBottom.setFhLocation(user.getUniversityLocation());
+                    formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
+                    formLayoutDriveRouteBottom.setAddress(user.getAddress().toString());
                     div.removeAll();
-                    div.add(title, layoutOption, formLayoutBottom, buttonLayout);
+                    div.add(title, layoutOption, formLayoutDriveRouteBottom, buttonLayout);
                 }
                 case "Hin- & Rückfahrt" -> {
-                    formlayoutTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formlayoutTop.setFhLocation(user.getUniversityLocation());
-                    formLayoutBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                    formLayoutBottom.setFhLocation(user.getUniversityLocation());
+                    formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
+                    formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
                     div.removeAll();
-                    div.add(title, layoutOption, formlayoutTop, formLayoutBottom, buttonLayout);
+                    div.add(title, layoutOption, formlayoutDriveRouteTop, formLayoutDriveRouteBottom, buttonLayout);
                 }
             }
         });
@@ -154,36 +158,45 @@ public class OfferDriveView extends VerticalLayout{
 
     private void saveFormLayoutTop() {
         try {
-            if (formlayoutTop.checkData()) {
+            if (formlayoutDriveRouteTop.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
-            saveDrive(formlayoutTop.getAddress(), formlayoutTop.getFhLocation(), formlayoutTop.getDriveTime(), formlayoutTop.getCheckboxFuelParticipation(), formlayoutTop.getCarSeatCount(), DriveType.OUTWARD_TRIP, formlayoutTop.getDriveDateStart());
-            formlayoutTop.clearFields();
-        }
-        catch (InvalidDateException ex){
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+
+            saveDrive(formlayoutDriveRouteTop.getAddressValue(), formlayoutDriveRouteTop.getFhLocation(),
+                    formlayoutDriveRouteTop.getDriveTime(), formlayoutDriveRouteTop.getCheckboxFuelParticipation(),
+                    formlayoutDriveRouteTop.getCarSeatCount(), DriveType.OUTWARD_TRIP,
+                    formlayoutDriveRouteTop.getDriveDateStart());
+
+            formlayoutDriveRouteTop.clearFields();
+        } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
     }
 
     private void saveFormLayoutBottom() {
         try {
-            if (formLayoutBottom.checkData()) {
+            if (formLayoutDriveRouteBottom.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
-            saveDrive(formLayoutBottom.getFhLocation(), formLayoutBottom.getAddress(), formLayoutBottom.getDriveTime(), formLayoutBottom.getCheckboxFuelParticipation(), formLayoutBottom.getCarSeatCount(), DriveType.RETURN_TRIP, formLayoutBottom.getDriveDateStart());
-            formLayoutBottom.clearFields();
-        }
-        catch (InvalidDateException ex){
-            NotificationError.show("Das Datum darf nicht in der Vergangenheit liegen.");
+
+            saveDrive(formLayoutDriveRouteBottom.getFhLocation(), formLayoutDriveRouteBottom.getAddressValue(),
+                    formLayoutDriveRouteBottom.getDriveTime(), formLayoutDriveRouteBottom.getCheckboxFuelParticipation(),
+                    formLayoutDriveRouteBottom.getCarSeatCount(), DriveType.RETURN_TRIP,
+                    formLayoutDriveRouteBottom.getDriveDateStart());
+
+            formLayoutDriveRouteBottom.clearFields();
+        } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
+            NotificationError.show(ex.getMessage());
             ex.printStackTrace();
         }
     }
 
-    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation, Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
-        try{
+    private void saveDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation,
+                           Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
+        try {
             AddressConverter converter = new AddressConverter(address);
             Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
 
@@ -196,7 +209,8 @@ public class OfferDriveView extends VerticalLayout{
             Destination destination = new Destination(secondAddress);
 
             RouteString routeString = new RouteString(start, destination, Collections.emptyList());
-            driveRouteService.save(new DriveRoute(
+
+            DriveRoute newDriveRoute = new DriveRoute(
                     start,
                     destination,
                     driveTime.atDate(driveDate),
@@ -205,13 +219,31 @@ public class OfferDriveView extends VerticalLayout{
                     user,
                     fahrtenTyp,
                     routeString.getRoute()
-            ));
+            );
 
-            NotificationSuccess.show("Fahrt wurde erstellt!");
-        }
-        catch(Exception e){
+            if (fahrtenTyp.equals(DriveType.OUTWARD_TRIP)) {
+                if (formlayoutDriveRouteTop.getCheckboxRegularDriveValue()) {
+                    newDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formlayoutDriveRouteTop.getDriveDays()),
+                            formlayoutDriveRouteTop.getDriveDateStart(),
+                            formlayoutDriveRouteTop.getDriveDateEnd())
+                    );
+                }
+            } else {
+                if (formLayoutDriveRouteBottom.getCheckboxRegularDriveValue()) {
+                    newDriveRoute.setRegularDrive(new RegularDrive(
+                            DayOfWeek.getDayOfWeek(formLayoutDriveRouteBottom.getDriveDays()),
+                            formLayoutDriveRouteBottom.getDriveDateStart(),
+                            formLayoutDriveRouteBottom.getDriveDateEnd())
+                    );
+                }
+            }
+
+            driveRouteService.save(newDriveRoute);
+            NotificationSuccess.show("Das Fahrtangebot wurde erstellt.");
+
+        } catch (Exception e) {
             NotificationError.show(e.getMessage());
         }
     }
-
 }

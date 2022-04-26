@@ -2,6 +2,7 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.serv
 
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repositories.DriveRouteRepository;
 import org.springframework.stereotype.Service;
@@ -63,26 +64,115 @@ public class DriveRouteService {
         };
     }
 
+//    public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
+//        List<DriveRoute> driveRoutes = new ArrayList<>();
+//        List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace)
+//                .orElse(Collections.emptyList())
+//                .stream()
+//                .filter(filter -> filter.getDrivingTime().toLocalDate().isAfter(LocalDate.now()))
+//                .collect(Collectors.toList());
+//
+//        if (regularDrive) {
+//            unfilteredRoutes = unfilteredRoutes.stream()
+//                    .filter(driveRoute -> driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) ||
+//                            driveRoute.getDrivingTime().toLocalDate().isAfter(datetime.toLocalDate()))
+//                    .collect(Collectors.toList());
+//        } else {
+//            unfilteredRoutes = unfilteredRoutes.stream()
+//                    .filter(driveRoute -> driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()))
+//                    .collect(Collectors.toList());
+//
+//            System.out.println(unfilteredRoutes.size());
+//        }
+//
+//        switch (driveType) {
+//            case OUTWARD_TRIP -> {
+//                for (DriveRoute route : unfilteredRoutes) {
+//                    if (route.getDrivingTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
+//                            route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
+//                        driveRoutes.add(route);
+//                    }
+//                }
+//            }
+//            case RETURN_TRIP -> {
+//                for (DriveRoute route : unfilteredRoutes) {
+//                    if (route.getDrivingTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
+//                            route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
+//                        driveRoutes.add(route);
+//                    }
+//                }
+//            }
+//
+//        }
+//
+//        driveRoutes = driveRoutes
+//                .stream()
+//                .filter(filter -> filter.getSeatCount() > filter.getBookings().size())
+//                .collect(Collectors.toList());
+//
+//        return driveRoutes;
+//    }
 
-    public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive) {
+    public Optional<DriveRoute> getNextSingleDriveRouteByUser(User user) {
+        List<DriveRoute> outwardTrips = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNull(user).orElse(Collections.emptyList());
+
+        outwardTrips = outwardTrips.stream().filter(driveRoute ->
+                driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDateTime.now().toLocalDate()) ||
+                driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
+                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime()))
+                .collect(Collectors.toList());
+
+        outwardTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
+
+        return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
+    }
+
+    public Optional<DriveRoute> getNextRegularDriveRouteByUser(User user){
+        List<DriveRoute> outwardTrips = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNotNull(user).orElse(Collections.emptyList());
+
+        outwardTrips = outwardTrips.stream().filter(driveRoute ->
+                driveRoute.getDrivingTime().toLocalDate().equals(LocalDate.now()) &&
+                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||
+                driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDate.now()) &&
+                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now())
+        ).collect(Collectors.toList());
+
+        outwardTrips.sort(Comparator.comparing(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay()));
+
+        return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
+    }
+
+    public void cleanCompletedDriveRoutesByUser(User user) {
+        List<DriveRoute> driveRoutes = repository.findAllByDriverAndDrivingTimeBeforeAndAndBookings_Empty(user, LocalDateTime.now()).orElse(Collections.emptyList());
+        for (DriveRoute driveRoute : driveRoutes) {
+            delete(driveRoute);
+        }
+    }
+
+    public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive, DayOfWeek dayOfWeek) {
+
         List<DriveRoute> driveRoutes = new ArrayList<>();
         List<DriveRoute> unfilteredRoutes = findRouten(user, driveType, destinationPlace, startPlace)
                 .orElse(Collections.emptyList())
                 .stream()
-                .filter(filter -> filter.getDrivingTime().toLocalDate().isAfter(LocalDate.now()))
+                .filter(filter -> filter.getRegularDrive().getRegularDriveDateEnd() != null &&                          // wenn regelmäßige Fahrt
+                        filter.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||                   // und heutiges Datum liegt im Zeitraum der regelmäßigen Fahrt
+                        filter.getDrivingTime().toLocalDate().isAfter(LocalDate.now()))                                 // oder Einzelfahrt liegt nach dem heutigen Datum
                 .collect(Collectors.toList());
 
         if (regularDrive) {
             unfilteredRoutes = unfilteredRoutes.stream()
-                    .filter(driveRoute -> driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) ||
-                            driveRoute.getDrivingTime().toLocalDate().isAfter(datetime.toLocalDate()))
+                    .filter(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDateEnd() != null &&              // wenn regelmäßige Fahrt
+                            driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) &&           // und heutiges Datum liegt im Zeitraum der regelmäßigen Fahrt
+                            driveRoute.getRegularDrive().getRegularDriveDay().equals(dayOfWeek))                        // und gewünschter Wochentag stimmt überein
                     .collect(Collectors.toList());
         } else {
             unfilteredRoutes = unfilteredRoutes.stream()
-                    .filter(driveRoute -> driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()))
+                    .filter(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDateEnd() == null &&              // wenn keine regelmäßige Fahrt
+                            driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) ||                 // und Tag der Fahrt entspricht Suchdatum
+                            driveRoute.getRegularDrive().getRegularDriveDateEnd() != null &&                            // oder regelmäßige Fahrt
+                            driveRoute.getRegularDrive().getDriveDates().contains(datetime.toLocalDate()))              // und Suchdatum liegt im Zeitraum
                     .collect(Collectors.toList());
-
-            System.out.println(unfilteredRoutes.size());
         }
 
         switch (driveType) {
@@ -102,32 +192,12 @@ public class DriveRouteService {
                     }
                 }
             }
-
         }
-
         driveRoutes = driveRoutes
                 .stream()
                 .filter(filter -> filter.getSeatCount() > filter.getBookings().size())
                 .collect(Collectors.toList());
 
         return driveRoutes;
-    }
-
-    public Optional<DriveRoute> getNextDriveRouteByUser(User user) {
-        List<DriveRoute> outwardTrips = repository.findAllByDriver(user).orElse(Collections.emptyList());
-        outwardTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
-        outwardTrips = outwardTrips.stream().filter(driveRoute ->
-                driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDateTime.now().toLocalDate()) ||
-                        driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
-                                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime())).collect(Collectors.toList());
-
-        return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
-    }
-
-    public void cleanCompletedDriveRoutesByUser(User user) {
-        List<DriveRoute> driveRoutes = repository.findAllByDriverAndDrivingTimeBeforeAndAndBookings_Empty(user, LocalDateTime.now()).orElse(Collections.emptyList());
-        for (DriveRoute driveRoute : driveRoutes) {
-            delete(driveRoute);
-        }
     }
 }

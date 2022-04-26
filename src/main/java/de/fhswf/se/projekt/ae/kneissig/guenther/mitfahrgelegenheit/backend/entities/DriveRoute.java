@@ -1,6 +1,5 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities;
 
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
@@ -53,11 +52,8 @@ public class DriveRoute {
 
     private boolean fuelParticipation;
 
-    private boolean isRegularDrive;
-
-    private DayOfWeek regularDriveDay;
-
-    private LocalDateTime regularDriveDateEnd;
+    @Embedded
+    private RegularDrive regularDrive;
 
     private String note;
 
@@ -85,30 +81,10 @@ public class DriveRoute {
         this.currentRouteLink = currentRouteLink;
         this.driveType = driveType;
         this.note = "";
+        this.regularDrive = null;
         driveRequests = new HashSet<>();
         bookings = new HashSet<>();
     }
-
-//    //TODO: Regelmäßige Fahrt Konstruktor brauch ich den überhaupt oder kann ich den hier einfach für alles nutzen und bei null wird halt null einegtragen? XD
-//    public DriveRoute(Start start, Destination destination, boolean isRegularDrive, LocalDateTime regularDriveDateEnd,
-//                      DayOfWeek regularDriveDay, boolean fuelParticipation, Integer seatCount, User driver,
-//                      LocalDateTime creationDate, DriveType driveType, String currentRouteLink) {
-//
-//        this.start = start;
-//        this.destination = destination;
-//        this.isRegularDrive = isRegularDrive;
-//        this.regularDriveDateEnd = regularDriveDateEnd;
-//        this.regularDriveDay = regularDriveDay;
-//        this.fuelParticipation = fuelParticipation;
-//        this.seatCount = seatCount;
-//        this.driver = driver;
-//        this.creationDate = creationDate;
-//        this.driveType = driveType;
-//        this.currentRouteLink = currentRouteLink;
-//        driveRequests = new HashSet<>();
-//        bookings = new HashSet<>();
-//    }
-
 
     //TODO: Update Konstruktor -> vllt doch über setter? oder überall über Konstruktor
     public DriveRoute(
@@ -150,10 +126,6 @@ public class DriveRoute {
         return start;
     }
 
-    public Destination getZiel() {
-        return destination;
-    }
-
     public Destination getDestination() {
         return destination;
     }
@@ -164,10 +136,6 @@ public class DriveRoute {
 
     public boolean isFuelParticipation() {
         return fuelParticipation;
-    }
-
-    public DayOfWeek getRegularDriveDay() {
-        return regularDriveDay;
     }
 
     public String getNote() {
@@ -198,20 +166,16 @@ public class DriveRoute {
         return driveType;
     }
 
-    public boolean isRegularDrive() {
-        return isRegularDrive;
-    }
-
-    public LocalDateTime getRegularDriveDateEnd() {
-        return regularDriveDateEnd;
-    }
-
     public List<Booking> getBookings() {
         return bookings.stream().toList();
     }
 
     public LocalDateTime getDrivingTime() {
         return drivingTime;
+    }
+
+    public RegularDrive getRegularDrive() {
+        return regularDrive;
     }
 
     public void addDriveRequest(DriveRequest newDriveRequest) throws DuplicateRequestException {
@@ -221,10 +185,14 @@ public class DriveRoute {
                 r.getDriveRoute().equals(newDriveRequest.getDriveRoute())).findAny();
 
         if (any.isPresent()) {
-            throw new DuplicateRequestException();
+            throw new DuplicateRequestException("Eine Anfrage für diese Fahrt wurde bereits gestellt.");
         }
 
         driveRequests.add(newDriveRequest);
+    }
+
+    public void setRegularDrive(RegularDrive regularDrive) {
+        this.regularDrive = regularDrive;
     }
 
     public void removeDriveRequest(DriveRequest driveRequest) {
@@ -241,7 +209,7 @@ public class DriveRoute {
                 b.getDriveRoute().equals(newBooking.getDriveRoute())).findAny();
 
         if (any.isPresent())
-            throw new DuplicateBookingException();
+            throw new DuplicateBookingException("Mitfahrer wurde schon für das Fahrtangebot angenommen.");
 
         bookings.add(newBooking);
     }

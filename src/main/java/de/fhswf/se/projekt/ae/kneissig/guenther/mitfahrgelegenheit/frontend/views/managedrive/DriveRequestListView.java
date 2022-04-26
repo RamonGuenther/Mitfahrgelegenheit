@@ -93,7 +93,7 @@ public class DriveRequestListView extends VerticalLayout {
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
             showDriveRequestButton.addClickListener(e -> {
-                DriveDetailsDialog driveDetailsDialog = new DriveDetailsDialog(item.getDriveRoute());
+                DriveDetailsDialog driveDetailsDialog = new DriveDetailsDialog(item);
                 driveDetailsDialog.open();
             });
             return showDriveRequestButton;

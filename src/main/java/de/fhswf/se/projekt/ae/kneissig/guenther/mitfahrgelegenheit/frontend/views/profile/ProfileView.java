@@ -16,6 +16,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Languages;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidMailException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
@@ -88,7 +90,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         profileDataForm = new FormLayoutProfileData(profileButtonLayout);
         profileDataForm.createOwnProfileLayout();
         profileDataForm.remove(profileDataForm.getGoogleAddress());
-        profileDataForm.addComponentAtIndex(5, profileDataForm.getStreet());
+        profileDataForm.addComponentAtIndex(4, profileDataForm.getStreet());
         profileDataForm.setColspan(profileDataForm.getStreet(), 2);
         profileDataForm.setClassName("profile-data-form");
         profileDataForm.showUserData(user);
@@ -117,6 +119,12 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
                 profileDataForm.remove(editProfilButtonLayout);
                 profileDataForm.addComponentAtIndex(10, profileButtonLayout);
                 profileDataForm.setColspan(profileButtonLayout, 4);
+
+                profileDataForm.remove(profileDataForm.getGoogleAddress());
+                profileDataForm.addComponentAtIndex(4, profileDataForm.getStreet());
+                profileDataForm.setColspan(profileDataForm.getStreet(), 2);
+                profileDataForm.getSelectFaculty().setReadOnly(true);
+                profileDataForm.setInputFieldsInvalid(false); //Damit beim Abbrechen nichts mehr rot is
             });
         });
 
@@ -163,23 +171,24 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService);
-        gridHinfahrt.addClassName("profilegrid");
-        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService);
-        gridRueckfahrt.addClassName("profilegrid");
-        Div div = new Div(labelProfileGrid, radioButtonGroup, gridHinfahrt);
+        // ToDo: Hintere Parameter sind ein bissl unglücklich, werden aber an anderer Stelle leider benötigt, damit im Request und Booking das richtige gespeichert werden kann. (wie süß :3)
+        DriveRouteGrid gridOutward = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService, false, null);
+        gridOutward.addClassName("profilegrid");
+        DriveRouteGrid gridReturn = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
+        gridReturn.addClassName("profilegrid");
+        Div div = new Div(labelProfileGrid, radioButtonGroup, gridOutward);
         div.setId("profile-drive_offers_layout");
         add(div);
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt" -> {
-                    div.remove(gridRueckfahrt);
-                    div.add(gridHinfahrt);
+                    div.remove(gridReturn);
+                    div.add(gridOutward);
                 }
                 case "Rückfahrt" -> {
-                    div.remove(gridHinfahrt);
-                    div.add(gridRueckfahrt);
+                    div.remove(gridOutward);
+                    div.add(gridReturn);
                 }
             }
         });
@@ -218,17 +227,15 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             profileDataForm.remove(profileDataForm.getStreet());
             profileDataForm.remove(profileDataForm.getGoogleAddress());
             profileDataForm.setGoogleAddress(new TextFieldAddress("Adresse"));
-            profileDataForm.addComponentAtIndex(5, profileDataForm.getGoogleAddress());
+            profileDataForm.addComponentAtIndex(4, profileDataForm.getGoogleAddress());
             profileDataForm.setColspan(profileDataForm.getGoogleAddress(), 2);
 
-            profileDataForm.getGoogleAddress().focus();
             profileDataForm.getGoogleAddress().addValueChangeListener(event -> {
                 profileDataForm.getStreet().setValue(profileDataForm.getGoogleAddress().getStreet());
                 profileDataForm.getPlace().setValue(profileDataForm.getGoogleAddress().getPlace());
                 profileDataForm.getPostal().setValue(profileDataForm.getGoogleAddress().getPostal());
-
                 profileDataForm.remove(profileDataForm.getGoogleAddress());
-                profileDataForm.addComponentAtIndex(5, profileDataForm.getStreet());
+                profileDataForm.addComponentAtIndex(4, profileDataForm.getStreet());
                 profileDataForm.setColspan(profileDataForm.getStreet(), 2);
             });
         });
@@ -242,32 +249,38 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
      * @param profileButtonLayout     Standard-Buttons für das Profil
      */
     private void saveProfileData(HorizontalLayout editProfileButtonLayout, HorizontalLayout profileButtonLayout) {
-        if (profileDataForm.isValuePresent()) {
-            user.setFirstName(profileDataForm.getFirstName().getValue());
-            user.setLastName(profileDataForm.getLastName().getValue());
-            user.setEmail(profileDataForm.getEmail().getValue());
-            user.setUniversityLocation(profileDataForm.getSelectUniversityLocation().getValue());
-            user.setFaculty((profileDataForm.getSelectFaculty().getValue()));
-            user.setLanguages(new Languages(profileDataForm.getSelectLanguage().getValue(),
-                    profileDataForm.getMultiSelectLanguage().getSelectedItems()));
-            if (!profileDataForm.getGoogleAddress().getValue().isEmpty()) {
-                user.setAddress(new Address(
-                        profileDataForm.getGoogleAddress().getPostal(),
-                        profileDataForm.getGoogleAddress().getPlace(),
-                        profileDataForm.getGoogleAddress().getStreet(),
-                        profileDataForm.getGoogleAddress().getNumber()
-                ));
-            }
-            userService.save(user);
-            profileDataForm.setReadOnly(true);
-            profileDataForm.showUserData(user);
+        try {
+            if (profileDataForm.isValuePresent()) {
+                user.setFirstName(profileDataForm.getFirstName().getValue());
+                user.setLastName(profileDataForm.getLastName().getValue());
+                user.setEmail(profileDataForm.getEmail().getValue());
+                user.setUniversityLocation(profileDataForm.getSelectUniversityLocation().getValue());
+                user.setFaculty((profileDataForm.getSelectFaculty().getValue()));
+                user.setLanguages(new Languages(profileDataForm.getSelectLanguage().getValue(),
+                        profileDataForm.getMultiSelectLanguage().getSelectedItems()));
+                if (!profileDataForm.getGoogleAddress().getValue().isEmpty()) {
+                    user.setAddress(new Address(
+                            profileDataForm.getGoogleAddress().getPostal(),
+                            profileDataForm.getGoogleAddress().getPlace(),
+                            profileDataForm.getGoogleAddress().getStreet(),
+                            profileDataForm.getGoogleAddress().getNumber()
+                    ));
+                }
+                userService.save(user);
+                profileDataForm.setReadOnly(true);
+                profileDataForm.showUserData(user);
 
-            profileDataForm.remove(editProfileButtonLayout);
-            profileDataForm.addComponentAtIndex(10, profileButtonLayout);
-            profileDataForm.setColspan(profileButtonLayout, 4);
-        } else {
-            NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
+                profileDataForm.remove(editProfileButtonLayout);
+                profileDataForm.addComponentAtIndex(10, profileButtonLayout);
+                profileDataForm.setColspan(profileButtonLayout, 4);
+            } else {
+                NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
+            }
+        } catch (InvalidMailException | InvalidAddressException ex) {
+            NotificationError.show(ex.getMessage());
+            ex.printStackTrace();
         }
+
     }
 
     @Override
