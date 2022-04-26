@@ -11,6 +11,12 @@ import com.vaadin.flow.component.textfield.TextArea;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 
+/**
+ * Die Klasse EditNoteDialog erstellt einen Dialog, mit dem die Notiz zu einem
+ * Fahrtangebot bearbeitet werden kann.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/edit-note-dialog.css")
 public class EditNoteDialog extends Dialog {
 

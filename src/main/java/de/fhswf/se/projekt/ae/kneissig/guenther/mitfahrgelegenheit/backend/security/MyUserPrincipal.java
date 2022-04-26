@@ -8,6 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Die Klasse MyUserPrincipal ist dafür da einen Benutzer aus der
+ * Datenbank zu laden. Sie stellt ein UserDetails-Objekt dar,
+ * welches die Benutzerdaten für die Security enthält.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public class MyUserPrincipal implements UserDetails {
 
     private User user;

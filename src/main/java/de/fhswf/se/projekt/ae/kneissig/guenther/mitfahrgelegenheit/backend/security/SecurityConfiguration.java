@@ -13,6 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+/**
+ * Die Klasse SecurityConfiguration bildet die Security-Konfiguration der
+ * Applikation.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {

@@ -17,6 +17,12 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 
+/**
+ * Die Klasse RatingDialog erstellt einen Dialog, mit dem ein Benutzer einen
+ * anderen Benutzer anhand von bestimmten Kriterien bewerten kann.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/ratings-dialog.css")
 public class RatingDialog extends Dialog {
 
@@ -92,10 +98,13 @@ public class RatingDialog extends Dialog {
         add(dialogLayout);
     }
 
+    /**
+     * Die Methode setSaveButtonEnabled gibt den Speichern-Button erst frei,
+     * wenn der Benutzer die gegebenen Kriterien bewertet hat.
+     */
     private void setSaveButtonEnabled() {
         if (ratingPuncuality.getRating() != 0 && ratingReliability.getRating() != 0) {
             buttonSaveRating.setEnabled(true);
         }
     }
-
 }

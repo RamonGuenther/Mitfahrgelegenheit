@@ -1,6 +1,5 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive;
 
-
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -35,22 +34,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
 
-
-/*
- * FIXME:
- *
- * TODO:
- *       - Sunderweg, Bielefeld, Deutschland Ohne PLZ!! wenn man keine Hausnummer angbit. können wir die API so einstellen das es unserem Format entspricht oder Validierung in dem Textfeld
- *       - Krayer Str., Essen, Deutschland
- *
- * */
-
-
 /**
  * Die Klasse OfferDriveView erstellt eine View für das Erstellen
- * eines Fahrtangebotes
+ * eines Fahrtangebotes. Der Benutzer kann eine Hin- und/ oder eine
+ * Rückfahrt zu einem FH-Standort der Fachhochschule Südwestfalen
+ * erstellen.
  *
- * @author Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @Route(value = "fahrtAnbieten", layout = MainLayout.class)
 @PageTitle("Fahrt Anbieten")
@@ -58,14 +48,12 @@ import java.util.Collections;
 public class OfferDriveView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
-
     private final UserService userService;
 
     private FormLayoutDriveRoute formlayoutDriveRouteTop;
     private FormLayoutDriveRoute formLayoutDriveRouteBottom;
 
     private RadioButtonGroup<String> layoutOption;
-
     private Button createButton;
 
     /**
@@ -73,7 +61,6 @@ public class OfferDriveView extends VerticalLayout {
      * Listener zuständig.
      */
     public OfferDriveView(DriveRouteService driveRouteService, UserService userService) {
-
 
         this.driveRouteService = driveRouteService;
         this.userService = userService;
@@ -156,6 +143,10 @@ public class OfferDriveView extends VerticalLayout {
         add(div);
     }
 
+    /**
+     * Die Methode saveFormLayoutTop speichert eine vom Benutzer erstellte Hinfahrt.
+     * Sie wird in der Methode saveDrive verwendet.
+     */
     private void saveFormLayoutTop() {
         try {
             if (formlayoutDriveRouteTop.checkInputFields()) {
@@ -175,6 +166,10 @@ public class OfferDriveView extends VerticalLayout {
         }
     }
 
+    /**
+     * Die Methode saveFormLayoutBottom speichert eine vom Benutzer erstellte Rückfahrt.
+     * Sie wird in der Methode saveDrive verwendet.
+     */
     private void saveFormLayoutBottom() {
         try {
             if (formLayoutDriveRouteBottom.checkInputFields()) {
@@ -194,6 +189,11 @@ public class OfferDriveView extends VerticalLayout {
         }
     }
 
+    /**
+     * Die Methode saveDrive speichert die Fahrt, die der Benutzer erstellen möchte. Dabei wird zwischen Hin-
+     * und Rückfahrten unterschieden. Durch die unterschiedlichen FormLayouts und save-Methoden, ist es für
+     * den Benutzer auch möglich, gleichzeitig eine Hin- und Rückfahrt zu erstellen.
+     */
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation,
                            Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {
         try {
@@ -238,7 +238,6 @@ public class OfferDriveView extends VerticalLayout {
                     );
                 }
             }
-
             driveRouteService.save(newDriveRoute);
             NotificationSuccess.show("Das Fahrtangebot wurde erstellt.");
 

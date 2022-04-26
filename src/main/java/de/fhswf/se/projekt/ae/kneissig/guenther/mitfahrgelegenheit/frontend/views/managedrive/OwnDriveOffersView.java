@@ -1,6 +1,5 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive;
 
-
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
@@ -24,12 +23,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * Die Klasse OwnDriveOffersView erstellt eine View für die Auflistung
- * der eigenen Fahrtangebote
+ * der eigenen Fahrtangebote. Zu den Fahrtangeboten können sich die
+ * Details angesehen werden. In der Detailansicht können Fahrten bearbeitet
+ * oder gelöscht werden.
  *
- * @author Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @Route(value = "eigeneFahrtangebote", layout = MainLayout.class)
 @PageTitle("Eigene Fahrtangebote")
@@ -70,7 +70,6 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        // ToDo: Hintere Parameter sind ein bissl unglücklich, werden aber an anderer Stelle leider benötigt, damit im Request und Booking das richtige gespeichert werden kann.
         DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService, false, null);
         gridHinfahrt.setId("gridOwnOffersView");
         DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
@@ -92,7 +91,5 @@ public class OwnDriveOffersView extends VerticalLayout {
                 }
             }
         });
-
     }
-
 }

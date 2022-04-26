@@ -17,6 +17,13 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils
 
 import java.time.LocalDate;
 
+/**
+ * Die Klasse DriveRequestDialog erstellt einen Dialog, auf dem noch einmal die Details
+ * zu einem Fahrtangebot dargstellt werden. Der suchende Benutzer hat hier die Möglichkeit,
+ * eine Anfrage zu dieser Fahrt zu erstellen.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/search-drive-result-view-dialog.css")
 public class SearchDriveResultViewDialog extends Dialog {
 
@@ -109,5 +116,4 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         return buttonLayout;
     }
-
 }

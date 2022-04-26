@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
  * Andernfalls erscheint direkt die Startseite der Applikation.
  *
  * Quelle / Vorlage: https://www.baeldung.com/spring_redirect_after_login
+ *
+ * @author Ramon Günther & Ivonne Kneißig
  */
 public class ApplicationUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 

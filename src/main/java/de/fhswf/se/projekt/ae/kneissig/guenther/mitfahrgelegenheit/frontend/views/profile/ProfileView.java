@@ -30,19 +30,17 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileRatings;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 /**
  * Die Klasse ProfileView erstellt eine View der Profilansicht
  * des Benutzers, der über die URL übergeben wird.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 
 @Route(value = "profil/:username", layout = MainLayout.class)
@@ -58,18 +56,18 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     /**
      * Der Konstruktor initialisiert die Services für die ProfileView.
      */
-    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
+    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService, BCryptPasswordEncoder passwordEncoder) {
         UI.getCurrent().setId(PageId.PROFILE.label);
         this.driveRouteService = driveRouteService;
         this.userService = userService;
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -171,7 +169,6 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        // ToDo: Hintere Parameter sind ein bissl unglücklich, werden aber an anderer Stelle leider benötigt, damit im Request und Booking das richtige gespeichert werden kann. (wie süß :3)
         DriveRouteGrid gridOutward = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService, false, null);
         gridOutward.addClassName("profilegrid");
         DriveRouteGrid gridReturn = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);

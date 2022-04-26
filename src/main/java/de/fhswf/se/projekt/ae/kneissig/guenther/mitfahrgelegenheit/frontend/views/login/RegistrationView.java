@@ -2,12 +2,10 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.vie
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
@@ -16,7 +14,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidMailException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutProfileData;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
@@ -28,9 +26,8 @@ import java.util.Set;
  * Die Klasse RegistrationView erstellt eine View zum anpassen der
  * fehlenden Benutzerdaten beim ersten Login des Users.
  *
- * @author Ivonne Kneißig und Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißig
  */
-
 @Route("benutzerdaten")
 @PageTitle("Benutzerdaten anpassen")
 @CssImport("/themes/mitfahrgelegenheit/views/profile.css")
@@ -43,7 +40,6 @@ public class RegistrationView extends VerticalLayout {
      * Der Konstruktor ist für das Erstellen der View zum Anpassen der Benutzerdaten
      * beim ersten Login des Benutzers zuständig.
      */
-
     public RegistrationView(UserService userService) {
         this.userService = userService;
         createRegistrationView();
@@ -53,7 +49,6 @@ public class RegistrationView extends VerticalLayout {
      * In der Methode createRegistrationView werden die einzelnen Komponenten
      * der View erzeugt und zusammengefügt.
      */
-
     private void createRegistrationView() {
         Button submitButton = new Button("Speichern");
         submitButton.addClassName("profile-data-buttons");

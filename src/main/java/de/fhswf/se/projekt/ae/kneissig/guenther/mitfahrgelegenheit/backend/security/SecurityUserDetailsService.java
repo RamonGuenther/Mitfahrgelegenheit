@@ -8,6 +8,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Die Klasse SecurityUserDetailsService bildet die Schnittstelle zwischen der
+ * User-Datenbank und der Security der Applikation.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Service
 public class SecurityUserDetailsService implements UserDetailsService {
 

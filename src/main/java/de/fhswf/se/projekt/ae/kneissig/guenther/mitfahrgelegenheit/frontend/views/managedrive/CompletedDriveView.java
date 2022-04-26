@@ -24,9 +24,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Die Klasse CompletedDriveView erstellt eine View für das anzeigen
+ * Die Klasse CompletedDriveView erstellt eine View für das Anzeigen
  * der abgeschlossenen Fahrten, aus Fahrer- und Mitfahrersicht, um
  * eine Person zu bewerten oder zu melden.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @com.vaadin.flow.router.Route(value = "abgeschlosseneFahrten", layout = MainLayout.class)
 @PageTitle("Abgeschlossene Fahrten")
@@ -85,14 +87,7 @@ public class CompletedDriveView extends VerticalLayout {
 
         completedDrivesGrid = new Grid<>();
         completedDrivesGrid.setItems(completedDriveListDriver);
-
-//        completedDrivesGrid.addColumn(booking -> booking.getRegularDriveSingleDriveDate() == null ?
-//                        booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime() :
-//                        booking.getRegularDriveSingleDriveDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) + ", " + booking.getDriveRoute().getFormattedTime())
-//                .setHeader("Tag / Uhrzeit");
         completedDrivesGrid.addColumn(booking -> setDateTimeColumn(booking)).setHeader("Tag / Uhrzeit");
-
-
         completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
         completedDrivesGrid.addComponentColumn(booking ->
@@ -109,7 +104,13 @@ public class CompletedDriveView extends VerticalLayout {
         add(div);
     }
 
-
+    /**
+     * Die Methode createRatingButton erstellt den Button zum Bewerten eines Fahrers bzw.
+     * Mitfahrers
+     *
+     * @param booking       Buchung zu der Fahrt, die bewertet werden soll
+     * @return              Button zum Bewerten des Fahrers/Mitfahrers
+     */
     private Button createRatingButton(Booking booking){
         Icon icon = new Icon(VaadinIcon.STAR);
         Button button = new Button("Bewerten");
@@ -132,10 +133,18 @@ public class CompletedDriveView extends VerticalLayout {
             }
             ratingDialog.open();
         });
-
         return button;
     }
 
+    /**
+     * Die Methode setDateTimeColumn ist für die Spalte zur Anzeige des Tages zuständig, an dem die
+     * gebuchte Fahrt stattgefunden hat. Je nachdem ob es sich dabei um eine Einzelfahrt, eine Einzelfahrt bei
+     * einer regelmäßigen Fahrt oder eine regelmäßige Fahrt handelt, wird entweder das Datum der Fahrt
+     * oder der Wochentag angezeigt.
+     *
+     * @param booking           Buchung, dessen Datum oder Wochentag der Fahrt angezeigt werden soll.
+     * @return                  Datum oder Wochentag der Fahrt
+     */
     private String setDateTimeColumn(Booking booking){
 
         String dateTime = new String();
@@ -149,7 +158,6 @@ public class CompletedDriveView extends VerticalLayout {
         else if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() != null){
             dateTime = booking.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + booking.getDriveRoute().getFormattedTime();
         }
-
         return dateTime;
     }
 }

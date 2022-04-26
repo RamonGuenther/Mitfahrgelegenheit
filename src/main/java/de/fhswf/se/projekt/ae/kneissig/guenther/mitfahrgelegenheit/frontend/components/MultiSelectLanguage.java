@@ -6,7 +6,7 @@ import org.vaadin.gatanaso.MultiselectComboBox;
  * Die Klasse MultiSelectLanguage erstellt eine spezielle Combobox
  * zur Auswahl zusätzlicher Sprachen des Benutzers.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 public class MultiSelectLanguage extends MultiselectComboBox<String> {
 

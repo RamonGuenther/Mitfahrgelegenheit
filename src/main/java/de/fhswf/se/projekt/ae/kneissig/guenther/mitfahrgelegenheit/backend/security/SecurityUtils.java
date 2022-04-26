@@ -9,6 +9,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Stream;
 
+/**
+ * Die Klasse SecurityUtils bietet Security-Methoden, wie der Prüfung,
+ * ob es sich um eine Framework-Internen Anfrage handelt und der
+ * Prüfung, ob ein Benutzer eingeloggt ist.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public final class SecurityUtils {
 
     private SecurityUtils(){

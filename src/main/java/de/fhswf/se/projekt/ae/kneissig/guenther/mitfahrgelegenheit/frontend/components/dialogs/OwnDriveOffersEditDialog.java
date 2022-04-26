@@ -53,10 +53,6 @@ public class OwnDriveOffersEditDialog extends Dialog {
     private FormLayoutDriveRoute formLayoutDriveRouteTop;
     private FormLayoutDriveRoute formLayoutDriveRouteBottom;
 
-
-    /**
-     * Der Konstruktor ist für das Erstellen der View zuständig.
-     */
     public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService, MailService mailService) {
         setCloseOnOutsideClick(false);
         setCloseOnEsc(false);
@@ -83,7 +79,6 @@ public class OwnDriveOffersEditDialog extends Dialog {
                 add(formLayoutDriveRouteBottom);
             }
         }
-
 
         note = new TextArea("Anmerkung");
         note.setReadOnly(true);
@@ -179,13 +174,15 @@ public class OwnDriveOffersEditDialog extends Dialog {
         add(editButtonLayout);
     }
 
+    /**
+     * Die Methode saveFormLayoutTop speichert eine Hinfahrt.
+     */
     private void saveFormLayoutTop() {
         try {
             if (formLayoutDriveRouteTop.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
-
             saveDrive(formLayoutDriveRouteTop.getAddressValue(),
                     formLayoutDriveRouteTop.getFhLocation(),
                     formLayoutDriveRouteTop.getDriveTime(),
@@ -204,6 +201,9 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     }
 
+    /**
+     * Die Methode saveFormLayoutBottom speichert eine Rückfahrt.
+     */
     private void saveFormLayoutBottom() {
         try {
             if (formLayoutDriveRouteBottom.checkInputFields()) {
@@ -227,8 +227,20 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     }
 
+    /**
+     * Die Methode saveDrive erzeugt eine neue Fahrt und speichert sie in der Datenbank.
+     *
+     * @param address               Adresse des Benutzers
+     * @param fhLocation            FH-Standort
+     * @param driveTime             Uhrzeit der Fahrt
+     * @param fuelParticipation     Angabe, ob Spritbeteiligung erwünscht
+     * @param carSeatCount          Anzahl der freien Sitzplätze
+     * @param driveType             Fahrtentyp (Hin- oder Rückfahrt)
+     * @param driveDate             Datum der Fahrt
+     * @param note                  Notiz
+     */
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, boolean fuelParticipation,
-                           Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate, String note) {
+                           Integer carSeatCount, DriveType driveType, LocalDate driveDate, String note) {
         try {
             AddressConverter converter = new AddressConverter(address);
             Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
@@ -247,11 +259,11 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     carSeatCount,
                     user,
                     LocalDateTime.now(),
-                    fahrtenTyp,
+                    driveType,
                     note
             );
 
-            if (fahrtenTyp.equals(DriveType.OUTWARD_TRIP)) {
+            if (driveType.equals(DriveType.OUTWARD_TRIP)) {
                 if(formLayoutDriveRouteTop.getCheckboxRegularDriveValue()){
                     updateDriveRoute.setRegularDrive(new RegularDrive(
                             DayOfWeek.getDayOfWeek(formLayoutDriveRouteTop.getDriveDays()),
@@ -278,7 +290,5 @@ public class OwnDriveOffersEditDialog extends Dialog {
         } catch (Exception e) {
             NotificationError.show(e.getMessage());
         }
-
     }
-
 }

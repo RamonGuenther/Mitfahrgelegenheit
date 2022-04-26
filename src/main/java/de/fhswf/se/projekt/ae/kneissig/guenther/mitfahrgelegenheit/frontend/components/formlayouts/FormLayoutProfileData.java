@@ -17,7 +17,7 @@ import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backen
  * Anzeige der Profildaten eines Benutzers auf der RegistrationView und
  * der ProfileView
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class FormLayoutProfileData extends FormLayout {
@@ -47,6 +47,10 @@ public class FormLayoutProfileData extends FormLayout {
         this.buttonLayout.setClassName("profile-data-buttonlayout");
         createProfileDataForm();
     }
+
+    /*-------------------------------------------------------------------------------------------------------------
+                                                        Methoden
+     -------------------------------------------------------------------------------------------------------------*/
 
     /**
      * Die Methode createProfileDataForm erzeugt die notwendigen Komponenten für
@@ -82,7 +86,6 @@ public class FormLayoutProfileData extends FormLayout {
             selectFaculty.setReadOnly(false);
             selectFaculty.setSubjectAreaItems(selectUniversityLocation.getValue());
         });
-
 
         selectFaculty = new SelectFaculty();
         selectFaculty.setReadOnly(true);
@@ -179,6 +182,13 @@ public class FormLayoutProfileData extends FormLayout {
                 !getSelectLanguage().getValue().isEmpty();
     }
 
+    /**
+     * Die Methode inputFieldInvalidCheck prüft, ob alle Pflichteingaben gemacht wurden und
+     * ob das Pattern von Adresse und E-Mail korrekt sind.
+     *
+     * @throws InvalidMailException         Ungültige E-Mail
+     * @throws InvalidAddressException      Ungültige Adresse
+     */
     private void inputFieldInvalidCheck() throws InvalidMailException, InvalidAddressException {
         if (firstName.isEmpty()) {
             firstName.setInvalid(true);
@@ -211,6 +221,11 @@ public class FormLayoutProfileData extends FormLayout {
         }
     }
 
+    /**
+     * Setzt Eingabefelder auf gültig oder ungültig.
+     *
+     * @param isInvalid         Eingabe ist gültig oder ungültig
+     */
     public void setInputFieldsInvalid(boolean isInvalid){
         firstName.setInvalid(isInvalid);
         lastName.setInvalid(isInvalid);
@@ -223,7 +238,7 @@ public class FormLayoutProfileData extends FormLayout {
     }
 
     /**
-     * Setzt das Formular für die Registierung oder das eigene Profil zusammen.
+     * Setzt das Formular für die Registrierung oder das eigene Profil zusammen.
      */
     public void createOwnProfileLayout() {
         setColspan(selectLanguage, 1);
@@ -244,6 +259,10 @@ public class FormLayoutProfileData extends FormLayout {
                 selectFaculty, selectLanguage, multiSelectLanguage);
 
     }
+
+    /*-------------------------------------------------------------------------------------------------------------
+                                                 Getter/Setter
+    -------------------------------------------------------------------------------------------------------------*/
 
     public String getTitle() {
         return title;

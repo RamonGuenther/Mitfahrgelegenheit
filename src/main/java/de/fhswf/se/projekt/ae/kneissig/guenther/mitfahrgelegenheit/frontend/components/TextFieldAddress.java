@@ -13,7 +13,7 @@ import java.util.List;
  * mit einer Autocomplete-Funktion für Adressen, sodass die
  * korrekte Adresse aus den Optionen gewählt werden kann.
  *
- * @author Ivonne Kneißig und Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißig
  */
 public class TextFieldAddress extends Autocomplete {
 

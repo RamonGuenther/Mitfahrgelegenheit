@@ -9,7 +9,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils
  * Die Klasse AverageRatingsDrive erstellt eine Ansicht für
  * die Fahrerbewertungen.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @CssImport("/themes/mitfahrgelegenheit/components/average-ratings.css")
 public class AverageRatings extends VerticalLayout {

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * dem Benutzer bei entsprechenden Auswahlfeldern zur Verfügung
  * stehen sollen.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 public class LanguageList extends ArrayList<String>{
 
@@ -163,7 +163,6 @@ public class LanguageList extends ArrayList<String>{
         add("Yi");
         add("Yoruba");
         add("Zentralkurdisch");
-
     }
 }
 

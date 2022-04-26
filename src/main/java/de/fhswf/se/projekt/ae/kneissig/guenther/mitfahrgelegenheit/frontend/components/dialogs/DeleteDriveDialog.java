@@ -5,24 +5,24 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 
-import javax.mail.MessagingException;
-import java.sql.Driver;
-import java.util.List;
-
+/**
+ * Die Klasse DeleteDriveDialog erstellt einen Dialog für den Fall,
+ * dass ein Benutzer sein Fahrtangebot löschen möchte. Mit dem Dialog
+ * muss der Benutzer noch einmal bestätigen sich sicher zu sein, dass
+ * er die Fahrt wirklich löschen möchte. Falls bereits Buchungen für
+ * diese Fahrt bestehen, werden die Mitfahrer per Mail benachrichtigt,
+ * wenn die Fahrt gelöscht wird.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/delete-dialog.css")
 public class DeleteDriveDialog extends Dialog {
     public DeleteDriveDialog(DriveRoute driveRoute, DriveRouteService driveRouteService, MailService mailService) {
@@ -66,6 +66,5 @@ public class DeleteDriveDialog extends Dialog {
         add(div);
 
         checkbox.addValueChangeListener(event -> acceptButton.setEnabled(event.getValue()));
-
     }
 }

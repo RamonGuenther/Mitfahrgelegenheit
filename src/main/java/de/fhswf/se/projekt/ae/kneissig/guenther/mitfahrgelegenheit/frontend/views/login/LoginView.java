@@ -6,6 +6,12 @@ import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.router.*;
 
+/**
+ * Die LoginView erstellt eine View, auf der sich Benutzer der Fachhochschule
+ * Südwestfalen in der Applikation anmelden können.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Route("login")
 @PageTitle("Mitfahrgelegenheit | Login")
 @CssImport(value = "/themes/mitfahrgelegenheit/views/login-view.css", themeFor = "vaadin-login-overlay-wrapper")

@@ -6,7 +6,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
  * Die Klasse SelectLanguage erstellt eine spezielle Combobox
  * zur Auswahl der Hauptsprache des Benutzers
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 public class SelectLanguage extends ComboBox<String> {
 

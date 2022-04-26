@@ -11,12 +11,17 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRequest;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 
+/**
+ * Die Klasse DriveDetailsDialog erstellt einen Dialog, auf dem die Details zu
+ * einem Fahrtangebot angezeigt werden. Von hier aus kann auch das Profil des
+ * Benutzers erreicht werden, der die Fahrt erstellt hat.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/drive-details-dialog.css")
 public class DriveDetailsDialog extends Dialog {
 
@@ -40,7 +45,6 @@ public class DriveDetailsDialog extends Dialog {
             close();
             UI.getCurrent().navigate(ProfileView.class,
                     new RouteParameters(new RouteParam("username", driveRequest.getDriveRoute().getDriver().getUsername())));
-
         });
 
         HorizontalLayout titleLayout = new HorizontalLayout(driverInformationLayout, profileButton);
@@ -60,7 +64,6 @@ public class DriveDetailsDialog extends Dialog {
             formLayoutDriveRouteTop.addComponentAtIndex(10, singleDriveLabel);
             formLayoutDriveRouteTop.setColspan(singleDriveLabel, 4);
         }
-
 
         Button closeButton = new Button("Schließen");
         closeButton.setId("drive-details-dialog-close_button");

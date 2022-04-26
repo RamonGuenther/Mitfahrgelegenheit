@@ -32,6 +32,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Die Klasse DriveRequestManageDialog erstellt einen Dialog, mit dem der Benutzer eine
+ * Anfrage zu einem seiner Fahrtangebote verwalten kann. Er hat die Möglichkeit die Anfrage
+ * anzunehmen, sofern noch freie Plätze vorhanden sind, oder die Anfrage abzulehnen.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/drive-request-manage-dialog.css")
 public class DriveRequestManageDialog extends Dialog {
 
@@ -82,10 +89,7 @@ public class DriveRequestManageDialog extends Dialog {
         formLayoutDriveRoute.remove(formLayoutDriveRoute.getTitle());
         formLayoutDriveRoute.getButtonDetourRoute().setText("Route mit Zwischenstopp anzeigen");
         formLayoutDriveRoute.removeClickListener();
-        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> {
-            System.out.println("ROFL");
-            UI.getCurrent().getPage().open(driveRequest.getCurrentRouteLink(), "_blank");
-        }); //FIXME
+        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRequest.getCurrentRouteLink(), "_blank"));
 
         add(titleLayout, formLayoutDriveRoute);
 
@@ -127,6 +131,14 @@ public class DriveRequestManageDialog extends Dialog {
         add(textArea, buttonLayout);
     }
 
+    /**
+     * Die Methode saveDriveRequest speichert die Fahrtanfrage entsprechend der
+     * Entscheidung des Fahrers. Wird die Fahrt abgelehnt, wird der Status gesetzt
+     * und die Methode verlassen. Wird die Fahrt angenommen, wird eine Buchung für
+     * den Mitfahrer erzeugt.
+     *
+     * @param requestState      Neuer Status der Anfrage
+     */
     private void saveDriveRequest(RequestState requestState) {
         driveRequest.setRequestState(requestState);
         driveRequestService.save(driveRequest);

@@ -15,7 +15,6 @@
     width: 200px;
 }
 
-
 #profileRatingLayout{
     margin: auto;
     width: 1000px;
@@ -24,6 +23,7 @@
 #radioRatings{
     margin-bottom: -40px;
 }
+
 #averageProfileRatings{
     margin-left: 0;
     margin-top: 50px;

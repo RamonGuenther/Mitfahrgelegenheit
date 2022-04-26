@@ -31,18 +31,18 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-//TODO:
-// - Wenn regelmäßige Fahrt, dann statt Datum den Tag anzeigen wäre doch lässig?
-// - Email für Aussteigen versenden
-
+/**
+ * Die Klasse BookingsView erstellt eine View, auf der ein Benutzer seine
+ * gebuchten Fahrten ansehen kann. Der Benutzer hat außerdem die Möglichkeit
+ * aus einer gebuchten Fahrt "Auszusteigen", also die Mitfahrt abzusagen.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Route(value = "gebuchteFahrten", layout = MainLayout.class)
 @PageTitle("Meine gebuchten Fahrten")
 @CssImport("/themes/mitfahrgelegenheit/views/manage-drive-views.css")
@@ -99,21 +99,11 @@ public class BookingsView extends VerticalLayout {
 
         gridBookings = new Grid<>();
         gridBookings.setItems(bookingsOutwardTrip);
-
-//        gridBookings.addColumn(booking -> booking.getRegularDriveSingleDriveDate() == null ?
-//                        booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime() :
-//                        booking.getRegularDriveSingleDriveDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)) + ", " + booking.getDriveRoute().getFormattedTime())
-//                .setHeader("Tag / Uhrzeit");
-
         gridBookings.addColumn(booking -> setDateTimeColumn(booking)).setHeader("Tag / Uhrzeit");
-
         gridBookings.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         gridBookings.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
-
         gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getUsername(), booking.getDriveRoute().getDriver().getFirstName())).setHeader("Fahrer");
-
         gridBookings.addComponentColumn(this::createLeaveDriveButton).setHeader("Weiter mitfahren?");
-
         gridBookings.getColumns().forEach(col -> col.setAutoWidth(true));
 
         radioButtonGroup.addValueChangeListener(e -> {
@@ -162,7 +152,6 @@ public class BookingsView extends VerticalLayout {
                 NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
 //              TODO: Am Ende wieder einkommentieren =)
 //                mailService.sendBookingCancellation(driveRoute, passenger);
-
             } catch (IOException | InterruptedException | InvalidAddressException | ApiException e) {
                 e.printStackTrace();
             }
@@ -171,6 +160,15 @@ public class BookingsView extends VerticalLayout {
         return button;
     }
 
+    /**
+     * Die Methode setDateTimeColumn ist für die Spalte zur Anzeige des Tages zuständig, an dem die
+     * gebuchte Fahrt stattfindet. Je nachdem ob es sich dabei um eine Einzelfahrt, eine Einzelfahrt bei
+     * einer regelmäßigen Fahrt oder eine regelmäßige Fahrt handelt, wird entweder das Datum der Fahrt
+     * oder der Wochentag angezeigt.
+     *
+     * @param booking           Buchung, dessen Datum oder Wochentag der Fahrt angezeigt werden soll.
+     * @return                  Datum oder Wochentag der Fahrt
+     */
     private String setDateTimeColumn(Booking booking){
 
         String dateTime = new String();

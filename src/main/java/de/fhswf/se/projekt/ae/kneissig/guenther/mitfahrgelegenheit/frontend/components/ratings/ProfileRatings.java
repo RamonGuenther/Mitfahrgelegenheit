@@ -18,7 +18,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils
  * für die Auswahl der Durchschnittsbewertungen für die
  * Fahrer- und Mitfahrerbewertungen des Nutzers.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class ProfileRatings extends VerticalLayout {
@@ -60,8 +60,6 @@ public class ProfileRatings extends VerticalLayout {
         ratingGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         ratingGrid.setSelectionMode(Grid.SelectionMode.NONE);
         ratingGrid.addColumn(Rating::getFormattedDate).setHeader("Datum");
-//        ratingGrid.addColumn(Rating::getPunctuality).setHeader("Pünktlichkeit");
-//        ratingGrid.addColumn(Rating::getPunctuality).setHeader("Zuverlässigkeit");
         SerializableBiConsumer<StarsRating, Rating> consumerPunctuality = (starsRating, rating) -> {
             starsRating.setRating(rating.getPunctuality());
             starsRating.setId("ratingReliability");
@@ -110,5 +108,4 @@ public class ProfileRatings extends VerticalLayout {
     public AverageRatings getAverageRatingsDriver() {
         return averageRatingsDriver;
     }
-
 }

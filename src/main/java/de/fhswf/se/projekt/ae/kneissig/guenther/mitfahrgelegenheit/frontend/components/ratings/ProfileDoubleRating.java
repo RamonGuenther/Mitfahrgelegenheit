@@ -5,12 +5,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
 
 /**
- * Die Klasse ProfileDoubleRating erstellt eine Ratinganzeige für
- * das Profil.
- * Die Ratinganzeige besteht aus zwei Ratings, eine für die Bewertung
- * als Fahrer und eine für die Bewertung als Mitfahrer.
+ * Die Klasse ProfileDoubleRating erstellt eine Ratinganzeige für das Profil.
+ * Die Ratinganzeige besteht aus zwei Ratings, eine für die Bewertung als Fahrer
+ * und eine für die Bewertung als Mitfahrer.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @CssImport("/themes/mitfahrgelegenheit/components/profile-double-ratings.css")
 public class ProfileDoubleRating extends VerticalLayout {

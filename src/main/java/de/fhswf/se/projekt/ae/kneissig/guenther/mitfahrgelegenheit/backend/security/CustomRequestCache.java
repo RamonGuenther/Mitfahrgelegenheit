@@ -5,6 +5,13 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Die Klasse CustomRequestCache speichert die Anfrage des Nutzers,
+ * damit er dorthin weitergeleitet werden kann, sobald die Anmeldung
+ * abgeschlossen ist.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public class CustomRequestCache extends HttpSessionRequestCache {
 
     /**

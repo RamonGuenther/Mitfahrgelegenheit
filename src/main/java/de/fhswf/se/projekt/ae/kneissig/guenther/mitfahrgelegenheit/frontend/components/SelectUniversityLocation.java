@@ -6,9 +6,8 @@ import com.vaadin.flow.component.select.Select;
  * Die Klasse SelectSubjectArea erstellt ein Auswahlfeld für
  * die Wahl des Fachbereiches.
  *
- * @author Ivonne Kneißig
+ * @author Ramon Günther & Ivonne Kneißig
  */
-
 public class SelectUniversityLocation extends Select<String> {
 
     private String locationAddress;

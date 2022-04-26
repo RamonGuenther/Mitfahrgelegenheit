@@ -10,15 +10,30 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.awt.print.Book;
 import java.util.List;
 
+/**
+ * Die Klasse MailService ist für das Versenden von Emails zuständig.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Component
 public class MailService {
 
     @Autowired
     JavaMailSender javaMailSender;
 
+    /**
+     * Die Methode sendDriveRequestMail versendet eine E-Mail an den Ersteller eines Fahrtangebots,
+     * wenn ein Benutzer eine Fahrtanfrage zu diesem Fahrtangebot stellt.
+     *
+     * @param passengerName             Name des Benutzers, der eine Anfrage stellt
+     * @param driverName                Name des Fahrers
+     * @param message                   Nachricht, die versendet werden soll
+     * @param email                     Email-Adresse des Fahrers
+     * @param route                     Routenlink für den Fahrer
+     * @throws MessagingException       -
+     */
     @Async
     public void sendDriveRequestMail(String passengerName, String driverName, String message, String email, String route) throws MessagingException {
 
@@ -53,6 +68,14 @@ public class MailService {
 
     }
 
+    /**
+     * Die Methode sendBookingCancellation sendet eine E-Mail an den Fahrer, wenn ein Mitfahrer eine
+     * Buchung löscht und die Fahrt somit absagt.
+     *
+     * @param driveRoute            Routenlink, mit der aktualisierten Route
+     * @param passenger             Name des Mitfahrers, der aus der Fahrt ausgestiegen ist
+     * @throws MessagingException   -
+     */
     @Async
     public void sendBookingCancellation(DriveRoute driveRoute, String passenger) throws MessagingException {
 
@@ -74,7 +97,14 @@ public class MailService {
         javaMailSender.send(mail);
     }
 
-
+    /**
+     * Die Methode sendDriveDeleteMessage sendet eine E-Mail an alle Mitfahrer einer Fahrt, die vom
+     * Fahrer gelöscht wurde, damit diese darüber informiert werden, dass die Fahrt nicht mehr stattfindet.
+     *
+     * @param driveRoute            Fahrt, die vom Fahrer abgesagt wurde
+     * @param message               Nachricht an die Mitfahrer
+     * @throws MessagingException   -
+     */
     @Async
     public void sendDriveDeleteMessage(DriveRoute driveRoute, String message) throws MessagingException {
 
@@ -111,6 +141,4 @@ public class MailService {
             javaMailSender.send(mail);
         }
     }
-
-
 }

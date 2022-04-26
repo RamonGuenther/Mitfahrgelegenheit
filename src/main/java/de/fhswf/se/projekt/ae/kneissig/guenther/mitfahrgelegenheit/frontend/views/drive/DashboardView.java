@@ -22,6 +22,13 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.BookingsView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive.OwnDriveOffersView;
 
+/**
+ * Die Klasse DashboardView erstellt eine View, auf der ein Benutzer seine als nächstes
+ * anstehenden Fahrten, sowohl als Fahrer, als auch als Mitfahrer ansehen kann. Hierbei
+ * wird zusätzlich zwischen Einzelfahrten und regelmäßigenFahrten unterschieden.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @RouteAlias(value = "", layout = MainLayout.class)
 @Route(value = "dashboard", layout = MainLayout.class)
 @PageTitle("Dashboard")
@@ -52,7 +59,6 @@ public class DashboardView extends VerticalLayout {
     private Button buttonNewNote;
     private VerticalLayout driverLabels;
 
-
     public DashboardView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService) {
         this.userService = userService;
         this.driveRouteService = driveRouteService;
@@ -82,8 +88,9 @@ public class DashboardView extends VerticalLayout {
         });
 
         /*-------------------------------------------------------------------------------------------------------------
-                                                    Bereich Mitfahrt
+                                                     Bereich Mitfahrer
         -------------------------------------------------------------------------------------------------------------*/
+
         H2 passengerTitle = new H2("Meine nächste Mitfahrt");
         Button buttonBookingsView = new Button("Meine Buchungen");
         buttonBookingsView.setId("dashboard-header-button-passenger");
@@ -138,7 +145,7 @@ public class DashboardView extends VerticalLayout {
         passengerViewLayout.setClassName("details-background");
 
         /*-------------------------------------------------------------------------------------------------------------
-                                                    Bereich Fahrtangebot
+                                                    Bereich Fahrer
         -------------------------------------------------------------------------------------------------------------*/
 
         H2 driverTitle = new H2("Meine nächste Fahrt");
@@ -205,6 +212,10 @@ public class DashboardView extends VerticalLayout {
         add(div);
     }
 
+    /**
+     * Die Methode driverSingleDriveValues setzt die Werte für die nächste Einzelfahrt
+     * des Benutzers in der Rolle als Fahrer.
+     */
     private void driverSingleDriveValues() {
 
         driveRouteService.getNextSingleDriveRouteByUser(userService.getCurrentUser()).ifPresent(driveRoute -> this.driverSingleRoute = driveRoute);
@@ -217,7 +228,11 @@ public class DashboardView extends VerticalLayout {
             clearDriverValues();
         }
     }
-    
+
+    /**
+     * Die Methode passengerSingleDriveValues setzt die Werte für die nächste Einzelfahrt
+     * des Benutzers in der Rolle als Mitfahrer.
+     */
     private void passengerSingleDriveValues() {
         bookingService.getNextSingleDriveBookingByPassenger(userService.getCurrentUser()).ifPresent(passengerRoute -> this.passengerSingleRoute = passengerRoute);
 
@@ -232,6 +247,10 @@ public class DashboardView extends VerticalLayout {
         }
     }
 
+    /**
+     * Die Methode driverRegularDriveValues setzt die Werte für die nächste regelmäßige
+     * Fahrt des Benutzers in der Rolle als Fahrer.
+     */
     private void driverRegularDriveValues(){
         driveRouteService.getNextRegularDriveRouteByUser(userService.getCurrentUser()).ifPresent(driveRoute -> this.driverRegularRoute = driveRoute);
 
@@ -244,6 +263,10 @@ public class DashboardView extends VerticalLayout {
         }
     }
 
+    /**
+     * Die Methode passengerRegularDriveValues setzt die Werte für die nächste regelmäßige
+     * Fahrt des Benutzers in der Rolle als Fahrer.
+     */
     private void passengerRegularDriveValues(){
         bookingService.getNextRegularDriveBookingByPassenger(userService.getCurrentUser()).ifPresent(passengerRoute -> this.passengerRegularRoute = passengerRoute);
 
@@ -256,6 +279,11 @@ public class DashboardView extends VerticalLayout {
         }
     }
 
+    /**
+     * Die Methode setPassengerValues füllt die Label mit den Angaben einer gegebenen Buchung.
+     *
+     * @param booking       Buchung einer Fahrt vom Benutzer
+     */
     private void setPassengerValues(Booking booking){
         passengerViewDriverValueLabel.setVisible(false);
         passengerViewDriverValue.setVisible(true);
@@ -266,6 +294,11 @@ public class DashboardView extends VerticalLayout {
         passengerViewNoteTextArea.setValue(booking.getDriveRoute().getNote());
     }
 
+    /**
+     * Die Methode setDriverValues füllt die Label mit den Angaben einer gegebenen Fahrt.
+     *
+     * @param driveRoute   Fahrtangebot des Benutzers
+     */
     private void setDriverValues(DriveRoute driveRoute){
         driverViewStartValue.setText(driveRoute.getStart().getFullAddressToString());
         driverViewDestinationValue.setText(driveRoute.getDestination().getFullAddressToString());
@@ -273,6 +306,10 @@ public class DashboardView extends VerticalLayout {
         buttonNewNote.setEnabled(true);
     }
 
+    /**
+     * Die Methode clearPassengerValues setzt die Labels für den Mitfahrerbereich zurück,
+     * wenn keine Fahrt angezeigt werden kann.
+     */
     private void clearPassengerValues(){
         passengerViewDateValue.setText("-");
         passengerViewStartValue.setText("-");
@@ -282,10 +319,12 @@ public class DashboardView extends VerticalLayout {
         passengerViewDriverValueLabel.setVisible(true);
         passengerViewDriverValueLabel.setText("-");
         passengerViewDriverValue.setVisible(false);
-//        driverLabels.remove(passengerViewDriverValue);
-//        driverLabels.addComponentAtIndex(0, );
     }
 
+    /**
+     * Die Methode clearDriverValues setzt die Labels für den Fahrerbereich zurück, wenn
+     * keine Fahrt angezeigt werden kann.
+     */
     private void clearDriverValues(){
         driverViewDateValue.setText("-");
         driverViewStartValue.setText("-");

@@ -15,5 +15,4 @@ public class MitfahrgelegenheitApplication {
     public static void main(String[] args) {
         SpringApplication.run(MitfahrgelegenheitApplication.class, args);
     }
-
 }

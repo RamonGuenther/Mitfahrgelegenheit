@@ -17,6 +17,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.passwordPatternCheck;
 
+/**
+ * Die Klasse PasswordDialog erstellt einen Dialog, mit dem der Benutzer
+ * sein passwort ändern kann.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @CssImport("/themes/mitfahrgelegenheit/components/change-password-dialog.css")
 public class PasswordDialog extends Dialog {
 
@@ -99,6 +105,14 @@ public class PasswordDialog extends Dialog {
         add(verticalLayout);
     }
 
+    /**
+     * Die Methode passwordCheck prüft die Passworteingaben des Benutzers. Dabei
+     * wird geprüft, ob die Eingabe des alten Passworts korrekt ist, und ob die zwei Eingaben
+     * des neuen Passworts übereinstimmen.
+     *
+     * @return                              true oder false
+     * @throws InvalidPasswordException     -
+     */
     private boolean passwordCheck() throws InvalidPasswordException {
         if(passwordEncoder.matches(oldPassword.getValue(), user.getPassword())){
 
@@ -117,6 +131,12 @@ public class PasswordDialog extends Dialog {
         }
     }
 
+    /**
+     * Die Methode textFieldCheck prüft, ob alle Pflichteingaben erfüllt
+     * wurden.
+     *
+     * @return                          true oder false
+     */
     private boolean textFieldCheck() {
         if (!oldPassword.getValue().isEmpty() &&
                 !newPasswordFirstEntry.getValue().isEmpty() &&

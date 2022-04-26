@@ -35,9 +35,8 @@ import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backen
  * Die Klasse SearchDriveView erstellt eine View zum Suchen einer
  * Mitfahrgelegenheit.
  *
- * @author Ivonne Kneißig und Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißig
  */
-
 @Route(value = "fahrtSuchen", layout = MainLayout.class)
 @PageTitle("Fahrt Suchen")
 @CssImport("/themes/mitfahrgelegenheit/views/search-drive-view.css")
@@ -97,12 +96,10 @@ public class SearchDriveView extends VerticalLayout {
 
         searchButton.addClickListener(searchEvent -> {
                     try {
-
                         if (checkInputFields()) {
                             NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                             return;
                         }
-
                         UI.getCurrent().navigate(SearchDriveResultView.class,
                                 new RouteParameters(
                                         new RouteParam("fahrtentyp", radioDriveDirection.getValue()),
@@ -113,7 +110,6 @@ public class SearchDriveView extends VerticalLayout {
                                         new RouteParam("regelmaessig", checkboxRegularDrive.getValue().toString()),
                                         new RouteParam("wochentag", checkboxRegularDrive.getValue() ? dayOfWeek.getValue() : "keinTag")
                                 ));
-
                     } catch (InvalidAddressException | InvalidDateException ex) {
                         NotificationError.show(ex.getMessage());
                         ex.printStackTrace();
@@ -135,7 +131,6 @@ public class SearchDriveView extends VerticalLayout {
 
         formSearchDrive.setColspan(title, 2);
 
-
         FormLayout formOfferDriveQuestion = new FormLayout(labelOwnDrive, buttonOfferDrive);
         formOfferDriveQuestion.setId("search-drive-view-form_offer_drive_question");
 
@@ -147,6 +142,13 @@ public class SearchDriveView extends VerticalLayout {
         checkboxRegularDrive.addValueChangeListener(event -> setDateOrDayField(event.getValue(), formSearchDrive, date, dayOfWeek));
     }
 
+    /**
+     * Die Methode checkInputFields prüft, ob alle Pflichteingaben vom Benutzer
+     * gemacht wurden.
+     * @return                          true oder false
+     * @throws InvalidDateException     Ungültiges Datum
+     * @throws InvalidAddressException  Ungültige Adresse
+     */
     private boolean checkInputFields() throws InvalidDateException, InvalidAddressException {
         setInputFieldsInvalid();
         if (checkboxRegularDrive.getValue())
@@ -155,6 +157,13 @@ public class SearchDriveView extends VerticalLayout {
             return address.getValue().isEmpty() || date.isEmpty() || time.isEmpty();
     }
 
+    /**
+     * Die Methode setInputFieldsInvalid sorgt dafür, dass ein Hinweis für
+     * ungültige Eingaben bei den Eingabefeldern angezeigt wird.
+     *
+     * @throws InvalidDateException     Ungültiges Datum
+     * @throws InvalidAddressException  Ungültige Adresse
+     */
     private void setInputFieldsInvalid() throws InvalidDateException, InvalidAddressException {
         if (address.getValue().isEmpty()) {
             address.setInvalid(true);
@@ -196,7 +205,6 @@ public class SearchDriveView extends VerticalLayout {
                 layout.addComponentAtIndex(3, address);
                 address.setLabel("Von");
                 layout.addComponentAtIndex(5, fhLocation);
-//                    fhLocation.setValue(null);
                 time.setLabel("Ankunftszeit");
             }
             case "Rückfahrt" -> {
@@ -204,15 +212,23 @@ public class SearchDriveView extends VerticalLayout {
                 layout.addComponentAtIndex(5, address);
                 address.setLabel("Nach");
                 layout.addComponentAtIndex(3, fhLocation);
-//                    fhLocation.setValue(null);
                 time.setLabel("Abfahrtszeit");
             }
             default -> {
             }
-
         }
     }
 
+    /**
+     * Die Methode setDateOrDayField sorgt für den Wechsel zwischen einem DatePicker für ein Datum oder
+     * einem Auswahlfeld für den Wochentag, je nachdem ob der Benutzer eine Einzelfahrt oder eine
+     * regelmäßige Fahrt sucht.
+     *
+     * @param isRegulaDrive     Angabe, ob regelmäßige Fahrt gesucht oder nicht
+     * @param layout            Formular, auf dem sich das Eingabefeld befindet
+     * @param date              Datepicker, der bei einer Einzelfahrtsuche angezeigt werden soll
+     * @param dayOfWeek         Auswahlfeld, das bei der Suche einer regelmäßigen Fahrt angezeigt werden soll
+     */
     private void setDateOrDayField(boolean isRegulaDrive, FormLayout layout, DatePicker date, Select<String> dayOfWeek) {
 
         nullCheck(layout, date, dayOfWeek);

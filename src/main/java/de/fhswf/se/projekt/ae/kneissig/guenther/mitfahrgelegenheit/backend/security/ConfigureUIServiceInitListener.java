@@ -7,6 +7,13 @@ import com.vaadin.flow.server.VaadinServiceInitListener;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.login.LoginView;
 import org.springframework.stereotype.Component;
 
+/**
+ * Die Klasse ConfigureUIServiceInitListener ist dafür zuständig,
+ * den Benutzer zur Login-View zurück zu Routen, wenn er nicht
+ * autorisiert ist eine View zu betreten.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 @Component
 public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {
 
@@ -20,7 +27,6 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
     }
 
     private void authenticateNavigation(BeforeEnterEvent event){
-
         if(!LoginView.class.equals(event.getNavigationTarget())
                 && !SecurityUtils.isUserLoggedIn()) {
 

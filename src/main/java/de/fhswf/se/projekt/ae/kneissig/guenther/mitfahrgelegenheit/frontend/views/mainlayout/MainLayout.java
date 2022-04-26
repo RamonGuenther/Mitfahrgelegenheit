@@ -31,11 +31,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Die MainView dient dem Erstellen einer MenuBar zum Navigieren in
- * der Appilkation.
+ * der Applikation.
  *
- * @author Ivonne Kneißig und Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißig
  */
-
 @PWA(name = "Mitfahrgelegenheiten", shortName = "Mitfahrgelegenheiten", enableInstallPrompt = false)
 @Theme(themeFolder = "mitfahrgelegenheit")
 @CssImport("/themes/mitfahrgelegenheit/views/main-view.css")
@@ -58,7 +57,6 @@ public class MainLayout extends AppLayout implements PageConfigurator {
      * zusammen. Außerdem weißt sie den RouterLinks die entsprechenden
      * Views zur Navigation zu.
      */
-
     private void createMenuBar(){
 
         StreamResource streamResource = new StreamResource("LogoMitfahrgelegenheit.png",
@@ -74,7 +72,9 @@ public class MainLayout extends AppLayout implements PageConfigurator {
         menuBar.setId("menuBar");
         menuBar.setOpenOnHover(true);
 
-        // Haupt-MenuItems
+        /*-------------------------------------------------------------------------------------------------------------
+                                                         Haupt-MenuItems
+        -------------------------------------------------------------------------------------------------------------*/
         MenuItem fahrtSuchen = menuBar.addItem("Fahrt suchen");
         fahrtSuchen.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
 
@@ -85,7 +85,9 @@ public class MainLayout extends AppLayout implements PageConfigurator {
 
         MenuItem benutzername = menuBar.addItem(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        // Untermenü Fahrten verwalten
+        /*-------------------------------------------------------------------------------------------------------------
+                                                   Untermenü Fahrten verwalten
+        -------------------------------------------------------------------------------------------------------------*/
         SubMenu projectSubMenu = fahrtVerwalten.getSubMenu();
 
         MenuItem dashboard = projectSubMenu.addItem("Dashboard");
@@ -108,8 +110,9 @@ public class MainLayout extends AppLayout implements PageConfigurator {
         abgeschlosseneFahrten.getElement().getClassList().add("menuItems");
         abgeschlosseneFahrten.addClickListener(e -> UI.getCurrent().navigate(CompletedDriveView.class));
 
-
-        // Untermenü Benutzer
+        /*-------------------------------------------------------------------------------------------------------------
+                                                      Untermenü Benutzer
+        -------------------------------------------------------------------------------------------------------------*/
         SubMenu usersSubMenu = benutzername.getSubMenu();
 
         MenuItem profilAnzeigen = usersSubMenu.addItem("Profil");
@@ -120,8 +123,6 @@ public class MainLayout extends AppLayout implements PageConfigurator {
                         SecurityContextHolder.getContext().getAuthentication().getName()))));
         MenuItem abmelden = usersSubMenu.addItem("Abmelden");
         abmelden.getElement().getClassList().add("menuItems");
-
-//        abmelden.addClickListener(e -> UI.getCurrent().navigate(LoginView.class));
 
         abmelden.addClickListener(e -> UI.getCurrent().getPage().setLocation("/logout"));
 
@@ -137,8 +138,6 @@ public class MainLayout extends AppLayout implements PageConfigurator {
         header.setAlignItems(FlexComponent.Alignment.CENTER);
 
         addToNavbar(header);
-        setId("testi");
-
     }
 
     @Override

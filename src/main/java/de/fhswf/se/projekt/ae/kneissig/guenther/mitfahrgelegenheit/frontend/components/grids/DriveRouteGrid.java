@@ -21,6 +21,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Die Klasse DriveRouteGrid erzeugt eine Tabelle zum Anzeigen von Fahrten.
+ *
+ * @author Ramon Günther & Ivonne Kneißig
+ */
 public class DriveRouteGrid extends Grid<DriveRoute> {
 
     private final DriveRouteService driveRouteService;
@@ -85,5 +90,4 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
 
         return button;
     }
-
 }

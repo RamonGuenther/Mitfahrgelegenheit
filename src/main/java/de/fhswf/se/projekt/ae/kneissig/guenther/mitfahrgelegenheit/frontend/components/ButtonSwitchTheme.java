@@ -15,7 +15,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
  * Ein spezieller Button für das Wechseln zwischen dunklem
  * und hellem Design.
  *
- * @author Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißg
  */
 @CssImport("/themes/mitfahrgelegenheit/components/button-switch-theme.css")
 public class ButtonSwitchTheme extends Button {

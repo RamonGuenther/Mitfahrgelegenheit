@@ -12,9 +12,9 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.grids.DriveRouteGrid;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,17 +23,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
-
-/**
- * TODO: Wieder so machen, dass man wenn keine Orte gefunden wurden die anderen angezeigt werden
- */
 
 /**
  * Die Klasse SearchDriveResultView erstellt eine View für die Suchergebnisse
- * aus SearchDriveView
+ * aus SearchDriveView. Die Suchergebnisse eine Fahrtensuche werden Tabellarisch
+ * dargestellt. Der Benutzer kann sich über einen Button die Details der Fahrt
+ * ansehen und bei Bedarf eine Anfrage dazu stellen.
  *
- * @author Ramon Günther
+ * @author Ramon Günther & Ivonne Kneißig
  */
 @Route(value = "fahrtensucheErgebnis/fahrtentyp/:fahrtentyp/fhStandort/:fhStandort/adresse/:adresse/datum/:datum/uhrzeit/:uhrzeit/:regelmaessig/wochentag/:wochentag/search", layout = MainLayout.class)
 @PageTitle("Ergebnis Fahrtensuche")
@@ -97,7 +94,6 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         add(div);
     }
 
-
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         if (beforeEnterEvent.getRouteParameters().get("fahrtentyp").isPresent()) {
@@ -145,8 +141,6 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                         Integer.parseInt(time.substring(0, 2)),
                         Integer.parseInt(time.substring(3)))
         );
-
-
         switch (typ) {
             case "Hinfahrt" -> {
                 fahrtenTyp = DriveType.OUTWARD_TRIP;

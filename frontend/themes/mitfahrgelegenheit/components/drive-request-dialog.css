@@ -1,7 +1,3 @@
-#drive-request-dialog{
-
-}
-
 #drive-request-dialog-title{
     font-size: x-large;
 }
@@ -25,7 +21,6 @@
     width: 150px;
     margin-left: 20px;
 }
-
 
 .drive-request-dialog-button_layout{
     margin: auto;
