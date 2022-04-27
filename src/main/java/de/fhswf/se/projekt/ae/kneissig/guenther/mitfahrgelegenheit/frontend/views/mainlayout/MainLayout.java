@@ -48,7 +48,6 @@ public class MainLayout extends AppLayout implements PageConfigurator {
 
     public MainLayout(UserService userService){
         this.userService = userService;
-        setId("app");
         createMenuBar();
     }
 
