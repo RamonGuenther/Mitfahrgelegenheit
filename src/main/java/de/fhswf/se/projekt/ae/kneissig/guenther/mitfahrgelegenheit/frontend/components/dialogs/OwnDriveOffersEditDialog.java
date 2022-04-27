@@ -45,11 +45,9 @@ public class OwnDriveOffersEditDialog extends Dialog {
 
     private final DriveRouteService driveRouteService;
     private final MailService mailService;
-
     private final HorizontalLayout defaultButtonLayout;
     private final TextArea note;
     private final DriveRoute driveRoute;
-
     private FormLayoutDriveRoute formLayoutDriveRouteTop;
     private FormLayoutDriveRoute formLayoutDriveRouteBottom;
 

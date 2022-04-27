@@ -30,6 +30,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileRatings;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collections;
@@ -56,18 +57,15 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
 
-    private final BCryptPasswordEncoder passwordEncoder;
-
     /**
      * Der Konstruktor initialisiert die Services für die ProfileView.
      */
-    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService, BCryptPasswordEncoder passwordEncoder) {
+    public ProfileView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
         UI.getCurrent().setId(PageId.PROFILE.label);
         this.driveRouteService = driveRouteService;
         this.userService = userService;
         this.mailService = mailService;
         this.driveRequestService = driveRequestService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -127,7 +125,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         });
 
         changePasswordButton.addClickListener(changePasswordEvent -> {
-            PasswordDialog passwordDialog = new PasswordDialog(userService, passwordEncoder);
+            PasswordDialog passwordDialog = new PasswordDialog(userService);
             passwordDialog.open();
         });
         add(profileDataForm);

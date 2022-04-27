@@ -160,6 +160,7 @@ public class OfferDriveView extends VerticalLayout {
                     formlayoutDriveRouteTop.getDriveDateStart());
 
             formlayoutDriveRouteTop.clearFields();
+            formlayoutDriveRouteTop.setInvalid(false);
         } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
             NotificationError.show(ex.getMessage());
             ex.printStackTrace();
@@ -183,6 +184,7 @@ public class OfferDriveView extends VerticalLayout {
                     formLayoutDriveRouteBottom.getDriveDateStart());
 
             formLayoutDriveRouteBottom.clearFields();
+            formLayoutDriveRouteBottom.setInvalid(false);
         } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
             NotificationError.show(ex.getMessage());
             ex.printStackTrace();

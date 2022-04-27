@@ -54,8 +54,6 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final DatePicker driveDateEnd;
     private final Checkbox checkboxRegularDrive;
     private final Button buttonDetourRoute;
-
-
     private final Checkbox checkboxFuelParticipation;
     private final RadioButtonGroup<String> driveDays;
     private final H2 title;
@@ -137,7 +135,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         setColspan(checkboxFuelParticipation, 1);
         setColspan(buttonDetourRoute, 4);
 
-
         fhLocation.addValueChangeListener(e -> fhLocation.setUniversityLocationAddress(e.getValue()));
 
         checkboxRegularDrive.addValueChangeListener(event -> {
@@ -147,11 +144,10 @@ public class FormLayoutDriveRoute extends FormLayout {
             driveDateEnd.setRequiredIndicatorVisible(!checked);
             driveDays.setReadOnly(checked);
             driveDays.setRequiredIndicatorVisible(!checked);
-            if(event.getValue()){
+            if (event.getValue()) {
                 driveDays.setValue(DayOfWeek.MONDAY.label);
                 driveDateStart.setErrorMessage("Startdatum der regelmäßigen Fahrt bitte angeben");
-            }
-            else {
+            } else {
                 driveDays.clear();
                 driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
             }
@@ -186,7 +182,7 @@ public class FormLayoutDriveRoute extends FormLayout {
     /**
      * Die Methode setData füllt das FormLayout mit den Daten einer gegebenen Fahrt.
      *
-     * @param driveRoute        Fahrt, dessen Daten in dem Fomular angezeigt werden sollen.
+     * @param driveRoute Fahrt, dessen Daten in dem Fomular angezeigt werden sollen.
      */
     public void setData(DriveRoute driveRoute) {
         if (driveRoute == null) {
@@ -236,8 +232,8 @@ public class FormLayoutDriveRoute extends FormLayout {
      * Die Methode checkRegularDrive prüft die Gültigkeit der Datumsangaben beim Erstellen einer
      * regelmäßigen Fahrt.
      *
-     * @throws InvalidDateException             Ungültiges Datum
-     * @throws InvalidRegularDrivePeriod        Ungültiger Zeitraum
+     * @throws InvalidDateException      Ungültiges Datum
+     * @throws InvalidRegularDrivePeriod Ungültiger Zeitraum
      */
     private void checkRegularDrive() throws InvalidDateException, InvalidRegularDrivePeriod {
         if (driveDateEnd.isEmpty()) {
@@ -245,7 +241,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         } else {
             localDateCheck(getDriveDateEnd());
             RegularDrive newRegularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(getDriveDays()), getDriveDateStart(), getDriveDateEnd());
-            if(newRegularDrive.getDriveDates().size() < 2){
+            if (newRegularDrive.getDriveDates().size() < 2) {
                 throw new InvalidRegularDrivePeriod("Bei dem angebenden Zeitraum für die Regelmäßige Fahrt, handelt es sich um eine Einzelfahrt!");
             }
         }
@@ -254,7 +250,7 @@ public class FormLayoutDriveRoute extends FormLayout {
     /**
      * Die Methode checkSingleDrive prüft die Eingaben einer Einzelfahrt.
      *
-     * @throws InvalidDateException             Ungültiges Datum
+     * @throws InvalidDateException Ungültiges Datum
      */
     private void checkSingleDrive() throws InvalidDateException {
         if (address.getValue().isEmpty()) {
@@ -263,18 +259,16 @@ public class FormLayoutDriveRoute extends FormLayout {
         if (fhLocation.isEmpty()) {
             fhLocation.setInvalid(true);
         }
-        if (driveDateStart.isEmpty()) {
-            driveDateStart.setInvalid(true);
-        }
-        else {
-            localDateCheck(getDriveDateStart());
-        }
         if (driveTime.isEmpty()) {
             driveTime.setInvalid(true);
         }
-
         if (carSeatCount.isEmpty()) {
             carSeatCount.setInvalid(true);
+        }
+        if (driveDateStart.isEmpty()) {
+            driveDateStart.setInvalid(true);
+        } else {
+            localDateCheck(getDriveDateStart());
         }
     }
 
@@ -293,12 +287,26 @@ public class FormLayoutDriveRoute extends FormLayout {
         checkboxFuelParticipation.setReadOnly(isReadOnly);
         checkboxRegularDrive.setReadOnly(isReadOnly);
 
-        System.out.println(checkboxRegularDrive.getValue());
         if (checkboxRegularDrive.getValue()) {
-            System.out.println("CHECK2");
             driveDateEnd.setReadOnly(isReadOnly);
             driveDays.setReadOnly(isReadOnly);
         }
+    }
+
+    /**
+     * Wechselt den Zustand der Komponenten auf dem FormLayout, zu "ungültig" oder "gültig".
+     *
+     * @param isInvalid boolean
+     */
+    public void setInvalid(boolean isInvalid) {
+        address.setInvalid(isInvalid);
+        address.setInvalid(isInvalid);
+        fhLocation.setInvalid(isInvalid);
+        driveTime.setInvalid(isInvalid);
+        carSeatCount.setInvalid(isInvalid);
+        driveDateStart.setInvalid(isInvalid);
+        driveDateEnd.setInvalid(isInvalid);
+        driveDays.setInvalid(isInvalid);
     }
 
     /**
