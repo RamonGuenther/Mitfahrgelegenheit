@@ -35,7 +35,7 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.Objects;
 
-import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.localDateCheck;
+import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.*;
 
 /**
  * Die Klasse FormLayoutDriveRoute ist eine Komponente, die mehrfach verwendet wird,
@@ -66,6 +66,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         setId("form-layout-drive-route-layout");
 
         address = new TextFieldAddress("Von");
+        address.setErrorMessage("Adresse bitte eintragen");
         address.setRequiredIndicatorVisible(true);
 
         fhLocation = new SelectUniversityLocation();
@@ -149,6 +150,7 @@ public class FormLayoutDriveRoute extends FormLayout {
                 driveDateStart.setErrorMessage("Startdatum der regelmäßigen Fahrt bitte angeben");
             } else {
                 driveDays.clear();
+                driveDateEnd.clear();
                 driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
             }
         });
@@ -213,7 +215,7 @@ public class FormLayoutDriveRoute extends FormLayout {
      * Die Methode checkInputFields prüft, ob bei dem Formular alle Pflichteingaben
      * gemacht wurden.
      */
-    public boolean checkInputFields() throws InvalidDateException, InvalidRegularDrivePeriod {
+    public boolean checkInputFields() throws InvalidDateException, InvalidRegularDrivePeriod, InvalidAddressException {
 
         if (checkboxRegularDrive.getValue()) {
             checkSingleDrive();
@@ -237,11 +239,24 @@ public class FormLayoutDriveRoute extends FormLayout {
      */
     private void checkRegularDrive() throws InvalidDateException, InvalidRegularDrivePeriod {
         if (driveDateEnd.isEmpty()) {
+            driveDateEnd.setErrorMessage("Enddatum der regelmäßigen Fahrt bitte angeben");
             driveDateEnd.setInvalid(true);
         } else {
-            localDateCheck(getDriveDateEnd());
-            RegularDrive newRegularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(getDriveDays()), getDriveDateStart(), getDriveDateEnd());
+            if (localDateCheckBoolean(getDriveDateEndValue())) {
+                driveDateEnd.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
+                driveDateEnd.setInvalid(true);
+                throw new InvalidDateException("Test");
+            }
+            RegularDrive newRegularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(getDriveDays()), getDriveDateStartValue(), getDriveDateEndValue());
             if (newRegularDrive.getDriveDates().size() < 2) {
+                driveDateStart.addFocusListener(e->{
+                   driveDateStart.setInvalid(false);
+                   driveDateEnd.setInvalid(false);
+                });
+                driveDateEnd.addFocusListener(e->{
+                    driveDateStart.setInvalid(false);
+                    driveDateEnd.setInvalid(false);
+                });
                 throw new InvalidRegularDrivePeriod("Bei dem angebenden Zeitraum für die Regelmäßige Fahrt, handelt es sich um eine Einzelfahrt!");
             }
         }
@@ -250,11 +265,15 @@ public class FormLayoutDriveRoute extends FormLayout {
     /**
      * Die Methode checkSingleDrive prüft die Eingaben einer Einzelfahrt.
      *
-     * @throws InvalidDateException Ungültiges Datum
+     * @throws InvalidDateException    Ungültiges Datum
+     * @throws InvalidAddressException Ungültige Adresse
      */
-    private void checkSingleDrive() throws InvalidDateException {
+    private void checkSingleDrive() throws InvalidDateException, InvalidAddressException {
         if (address.getValue().isEmpty()) {
+            address.setErrorMessage("Adresse bitte eintragen");
             address.setInvalid(true);
+        } else {
+            addressPatternCheck(address.getValue());
         }
         if (fhLocation.isEmpty()) {
             fhLocation.setInvalid(true);
@@ -266,9 +285,17 @@ public class FormLayoutDriveRoute extends FormLayout {
             carSeatCount.setInvalid(true);
         }
         if (driveDateStart.isEmpty()) {
+            if (checkboxRegularDrive.getValue())
+                driveDateStart.setErrorMessage("Startdatum der regelmäßigen Fahrt bitte angeben");
+            else
+                driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
             driveDateStart.setInvalid(true);
         } else {
-            localDateCheck(getDriveDateStart());
+            if (localDateCheckBoolean(getDriveDateStartValue())) {
+                driveDateStart.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
+                driveDateStart.setInvalid(true);
+                throw new InvalidDateException("Apfel");
+            }
         }
     }
 
@@ -348,12 +375,20 @@ public class FormLayoutDriveRoute extends FormLayout {
         return Integer.parseInt(carSeatCount.getValue());
     }
 
-    public LocalDate getDriveDateStart() {
+    public LocalDate getDriveDateStartValue() {
         return driveDateStart.getValue();
     }
 
-    public LocalDate getDriveDateEnd() {
+    public DatePicker getDriveDateStart() {
+        return driveDateStart;
+    }
+
+    public LocalDate getDriveDateEndValue() {
         return driveDateEnd.getValue();
+    }
+
+    public DatePicker getDriveDateEnd() {
+        return driveDateEnd;
     }
 
     public Boolean getCheckboxRegularDriveValue() {

@@ -18,6 +18,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -157,12 +158,21 @@ public class OfferDriveView extends VerticalLayout {
             saveDrive(formlayoutDriveRouteTop.getAddressValue(), formlayoutDriveRouteTop.getFhLocation(),
                     formlayoutDriveRouteTop.getDriveTime(), formlayoutDriveRouteTop.getCheckboxFuelParticipation(),
                     formlayoutDriveRouteTop.getCarSeatCount(), DriveType.OUTWARD_TRIP,
-                    formlayoutDriveRouteTop.getDriveDateStart());
+                    formlayoutDriveRouteTop.getDriveDateStartValue());
 
             formlayoutDriveRouteTop.clearFields();
             formlayoutDriveRouteTop.setInvalid(false);
-        } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
-            NotificationError.show(ex.getMessage());
+        } catch (InvalidAddressException ex) {
+            formlayoutDriveRouteTop.getAddress().setErrorMessage(ex.getMessage());
+            formlayoutDriveRouteTop.getAddress().setInvalid(true);
+            ex.printStackTrace();
+        } catch (InvalidRegularDrivePeriod ex) {
+            formlayoutDriveRouteTop.getDriveDateStart().setInvalid(true);
+            formlayoutDriveRouteTop.getDriveDateStart().setErrorMessage(ex.getMessage());
+            formlayoutDriveRouteTop.getDriveDateEnd().setInvalid(true);
+            formlayoutDriveRouteTop.getDriveDateEnd().setErrorMessage(ex.getMessage());
+            ex.printStackTrace();
+        } catch (InvalidDateException ex) {
             ex.printStackTrace();
         }
     }
@@ -181,12 +191,21 @@ public class OfferDriveView extends VerticalLayout {
             saveDrive(formLayoutDriveRouteBottom.getFhLocation(), formLayoutDriveRouteBottom.getAddressValue(),
                     formLayoutDriveRouteBottom.getDriveTime(), formLayoutDriveRouteBottom.getCheckboxFuelParticipation(),
                     formLayoutDriveRouteBottom.getCarSeatCount(), DriveType.RETURN_TRIP,
-                    formLayoutDriveRouteBottom.getDriveDateStart());
+                    formLayoutDriveRouteBottom.getDriveDateStartValue());
 
             formLayoutDriveRouteBottom.clearFields();
             formLayoutDriveRouteBottom.setInvalid(false);
-        } catch (InvalidDateException | InvalidRegularDrivePeriod ex) {
-            NotificationError.show(ex.getMessage());
+        } catch (InvalidAddressException ex) {
+            formLayoutDriveRouteBottom.getAddress().setErrorMessage(ex.getMessage());
+            formLayoutDriveRouteBottom.getAddress().setInvalid(true);
+            ex.printStackTrace();
+        } catch (InvalidRegularDrivePeriod ex) {
+            formLayoutDriveRouteBottom.getDriveDateStart().setInvalid(true);
+            formLayoutDriveRouteBottom.getDriveDateStart().setErrorMessage(ex.getMessage());
+            formLayoutDriveRouteBottom.getDriveDateEnd().setInvalid(true);
+            formLayoutDriveRouteBottom.getDriveDateEnd().setErrorMessage(ex.getMessage());
+            ex.printStackTrace();
+        } catch (InvalidDateException ex) {
             ex.printStackTrace();
         }
     }
@@ -227,16 +246,16 @@ public class OfferDriveView extends VerticalLayout {
                 if (formlayoutDriveRouteTop.getCheckboxRegularDriveValue()) {
                     newDriveRoute.setRegularDrive(new RegularDrive(
                             DayOfWeek.getDayOfWeek(formlayoutDriveRouteTop.getDriveDays()),
-                            formlayoutDriveRouteTop.getDriveDateStart(),
-                            formlayoutDriveRouteTop.getDriveDateEnd())
+                            formlayoutDriveRouteTop.getDriveDateStartValue(),
+                            formlayoutDriveRouteTop.getDriveDateEndValue())
                     );
                 }
             } else {
                 if (formLayoutDriveRouteBottom.getCheckboxRegularDriveValue()) {
                     newDriveRoute.setRegularDrive(new RegularDrive(
                             DayOfWeek.getDayOfWeek(formLayoutDriveRouteBottom.getDriveDays()),
-                            formLayoutDriveRouteBottom.getDriveDateStart(),
-                            formLayoutDriveRouteBottom.getDriveDateEnd())
+                            formLayoutDriveRouteBottom.getDriveDateStartValue(),
+                            formLayoutDriveRouteBottom.getDriveDateEndValue())
                     );
                 }
             }
@@ -245,6 +264,7 @@ public class OfferDriveView extends VerticalLayout {
 
         } catch (Exception e) {
             NotificationError.show(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

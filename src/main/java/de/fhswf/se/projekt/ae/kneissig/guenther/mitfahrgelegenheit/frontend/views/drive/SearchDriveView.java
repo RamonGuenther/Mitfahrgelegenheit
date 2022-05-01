@@ -70,6 +70,7 @@ public class SearchDriveView extends VerticalLayout {
         address.setValue(userService.getCurrentUser().getAddress().toString());
         address.setErrorMessage("Adresse bitte eintragen");
         address.setRequiredIndicatorVisible(true);
+        address.addFocusListener(e-> address.setInvalid(false));
 
         fhLocation = new SelectUniversityLocation();
         fhLocation.setValue(userService.getCurrentUser().getUniversityLocation());
@@ -110,8 +111,13 @@ public class SearchDriveView extends VerticalLayout {
                                         new RouteParam("regelmaessig", checkboxRegularDrive.getValue().toString()),
                                         new RouteParam("wochentag", checkboxRegularDrive.getValue() ? dayOfWeek.getValue() : "keinTag")
                                 ));
-                    } catch (InvalidAddressException | InvalidDateException ex) {
-                        NotificationError.show(ex.getMessage());
+                    } catch (InvalidAddressException ex) {
+                        address.setErrorMessage(ex.getMessage());
+                        address.setInvalid(true);
+                        ex.printStackTrace();
+                    } catch (InvalidDateException ex) {
+                        date.setErrorMessage(ex.getMessage());
+                        date.setInvalid(true);
                         ex.printStackTrace();
                     }
                 }
@@ -145,9 +151,10 @@ public class SearchDriveView extends VerticalLayout {
     /**
      * Die Methode checkInputFields prüft, ob alle Pflichteingaben vom Benutzer
      * gemacht wurden.
-     * @return                          true oder false
-     * @throws InvalidDateException     Ungültiges Datum
-     * @throws InvalidAddressException  Ungültige Adresse
+     *
+     * @return true oder false
+     * @throws InvalidDateException    Ungültiges Datum
+     * @throws InvalidAddressException Ungültige Adresse
      */
     private boolean checkInputFields() throws InvalidDateException, InvalidAddressException {
         setInputFieldsInvalid();
@@ -161,8 +168,8 @@ public class SearchDriveView extends VerticalLayout {
      * Die Methode setInputFieldsInvalid sorgt dafür, dass ein Hinweis für
      * ungültige Eingaben bei den Eingabefeldern angezeigt wird.
      *
-     * @throws InvalidDateException     Ungültiges Datum
-     * @throws InvalidAddressException  Ungültige Adresse
+     * @throws InvalidDateException    Ungültiges Datum
+     * @throws InvalidAddressException Ungültige Adresse
      */
     private void setInputFieldsInvalid() throws InvalidDateException, InvalidAddressException {
         if (address.getValue().isEmpty()) {
@@ -170,7 +177,7 @@ public class SearchDriveView extends VerticalLayout {
         } else {
             addressConverter = new AddressConverter(address.getValue());
         }
-        if(!checkboxRegularDrive.getValue()){
+        if (!checkboxRegularDrive.getValue()) {
             if (date.isEmpty()) {
                 date.setInvalid(true);
             } else {
@@ -224,10 +231,10 @@ public class SearchDriveView extends VerticalLayout {
      * einem Auswahlfeld für den Wochentag, je nachdem ob der Benutzer eine Einzelfahrt oder eine
      * regelmäßige Fahrt sucht.
      *
-     * @param isRegulaDrive     Angabe, ob regelmäßige Fahrt gesucht oder nicht
-     * @param layout            Formular, auf dem sich das Eingabefeld befindet
-     * @param date              Datepicker, der bei einer Einzelfahrtsuche angezeigt werden soll
-     * @param dayOfWeek         Auswahlfeld, das bei der Suche einer regelmäßigen Fahrt angezeigt werden soll
+     * @param isRegulaDrive Angabe, ob regelmäßige Fahrt gesucht oder nicht
+     * @param layout        Formular, auf dem sich das Eingabefeld befindet
+     * @param date          Datepicker, der bei einer Einzelfahrtsuche angezeigt werden soll
+     * @param dayOfWeek     Auswahlfeld, das bei der Suche einer regelmäßigen Fahrt angezeigt werden soll
      */
     private void setDateOrDayField(boolean isRegulaDrive, FormLayout layout, DatePicker date, Select<String> dayOfWeek) {
 

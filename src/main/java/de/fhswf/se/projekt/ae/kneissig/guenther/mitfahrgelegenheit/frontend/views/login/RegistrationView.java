@@ -112,9 +112,13 @@ public class RegistrationView extends VerticalLayout {
                 } else {
                     NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
                 }
-            } catch (InvalidMailException | InvalidAddressException ex) {
-                NotificationError.show(ex.getMessage());
+            } catch (InvalidMailException ex) {
+                registrationForm.getEmail().setErrorMessage(ex.getMessage());
+                registrationForm.getEmail().setInvalid(true);
                 ex.printStackTrace();
+            } catch (InvalidAddressException ex) {
+                registrationForm.getGoogleAddress().setErrorMessage(ex.getMessage());
+                registrationForm.getGoogleAddress().setInvalid(true);
             }
         });
 

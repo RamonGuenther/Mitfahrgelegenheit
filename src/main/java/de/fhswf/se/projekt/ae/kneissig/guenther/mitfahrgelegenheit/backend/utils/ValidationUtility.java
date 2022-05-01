@@ -23,7 +23,7 @@ import static java.util.Objects.isNull;
 public class ValidationUtility {
 
     private static final String ADDRESS_PATTERN = "(?<strasse>[A-Za-z_äÄöÖüÜß\\s-.()]+) (?<hausnummer>[\\s\\w]*) (?<postleitzahl>\\d{5}) (?<ort>[A-Za-z_äÄöÖüÜß\\s-.()]+)";
-    private static final String EMAIL_PATTERN = "^[a-z]+.[a-z]+([1-9][0-9]*)?@fh-swf.de$";
+    private static final String EMAIL_PATTERN = "^([A-Za-z-.0-9]*)?@fh-swf.de$";
     private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$";
 
     public static void nullCheck (Object o) throws IllegalArgumentException {
@@ -66,6 +66,10 @@ public class ValidationUtility {
         if(input.isBefore(LocalDate.now()) || input.equals(LocalDate.now())){
             throw new InvalidDateException("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
         }
+    }
+
+    public static boolean localDateCheckBoolean(LocalDate input){
+        return input.isBefore(LocalDate.now()) || input.equals(LocalDate.now());
     }
 
     /**

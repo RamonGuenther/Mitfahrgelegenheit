@@ -224,6 +224,9 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             profileDataForm.setGoogleAddress(new TextFieldAddress("Adresse"));
             profileDataForm.addComponentAtIndex(4, profileDataForm.getGoogleAddress());
             profileDataForm.setColspan(profileDataForm.getGoogleAddress(), 2);
+            profileDataForm.getStreet().setValue("");
+            profileDataForm.getPostal().setValue("");
+            profileDataForm.getPlace().setValue("");
 
             profileDataForm.getGoogleAddress().addValueChangeListener(event -> {
                 profileDataForm.getStreet().setValue(profileDataForm.getGoogleAddress().getStreet() + " " + profileDataForm.getGoogleAddress().getNumber());
@@ -271,8 +274,15 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             } else {
                 NotificationError.show("Bitte alle Pflichtfelder ausfüllen");
             }
-        } catch (InvalidMailException | InvalidAddressException ex) {
-            NotificationError.show(ex.getMessage());
+        } catch (InvalidMailException ex) {
+            profileDataForm.getEmail().setErrorMessage(ex.getMessage());
+            profileDataForm.getEmail().setInvalid(true);
+            ex.printStackTrace();
+        }
+
+        catch(InvalidAddressException ex){
+            profileDataForm.getGoogleAddress().setErrorMessage(ex.getMessage());
+            profileDataForm.getGoogleAddress().setInvalid(true);
             ex.printStackTrace();
         }
 

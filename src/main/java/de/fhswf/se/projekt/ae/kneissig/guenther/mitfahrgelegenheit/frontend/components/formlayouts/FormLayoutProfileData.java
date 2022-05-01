@@ -65,7 +65,6 @@ public class FormLayoutProfileData extends FormLayout {
         lastName.setErrorMessage("Nachname bitte angeben");
 
         email = new TextField("FH-Email");
-        email.setPattern("^[a-z]+.[a-z]+([1-9][0-9]*)?@fh-swf.de$");
         email.setErrorMessage("Bitte gültige FH-Mail eingeben.");
 
         googleAddress = new TextFieldAddress("Adresse");
@@ -90,10 +89,10 @@ public class FormLayoutProfileData extends FormLayout {
         selectFaculty = new SelectFaculty();
         selectFaculty.setReadOnly(true);
         selectFaculty.setErrorMessage("Fachbereich bitte angeben");
-        selectFaculty.addValueChangeListener(event-> selectFaculty.setInvalid(false));
+        selectFaculty.addValueChangeListener(event -> selectFaculty.setInvalid(false));
 
         selectLanguage = new SelectLanguage();
-        selectLanguage.addValueChangeListener(e-> selectLanguage.setInvalid(false));
+        selectLanguage.addValueChangeListener(e -> selectLanguage.setInvalid(false));
         selectLanguage.setErrorMessage("Bitte die Hauptsprache angeben");
         selectLanguage.setRequiredIndicatorVisible(true);
 
@@ -186,8 +185,8 @@ public class FormLayoutProfileData extends FormLayout {
      * Die Methode inputFieldInvalidCheck prüft, ob alle Pflichteingaben gemacht wurden und
      * ob das Pattern von Adresse und E-Mail korrekt sind.
      *
-     * @throws InvalidMailException         Ungültige E-Mail
-     * @throws InvalidAddressException      Ungültige Adresse
+     * @throws InvalidMailException    Ungültige E-Mail
+     * @throws InvalidAddressException Ungültige Adresse
      */
     private void inputFieldInvalidCheck() throws InvalidMailException, InvalidAddressException {
         if (firstName.isEmpty()) {
@@ -197,23 +196,22 @@ public class FormLayoutProfileData extends FormLayout {
             lastName.setInvalid(true);
         }
         if (email.isEmpty()) {
+            email.setErrorMessage("Bitte gültige FH-Mail eingeben.");
             email.setInvalid(true);
-        }
-        else{
+        } else {
             emailPatternCheck(email.getValue());
         }
         if (selectUniversityLocation.isEmpty()) {
             selectUniversityLocation.setInvalid(true);
-        }
-        else {
+        } else {
             if (selectFaculty.isEmpty()) {
                 selectFaculty.setInvalid(true);
             }
         }
         if (googleAddress.getValue().isEmpty()) {
+            googleAddress.setErrorMessage("Bitte Adresse angeben");
             googleAddress.setInvalid(true);
-        }
-        else{
+        } else {
             addressPatternCheck(googleAddress.getValue());
         }
         if (selectLanguage.isEmpty()) {
@@ -224,9 +222,9 @@ public class FormLayoutProfileData extends FormLayout {
     /**
      * Setzt Eingabefelder auf gültig oder ungültig.
      *
-     * @param isInvalid         Eingabe ist gültig oder ungültig
+     * @param isInvalid Eingabe ist gültig oder ungültig
      */
-    public void setInputFieldsInvalid(boolean isInvalid){
+    public void setInputFieldsInvalid(boolean isInvalid) {
         firstName.setInvalid(isInvalid);
         lastName.setInvalid(isInvalid);
         selectUniversityLocation.setInvalid(isInvalid);
