@@ -15,7 +15,7 @@ import java.util.Optional;
  *
  * @author Ramon Günther & Ivonne Kneißig
  */
-public interface DriveRouteRepository extends JpaRepository<DriveRoute, Integer> {
+public interface DriveRouteRepository extends JpaRepository<DriveRoute, Long> {
 
     Optional<List<DriveRoute>> findAllByDriver(User driver);
 

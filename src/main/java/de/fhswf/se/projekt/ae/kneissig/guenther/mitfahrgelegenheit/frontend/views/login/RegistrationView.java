@@ -2,6 +2,8 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.vie
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -51,6 +53,7 @@ public class RegistrationView extends VerticalLayout {
      */
     private void createRegistrationView() {
         Button submitButton = new Button("Speichern");
+        submitButton.setEnabled(false);
         submitButton.addClassName("profile-data-buttons");
 
         Button cancelButton = new Button("Abbrechen");
@@ -65,6 +68,22 @@ public class RegistrationView extends VerticalLayout {
         registrationForm.createOwnProfileLayout();
         registrationForm.markFormComponentsAsRequired();
         registrationForm.setClassName("registration-data-form");
+
+        Checkbox checkbox = new Checkbox();
+        checkbox.setLabel("Ich habe die Datenschutzerklärung gelesen und akzeptiere sie.");
+        checkbox.addValueChangeListener(event -> submitButton.setEnabled(event.getValue()));
+
+        Button privacyPolicyButton = new Button("(Datenschutzerklärung anzeigen)");
+        privacyPolicyButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        privacyPolicyButton.addClickListener(event -> {
+
+        });
+
+        HorizontalLayout horizontalLayoutPolicy = new HorizontalLayout(checkbox, privacyPolicyButton);
+        horizontalLayoutPolicy.setId("registration-horizontal-layout-policy");
+
+        registrationForm.addComponentAtIndex(10, horizontalLayoutPolicy);
+        registrationForm.setColspan(horizontalLayoutPolicy, 4);
 
         registrationForm.getGoogleAddress().addValueChangeListener(event ->
                 editAddress());
@@ -117,7 +136,7 @@ public class RegistrationView extends VerticalLayout {
             throw new IllegalArgumentException("ProfileView: FormLayout is null");
         }
 
-        registrationForm.getStreet().setValue(registrationForm.getGoogleAddress().getStreet());
+        registrationForm.getStreet().setValue(registrationForm.getGoogleAddress().getStreet() + " " + registrationForm.getGoogleAddress().getNumber());
         registrationForm.getPlace().setValue(registrationForm.getGoogleAddress().getPlace());
         registrationForm.getPostal().setValue(registrationForm.getGoogleAddress().getPostal());
         registrationForm.remove(registrationForm.getGoogleAddress());
@@ -129,7 +148,7 @@ public class RegistrationView extends VerticalLayout {
 
             registrationForm.remove(registrationForm.getGoogleAddress());
             registrationForm.setGoogleAddress(new TextFieldAddress("Adresse"));
-            registrationForm.getGoogleAddress().addValueChangeListener(e-> editAddress());
+            registrationForm.getGoogleAddress().addValueChangeListener(e -> editAddress());
 
             registrationForm.addComponentAtIndex(4, registrationForm.getGoogleAddress());
             registrationForm.setColspan(registrationForm.getGoogleAddress(), 2);

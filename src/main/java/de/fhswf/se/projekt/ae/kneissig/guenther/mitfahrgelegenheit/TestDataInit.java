@@ -120,7 +120,7 @@ public class TestDataInit {
 
         User emptyUser = new User(
                 5L,
-                "user4",
+                "mamus001",
                 passwordEncoder.encode("1234"),
                 "Max",
                 "Mustermann",

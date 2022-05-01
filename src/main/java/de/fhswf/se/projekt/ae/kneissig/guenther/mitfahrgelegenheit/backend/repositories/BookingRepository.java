@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @author Ramon Günther & Ivonne Kneißig
  */
-public interface BookingRepository extends JpaRepository<Booking, Integer> {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Optional<List<Booking>> findAllByPassengerAndDriveRoute_DriveType(User passenger, DriveType driveType);
 

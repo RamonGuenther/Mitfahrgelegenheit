@@ -53,7 +53,7 @@ public class DriveRouteService {
      * @param id                Id der gesuchten Fahrt
      * @return                  Fahrt mit der gegebenen Id
      */
-    public Optional<DriveRoute> findById(Integer id) {
+    public Optional<DriveRoute> findById(Long id) {
         return repository.findById(id);
     }
 

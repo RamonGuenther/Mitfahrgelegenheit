@@ -23,19 +23,15 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private Long id;
     @ManyToOne
     private User passenger;
-
     @ManyToOne
     private DriveRoute driveRoute;
     @Embedded
     private Stopover stopover;
-
     private LocalDateTime dateOfBooking;
     private LocalDate regularDriveSingleDriveDate;
-
     private boolean ratedByPassenger;
     private boolean ratedByDriver;
 
@@ -54,7 +50,7 @@ public class Booking {
 
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

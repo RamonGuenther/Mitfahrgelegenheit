@@ -25,7 +25,7 @@ public class DriveRoute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Embedded
     @AttributeOverrides({
@@ -124,7 +124,7 @@ public class DriveRoute {
      * @param note                  Notiz
      */
     public DriveRoute(
-            Integer id,
+            Long id,
             Start start,
             Destination destination,
             LocalDateTime drivingTime,
@@ -154,7 +154,7 @@ public class DriveRoute {
 
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

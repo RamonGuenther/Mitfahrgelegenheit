@@ -44,7 +44,7 @@ public class MainLayout extends AppLayout implements PageConfigurator {
     /**
      * Die Konstruktor erstellt eine Menüleiste für die Applikation.
      */
-    private UserService userService;
+    private final UserService userService;
 
     public MainLayout(UserService userService){
         this.userService = userService;
@@ -58,9 +58,9 @@ public class MainLayout extends AppLayout implements PageConfigurator {
      */
     private void createMenuBar(){
 
-        StreamResource streamResource = new StreamResource("LogoMitfahrgelegenheit.png",
+        StreamResource streamResource = new StreamResource("LogoDriveTogether.png",
                 () -> MainLayout.class.getClassLoader().
-                        getResourceAsStream("images/LogoMitfahrgelegenheit.png"));
+                        getResourceAsStream("images/LogoDriveTogether.png"));
 
         Image logoFH = new Image (streamResource, "FH SWF");
         logoFH.addClickListener(e -> UI.getCurrent().navigate(DashboardView.class));

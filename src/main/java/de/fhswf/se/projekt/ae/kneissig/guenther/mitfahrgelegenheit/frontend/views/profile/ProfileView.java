@@ -226,7 +226,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
             profileDataForm.setColspan(profileDataForm.getGoogleAddress(), 2);
 
             profileDataForm.getGoogleAddress().addValueChangeListener(event -> {
-                profileDataForm.getStreet().setValue(profileDataForm.getGoogleAddress().getStreet());
+                profileDataForm.getStreet().setValue(profileDataForm.getGoogleAddress().getStreet() + " " + profileDataForm.getGoogleAddress().getNumber());
                 profileDataForm.getPlace().setValue(profileDataForm.getGoogleAddress().getPlace());
                 profileDataForm.getPostal().setValue(profileDataForm.getGoogleAddress().getPostal());
                 profileDataForm.remove(profileDataForm.getGoogleAddress());

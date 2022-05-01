@@ -182,7 +182,7 @@ public class FormLayoutDriveRoute extends FormLayout {
     /**
      * Die Methode setData füllt das FormLayout mit den Daten einer gegebenen Fahrt.
      *
-     * @param driveRoute Fahrt, dessen Daten in dem Fomular angezeigt werden sollen.
+     * @param driveRoute Fahrt, dessen Daten in dem Formular angezeigt werden sollen.
      */
     public void setData(DriveRoute driveRoute) {
         if (driveRoute == null) {

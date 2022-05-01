@@ -112,7 +112,7 @@ public class FormLayoutProfileData extends FormLayout {
         setColspan(place, 1);
         setColspan(selectLanguage, 1);
         setColspan(multiSelectLanguage, 1);
-        setColspan(this.buttonLayout, 4);
+        setColspan(buttonLayout, 4);
     }
 
     /**
