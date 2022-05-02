@@ -43,9 +43,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
     private final UserService userService;
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
-
     private List<DriveRoute> driveList;
-    private DriveType fahrtenTyp;
+    private DriveType driveType;
     private String typ;
     private String fhStandort;
     private String adresse;
@@ -143,12 +142,12 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         );
         switch (typ) {
             case "Hinfahrt" -> {
-                fahrtenTyp = DriveType.OUTWARD_TRIP;
-                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, adresse, fhStandort, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
+                driveType = DriveType.OUTWARD_TRIP;
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(driveType, adresse, fhStandort, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
             }
             case "Rückfahrt" -> {
-                fahrtenTyp = DriveType.RETURN_TRIP;
-                driveList = driveRouteService.getDriveRoutesForSearchDrive(fahrtenTyp, fhStandort, adresse, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
+                driveType = DriveType.RETURN_TRIP;
+                driveList = driveRouteService.getDriveRoutesForSearchDrive(driveType, fhStandort, adresse, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
             }
         }
         CreateSearchDriveResultView();

@@ -75,7 +75,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         fhLocation.setErrorMessage("FH Standort bitte auswählen");
 
         driveDateStart = new DatePicker("Tag der Fahrt");
-        driveDateStart.setMin(LocalDate.now());
         driveDateStart.setRequiredIndicatorVisible(true);
         driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
 
@@ -298,7 +297,6 @@ public class FormLayoutDriveRoute extends FormLayout {
         if (carSeatCount.isEmpty()) {
             carSeatCount.setInvalid(true);
         }
-        //TODO: Wenn es auf der View ist und eine regelmäßige Fahrt
         if (driveDateStart.isEmpty()) {
             if (checkboxRegularDrive.getValue())
                 driveDateStart.setErrorMessage("Startdatum der regelmäßigen Fahrt bitte angeben");
@@ -306,12 +304,15 @@ public class FormLayoutDriveRoute extends FormLayout {
                 driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
             driveDateStart.setInvalid(true);
         } else {
-            if (localDateCheckBoolean(getDriveDateStartValue())) {
-                driveDateStart.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
-                driveDateStart.setInvalid(true);
-                throw new InvalidDateException("");
+            if (!UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label) && checkboxRegularDrive.getValue()) {
+                if (localDateCheckBoolean(getDriveDateStartValue())) {
+                    driveDateStart.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
+                    driveDateStart.setInvalid(true);
+                    throw new InvalidDateException("");
+                }
             }
         }
+
     }
 
     /**

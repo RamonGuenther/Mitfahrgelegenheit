@@ -9,7 +9,9 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.enti
 public enum PageId {
     OWN_DRIVE_OFFERS_VIEW("OwnDriveOffersView"),
     SEARCH_DRIVE_RESULT_VIEW("SearchDriveResultView"),
-    PROFILE("Profile");
+    PROFILE("Profile"),
+
+    DRIVE_REQUEST_LIST_VIEW("DriveRequestListView");
 
     public final String label;
 
