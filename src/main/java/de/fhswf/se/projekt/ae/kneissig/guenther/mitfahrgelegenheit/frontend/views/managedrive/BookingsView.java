@@ -167,13 +167,21 @@ public class BookingsView extends VerticalLayout {
     private List<Booking> setBookingsByDriveType(DriveType driveType){
         return bookingService.getAllByPassengerAndDriveType(user, driveType).orElse(Collections.emptyList())
                 .stream().filter(booking ->
-                        booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now()) &&
+                                // Einfache Einzelfahrt Zeit/Datum, nach aktueller Zeit/Datum
+                                booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now()) &&
                                 booking.getRegularDriveSingleDriveDate() == null ||
+                                // oder Einzelfahrt aus regelmäßiger Fahrt mit heutigem Datum, aber späterer Zeit
                                 booking.getRegularDriveSingleDriveDate() != null &&
                                         booking.getRegularDriveSingleDriveDate().equals(LocalDate.now()) &&
                                         booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalTime.now()) ||
+                                // oder Einzelfahrt aus regelmäßiger Fahrt mit Datum nach aktuellem Datum
                                 booking.getRegularDriveSingleDriveDate() != null &&
-                                        booking.getRegularDriveSingleDriveDate().isAfter(LocalDate.now())
+                                        booking.getRegularDriveSingleDriveDate().isAfter(LocalDate.now()) ||
+                                // oder regelmäßige Fahrt bei dem das Enddatum noch nicht erreicht wurde
+                                booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() != null &&
+                                        booking.getRegularDriveSingleDriveDate() == null &&
+                                        LocalDateTime.of(booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd(),
+                                               booking.getDriveRoute().getDrivingTime().toLocalTime()). isAfter(LocalDateTime.now())
                 ).collect(Collectors.toList());
     }
 }

@@ -26,21 +26,18 @@ public class PrivacyDialog extends Dialog {
         span1.setId("privacy-dialog");
 
 
-        H4 span2 = new H4("Im FB I+N ist im Studiengang Informatik / Angewandte Informatik vorgesehen, " +
-                "dass im Rahmen einiger Lehrveranstaltungen die Labore von den Studierenden im Rahmen der " +
-                "Veranstaltungen genutzt werden. Für manche Labore ist es erforderlich die entsprechende Laborordnung " +
-                "zu akzeptieren. Zur digitalisierung dieses Prozesses dient diese Webanwendung. Ihre Daten (s.u.)" +
-                " werden von dem jeweiligen Dozenten oder Mitarbeiter einsehbar sein. Wir verwenden Ihre Daten" +
-                " ausschließlich dazu, nachzuverfolgen ob Teilnehmer einer Veranstaltung die Laborordnung " +
-                "akzeptiert haben.");
+        H4 span2 = new H4("Die Fachhochschule Südwestfalen bietet Studenten der Hochschule mit dieser Web-Applikation," +
+                " die Möglichkeit, schnell und einfach Fahrgemeinschaften zu bilden und Mitfahrgelegenheiten anzubieten bzw." +
+                " zu nutzen. Ihr Nachname und die genaue Adresse sind für andere Nutzer nicht direkt bzw. nur in gekürzter Form sichtbar. " +
+                " Sie können Start- und Zieladressen zum Anlegen von Fahrtangeboten oder Abholadressen bei Anfragen auf Wunsch so anpassen, " +
+                " dass es sich nicht um Ihre direkte Wohnadresse handelt.");
         span2.setId("privacy-dialog");
 
         H4 span3 = new H4("Ihre Daten:");
         span3.setId("privacy-dialog");
 
-
-        H4 h4 = new H4("Benutzername, Vorname, Nachname, FH-Standort, Fachbereich, Adresse und E-Mail-Adresse werden gespeichert, um Sie identifizieren zu können und um die Web-Applikation" +
-                " in voller Funktionsweise Nutzen zu können. \n");         //TODO: Daten werden nciht von allen gesehn adresse weg und abkekürzter Nachname
+        H4 h4 = new H4("Benutzername, Vorname, Nachname, FH-Standort, Fachbereich, Adresse und E-Mail-Adresse werden gespeichert, " +
+                "um Sie identifizieren zu können und um die Web-Applikation in voller Funktionsweise Nutzen zu können. \n");
 
         h4.setId("privacy-dialog");
 
@@ -49,7 +46,7 @@ public class PrivacyDialog extends Dialog {
                 "Soweit die Einwilligung nicht widerrufen wird, gilt sie bis zu Ihrer Exmatrikulation.");
         h41.setId("privacy-dialog");
 
-        H4 h42 = new H4("Der Widerspruch ist zu richten an Herrn Prof. Dr. Uwe Klug, [klug @ fh-swf-de], Frauenstuhlweg 31 58644 Iserlohn.\n");
+        H4 h42 = new H4("Der Widerspruch ist zu richten an Herrn Prof. Dr. Uwe Klug, [klug @ fh-swf.de], Frauenstuhlweg 31 58644 Iserlohn.\n");
 
         Button closeButton = new Button("Schließen");
         closeButton.setId("privacy-dialog-close_button");
@@ -58,7 +55,7 @@ public class PrivacyDialog extends Dialog {
         HorizontalLayout buttonLayout = new HorizontalLayout(closeButton);
         buttonLayout.setId("privacy-dialog-button_layout");
 
-        Div div = new Div(title,span,span1,span2, span3,h4,h41, h42, buttonLayout);
+        Div div = new Div(title, span, span1, span2, span3, h4, h41, h42, buttonLayout);
 
         add(div);
 

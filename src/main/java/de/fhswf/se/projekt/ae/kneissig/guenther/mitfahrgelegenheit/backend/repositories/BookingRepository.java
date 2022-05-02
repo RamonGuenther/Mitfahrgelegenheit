@@ -22,10 +22,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Optional<List<Booking>> findAllByPassenger(User passenger);
 
-    @Query("SELECT b FROM Booking b WHERE b.driveRoute.driver = :user and b.ratedByDriver = false and b.driveRoute.drivingTime < :date or b.driveRoute.driver = :user and b.ratedByDriver = false and b.regularDriveSingleDriveDate < :date")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.driveRoute.driver = :user and b.ratedByDriver = false and b.driveRoute.regularDrive.regularDriveDateEnd is null and b.driveRoute.drivingTime < :date " +
+            "or b.driveRoute.driver = :user and b.ratedByDriver = false and b.driveRoute.regularDrive.regularDriveDateEnd is null and b.regularDriveSingleDriveDate < :date " +
+            "or b.driveRoute.driver = :user and b.ratedByDriver = false and b.driveRoute.regularDrive.regularDriveDateEnd < :date and b.regularDriveSingleDriveDate is null")
     Optional<List<Booking>> findAllByDriverAndDrivingTimeAndRatedByDriver(User user, LocalDateTime date);
 
-    @Query("SELECT b FROM Booking b WHERE b.passenger = :user and b.ratedByPassenger = false and b.driveRoute.drivingTime < :date or b.passenger = :user and b.ratedByPassenger = false and b.regularDriveSingleDriveDate < :date")
+    @Query("SELECT b FROM Booking b WHERE b.passenger = :user and b.ratedByPassenger = false and b.driveRoute.regularDrive.regularDriveDateEnd is null and b.driveRoute.drivingTime < :date " +
+            "or b.passenger = :user and b.ratedByPassenger = false and b.driveRoute.regularDrive.regularDriveDateEnd is null and b.regularDriveSingleDriveDate < :date " +
+            "or b.passenger = :user and b.ratedByPassenger = false and b.driveRoute.regularDrive.regularDriveDateEnd < :date and b.regularDriveSingleDriveDate is null")
     Optional<List<Booking>> findAllByPassengerAndDrivingTimeAndRatedByPassenger(User user, LocalDateTime date);
 
     Optional<List<Booking>> findAllByPassengerAndDriveRoute_RegularDrive_RegularDriveDateEnd_IsNotNull(User user);
