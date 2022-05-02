@@ -105,7 +105,7 @@ public class MainLayout extends AppLayout implements PageConfigurator {
         driveRequests.getElement().getClassList().add("menuItems");
         driveRequests.addClickListener(e -> UI.getCurrent().navigate(DriveRequestListView.class));
 
-        MenuItem bookings = projectSubMenu.addItem("gebuchte Fahrten");
+        MenuItem bookings = projectSubMenu.addItem("Gebuchte Fahrten");
         bookings.getElement().getClassList().add("menuItems");
         bookings.addClickListener(e -> UI.getCurrent().navigate(BookingsView.class));
 

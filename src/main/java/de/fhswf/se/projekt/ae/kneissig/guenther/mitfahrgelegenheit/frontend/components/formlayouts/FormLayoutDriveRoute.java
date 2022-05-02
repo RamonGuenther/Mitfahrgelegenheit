@@ -256,7 +256,7 @@ public class FormLayoutDriveRoute extends FormLayout {
             driveDateEnd.setInvalid(true);
         } else {
             if (localDateCheckBoolean(getDriveDateEndValue())) {
-                driveDateEnd.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
+                driveDateEnd.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen");
                 driveDateEnd.setInvalid(true);
                 throw new InvalidDateException("");
             }
@@ -304,9 +304,11 @@ public class FormLayoutDriveRoute extends FormLayout {
                 driveDateStart.setErrorMessage("Tag der Fahrt bitte angeben");
             driveDateStart.setInvalid(true);
         } else {
-            if (!UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label) && checkboxRegularDrive.getValue()) {
+            if (UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label) &&
+                    !checkboxRegularDrive.getValue() ||
+                    UI.getCurrent().getId().get().equals(PageId.OFFER_DRIVE_VIEW.label)) {
                 if (localDateCheckBoolean(getDriveDateStartValue())) {
-                    driveDateStart.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
+                    driveDateStart.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen");
                     driveDateStart.setInvalid(true);
                     throw new InvalidDateException("");
                 }

@@ -66,6 +66,8 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
         addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriver().getId(),
                 driver.getDriver().getFullName())).setHeader("Fahrer");
 
+        getColumns().get(4).setKey("Fahrer");
+
         getColumns().get(0).setFooter("Anzahl:  " + driveList.size());
 
         addComponentColumn(this::createButtons);

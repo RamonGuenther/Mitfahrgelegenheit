@@ -89,7 +89,10 @@ public class OwnDriveOffersEditDialog extends Dialog {
         Button editButton = new Button("Bearbeiten");
         editButton.setIcon(VaadinIcon.PENCIL.create());
         editButton.setClassName("own-drive-offers-edit-dialog-buttons");
-        editButton.addClickListener(e -> createEditButtons());
+        editButton.addClickListener(e -> {
+            formLayoutDriveRoute.getDriveDateStart().setMin(LocalDate.now());
+            createEditButtons();
+        });
 
         Button closeButton = new Button("Schließen");
         closeButton.setClassName("own-drive-offers-edit-dialog-buttons");

@@ -10,8 +10,9 @@ public enum PageId {
     OWN_DRIVE_OFFERS_VIEW("OwnDriveOffersView"),
     SEARCH_DRIVE_RESULT_VIEW("SearchDriveResultView"),
     PROFILE("Profile"),
+    DRIVE_REQUEST_LIST_VIEW("DriveRequestListView"),
 
-    DRIVE_REQUEST_LIST_VIEW("DriveRequestListView");
+    OFFER_DRIVE_VIEW("OfferDriveView");
 
     public final String label;
 

@@ -14,6 +14,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
@@ -50,10 +51,8 @@ public class OfferDriveView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
     private final UserService userService;
-
     private FormLayoutDriveRoute formlayoutDriveRouteTop;
     private FormLayoutDriveRoute formLayoutDriveRouteBottom;
-
     private RadioButtonGroup<String> layoutOption;
     private Button createButton;
 
@@ -62,6 +61,7 @@ public class OfferDriveView extends VerticalLayout {
      * Listener zuständig.
      */
     public OfferDriveView(DriveRouteService driveRouteService, UserService userService) {
+        UI.getCurrent().setId(PageId.OFFER_DRIVE_VIEW.label);
 
         this.driveRouteService = driveRouteService;
         this.userService = userService;

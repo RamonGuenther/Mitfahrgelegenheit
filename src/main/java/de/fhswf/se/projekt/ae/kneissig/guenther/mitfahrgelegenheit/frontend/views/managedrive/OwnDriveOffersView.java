@@ -71,8 +71,10 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setValue("Hinfahrt");
 
         DriveRouteGrid gridOutwardTrip = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService, false, null);
+        gridOutwardTrip.removeColumnByKey("Fahrer");
         gridOutwardTrip.setId("gridOwnOffersView");
         DriveRouteGrid gridReturnTrip = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
+        gridReturnTrip.removeColumnByKey("Fahrer");
         gridReturnTrip.setId("gridOwnOffersView");
 
         Div div = new Div(title, radioButtonGroup, gridOutwardTrip);
