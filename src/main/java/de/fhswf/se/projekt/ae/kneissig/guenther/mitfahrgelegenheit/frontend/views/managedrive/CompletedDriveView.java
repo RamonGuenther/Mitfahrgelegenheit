@@ -11,6 +11,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.Role;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
@@ -86,8 +87,8 @@ public class CompletedDriveView extends VerticalLayout {
         completedDrivesGrid = new Grid<>();
         completedDrivesGrid.setItems(completedDriveListDriver);
         completedDrivesGrid.addColumn(this::setDateTimeColumn).setHeader("Tag / Uhrzeit");
-        completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
-        completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
+        completedDrivesGrid.addColumn(this::setStartAddressColumn).setHeader("Von");
+        completedDrivesGrid.addColumn(this::setDestinationColumn).setHeader("Nach");
         completedDrivesGrid.addComponentColumn(booking ->
                 radioButtonGroup.getValue().equals(OFFERED_DRIVES) ?
                     new Anchor("/profil/" + booking.getPassenger().getId(), booking.getPassenger().getFullName()) :
@@ -145,7 +146,7 @@ public class CompletedDriveView extends VerticalLayout {
      */
     private String setDateTimeColumn(Booking booking){
 
-        String dateTime = new String();
+        String dateTime = "";
 
         if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() == null){
             dateTime = booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime();
@@ -157,5 +158,37 @@ public class CompletedDriveView extends VerticalLayout {
             dateTime = booking.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + booking.getDriveRoute().getFormattedTime();
         }
         return dateTime;
+    }
+
+    /**
+     * Die Methode setStartAddressColumn setzt die Startadresse für Fahrer bei einer Hinfahrt auf die eigene Adresse,
+     * für Mitfahrer auf ihre Abholadresse. Bei einer Rückfahrt ist der FH-Standort die Start-Adresse.
+     *
+     * @param booking           abgeschlossene Buchung
+     * @return                  Adresse, die angezeigt werden soll
+     */
+    private String setStartAddressColumn(Booking booking){
+        if(!radioButtonGroup.getValue().equals(OFFERED_DRIVES) && booking.getDriveRoute().getDriveType().equals(DriveType.OUTWARD_TRIP)){
+            return booking.getStopover().getFullAddressToString();
+        }
+        else{
+            return booking.getDriveRoute().getStart().getFullAddressToString();
+        }
+    }
+
+    /**
+     * Die Methode setDestinationColumnsetzt die Zieladresse für Fahrer bei einer Rückfahrt auf die eigene Adresse,
+     * für Mitfahrer auf ihre Abholadresse. Bei einer Hinfahrt ist der FH-Standort die Ziel-Adresse.
+     *
+     * @param booking           abgeschlossene Buchung
+     * @return                  Adresse, die angezeigt werden soll
+     */
+    private String setDestinationColumn(Booking booking){
+        if(!radioButtonGroup.getValue().equals(OFFERED_DRIVES) && booking.getDriveRoute().getDriveType().equals(DriveType.RETURN_TRIP)){
+            return booking.getStopover().getFullAddressToString();
+        }
+        else{
+            return booking.getDriveRoute().getDestination().getFullAddressToString();
+        }
     }
 }

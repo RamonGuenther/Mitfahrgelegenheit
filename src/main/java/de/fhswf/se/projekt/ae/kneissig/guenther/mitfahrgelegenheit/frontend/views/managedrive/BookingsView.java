@@ -78,8 +78,12 @@ public class BookingsView extends VerticalLayout {
         gridBookings = new Grid<>();
         gridBookings.setItems(setBookingsByDriveType(DriveType.OUTWARD_TRIP));
         gridBookings.addColumn(this::setDateTimeColumn).setHeader("Tag / Uhrzeit");
-        gridBookings.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
-        gridBookings.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
+        gridBookings.addColumn(booking -> booking.getDriveRoute().getDriveType().equals(DriveType.OUTWARD_TRIP) ?
+                booking.getStopover().getFullAddressToString() :
+                booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Von");
+        gridBookings.addColumn(booking -> booking.getDriveRoute().getDriveType().equals(DriveType.OUTWARD_TRIP) ?
+                booking.getDriveRoute().getDestination().getFullAddressToString() :
+                booking.getStopover().getFullAddressToString()).setHeader("Nach");
         gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
         gridBookings.addComponentColumn(this::createLeaveDriveButton).setHeader("Weiter mitfahren?");
         gridBookings.getColumns().forEach(col -> col.setAutoWidth(true));
