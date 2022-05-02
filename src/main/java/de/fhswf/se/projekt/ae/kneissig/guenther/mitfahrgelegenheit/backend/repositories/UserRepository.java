@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Ramon Günther & Ivonne Kneißig
  */
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
 }

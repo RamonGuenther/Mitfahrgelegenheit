@@ -287,7 +287,7 @@ public class DashboardView extends VerticalLayout {
     private void setPassengerValues(Booking booking){
         passengerViewDriverValueLabel.setVisible(false);
         passengerViewDriverValue.setVisible(true);
-        passengerViewDriverValue.setHref("/profil/" + booking.getDriveRoute().getDriver().getUsername());
+        passengerViewDriverValue.setHref("/profil/" + booking.getDriveRoute().getDriver().getId());
         passengerViewDriverValue.setText(booking.getDriveRoute().getDriver().getFullName());
         passengerViewStartValue.setText(booking.getDriveRoute().getStart().getFullAddressToString());
         passengerViewDestinationValue.setText(booking.getDriveRoute().getDestination().getFullAddressToString());

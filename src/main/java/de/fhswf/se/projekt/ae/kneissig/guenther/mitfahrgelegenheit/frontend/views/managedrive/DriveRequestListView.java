@@ -53,7 +53,7 @@ public class DriveRequestListView extends VerticalLayout {
         driverGrid.setItems(driveRequestService.findAllDriveRequestsDriver(userService.getCurrentUser()).orElse(Collections.emptyList()));
         driverGrid.addColumn(requestDate -> requestDate.getFormattedDate() + ", " + requestDate.getFormattedTime() ).setHeader("Anfragedatum");
         driverGrid.addColumn(stopover -> stopover.getStopover().getFullAddressToString()).setHeader("Zwischenstopp");
-        driverGrid.addComponentColumn(passenger -> new Anchor("/profil/" + passenger.getPassenger().getUsername(),
+        driverGrid.addComponentColumn(passenger -> new Anchor("/profil/" + passenger.getPassenger().getId(),
                 passenger.getPassenger().getFullName())).setHeader("Mitfahrer");
         driverGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
@@ -72,7 +72,7 @@ public class DriveRequestListView extends VerticalLayout {
         passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()).orElse(Collections.emptyList()));
         passengerGrid.addColumn(requestDate -> requestDate.getFormattedDate() + ", " + requestDate.getFormattedTime() ).setHeader("Anfragedatum");
         passengerGrid.addColumn(status -> status.getRequestState().label).setHeader("Anfragestatus");
-        passengerGrid.addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriveRoute().getDriver().getUsername(),
+        passengerGrid.addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriveRoute().getDriver().getId(),
                 driver.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());

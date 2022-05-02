@@ -19,6 +19,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.PrivacyDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.DashboardView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.OfferDriveView;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
@@ -39,6 +40,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Theme(themeFolder = "mitfahrgelegenheit")
 @CssImport("/themes/mitfahrgelegenheit/views/main-view.css")
 @CssImport(value = "/themes/mitfahrgelegenheit/menu-bar-button.css", themeFor = "vaadin-menu-bar-button")
+@CssImport(value = "/themes/mitfahrgelegenheit/buttons.css", themeFor = "vaadin-button")
+@CssImport(value = "/themes/mitfahrgelegenheit/radiobutton.css", themeFor = "vaadin-radio-button")
+@CssImport(value = "/themes/mitfahrgelegenheit/checkbox.css", themeFor = "vaadin-checkbox")
 public class MainLayout extends AppLayout implements PageConfigurator {
 
     /**
@@ -74,56 +78,69 @@ public class MainLayout extends AppLayout implements PageConfigurator {
         /*-------------------------------------------------------------------------------------------------------------
                                                          Haupt-MenuItems
         -------------------------------------------------------------------------------------------------------------*/
-        MenuItem fahrtSuchen = menuBar.addItem("Fahrt suchen");
-        fahrtSuchen.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
+        MenuItem searchDrive = menuBar.addItem("Fahrt suchen");
+        searchDrive.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
 
-        MenuItem fahrtAnbieten = menuBar.addItem(" Fahrt anbieten");
-        fahrtAnbieten.addClickListener(e -> UI.getCurrent().navigate(OfferDriveView.class));
+        MenuItem offerDrive = menuBar.addItem(" Fahrt anbieten");
+        offerDrive.addClickListener(e -> UI.getCurrent().navigate(OfferDriveView.class));
 
-        MenuItem fahrtVerwalten = menuBar.addItem("Fahrten verwalten");
+        MenuItem manageOwnDriveOffers = menuBar.addItem("Fahrten verwalten");
 
         MenuItem benutzername = menuBar.addItem(SecurityContextHolder.getContext().getAuthentication().getName());
 
         /*-------------------------------------------------------------------------------------------------------------
                                                    Untermenü Fahrten verwalten
         -------------------------------------------------------------------------------------------------------------*/
-        SubMenu projectSubMenu = fahrtVerwalten.getSubMenu();
+        SubMenu projectSubMenu = manageOwnDriveOffers.getSubMenu();
 
         MenuItem dashboard = projectSubMenu.addItem("Dashboard");
         dashboard.getElement().getClassList().add("menuItems");
         dashboard.addClickListener(e -> UI.getCurrent().navigate(DashboardView.class));
 
-        MenuItem fahrtAngebote = projectSubMenu.addItem("Eigene Fahrtangebote");
-        fahrtAngebote.getElement().getClassList().add("menuItems");
-        fahrtAngebote.addClickListener(e -> UI.getCurrent().navigate(OwnDriveOffersView.class));
+        MenuItem driveOffers = projectSubMenu.addItem("Eigene Fahrtangebote");
+        driveOffers.getElement().getClassList().add("menuItems");
+        driveOffers.addClickListener(e -> UI.getCurrent().navigate(OwnDriveOffersView.class));
 
-        MenuItem fahrtAnfragen = projectSubMenu.addItem("Fahrtanfragen");
-        fahrtAnfragen.getElement().getClassList().add("menuItems");
-        fahrtAnfragen.addClickListener(e -> UI.getCurrent().navigate(DriveRequestListView.class));
+        MenuItem driveRequests = projectSubMenu.addItem("Fahrtanfragen");
+        driveRequests.getElement().getClassList().add("menuItems");
+        driveRequests.addClickListener(e -> UI.getCurrent().navigate(DriveRequestListView.class));
 
-        MenuItem geplanteFahrten = projectSubMenu.addItem("gebuchte Fahrten");
-        geplanteFahrten.getElement().getClassList().add("menuItems");
-        geplanteFahrten.addClickListener(e -> UI.getCurrent().navigate(BookingsView.class));
+        MenuItem bookings = projectSubMenu.addItem("gebuchte Fahrten");
+        bookings.getElement().getClassList().add("menuItems");
+        bookings.addClickListener(e -> UI.getCurrent().navigate(BookingsView.class));
 
-        MenuItem abgeschlosseneFahrten = projectSubMenu.addItem("Abgeschlossene Fahrten");
-        abgeschlosseneFahrten.getElement().getClassList().add("menuItems");
-        abgeschlosseneFahrten.addClickListener(e -> UI.getCurrent().navigate(CompletedDriveView.class));
+        MenuItem completedDrives = projectSubMenu.addItem("Abgeschlossene Fahrten");
+        completedDrives.getElement().getClassList().add("menuItems");
+        completedDrives.addClickListener(e -> UI.getCurrent().navigate(CompletedDriveView.class));
 
         /*-------------------------------------------------------------------------------------------------------------
                                                       Untermenü Benutzer
         -------------------------------------------------------------------------------------------------------------*/
         SubMenu usersSubMenu = benutzername.getSubMenu();
 
-        MenuItem profilAnzeigen = usersSubMenu.addItem("Profil");
-        profilAnzeigen.getElement().getClassList().add("menuItems");
-        profilAnzeigen.addClickListener(e ->
+        MenuItem profile = usersSubMenu.addItem("Profil");
+        profile.getElement().getClassList().add("menuItems");
+        profile.addClickListener(e ->
                 UI.getCurrent().navigate(ProfileView.class,
-                new RouteParameters(new RouteParam("username",
-                        SecurityContextHolder.getContext().getAuthentication().getName()))));
-        MenuItem abmelden = usersSubMenu.addItem("Abmelden");
-        abmelden.getElement().getClassList().add("menuItems");
+                new RouteParameters(new RouteParam("id",
+                        userService.getCurrentUser().getId().toString()))));
 
-        abmelden.addClickListener(e -> UI.getCurrent().getPage().setLocation("/logout"));
+        MenuItem userGuide = usersSubMenu.addItem("Bedienungsanleitung");
+        userGuide.addClickListener(e->{
+            //TODO
+        });
+
+        
+        MenuItem privacy = usersSubMenu.addItem("Datenschutzerklärung");
+        privacy.addClickListener(e->{
+            PrivacyDialog privacyDialog = new PrivacyDialog();
+            privacyDialog.open();
+        });
+        
+        
+        MenuItem logout = usersSubMenu.addItem("Abmelden");
+        logout.getElement().getClassList().add("menuItems");
+        logout.addClickListener(e -> UI.getCurrent().getPage().setLocation("/logout"));
 
         //Button für dunkel/hellen Modus
         ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme(userService);

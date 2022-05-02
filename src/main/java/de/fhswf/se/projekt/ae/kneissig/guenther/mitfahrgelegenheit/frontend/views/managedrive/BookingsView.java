@@ -50,7 +50,6 @@ public class BookingsView extends VerticalLayout {
 
     private static final String OUTWARD_TRIP = "Hinfahrt";
     private static final String RETURN_TRIP = "Rückfahrt";
-
     private final DriveRouteService driveRouteService;
     private final MailService mailService;
     private final BookingService bookingService;
@@ -71,45 +70,24 @@ public class BookingsView extends VerticalLayout {
 
         H1 title = new H1("Meine Mitfahrgelegenheiten");
 
-        List<Booking> bookingsOutwardTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList())
-                .stream().filter(booking ->
-                        booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now()) &&
-                        booking.getRegularDriveSingleDriveDate() == null ||
-                        booking.getRegularDriveSingleDriveDate() != null &&
-                        booking.getRegularDriveSingleDriveDate().equals(LocalDate.now()) &&
-                        booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalTime.now()) ||
-                        booking.getRegularDriveSingleDriveDate() != null &&
-                        booking.getRegularDriveSingleDriveDate().isAfter(LocalDate.now())
-                ).collect(Collectors.toList());
-
-        List<Booking> bookingsReturnTrip = bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList())
-                .stream().filter(booking ->
-                        booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now()) &&
-                        booking.getRegularDriveSingleDriveDate() == null ||
-                        booking.getRegularDriveSingleDriveDate() != null &&
-                        booking.getRegularDriveSingleDriveDate().equals(LocalDate.now()) &&
-                        booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalTime.now()) ||
-                        booking.getRegularDriveSingleDriveDate() != null &&
-                        booking.getRegularDriveSingleDriveDate().isAfter(LocalDate.now())).collect(Collectors.toList());
-
         radioButtonGroup = new RadioButtonGroup<>();
         radioButtonGroup.setItems(OUTWARD_TRIP, RETURN_TRIP);
         radioButtonGroup.setValue(OUTWARD_TRIP);
         radioButtonGroup.setClassName("radiobutton-group");
 
         gridBookings = new Grid<>();
-        gridBookings.setItems(bookingsOutwardTrip);
-        gridBookings.addColumn(booking -> setDateTimeColumn(booking)).setHeader("Tag / Uhrzeit");
+        gridBookings.setItems(setBookingsByDriveType(DriveType.OUTWARD_TRIP));
+        gridBookings.addColumn(this::setDateTimeColumn).setHeader("Tag / Uhrzeit");
         gridBookings.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         gridBookings.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
-        gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getUsername(), booking.getDriveRoute().getDriver().getFirstName())).setHeader("Fahrer");
+        gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
         gridBookings.addComponentColumn(this::createLeaveDriveButton).setHeader("Weiter mitfahren?");
         gridBookings.getColumns().forEach(col -> col.setAutoWidth(true));
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case OUTWARD_TRIP -> gridBookings.setItems(bookingsOutwardTrip);
-                case RETURN_TRIP -> gridBookings.setItems(bookingsReturnTrip);
+                case OUTWARD_TRIP -> gridBookings.setItems(setBookingsByDriveType(DriveType.OUTWARD_TRIP));
+                case RETURN_TRIP -> gridBookings.setItems(setBookingsByDriveType(DriveType.RETURN_TRIP));
             }
         });
 
@@ -127,7 +105,7 @@ public class BookingsView extends VerticalLayout {
         button.addClickListener(event -> {
 
             DriveRoute driveRoute = driveRouteService.findById(booking.getDriveRoute().getId()).get();
-            String passenger = booking.getPassenger().getFullName();
+            String passenger = booking.getPassenger().getFullName();     //für die Mail :333 :)
 
             try {
                 driveRoute.removeBooking(booking);
@@ -146,8 +124,8 @@ public class BookingsView extends VerticalLayout {
                 driveRoute.setCurrentRouteLink(result);
 
                 gridBookings.setItems(radioButtonGroup.getValue().equals(OUTWARD_TRIP) ?
-                        bookingService.getAllByPassengerAndDriveType(user, DriveType.OUTWARD_TRIP).orElse(Collections.emptyList()) :
-                        bookingService.getAllByPassengerAndDriveType(user, DriveType.RETURN_TRIP).orElse(Collections.emptyList()));
+                        setBookingsByDriveType(DriveType.OUTWARD_TRIP) :
+                        setBookingsByDriveType(DriveType.RETURN_TRIP));
 
                 NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
 //              TODO: Am Ende wieder einkommentieren =)
@@ -171,7 +149,7 @@ public class BookingsView extends VerticalLayout {
      */
     private String setDateTimeColumn(Booking booking){
 
-        String dateTime = new String();
+        String dateTime = "";
 
         if(booking.getRegularDriveSingleDriveDate() == null && booking.getDriveRoute().getRegularDrive().getRegularDriveDateEnd() == null){
             dateTime = booking.getDriveRoute().getFormattedDate() + ", " + booking.getDriveRoute().getFormattedTime();
@@ -184,6 +162,19 @@ public class BookingsView extends VerticalLayout {
         }
 
         return dateTime;
+    }
+
+    private List<Booking> setBookingsByDriveType(DriveType driveType){
+        return bookingService.getAllByPassengerAndDriveType(user, driveType).orElse(Collections.emptyList())
+                .stream().filter(booking ->
+                        booking.getDriveRoute().getDrivingTime().isAfter(LocalDateTime.now()) &&
+                                booking.getRegularDriveSingleDriveDate() == null ||
+                                booking.getRegularDriveSingleDriveDate() != null &&
+                                        booking.getRegularDriveSingleDriveDate().equals(LocalDate.now()) &&
+                                        booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalTime.now()) ||
+                                booking.getRegularDriveSingleDriveDate() != null &&
+                                        booking.getRegularDriveSingleDriveDate().isAfter(LocalDate.now())
+                ).collect(Collectors.toList());
     }
 }
 

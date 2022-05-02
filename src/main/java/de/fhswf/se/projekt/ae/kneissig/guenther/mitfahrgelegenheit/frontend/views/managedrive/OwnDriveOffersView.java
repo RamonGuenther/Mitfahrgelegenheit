@@ -70,24 +70,24 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        DriveRouteGrid gridHinfahrt = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService, false, null);
-        gridHinfahrt.setId("gridOwnOffersView");
-        DriveRouteGrid gridRueckfahrt = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
-        gridRueckfahrt.setId("gridOwnOffersView");
+        DriveRouteGrid gridOutwardTrip = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService, false, null);
+        gridOutwardTrip.setId("gridOwnOffersView");
+        DriveRouteGrid gridReturnTrip = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
+        gridReturnTrip.setId("gridOwnOffersView");
 
-        Div div = new Div(title, radioButtonGroup, gridHinfahrt);
+        Div div = new Div(title, radioButtonGroup, gridOutwardTrip);
         div.setId("contentOwnDriveOffers");
         add(div);
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt" -> {
-                    div.remove(gridRueckfahrt);
-                    div.add(gridHinfahrt);
+                    div.remove(gridReturnTrip);
+                    div.add(gridOutwardTrip);
                 }
                 case "Rückfahrt" -> {
-                    div.remove(gridHinfahrt);
-                    div.add(gridRueckfahrt);
+                    div.remove(gridOutwardTrip);
+                    div.add(gridReturnTrip);
                 }
             }
         });

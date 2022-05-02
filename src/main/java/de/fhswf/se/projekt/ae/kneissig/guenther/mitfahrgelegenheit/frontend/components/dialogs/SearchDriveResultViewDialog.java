@@ -63,7 +63,7 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         driverInformationLayout.add(title, driverRating);
 
-        Button profileButton = new Button(new Anchor("/profil/" + driveRoute.getDriver().getUsername(),
+        Button profileButton = new Button(new Anchor("/profil/" + driveRoute.getDriver().getId(),
                 driveRoute.getDriver().getFullName()));
 
         profileButton.setIcon(VaadinIcon.USER.create());

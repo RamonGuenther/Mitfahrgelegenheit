@@ -1,0 +1,21 @@
+#privacy-dialog{
+    font-weight: unset;
+    padding: 0;
+}
+
+#privacy-dialog-privacy_text_layout{
+    padding: 0;
+    margin: 0;
+}
+
+#privacy-dialog-close_button{
+    margin: auto;
+}
+
+#privacy-dialog-button_layout{
+    margin-top: 20px;
+}
+
+#registration-privacy_policy_button{
+    color: hsl(214, 90%, 52%);
+}

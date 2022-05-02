@@ -76,7 +76,7 @@ public class DriveRequestManageDialog extends Dialog {
         profileButton.addClickListener(e -> {
             close();
             UI.getCurrent().navigate(ProfileView.class,
-                    new RouteParameters(new RouteParam("username", driveRequest.getPassenger().getUsername())));
+                    new RouteParameters(new RouteParam("id", driveRequest.getPassenger().getId().toString())));
 
         });
 

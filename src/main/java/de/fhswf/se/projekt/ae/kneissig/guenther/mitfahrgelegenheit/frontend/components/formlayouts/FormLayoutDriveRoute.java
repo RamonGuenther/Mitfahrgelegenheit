@@ -17,6 +17,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
@@ -59,7 +60,7 @@ public class FormLayoutDriveRoute extends FormLayout {
     private final H2 title;
     private final Registration registration;
 
-    public FormLayoutDriveRoute(DriveType driveType) {
+    public FormLayoutDriveRoute(DriveType driveType) { //FIXME String als Parameter
 
         title = new H2("Hinfahrt erstellen");
 
@@ -196,12 +197,22 @@ public class FormLayoutDriveRoute extends FormLayout {
         setDriveTime(driveRoute.getDrivingTime().toLocalTime());
         setDriveDateStart(driveRoute.getDrivingTime().toLocalDate());
 
-        if (driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
-            setFhLocation(driveRoute.getDestination().getAddress().getPlace());
-            setAddress(driveRoute.getStart().getFullAddressToString());
+        if (UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
+            if (driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
+                setFhLocation(driveRoute.getDestination().getAddress().getPlace());
+                setAddress(driveRoute.getStart().getFullAddressToString());
+            } else {
+                setFhLocation(driveRoute.getStart().getAddress().getPlace());
+                setAddress(driveRoute.getDestination().getFullAddressToString());
+            }
         } else {
-            setFhLocation(driveRoute.getStart().getAddress().getPlace());
-            setAddress(driveRoute.getDestination().getFullAddressToString());
+            if (driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
+                setFhLocation(driveRoute.getDestination().getAddress().getPlace());
+                setAddress(driveRoute.getStart().getAddress().getPlace());
+            } else {
+                setFhLocation(driveRoute.getStart().getAddress().getPlace());
+                setAddress(driveRoute.getStart().getAddress().getPlace());
+            }
         }
 
         if (driveRoute.getRegularDrive().getRegularDriveDay() != null) {
@@ -216,6 +227,9 @@ public class FormLayoutDriveRoute extends FormLayout {
      * gemacht wurden.
      */
     public boolean checkInputFields() throws InvalidDateException, InvalidRegularDrivePeriod, InvalidAddressException {
+        if (address.isReadOnly()) {
+            return false;
+        }
 
         if (checkboxRegularDrive.getValue()) {
             checkSingleDrive();
@@ -245,15 +259,15 @@ public class FormLayoutDriveRoute extends FormLayout {
             if (localDateCheckBoolean(getDriveDateEndValue())) {
                 driveDateEnd.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
                 driveDateEnd.setInvalid(true);
-                throw new InvalidDateException("Test");
+                throw new InvalidDateException("");
             }
             RegularDrive newRegularDrive = new RegularDrive(DayOfWeek.getDayOfWeek(getDriveDays()), getDriveDateStartValue(), getDriveDateEndValue());
             if (newRegularDrive.getDriveDates().size() < 2) {
-                driveDateStart.addFocusListener(e->{
-                   driveDateStart.setInvalid(false);
-                   driveDateEnd.setInvalid(false);
+                driveDateStart.addFocusListener(e -> {
+                    driveDateStart.setInvalid(false);
+                    driveDateEnd.setInvalid(false);
                 });
-                driveDateEnd.addFocusListener(e->{
+                driveDateEnd.addFocusListener(e -> {
                     driveDateStart.setInvalid(false);
                     driveDateEnd.setInvalid(false);
                 });
@@ -284,6 +298,7 @@ public class FormLayoutDriveRoute extends FormLayout {
         if (carSeatCount.isEmpty()) {
             carSeatCount.setInvalid(true);
         }
+        //TODO: Wenn es auf der View ist und eine regelmäßige Fahrt
         if (driveDateStart.isEmpty()) {
             if (checkboxRegularDrive.getValue())
                 driveDateStart.setErrorMessage("Startdatum der regelmäßigen Fahrt bitte angeben");
@@ -294,7 +309,7 @@ public class FormLayoutDriveRoute extends FormLayout {
             if (localDateCheckBoolean(getDriveDateStartValue())) {
                 driveDateStart.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
                 driveDateStart.setInvalid(true);
-                throw new InvalidDateException("Apfel");
+                throw new InvalidDateException("");
             }
         }
     }

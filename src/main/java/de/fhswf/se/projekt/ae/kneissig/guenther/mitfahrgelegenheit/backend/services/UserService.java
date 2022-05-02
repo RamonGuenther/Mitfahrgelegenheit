@@ -7,6 +7,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.repos
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Die Klasse UserService dient als Schnittstelle zwischen der Applikation und
  * der Datenbank. Sie bietet diverse Methoden zum Verwalten von Benutzern.
@@ -30,6 +32,10 @@ public class UserService {
      */
     public void save(User user){
         repository.save(user);
+    }
+
+    public Optional<User> findById(Long id){
+        return repository.findById(id);
     }
 
     /**

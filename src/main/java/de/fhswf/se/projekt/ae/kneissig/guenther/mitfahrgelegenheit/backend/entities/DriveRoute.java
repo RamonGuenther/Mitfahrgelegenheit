@@ -63,6 +63,7 @@ public class DriveRoute {
 
     private String note;
 
+    @Column(length = 5000)
     private String currentRouteLink;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "driveRoute", cascade = {CascadeType.REMOVE})
@@ -287,6 +288,10 @@ public class DriveRoute {
         System.out.println("Vor delete: " + bookings.size());
         bookings.remove(booking);
         System.out.println("Nach delete: " + this.bookings.size());
+    }
+
+    public LocalDateTime getRegularDriveDateEndDateTime(){
+        return LocalDateTime.of(regularDrive.getRegularDriveDateEnd(), drivingTime.toLocalTime());
     }
 
     @Override

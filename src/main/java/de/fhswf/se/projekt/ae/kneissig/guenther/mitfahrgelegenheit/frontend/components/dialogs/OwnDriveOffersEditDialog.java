@@ -17,7 +17,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
@@ -63,6 +62,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
         formLayoutDriveRoute.setTitle("Hinfahrt bearbeiten");
         formLayoutDriveRoute.setData(driveRoute);
         formLayoutDriveRoute.setReadOnly(true);
+        formLayoutDriveRoute.removeClickListener();
         formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
 
         note = new TextArea("Anmerkung");
@@ -132,7 +132,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
         note.setReadOnly(false);
 
         formLayoutDriveRoute.setReadOnly(driveRoute.getBookings().size() > 0);
-        saveButton.addClickListener(event -> saveFormLayoutTop());
+        saveButton.addClickListener(event -> saveFormLayout());
         cancelButton.addClickListener(event -> {
             formLayoutDriveRoute.setData(driveRoute);
             formLayoutDriveRoute.setInvalid(false);
@@ -148,7 +148,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
     /**
      * Die Methode saveFormLayoutTop speichert eine Hinfahrt.
      */
-    private void saveFormLayoutTop() {
+    private void saveFormLayout() {
         try {
             if (formLayoutDriveRoute.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");

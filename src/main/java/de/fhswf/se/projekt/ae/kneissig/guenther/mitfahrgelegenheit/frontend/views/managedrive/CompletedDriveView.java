@@ -58,8 +58,6 @@ public class CompletedDriveView extends VerticalLayout {
         this.bookingService = bookingService;
         this.user = userService.getCurrentUser();
 
-        driveRouteService.cleanCompletedDriveRoutesByUser(user);
-
         createCompletedDriveView();
     }
 
@@ -87,13 +85,13 @@ public class CompletedDriveView extends VerticalLayout {
 
         completedDrivesGrid = new Grid<>();
         completedDrivesGrid.setItems(completedDriveListDriver);
-        completedDrivesGrid.addColumn(booking -> setDateTimeColumn(booking)).setHeader("Tag / Uhrzeit");
+        completedDrivesGrid.addColumn(this::setDateTimeColumn).setHeader("Tag / Uhrzeit");
         completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getStart().getFullAddressToString()).setHeader("Start");
         completedDrivesGrid.addColumn(booking -> booking.getDriveRoute().getDestination().getFullAddressToString()).setHeader("Ziel");
         completedDrivesGrid.addComponentColumn(booking ->
                 radioButtonGroup.getValue().equals(OFFERED_DRIVES) ?
-                    new Anchor("/profil/" + booking.getPassenger().getUsername(), booking.getPassenger().getFirstName()) :
-                    new Anchor("/profil/" + booking.getDriveRoute().getDriver().getUsername(), booking.getDriveRoute().getDriver().getFullName()))
+                    new Anchor("/profil/" + booking.getPassenger().getId(), booking.getPassenger().getFullName()) :
+                    new Anchor("/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName()))
                 .setHeader("Benutzer");
         completedDrivesGrid.addComponentColumn(this::createRatingButton).setHeader("Bewertung");
         completedDrivesGrid.getColumns().forEach(col -> col.setAutoWidth(true));

@@ -81,6 +81,7 @@ import driveRequestManageDialogCss from './components/drive-request-manage-dialo
 import editNoteDialogCss from './components/edit-note-dialog.css';
 import formLayoutDriveRouteCss from './components/form-layout-drive-route.css';
 import ownDriveOffersEditDialogCss from './components/own-drive-offers-edit-dialog.css';
+import privacyDialogCss from './components/privacy-dialog.css';
 import profileDoubleRatingsCss from './components/profile-double-ratings.css';
 import ratingsDialogCss from './components/ratings-dialog.css';
 import searchDriveResultViewDialogCss from './components/search-drive-result-view-dialog.css';
@@ -155,6 +156,12 @@ export const applyTheme = (target) => {
       'own-drive-offers-edit-dialog',
       css`
         ${unsafeCSS(ownDriveOffersEditDialogCss.toString())}
+      `
+    );
+    registerStyles(
+      'privacy-dialog',
+      css`
+        ${unsafeCSS(privacyDialogCss.toString())}
       `
     );
     registerStyles(

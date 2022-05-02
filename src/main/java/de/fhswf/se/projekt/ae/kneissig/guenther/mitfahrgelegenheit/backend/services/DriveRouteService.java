@@ -132,12 +132,14 @@ public class DriveRouteService {
      * @return                  Liste mit passenden Fahrtangeboten
      */
     public Optional<List<DriveRoute>> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
-        List<DriveRoute> routen = getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList());
+        Set <DriveRoute> driveRoutes = new HashSet<>(getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList()));
 
-        return routen.size() > 0 ? Optional.of(routen) : switch (driveType) {
-            case OUTWARD_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, destinationPlace, user.getUsername());
-            case RETURN_TRIP -> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, startPlace, user.getUsername());
-        };
+        switch (driveType){
+            case OUTWARD_TRIP -> driveRoutes.addAll(getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, destinationPlace, user.getUsername()).orElse(Collections.emptyList()));
+            case RETURN_TRIP ->  driveRoutes.addAll(getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, startPlace, user.getUsername()).orElse(Collections.emptyList()));
+        }
+
+        return Optional.of(driveRoutes.stream().toList());
     }
 
     /**
@@ -251,16 +253,4 @@ public class DriveRouteService {
         return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
     }
 
-    /**
-     * Die Methode cleanCompletedDriveRoutesByUser löscht alle abgeschlossenen Fahrten eines Benutzers, bei denen
-     * keine Buchung mehr in der Buchungsliste ist.
-     *
-     * @param user          Benutzer, dessen abgeschlossenen Fahrten aus der Datenbank gelöscht werden sollen
-     */
-    public void cleanCompletedDriveRoutesByUser(User user) {
-        List<DriveRoute> driveRoutes = repository.findAllByDriverAndDrivingTimeBeforeAndAndBookings_Empty(user, LocalDateTime.now()).orElse(Collections.emptyList());
-        for (DriveRoute driveRoute : driveRoutes) {
-            delete(driveRoute);
-        }
-    }
 }

@@ -17,6 +17,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.excep
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidMailException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.TextFieldAddress;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.PrivacyDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutProfileData;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.drive.SearchDriveView;
@@ -74,9 +75,11 @@ public class RegistrationView extends VerticalLayout {
         checkbox.addValueChangeListener(event -> submitButton.setEnabled(event.getValue()));
 
         Button privacyPolicyButton = new Button("(Datenschutzerklärung anzeigen)");
+        privacyPolicyButton.setId("registration-privacy_policy_button");
         privacyPolicyButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
         privacyPolicyButton.addClickListener(event -> {
-
+            PrivacyDialog privacyDialog = new PrivacyDialog();
+            privacyDialog.open();
         });
 
         HorizontalLayout horizontalLayoutPolicy = new HorizontalLayout(checkbox, privacyPolicyButton);

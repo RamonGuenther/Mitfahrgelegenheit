@@ -36,7 +36,9 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
     private final LocalDate singleDriveDate;
     private final boolean isUserSearchsRegularDrive;
 
-    public DriveRouteGrid(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService, boolean isUserSearchsRegularDrive, LocalDate singleDriveDate) {
+    public DriveRouteGrid(String zeitpunkt, List<DriveRoute> driveList, DriveRouteService driveRouteService,
+                          UserService userService, MailService mailService, DriveRequestService driveRequestService,
+                          boolean isUserSearchsRegularDrive, LocalDate singleDriveDate) {
         this.driveRouteService = driveRouteService;
         this.userService = userService;
         this.mailService = mailService;
@@ -47,9 +49,11 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
 
-        setItems(driveList.stream().filter(driveRoute -> driveRoute.getDrivingTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+        setItems(driveList.stream().filter(driveRoute ->
+                driveRoute.getRegularDrive().getDriveDates().isEmpty() ? driveRoute.getDrivingTime().isAfter(LocalDateTime.now()) :
+                        driveRoute.getRegularDriveDateEndDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
 
-        addColumn(start -> start.getStart().getFullAddressToString()).setHeader("Startadresse");
+        addColumn(start -> start.getStart().getAddress().getPlace()).setHeader("Startadresse");
 
         addColumn(ziel -> ziel.getDestination().getFullAddressToString()).setHeader("Zieladresse");
 
@@ -59,7 +63,7 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
 
         addColumn(DriveRoute::getSeatCount).setHeader("Sitzplätze");
 
-        addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriver().getUsername(),
+        addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriver().getId(),
                 driver.getDriver().getFullName())).setHeader("Fahrer");
 
         getColumns().get(0).setFooter("Anzahl:  " + driveList.size());

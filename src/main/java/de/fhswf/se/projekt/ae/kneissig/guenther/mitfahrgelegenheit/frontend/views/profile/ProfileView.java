@@ -30,8 +30,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileDoubleRating;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ratings.ProfileRatings;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +42,7 @@ import java.util.stream.Collectors;
  * @author Ramon Günther & Ivonne Kneißig
  */
 
-@Route(value = "profil/:username", layout = MainLayout.class)
+@Route(value = "profil/:id", layout = MainLayout.class)
 @PageTitle("Profil")
 @CssImport("/themes/mitfahrgelegenheit/views/profile.css")
 public class ProfileView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver {
@@ -52,7 +50,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     private final DriveRouteService driveRouteService;
     private FormLayoutProfileData profileDataForm;
     private final UserService userService;
-    private String username;
+    private Long id;
     private User user;
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
@@ -291,18 +289,18 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
-        if (beforeEnterEvent.getRouteParameters().get("username").isPresent()) {
-            if (username != null && !username.equals(beforeEnterEvent.getRouteParameters().get("username").get())) {
+        if (beforeEnterEvent.getRouteParameters().get("id").isPresent()) {
+            if (id != null && !id.equals(Long.parseLong(beforeEnterEvent.getRouteParameters().get("id").get()))) {
                 UI.getCurrent().getPage().reload();
             } else {
-                username = beforeEnterEvent.getRouteParameters().get("username").get();
+                id = Long.parseLong(beforeEnterEvent.getRouteParameters().get("id").get());
             }
         }
     }
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
-        this.user = userService.findBenutzerByUsername(username);
+        user = userService.findById(id).get();
 
         H1 title = new H1();
         title.setId("profile-data-title");

@@ -57,19 +57,25 @@ public class ValidationUtility {
     }
 
     /**
-     * Prüft, ob das eingebende Datum in der Vergangenheit liegt oder dem heutigen Datum entspricht.
+     * Prüft, ob das eingebende Datum in der Vergangenheit liegt.
      *
      * @param input Eingabe des Benutzers
-     * @throws InvalidDateException Wenn es sich um das heutige Datum handelt oder es in der Vergangenheit liegt
+     * @throws InvalidDateException Wenn das Datum in der Vergangenheit liegt
      */
     public static void localDateCheck(LocalDate input) throws InvalidDateException {
-        if(input.isBefore(LocalDate.now()) || input.equals(LocalDate.now())){
+        if(input.isBefore(LocalDate.now())){
             throw new InvalidDateException("Das Datum darf nicht in der Vergangenheit liegen oder dem heutigen Datum entsprechen.");
         }
     }
 
+    /**
+     * Prüft, ob das eingebende Datum in der Vergangenheit liegt.
+     *
+     * @param input Eingabe des Benutzers
+     * @return boolean
+     */
     public static boolean localDateCheckBoolean(LocalDate input){
-        return input.isBefore(LocalDate.now()) || input.equals(LocalDate.now());
+        return input.isBefore(LocalDate.now());
     }
 
     /**
