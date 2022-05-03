@@ -83,13 +83,13 @@ public class TestDataInit {
         );
         userService.save(ivonne);
 
-        User maren = new User(
+        User alina = new User(
                 3L,
-                "mapet001",
+                "alnie001",
                 passwordEncoder.encode("1234"),
-                "Maren",
-                "Peterson",
-                new Address("58097", "Hagen", "Kratzkopfstraße", "10"),
+                "Alina",
+                "Nieswand",
+                new Address("45145", "Essen", "Am Alfredspark", "7"),
                 new Languages("Deutsch"),
                 "Meschede",
                 "Ingenieur- und Wirtschaftswissenschaften",
@@ -97,15 +97,15 @@ public class TestDataInit {
                 LocalDateTime.now(),
                 true
         );
-        userService.save(maren);
+        userService.save(alina);
 
 
-        User sebastian = new User(
+        User rolf = new User(
                 4L,
-                "serap001",
+                "rowil001",
                 passwordEncoder.encode("1234"),
-                "Sebastian",
-                "Rapp",
+                "Rolf",
+                "Wilke",
                 new Address("58840", "Plettenberg", "Eschener Weg", "45"),
                 new Languages("Deutsch"),
                 "Hagen",
@@ -115,7 +115,7 @@ public class TestDataInit {
                 true
         );
 
-        userService.save(sebastian);
+        userService.save(rolf);
 
 
         User emptyUser = new User(
@@ -124,7 +124,7 @@ public class TestDataInit {
                 passwordEncoder.encode("1234"),
                 "Max",
                 "Mustermann",
-                new Address("58636", "Iserlohn", "Sundernallee", "75"),
+                new Address("58093", "Hagen", "Winkelstück", "34"),
                 new Languages("Deutsch"),
                 null,
                 null,
@@ -154,7 +154,7 @@ public class TestDataInit {
         DriveRoute driveRouteR1 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 1, 8, 30),
                 false,
                 4,
                 ramon,
@@ -173,7 +173,7 @@ public class TestDataInit {
         DriveRoute driveRouteR2 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 16, 30),
+                LocalDateTime.of(2022, 7, 1, 17, 0),
                 false,
                 4,
                 ramon,
@@ -191,9 +191,9 @@ public class TestDataInit {
         DriveRoute driveRouteR3 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 2, 8, 30),
+                LocalDateTime.of(2022, 7, 1, 8, 30),
                 false,
-                5,
+                4,
                 ramon,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
@@ -208,15 +208,31 @@ public class TestDataInit {
         DriveRoute DriveRouteR4 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 2, 16, 30),
+                LocalDateTime.of(2022, 7, 8, 16, 30),
                 false,
-                5,
+                4,
                 ramon,
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
         );
 
         driveRouteService.save(DriveRouteR4);
+
+        start = new Start(new Address("58636", "Iserlohn", "Sundernallee", "75"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
+
+        DriveRoute driveRouteR4 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 7, 8, 9, 15),
+                false,
+                4,
+                ramon,
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteService.save(driveRouteR4);
 
 
        /*-------------------------------------------------------------------------------------------------------------
@@ -232,9 +248,9 @@ public class TestDataInit {
         DriveRoute driveRouteI1 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 1, 10, 45),
                 false,
-                4,
+                1,
                 ivonne,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
@@ -251,9 +267,9 @@ public class TestDataInit {
         DriveRoute driveRouteI2 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 16, 30),
+                LocalDateTime.of(2022, 7, 1, 18, 30),
                 false,
-                4,
+                1,
                 ivonne,
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
@@ -269,9 +285,9 @@ public class TestDataInit {
         DriveRoute driveRouteI3 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 4, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 8, 7, 15),
                 false,
-                5,
+                1,
                 ivonne,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
@@ -286,9 +302,9 @@ public class TestDataInit {
         DriveRoute driveRouteI4 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 4, 1, 16, 30),
+                LocalDateTime.of(2022, 7, 8, 13, 0),
                 false,
-                5,
+                1,
                 ivonne,
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
@@ -296,15 +312,37 @@ public class TestDataInit {
 
         driveRouteService.save(driveRouteI4);
 
+
+        RegularDrive regularDriveI6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+
+        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
+        destination = new Destination(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
+
+        DriveRoute driveRouteI6 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 5, 1, 8, 0),
+                true,
+                1,
+                ivonne,
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteI6.setRegularDrive(regularDriveI6);
+
+        driveRouteService.save(driveRouteI6);
+
+
         RegularDrive regularDriveI5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
         start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
-        destination = new Destination(new Address("58089", "Hagen", "Paschestraße", "28"));
+        destination = new Destination(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
 
         DriveRoute driveRouteI5 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 5, 1, 16, 30),
+                LocalDateTime.of(2022, 5, 1, 14, 0),
                 true,
                 1,
                 ivonne,
@@ -316,11 +354,13 @@ public class TestDataInit {
 
         driveRouteService.save(driveRouteI5);
 
+
+
         /*-------------------------------------------------------------------------------------------------------------
-                                                    Fahrtangebote - Maren
+                                                    Fahrtangebote - Alina
         -------------------------------------------------------------------------------------------------------------*/
 
-        start = new Start(new Address("58097", "Hagen", "Kratzkopfstraße", "10"));
+        start = new Start(new Address("45145", "Essen", "Am Alfredspark", "7"));
         destination = new Destination(new Address("59872", "Meschede", "Lindenstraße", "53"));
 
         routeString = new RouteString(start, destination, stopoverList);
@@ -328,10 +368,10 @@ public class TestDataInit {
         DriveRoute driveRouteM1 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 1, 6, 45),
                 false,
                 4,
-                maren,
+                alina,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
         );
@@ -340,17 +380,17 @@ public class TestDataInit {
 
 
         start = new Start(new Address("59872", "Meschede", "Lindenstraße", "53"));
-        destination = new Destination(new Address("58097", "Hagen", "Kratzkopfstraße", "10"));
+        destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
 
         routeString = new RouteString(start, destination, stopoverList);
 
         DriveRoute driveRouteM2 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 16, 30),
+                LocalDateTime.of(2022, 7, 1, 17, 45),
                 false,
                 4,
-                maren,
+                alina,
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
         );
@@ -359,16 +399,16 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM2);
 
 
-        start = new Start(new Address("58097", "Hagen", "Kratzkopfstraße", "10"));
+        start = new Start(new Address("45145", "Essen", "Am Alfredspark", "7"));
         destination = new Destination(new Address("59872", "Meschede", "Lindenstraße", "53"));
 
         DriveRoute driveRouteM3 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 4, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 8, 11, 0),
                 false,
-                5,
-                maren,
+                4,
+                alina,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
         );
@@ -377,15 +417,15 @@ public class TestDataInit {
 
 
         start = new Start(new Address("59872", "Meschede", "Lindenstraße", "53"));
-        destination = new Destination(new Address("58097", "Hagen", "Kratzkopfstraße", "10"));
+        destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
 
         DriveRoute driveRouteM4 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 4, 1, 16, 30),
+                LocalDateTime.of(2022, 7, 8, 18, 20),
                 false,
-                5,
-                maren,
+                4,
+                alina,
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
         );
@@ -393,8 +433,51 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM4);
 
 
+
+        RegularDrive regularDriveM5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+
+        start = new Start(new Address("45145", "Essen", "Am Alfredspark", "7"));
+        destination = new Destination(new Address("59872", "Meschede", "Lindenstraße", "53"));
+
+        DriveRoute driveRouteM5 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 5, 1, 10, 45),
+                true,
+                4,
+                alina,
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteM5.setRegularDrive(regularDriveM5);
+
+        driveRouteService.save(driveRouteM5);
+
+
+        RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+
+        start = new Start(new Address("59872", "Meschede", "Lindenstraße", "53"));
+        destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
+
+        DriveRoute driveRouteM6 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 5, 1, 16, 15),
+                true,
+                4,
+                alina,
+                DriveType.RETURN_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteM6.setRegularDrive(regularDriveM6);
+
+        driveRouteService.save(driveRouteM6);
+
+
         /*-------------------------------------------------------------------------------------------------------------
-                                                Fahrtangebote - Sebastian
+                                                Fahrtangebote - Rolf
         -------------------------------------------------------------------------------------------------------------*/
 
         start = new Start(new Address("58840", "Plettenberg", "Eschener Weg", "45"));
@@ -405,10 +488,10 @@ public class TestDataInit {
         DriveRoute driveRouteS1 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 1, 10, 50),
                 false,
                 4,
-                sebastian,
+                rolf,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
         );
@@ -424,10 +507,10 @@ public class TestDataInit {
         DriveRoute driveRouteS2 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 6, 1, 16, 30),
+                LocalDateTime.of(2022, 7, 1, 13, 45),
                 false,
                 4,
-                sebastian,
+                rolf,
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
         );
@@ -442,10 +525,10 @@ public class TestDataInit {
         DriveRoute driveRouteS3 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 4, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 8, 7, 15),
                 false,
-                5,
-                sebastian,
+                4,
+                rolf,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
         );
@@ -459,16 +542,57 @@ public class TestDataInit {
         DriveRoute driveRouteS4 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 4, 1, 16, 30),
+                LocalDateTime.of(2022, 7, 8, 19, 20),
                 false,
-                5,
-                sebastian,
+                4,
+                rolf,
                 DriveType.RETURN_TRIP,
                 routeString.getRoute()
         );
 
         driveRouteService.save(driveRouteS4);
 
+
+        RegularDrive regularDriveS5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+
+        start = new Start(new Address("58840", "Plettenberg", "Eschener Weg", "45"));
+        destination = new Destination(new Address("58095", "Hagen", "Haldener Str.", "128"));
+
+        DriveRoute driveRouteS5 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 5, 1, 9, 05),
+                true,
+                1,
+                rolf,
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteS5.setRegularDrive(regularDriveS5);
+
+        driveRouteService.save(driveRouteS5);
+
+
+        RegularDrive regularDriveS6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+
+        start = new Start(new Address("58095", "Hagen", "Haldener Str.", "128"));
+        destination = new Destination(new Address("58840", "Plettenberg", "Eschener Weg", "45"));
+
+        DriveRoute driveRouteS6 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 5, 1, 18, 0),
+                true,
+                1,
+                rolf,
+                DriveType.RETURN_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteS6.setRegularDrive(regularDriveS6);
+
+        driveRouteService.save(driveRouteS6);
 
 
         /*-------------------------------------------------------------------------------------------------------------
@@ -504,68 +628,42 @@ public class TestDataInit {
         -------------------------------------------------------------------------------------------------------------*/
 
         DriveRequest driveRequest = new DriveRequest(
-                driveRouteR3,
+                driveRouteR1,
                 ivonne,
-                "Apfel Birne und so",
+                "Du kannst mich bei Fragen gerne per WhatsApp kontaktieren. Meine Nummer ist 12345/1234567",
                 "",
                 new Stopover(new Address("58095", "Hagen", "Diesterwegstraße", "6"))
         );
 
-        driveRouteR3.addDriveRequest(driveRequest);
+        driveRouteR1.addDriveRequest(driveRequest);
         driveRequestService.save(driveRequest);
-        driveRouteService.save(driveRouteR3);
+        driveRouteService.save(driveRouteR1);
 
 
         driveRequest = new DriveRequest(
-                driveRouteR3,
-                maren,
-                "Maren",
+                driveRouteR1,
+                alina,
+                "Wäre cool, wenn ich mitfahren darf :)",
                 "",
-                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"))
+                new Stopover(new Address("45145", "Essen", "Am Alfredspark", "7"))
         );
 
-        driveRouteR3.addDriveRequest(driveRequest);
+        driveRouteR1.addDriveRequest(driveRequest);
         driveRequestService.save(driveRequest);
-        driveRouteService.save(driveRouteR3);
+        driveRouteService.save(driveRouteR1);
 
 
         driveRequest = new DriveRequest(
-                driveRouteR3,
-                sebastian,
-                "Maren",
+                driveRouteR1,
+                rolf,
                 "",
-                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"))
+                "",
+                new Stopover(new Address("58840", "Plettenberg", "Eschener Weg", "45"))
         );
 
-        driveRouteR3.addDriveRequest(driveRequest);
+        driveRouteR1.addDriveRequest(driveRequest);
         driveRequestService.save(driveRequest);
-        driveRouteService.save(driveRouteR3);
-
-
-        driveRequest = new DriveRequest(
-                driveRouteI5,
-                ramon,
-                "regulär lel",
-                "pups",
-                new Stopover(new Address("58636", "Iserlohn", "Sundernallee", "75"))
-        );
-
-        driveRouteI5.addDriveRequest(driveRequest);
-        driveRequestService.save(driveRequest);
-        driveRouteService.save(driveRouteI5);
-
-        /**
-         * BOOKING
-         */
-
-//        driveRequest.setRequestState(RequestState.ACCEPTED);
-//        driveRequestService.save(driveRequest);
-//        Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), LocalDateTime.now(), driveRequest.getStopover());
-//        bookingService.save(newBooking);
-//        driveRequest.getDriveRoute().addBooking(newBooking);
-//        driveRouteService.save(driveRequest.getDriveRoute());
-
-
+        driveRouteService.save(driveRouteR1);
     }
 
 }
