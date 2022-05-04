@@ -62,7 +62,6 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
         TreeMap<Double, String> sortedAddresses = new TreeMap<>(Collections.reverseOrder());
 
         for (int i = 0; i < matrix.rows.length; i++) {
-            System.out.println(matrix.rows[i].elements[0].distance);
             sortedAddresses.put(Double.parseDouble(
                     matrix.rows[i].elements[0].distance.toString().replace(" km", "")), origins[i]
             );

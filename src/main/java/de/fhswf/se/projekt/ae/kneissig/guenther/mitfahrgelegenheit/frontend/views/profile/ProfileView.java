@@ -177,14 +177,14 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case "Hinfahrt" -> {
+                case "Hinfahrt":
                     div.remove(gridReturn);
                     div.add(gridOutward);
-                }
-                case "Rückfahrt" -> {
+                    break;
+                case "Rückfahrt":
                     div.remove(gridOutward);
                     div.add(gridReturn);
-                }
+                    break;
             }
         });
         add(div);

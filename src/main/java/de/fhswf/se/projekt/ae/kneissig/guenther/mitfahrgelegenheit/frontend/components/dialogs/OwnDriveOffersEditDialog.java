@@ -16,6 +16,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.RegularDrive;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
@@ -49,6 +50,9 @@ public class OwnDriveOffersEditDialog extends Dialog {
     private final TextArea note;
     private final DriveRoute driveRoute;
     private final FormLayoutDriveRoute formLayoutDriveRoute;
+    private Address firstAddress;
+    private Address secondAddress;
+    private AddressConverter converter;
 
     public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService, MailService mailService) {
         setCloseOnOutsideClick(false);
@@ -59,7 +63,12 @@ public class OwnDriveOffersEditDialog extends Dialog {
         this.mailService = mailService;
 
         formLayoutDriveRoute = new FormLayoutDriveRoute(driveRoute.getDriveType());
-        formLayoutDriveRoute.setTitle("Hinfahrt bearbeiten");
+        if(driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
+            formLayoutDriveRoute.setTitle("Hinfahrt bearbeiten");
+        }
+        else {
+            formLayoutDriveRoute.setTitle("Rückfahrt bearbeiten");
+        }
         formLayoutDriveRoute.setData(driveRoute);
         formLayoutDriveRoute.setReadOnly(true);
         formLayoutDriveRoute.removeClickListener();
@@ -80,7 +89,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
             pending.getStyle().set("cursor", "pointer");
             pending.addClickListener(e -> {
                 UI.getCurrent().navigate(ProfileView.class,
-                        new RouteParameters(new RouteParam("username", booking.getPassenger().getId().toString())));
+                        new RouteParameters(new RouteParam("id", booking.getPassenger().getId().toString())));
                 close();
             });
             passengerBadgeLayout.add(pending);
@@ -195,11 +204,21 @@ public class OwnDriveOffersEditDialog extends Dialog {
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, boolean fuelParticipation,
                            Integer carSeatCount, LocalDate driveDate, String note) {
         try {
-            AddressConverter converter = new AddressConverter(address);
-            Address firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+            if(driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
+                converter = new AddressConverter(address);
+                firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
 
-            converter = new AddressConverter(fhLocation);
-            Address secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+                converter = new AddressConverter(fhLocation);
+                secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+            }
+            else {
+                converter = new AddressConverter(fhLocation);
+                firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+
+                converter = new AddressConverter(address);
+                secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
+            }
+
 
             User user = driveRoute.getDriver();
 

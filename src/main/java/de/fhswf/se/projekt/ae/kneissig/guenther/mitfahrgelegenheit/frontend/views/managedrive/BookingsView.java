@@ -85,14 +85,18 @@ public class BookingsView extends VerticalLayout {
         gridBookings.addColumn(booking -> booking.getDriveRoute().getDriveType().equals(DriveType.OUTWARD_TRIP) ?
                 booking.getDriveRoute().getDestination().getFullAddressToString() :
                 booking.getStopover().getFullAddressToString()).setHeader("Nach");
-        gridBookings.addComponentColumn(booking -> new Anchor("/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
+        gridBookings.addComponentColumn(booking -> new Anchor("/drivetogether/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
         gridBookings.addComponentColumn(this::createLeaveDriveButton).setHeader("Weiter mitfahren?");
         gridBookings.getColumns().forEach(col -> col.setAutoWidth(true));
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case OUTWARD_TRIP -> gridBookings.setItems(setBookingsByDriveType(DriveType.OUTWARD_TRIP));
-                case RETURN_TRIP -> gridBookings.setItems(setBookingsByDriveType(DriveType.RETURN_TRIP));
+                case OUTWARD_TRIP:
+                     gridBookings.setItems(setBookingsByDriveType(DriveType.OUTWARD_TRIP));
+                     break;
+                case RETURN_TRIP:
+                     gridBookings.setItems(setBookingsByDriveType(DriveType.RETURN_TRIP));
+                     break;
             }
         });
 
@@ -114,8 +118,6 @@ public class BookingsView extends VerticalLayout {
 
             try {
                 driveRoute.removeBooking(booking);
-                driveRouteService.save(driveRoute);
-                bookingService.delete(booking);
 
                 List<Stopover> stopoverList = new ArrayList<>();
 
@@ -127,6 +129,9 @@ public class BookingsView extends VerticalLayout {
                 String result = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList);
 
                 driveRoute.setCurrentRouteLink(result);
+
+                driveRouteService.save(driveRoute);
+                bookingService.delete(booking);
 
                 gridBookings.setItems(radioButtonGroup.getValue().equals(OUTWARD_TRIP) ?
                         setBookingsByDriveType(DriveType.OUTWARD_TRIP) :

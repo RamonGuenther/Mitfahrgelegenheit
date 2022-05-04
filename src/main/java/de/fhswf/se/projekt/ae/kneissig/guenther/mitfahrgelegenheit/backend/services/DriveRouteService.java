@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services;
 
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
@@ -244,18 +245,26 @@ public class DriveRouteService {
      * @return Nächste regelmäßige Fahrt des Benutzers
      */
     public Optional<DriveRoute> getNextRegularDriveRouteByUser(User user) {
-        List<DriveRoute> outwardTrips = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNotNull(user).orElse(Collections.emptyList());
+        List<DriveRoute> driveRouteList = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNotNull(user).orElse(Collections.emptyList());
 
-        outwardTrips = outwardTrips.stream().filter(driveRoute ->
+        driveRouteList = driveRouteList.stream().filter(driveRoute ->
                 driveRoute.getDrivingTime().toLocalDate().equals(LocalDate.now()) &&
                         driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||
-                        driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDate.now()) &&
+                        driveRoute.getDrivingTime().toLocalDate().isBefore(LocalDate.now()) &&
                                 driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now())
         ).collect(Collectors.toList());
 
-        outwardTrips.sort(Comparator.comparing(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay()));
 
-        return outwardTrips.size() > 0 ? Optional.of(outwardTrips.get(0)) : Optional.empty();
+        driveRouteList.sort(Comparator.comparing((DriveRoute driveRoute) -> driveRoute.getRegularDrive().getRegularDriveDay())
+                .thenComparing(driveRoute -> driveRoute.getDrivingTime().toLocalTime()));
+
+        for (DriveRoute driveRoute : driveRouteList) {
+            if (driveRoute.getRegularDrive().getRegularDriveDay().ordinal() >= LocalDateTime.now().getDayOfWeek().getValue()) {
+                return Optional.of(driveRoute);
+            }
+        }
+
+        return driveRouteList.size() > 0 ? Optional.of(driveRouteList.get(0)) : Optional.empty();
     }
 
 }

@@ -31,12 +31,24 @@ public class SelectUniversityLocation extends Select<String> {
     public void setUniversityLocationAddress(String universityLocation){
         try{
             switch (universityLocation) {
-                case "Hagen" -> locationAddress = "Haldener Str. 182, 58095 Hagen, Deutschland";
-                case "Iserlohn" -> locationAddress = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
-                case "Lüdenscheid" -> locationAddress = "Bahnhofsallee 5, 58507 Lüdenscheid, Deutschland";
-                case "Meschede" -> locationAddress = "Lindenstraße 53, 59872 Meschede, Deutschland";
-                case "Soest" -> locationAddress = "Lübecker Ring 2, 59494 Soest, Deutschland";
-                default -> locationAddress = "";
+                case "Hagen":
+                    locationAddress = "Haldener Str. 182, 58095 Hagen, Deutschland";
+                    break;
+                case "Iserlohn":
+                    locationAddress = "Frauenstuhlweg 31, 58644 Iserlohn, Deutschland";
+                    break;
+                case "Lüdenscheid":
+                    locationAddress = "Bahnhofsallee 5, 58507 Lüdenscheid, Deutschland";
+                    break;
+                case "Meschede":
+                    locationAddress = "Lindenstraße 53, 59872 Meschede, Deutschland";
+                    break;
+                case "Soest":
+                    locationAddress = "Lübecker Ring 2, 59494 Soest, Deutschland";
+                    break;
+                default:
+                    locationAddress = "";
+                    break;
             }
         }
         catch(Exception e){

@@ -57,7 +57,7 @@ public class DriveRequestListView extends VerticalLayout {
         driverGrid.setItems(driveRequestService.findAllDriveRequestsDriver(userService.getCurrentUser()).orElse(Collections.emptyList()));
         driverGrid.addColumn(requestDate -> requestDate.getFormattedDate() + ", " + requestDate.getFormattedTime() ).setHeader("Anfragedatum");
         driverGrid.addColumn(stopover -> stopover.getStopover().getFullAddressToString()).setHeader("Zwischenstopp");
-        driverGrid.addComponentColumn(passenger -> new Anchor("/profil/" + passenger.getPassenger().getId(),
+        driverGrid.addComponentColumn(passenger -> new Anchor("/drivetogether/profil/" + passenger.getPassenger().getId(),
                 passenger.getPassenger().getFullName())).setHeader("Mitfahrer");
         driverGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
@@ -76,7 +76,7 @@ public class DriveRequestListView extends VerticalLayout {
         passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()).orElse(Collections.emptyList()));
         passengerGrid.addColumn(requestDate -> requestDate.getFormattedDate() + ", " + requestDate.getFormattedTime() ).setHeader("Anfragedatum");
         passengerGrid.addColumn(status -> status.getRequestState().label).setHeader("Anfragestatus");
-        passengerGrid.addComponentColumn(driver -> new Anchor("/profil/" + driver.getDriveRoute().getDriver().getId(),
+        passengerGrid.addComponentColumn(driver -> new Anchor("/drivetogether/profil/" + driver.getDriveRoute().getDriver().getId(),
                 driver.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
         passengerGrid.addComponentColumn(item -> {
             Button showDriveRequestButton = new Button(VaadinIcon.SEARCH.create());
@@ -94,7 +94,6 @@ public class DriveRequestListView extends VerticalLayout {
                 item.getDriveRoute().removeDriveRequest(item);
                 driveRouteService.save(item.getDriveRoute());
                 driveRequestService.delete(item);
-                System.out.println("Ich setze die Items");
                 passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()).orElse(Collections.emptyList()));
             });
             return showDriveRequestButton;
@@ -106,14 +105,14 @@ public class DriveRequestListView extends VerticalLayout {
 
         radioButtonGroup.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case "Meine Fahrtangebote" -> {
+                case "Meine Fahrtangebote":
                     verticalLayout.removeAll();
                     verticalLayout.add(title, radioButtonGroup, driverGrid);
-                }
-                case "Meine Fahrtsuchen" -> {
+                    break;
+                case "Meine Fahrtsuchen":
                     verticalLayout.removeAll();
                     verticalLayout.add(title, radioButtonGroup, passengerGrid);
-                }
+                    break;
             }
         });
         radioButtonGroup.setValue("Meine Fahrtangebote");

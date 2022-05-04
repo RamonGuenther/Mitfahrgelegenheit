@@ -207,22 +207,22 @@ public class SearchDriveView extends VerticalLayout {
         nullCheck(layout, routeDirection, address, time, fhLocation);
 
         switch (routeDirection) {
-            case "Hinfahrt" -> {
+            case "Hinfahrt":
                 layout.remove(address, fhLocation);
                 layout.addComponentAtIndex(3, address);
                 address.setLabel("Von");
                 layout.addComponentAtIndex(5, fhLocation);
                 time.setLabel("Ankunftszeit");
-            }
-            case "Rückfahrt" -> {
+                break;
+            case "Rückfahrt":
                 layout.remove(address, fhLocation);
                 layout.addComponentAtIndex(5, address);
                 address.setLabel("Nach");
                 layout.addComponentAtIndex(3, fhLocation);
                 time.setLabel("Abfahrtszeit");
-            }
-            default -> {
-            }
+                break;
+            default:
+                break;
         }
     }
 

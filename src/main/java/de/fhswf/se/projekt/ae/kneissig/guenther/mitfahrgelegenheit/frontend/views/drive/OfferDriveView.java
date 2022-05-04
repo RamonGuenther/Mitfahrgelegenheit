@@ -73,12 +73,16 @@ public class OfferDriveView extends VerticalLayout {
         createButton.addClickListener(e -> {
 
             switch (layoutOption.getValue()) {
-                case "Hinfahrt" -> saveFormLayoutTop();
-                case "Rückfahrt" -> saveFormLayoutBottom();
-                case "Hin- & Rückfahrt" -> {
+                case "Hinfahrt":
+                    saveFormLayoutTop();
+                    break;
+                case "Rückfahrt":
+                    saveFormLayoutBottom();
+                    break;
+                case "Hin- & Rückfahrt":
                     saveFormLayoutTop();
                     saveFormLayoutBottom();
-                }
+                    break;
             }
         });
     }
@@ -114,23 +118,23 @@ public class OfferDriveView extends VerticalLayout {
 
         layoutOption.addValueChangeListener(e -> {
             switch (e.getValue()) {
-                case "Hinfahrt" -> {
+                case "Hinfahrt":
                     formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                     formlayoutDriveRouteTop.getDriveDateStart().setMin(LocalDate.now());
                     formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
                     formlayoutDriveRouteTop.setAddress(user.getAddress().toString());
                     div.removeAll();
                     div.add(title, layoutOption, formlayoutDriveRouteTop, buttonLayout);
-                }
-                case "Rückfahrt" -> {
+                    break;
+                case "Rückfahrt":
                     formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                     formLayoutDriveRouteBottom.getDriveDateStart().setMin(LocalDate.now());
                     formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
                     formLayoutDriveRouteBottom.setAddress(user.getAddress().toString());
                     div.removeAll();
                     div.add(title, layoutOption, formLayoutDriveRouteBottom, buttonLayout);
-                }
-                case "Hin- & Rückfahrt" -> {
+                    break;
+                case "Hin- & Rückfahrt":
                     formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                     formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
                     formlayoutDriveRouteTop.getDriveDateStart().setMin(LocalDate.now());
@@ -139,7 +143,7 @@ public class OfferDriveView extends VerticalLayout {
                     formLayoutDriveRouteBottom.getDriveDateStart().setMin(LocalDate.now());
                     div.removeAll();
                     div.add(title, layoutOption, formlayoutDriveRouteTop, formLayoutDriveRouteBottom, buttonLayout);
-                }
+                    break;
             }
         });
 

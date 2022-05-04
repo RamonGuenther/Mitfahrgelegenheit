@@ -42,8 +42,8 @@ public class CompletedDriveView extends VerticalLayout {
     private final UserService userService;
     private final DriveRouteService driveRouteService;
     private final BookingService bookingService;
-
     private final User user;
+
     private Grid<Booking> completedDrivesGrid;
     private RadioButtonGroup<String> radioButtonGroup;
     private RatingDialog ratingDialog;
@@ -79,14 +79,14 @@ public class CompletedDriveView extends VerticalLayout {
         radioButtonGroup.setClassName("radiobutton-group");
         radioButtonGroup.addValueChangeListener(event -> {
             switch (event.getValue()) {
-                case OFFERED_DRIVES -> {
+                case OFFERED_DRIVES:
                     completedDrivesGrid.setItems(completedDriveListDriver);
                     completedDrivesGrid.getColumns().get(3).setHeader("Mitfahrer");
-                }
-                case BOOKED_DRIVES -> {
+                    break;
+                case BOOKED_DRIVES:
                     completedDrivesGrid.setItems(completedDriveListPassenger);
                     completedDrivesGrid.getColumns().get(3).setHeader("Fahrer");
-                }
+                    break;
             }
         });
 
@@ -97,8 +97,8 @@ public class CompletedDriveView extends VerticalLayout {
         completedDrivesGrid.addColumn(this::setDestinationColumn).setHeader("Nach");
         completedDrivesGrid.addComponentColumn(booking ->
                 radioButtonGroup.getValue().equals(OFFERED_DRIVES) ?
-                    new Anchor("/profil/" + booking.getPassenger().getId(), booking.getPassenger().getFullName()) :
-                    new Anchor("/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName()))
+                    new Anchor("/drivetogether/profil/" + booking.getPassenger().getId(), booking.getPassenger().getFullName()) :
+                    new Anchor("/drivetogether/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName()))
                 .setHeader("Benutzer");
         completedDrivesGrid.addComponentColumn(this::createRatingButton).setHeader("Bewertung");
         completedDrivesGrid.getColumns().forEach(col -> col.setAutoWidth(true));
@@ -122,19 +122,23 @@ public class CompletedDriveView extends VerticalLayout {
         button.setIcon(icon);
 
         button.addClickListener(event -> {
-            switch (radioButtonGroup.getValue()){
-                case OFFERED_DRIVES -> ratingDialog = new RatingDialog(userService,
-                        booking.getPassenger(),
-                        driveRouteService,
-                        bookingService,
-                        booking,
-                        Role.PASSENGER);
-                case BOOKED_DRIVES -> ratingDialog = new RatingDialog(userService,
-                        booking.getDriveRoute().getDriver(),
-                        driveRouteService,
-                        bookingService,
-                        booking,
-                        Role.DRIVER);
+            switch (radioButtonGroup.getValue()) {
+                case OFFERED_DRIVES:
+                    ratingDialog = new RatingDialog(userService,
+                            booking.getPassenger(),
+                            driveRouteService,
+                            bookingService,
+                            booking,
+                            Role.PASSENGER);
+                    break;
+                case BOOKED_DRIVES:
+                    ratingDialog = new RatingDialog(userService,
+                            booking.getDriveRoute().getDriver(),
+                            driveRouteService,
+                            bookingService,
+                            booking,
+                            Role.DRIVER);
+                    break;
             }
             ratingDialog.open();
         });

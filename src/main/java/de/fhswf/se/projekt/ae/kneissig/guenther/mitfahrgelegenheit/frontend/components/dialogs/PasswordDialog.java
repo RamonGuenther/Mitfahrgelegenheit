@@ -142,7 +142,6 @@ public class PasswordDialog extends Dialog {
      * @return true oder false
      */
     private boolean textFieldCheck() {
-        System.out.println("LOL");
         if (!oldPassword.getValue().isEmpty() && !newPasswordFirstEntry.getValue().isEmpty() && !newPasswordSecondEntry.getValue().isEmpty()) {
             return true;
         } else {

@@ -37,8 +37,6 @@ public class MailService {
     @Async
     public void sendDriveRequestMail(String passengerName, String driverName, String message, String email, String route) throws MessagingException {
 
-        System.out.println("Hallo: " + route);
-
         MimeMessage mail = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true, "UTF-8");
 

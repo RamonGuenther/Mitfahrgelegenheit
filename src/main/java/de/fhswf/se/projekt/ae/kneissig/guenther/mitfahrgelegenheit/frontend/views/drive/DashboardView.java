@@ -71,15 +71,15 @@ public class DashboardView extends VerticalLayout {
         radioButtonGroup.setItems(SINGLE_DRIVE, REGULAR_DRIVE);
         radioButtonGroup.setValue(SINGLE_DRIVE);
         radioButtonGroup.addValueChangeListener(event -> {
-            switch (event.getValue()){
-                case SINGLE_DRIVE -> {
+            switch (event.getValue()) {
+                case SINGLE_DRIVE:
                     passengerSingleDriveValues();
                     driverSingleDriveValues();
-                }
-                case REGULAR_DRIVE -> {
+                    break;
+                case REGULAR_DRIVE:
                     passengerRegularDriveValues();
                     driverRegularDriveValues();
-                }
+                    break;
             }
         });
 
@@ -283,7 +283,7 @@ public class DashboardView extends VerticalLayout {
     private void setPassengerValues(Booking booking){
         passengerViewDriverValueLabel.setVisible(false);
         passengerViewDriverValue.setVisible(true);
-        passengerViewDriverValue.setHref("/profil/" + booking.getDriveRoute().getDriver().getId());
+        passengerViewDriverValue.setHref("/drivetogether/profil/" + booking.getDriveRoute().getDriver().getId());
         passengerViewDriverValue.setText(booking.getDriveRoute().getDriver().getFullName());
         passengerViewStartValue.setText(booking.getDriveRoute().getStart().getFullAddressToString());
         passengerViewDestinationValue.setText(booking.getDriveRoute().getDestination().getFullAddressToString());

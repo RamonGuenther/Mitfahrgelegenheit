@@ -141,14 +141,14 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
                         Integer.parseInt(time.substring(3)))
         );
         switch (typ) {
-            case "Hinfahrt" -> {
+            case "Hinfahrt":
                 driveType = DriveType.OUTWARD_TRIP;
                 driveList = driveRouteService.getDriveRoutesForSearchDrive(driveType, adresse, fhStandort, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
-            }
-            case "Rückfahrt" -> {
+                break;
+            case "Rückfahrt":
                 driveType = DriveType.RETURN_TRIP;
                 driveList = driveRouteService.getDriveRoutesForSearchDrive(driveType, fhStandort, adresse, user, dateTime, isUserSearchsRegularDrive, dayOfWeek);
-            }
+                break;
         }
         CreateSearchDriveResultView();
     }

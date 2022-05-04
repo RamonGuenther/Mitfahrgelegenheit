@@ -310,8 +310,8 @@ public class TestDataInit {
 
         RegularDrive regularDriveI6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
-        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
-        destination = new Destination(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
+        start = new Start(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
 
         DriveRoute driveRouteI6 = new DriveRoute(
                 start,
@@ -450,7 +450,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM5);
 
 
-        RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.TUESDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
         start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
@@ -611,8 +611,6 @@ public class TestDataInit {
         ramon.setUserRating(userRating);
 
         userService.save(ramon);
-
-        System.out.println(ramon.getUserRating().getAverageDriverRating());
 
         /*-------------------------------------------------------------------------------------------------------------
                                                       Fahrtanfragen
