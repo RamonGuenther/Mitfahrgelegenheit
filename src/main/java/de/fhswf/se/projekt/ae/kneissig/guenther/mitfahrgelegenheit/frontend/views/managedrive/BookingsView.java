@@ -24,6 +24,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.DeleteBookingDialog;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
@@ -112,36 +113,8 @@ public class BookingsView extends VerticalLayout {
         button.setIcon(icon);
 
         button.addClickListener(event -> {
-
-            DriveRoute driveRoute = driveRouteService.findById(booking.getDriveRoute().getId()).get();
-            String passenger = booking.getPassenger().getFullName();
-
-            try {
-                driveRoute.removeBooking(booking);
-
-                List<Stopover> stopoverList = new ArrayList<>();
-
-                for (Booking routeBooking : driveRoute.getBookings()) {
-                    stopoverList.add(routeBooking.getStopover());
-                }
-
-                GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
-                String result = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList);
-
-                driveRoute.setCurrentRouteLink(result);
-
-                driveRouteService.save(driveRoute);
-                bookingService.delete(booking);
-
-                gridBookings.setItems(radioButtonGroup.getValue().equals(OUTWARD_TRIP) ?
-                        setBookingsByDriveType(DriveType.OUTWARD_TRIP) :
-                        setBookingsByDriveType(DriveType.RETURN_TRIP));
-
-                NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
-                mailService.sendBookingCancellation(driveRoute, passenger);
-            } catch (IOException | InterruptedException | InvalidAddressException | ApiException | MessagingException e) {
-                e.printStackTrace();
-            }
+            DeleteBookingDialog deleteBookingDialog = new DeleteBookingDialog(driveRouteService, mailService, bookingService, booking);
+            deleteBookingDialog.open();
         });
 
         return button;

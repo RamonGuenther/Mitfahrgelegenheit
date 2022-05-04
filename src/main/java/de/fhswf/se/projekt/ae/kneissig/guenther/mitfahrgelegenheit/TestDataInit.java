@@ -308,12 +308,12 @@ public class TestDataInit {
         driveRouteService.save(driveRouteI4);
 
 
-        RegularDrive regularDriveI6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveI5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
         start = new Start(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
         destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
 
-        DriveRoute driveRouteI6 = new DriveRoute(
+        DriveRoute driveRouteI5 = new DriveRoute(
                 start,
                 destination,
                 LocalDateTime.of(2022, 5, 1, 8, 0),
@@ -324,17 +324,17 @@ public class TestDataInit {
                 routeString.getRoute()
         );
 
-        driveRouteI6.setRegularDrive(regularDriveI6);
+        driveRouteI5.setRegularDrive(regularDriveI5);
 
-        driveRouteService.save(driveRouteI6);
+        driveRouteService.save(driveRouteI5);
 
 
-        RegularDrive regularDriveI5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveI6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
         start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
 
-        DriveRoute driveRouteI5 = new DriveRoute(
+        DriveRoute driveRouteI6 = new DriveRoute(
                 start,
                 destination,
                 LocalDateTime.of(2022, 5, 1, 14, 0),
@@ -345,9 +345,9 @@ public class TestDataInit {
                 routeString.getRoute()
         );
 
-        driveRouteI5.setRegularDrive(regularDriveI5);
+        driveRouteI6.setRegularDrive(regularDriveI6);
 
-        driveRouteService.save(driveRouteI5);
+        driveRouteService.save(driveRouteI6);
 
 
 
@@ -450,7 +450,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM5);
 
 
-        RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.TUESDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
         start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
