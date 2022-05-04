@@ -1,6 +1,7 @@
 #horizontalLayoutMenuBar{
     background-color: #e5e7e9;
-    width: -moz-available;
+    width: 100%;                    /* Chrome */
+    width: -moz-available;          /* Für Mozzila */
     margin-top: -30px;
 }
 
@@ -16,6 +17,17 @@
     margin-top: 60px;
     margin-left: 8%;
     background-color: #e5e7e9;
+}
+
+
+#anchor_user_guide_light{
+    text-decoration: none;
+    color: #243243;
+}
+
+#anchor_user_guide_dark{
+    color: #d8e2ee;
+    text-decoration: none;
 }
 
 

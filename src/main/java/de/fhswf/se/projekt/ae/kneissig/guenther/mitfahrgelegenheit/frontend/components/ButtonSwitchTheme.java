@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.dom.ThemeList;
@@ -26,12 +27,16 @@ public class ButtonSwitchTheme extends Button {
     private final Icon moon;
     private final User user;
 
+    private final Anchor userGuide;
+
     /**
      * Der Konstruktor setzt die Attribute des Buttons und
      * ruft das Event aus.
      */
-    public ButtonSwitchTheme(UserService userService) {
+    public ButtonSwitchTheme(UserService userService, Anchor userGuide) {
         this.userService = userService;
+        this.userGuide = userGuide;
+
         user = userService.getCurrentUser();
 
         sun = new Icon(VaadinIcon.SUN_O);
@@ -51,6 +56,7 @@ public class ButtonSwitchTheme extends Button {
             setIcon(sun);
             setText("Lightmode");
             setId("button-switch-theme-dark_mode");
+            userGuide.setId("anchor_user_guide_dark");
             themeList.add(Lumo.DARK);
         }
     }
@@ -67,12 +73,14 @@ public class ButtonSwitchTheme extends Button {
             setText("Darkmode");
             setId("button-switch-theme-light_mode");
             themeList.remove(Lumo.DARK);
+            userGuide.setId("anchor_user_guide_light");
             user.setDarkMode(false);
         } else {
             setIcon(sun);
             setText("Lightmode");
             setId("button-switch-theme-dark_mode");
             themeList.add(Lumo.DARK);
+            userGuide.setId("anchor_user_guide_dark");
             user.setDarkMode(true);
         }
 

@@ -5,7 +5,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
-import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -39,10 +38,6 @@ public class TestDataInit {
 
     @Autowired
     private DriveRequestService driveRequestService;
-
-
-    @Autowired
-    private BookingService bookingService;
 
 
     @PostConstruct
@@ -91,8 +86,8 @@ public class TestDataInit {
                 "Nieswand",
                 new Address("45145", "Essen", "Am Alfredspark", "7"),
                 new Languages("Deutsch"),
-                "Meschede",
-                "Ingenieur- und Wirtschaftswissenschaften",
+                "Iserlohn",
+                "Informatik und Naturwissenschaften",
                 "kneissig.ivonne@fh-swf.de",
                 LocalDateTime.now(),
                 true
@@ -191,7 +186,7 @@ public class TestDataInit {
         DriveRoute driveRouteR3 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 7, 1, 8, 30),
+                LocalDateTime.of(2022, 7, 8, 8, 30),
                 false,
                 4,
                 ramon,
@@ -361,7 +356,7 @@ public class TestDataInit {
         -------------------------------------------------------------------------------------------------------------*/
 
         start = new Start(new Address("45145", "Essen", "Am Alfredspark", "7"));
-        destination = new Destination(new Address("59872", "Meschede", "Lindenstraße", "53"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
 
         routeString = new RouteString(start, destination, stopoverList);
 
@@ -379,7 +374,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM1);
 
 
-        start = new Start(new Address("59872", "Meschede", "Lindenstraße", "53"));
+        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
 
         routeString = new RouteString(start, destination, stopoverList);
@@ -400,7 +395,7 @@ public class TestDataInit {
 
 
         start = new Start(new Address("45145", "Essen", "Am Alfredspark", "7"));
-        destination = new Destination(new Address("59872", "Meschede", "Lindenstraße", "53"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
 
         DriveRoute driveRouteM3 = new DriveRoute(
                 start,
@@ -416,7 +411,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM3);
 
 
-        start = new Start(new Address("59872", "Meschede", "Lindenstraße", "53"));
+        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
 
         DriveRoute driveRouteM4 = new DriveRoute(
@@ -437,7 +432,7 @@ public class TestDataInit {
         RegularDrive regularDriveM5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
         start = new Start(new Address("45145", "Essen", "Am Alfredspark", "7"));
-        destination = new Destination(new Address("59872", "Meschede", "Lindenstraße", "53"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
 
         DriveRoute driveRouteM5 = new DriveRoute(
                 start,
@@ -457,7 +452,7 @@ public class TestDataInit {
 
         RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
 
-        start = new Start(new Address("59872", "Meschede", "Lindenstraße", "53"));
+        start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
 
         DriveRoute driveRouteM6 = new DriveRoute(
@@ -561,7 +556,7 @@ public class TestDataInit {
         DriveRoute driveRouteS5 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 5, 1, 9, 05),
+                LocalDateTime.of(2022, 5, 1, 9, 50),
                 true,
                 1,
                 rolf,

@@ -27,6 +27,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.mainlayout.MainLayout;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -109,7 +110,7 @@ public class BookingsView extends VerticalLayout {
         button.addClickListener(event -> {
 
             DriveRoute driveRoute = driveRouteService.findById(booking.getDriveRoute().getId()).get();
-            String passenger = booking.getPassenger().getFullName();     //für die Mail :333 :)
+            String passenger = booking.getPassenger().getFullName();
 
             try {
                 driveRoute.removeBooking(booking);
@@ -132,9 +133,8 @@ public class BookingsView extends VerticalLayout {
                         setBookingsByDriveType(DriveType.RETURN_TRIP));
 
                 NotificationSuccess.show("Der Fahrer wird über deinen Ausstieg benachrichtigt");
-//              TODO: Am Ende wieder einkommentieren =)
-//                mailService.sendBookingCancellation(driveRoute, passenger);
-            } catch (IOException | InterruptedException | InvalidAddressException | ApiException e) {
+                mailService.sendBookingCancellation(driveRoute, passenger);
+            } catch (IOException | InterruptedException | InvalidAddressException | ApiException | MessagingException e) {
                 e.printStackTrace();
             }
         });

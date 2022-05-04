@@ -18,7 +18,7 @@ import java.util.Optional;
 @Service
 public class DriveRequestService {
 
-    private DriveRequestRepository repository;
+    private final DriveRequestRepository repository;
 
     public DriveRequestService(DriveRequestRepository repository) {
         this.repository = repository;

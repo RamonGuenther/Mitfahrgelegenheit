@@ -29,7 +29,6 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
  *
  * @author Ramon Günther & Ivonne Kneißig
  */
-@RouteAlias(value = "", layout = MainLayout.class)
 @Route(value = "dashboard", layout = MainLayout.class)
 @PageTitle("Dashboard")
 @CssImport("/themes/mitfahrgelegenheit/views/dashboard-view.css")
@@ -37,11 +36,9 @@ public class DashboardView extends VerticalLayout {
 
     private static final String SINGLE_DRIVE = "Einzelfahrten";
     private static final String REGULAR_DRIVE = "Regelmäßige Fahrten";
-
     private final UserService userService;
     private final DriveRouteService driveRouteService;
     private final BookingService bookingService;
-
     private DriveRoute driverSingleRoute;
     private Booking passengerSingleRoute;
     private DriveRoute driverRegularRoute;
@@ -57,7 +54,6 @@ public class DashboardView extends VerticalLayout {
     private Label passengerViewDestinationValue;
     private TextArea passengerViewNoteTextArea;
     private Button buttonNewNote;
-    private VerticalLayout driverLabels;
 
     public DashboardView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService) {
         this.userService = userService;
@@ -134,7 +130,7 @@ public class DashboardView extends VerticalLayout {
         );
         passengerValues.setClassName("values-vl");
 
-        Label labelPassengerNote = new Label("Letzte Notiz");
+        Label labelPassengerNote = new Label("Letzte Mitteilung");
         labelPassengerNote.setClassName("note-label");
         passengerViewNoteTextArea = new TextArea();
         passengerViewNoteTextArea.setReadOnly(true);
@@ -161,7 +157,7 @@ public class DashboardView extends VerticalLayout {
         Label driverViewDestination = new Label("Ziel:");
         driverViewDestination.setClassName("label");
 
-        driverLabels = new VerticalLayout(
+        VerticalLayout driverLabels = new VerticalLayout(
                 driverViewDate,
                 driverViewStart,
                 driverViewDestination);
@@ -181,7 +177,7 @@ public class DashboardView extends VerticalLayout {
         );
         driverValues.setClassName("values-vl");
 
-        Label labelDriverNote = new Label("Letzte Notiz");
+        Label labelDriverNote = new Label("Letzte Mitteilung");
         labelDriverNote.setClassName("note-label");
         buttonNewNote = new Button(VaadinIcon.PENCIL.create());
         buttonNewNote.setId("button-new-note");

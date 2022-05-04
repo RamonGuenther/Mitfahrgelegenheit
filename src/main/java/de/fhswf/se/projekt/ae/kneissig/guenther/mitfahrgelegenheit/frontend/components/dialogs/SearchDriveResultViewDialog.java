@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -7,6 +8,8 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.router.RouteParam;
+import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
@@ -14,6 +17,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.servi
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.formlayouts.FormLayoutDriveRoute;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.StarsRating;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 
 import java.time.LocalDate;
 
@@ -63,19 +67,22 @@ public class SearchDriveResultViewDialog extends Dialog {
 
         driverInformationLayout.add(title, driverRating);
 
-        Button profileButton = new Button(new Anchor("/profil/" + driveRoute.getDriver().getId(),
-                driveRoute.getDriver().getFullName()));
-
+        Button profileButton = new Button();
         profileButton.setIcon(VaadinIcon.USER.create());
         profileButton.setText("Profil");
         profileButton.setId("search-drive-result-view-profile_button");
-        profileButton.addClickListener(e -> close());
+        profileButton.addClickListener(e -> {
+            UI.getCurrent().navigate(ProfileView.class,
+                    new RouteParameters(new RouteParam("id",
+                            driveRoute.getDriver().getId().toString())));
+            close();
+        });
 
         HorizontalLayout titleLayout = new HorizontalLayout(driverInformationLayout, profileButton);
         titleLayout.setClassName("search-drive-result-view-title_layout");
         add(titleLayout);
 
-        FormLayoutDriveRoute formLayoutDriveRoute = new FormLayoutDriveRoute(driveRoute.getDriveType());
+        FormLayoutDriveRoute formLayoutDriveRoute = new FormLayoutDriveRoute(driveRoute);
         formLayoutDriveRoute.remove(formLayoutDriveRoute.getTitle());
         formLayoutDriveRoute.setData(driveRoute);
         formLayoutDriveRoute.setReadOnly(true);

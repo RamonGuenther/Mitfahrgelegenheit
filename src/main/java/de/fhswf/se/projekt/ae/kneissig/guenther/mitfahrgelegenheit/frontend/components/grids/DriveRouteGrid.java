@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 public class DriveRouteGrid extends Grid<DriveRoute> {
 
     private final DriveRouteService driveRouteService;
-
     private final UserService userService;
     private final MailService mailService;
     private final DriveRequestService driveRequestService;
@@ -53,7 +52,12 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
                 driveRoute.getRegularDrive().getDriveDates().isEmpty() ? driveRoute.getDrivingTime().isAfter(LocalDateTime.now()) :
                         driveRoute.getRegularDriveDateEndDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
 
-        addColumn(start -> start.getStart().getAddress().getPlace()).setHeader("Startadresse");
+        if(UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
+            addColumn(start -> start.getStart().getFullAddressToString()).setHeader("Startadresse");
+        }
+        else {
+            addColumn(start -> start.getStart().getAddress().getPlace()).setHeader("Startadresse");
+        }
 
         addColumn(ziel -> ziel.getDestination().getFullAddressToString()).setHeader("Zieladresse");
 

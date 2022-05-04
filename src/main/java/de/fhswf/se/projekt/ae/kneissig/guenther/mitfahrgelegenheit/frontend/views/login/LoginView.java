@@ -13,7 +13,8 @@ import com.vaadin.flow.router.*;
  * @author Ramon Günther & Ivonne Kneißig
  */
 @Route("login")
-@PageTitle("Mitfahrgelegenheit | Login")
+@RouteAlias("")
+@PageTitle("Drive Together | Login")
 @CssImport(value = "/themes/mitfahrgelegenheit/views/login-view.css", themeFor = "vaadin-login-overlay-wrapper")
 public class LoginView extends Div implements BeforeEnterObserver {
 

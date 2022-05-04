@@ -23,26 +23,20 @@ public enum DayOfWeek {
         this.label = label;
     }
 
-    public static DayOfWeek getDayOfWeek(String label){
-        switch (label){
-            case "Montag" -> {
+    public static DayOfWeek getDayOfWeek(String label) {
+        switch (label) {
+            case "Montag":
                 return MONDAY;
-            }
-            case "Dienstag" -> {
+            case "Dienstag":
                 return TUESDAY;
-            }
-            case "Mittwoch" -> {
+            case "Mittwoch":
                 return WEDNESDAY;
-            }
-            case "Donnerstag" -> {
+            case "Donnerstag":
                 return THURSDAY;
-            }
-            case "Freitag" -> {
+            case "Freitag":
                 return FRIDAY;
-            }
-            case "Samstag" -> {
+            case "Samstag":
                 return SATURDAY;
-            }
         }
         return MONDAY;
     }
@@ -50,7 +44,7 @@ public enum DayOfWeek {
     public static List<String> getDayOfWeekList() {
         List<String> result = new ArrayList<>();
 
-        for(DayOfWeek dayOfWeek : DayOfWeek.values()){
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
             result.add(dayOfWeek.label);
         }
         return result;

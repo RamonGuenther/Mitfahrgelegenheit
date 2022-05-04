@@ -79,8 +79,14 @@ public class CompletedDriveView extends VerticalLayout {
         radioButtonGroup.setClassName("radiobutton-group");
         radioButtonGroup.addValueChangeListener(event -> {
             switch (event.getValue()) {
-                case OFFERED_DRIVES -> completedDrivesGrid.setItems(completedDriveListDriver);
-                case BOOKED_DRIVES -> completedDrivesGrid.setItems(completedDriveListPassenger);
+                case OFFERED_DRIVES -> {
+                    completedDrivesGrid.setItems(completedDriveListDriver);
+                    completedDrivesGrid.getColumns().get(3).setHeader("Mitfahrer");
+                }
+                case BOOKED_DRIVES -> {
+                    completedDrivesGrid.setItems(completedDriveListPassenger);
+                    completedDrivesGrid.getColumns().get(3).setHeader("Fahrer");
+                }
             }
         });
 

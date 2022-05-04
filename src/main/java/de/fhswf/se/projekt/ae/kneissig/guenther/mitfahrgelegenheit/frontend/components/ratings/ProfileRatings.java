@@ -88,18 +88,20 @@ public class ProfileRatings extends VerticalLayout {
     public void setAverageRatingsLayout() {
 
         switch (ratingsRadio.getValue()) {
-            case DRIVER_RATING -> {
+            case DRIVER_RATING:
                 ratingLayout.remove(averageRatingsPassenger);
                 ratingLayout.addComponentAsFirst(averageRatingsDriver);
                 ratingGrid.setItems(user.getUserRating().getDriverRatings());
-            }
-            case PASSENGER_RATING -> {
+                break;
+
+            case PASSENGER_RATING:
                 ratingLayout.remove(averageRatingsDriver);
                 ratingLayout.addComponentAsFirst(averageRatingsPassenger);
                 ratingGrid.setItems(user.getUserRating().getPassengerRatings());
-            }
+                break;
         }
     }
+
 
     public AverageRatings getAverageRatingsPassenger() {
         return averageRatingsPassenger;

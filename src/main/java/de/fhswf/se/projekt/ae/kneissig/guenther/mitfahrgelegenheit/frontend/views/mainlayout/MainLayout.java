@@ -5,11 +5,13 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.page.LoadingIndicatorConfiguration;
+import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.server.InitialPageSettings;
@@ -17,6 +19,7 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.PrivacyDialog;
@@ -30,13 +33,15 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.view
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.profile.ProfileView;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.lang.annotation.Target;
+
 /**
  * Die MainView dient dem Erstellen einer MenuBar zum Navigieren in
  * der Applikation.
  *
  * @author Ramon Günther & Ivonne Kneißig
  */
-@PWA(name = "Mitfahrgelegenheiten", shortName = "Mitfahrgelegenheiten", enableInstallPrompt = false)
+@PWA(name = "Drive Together", shortName = "Drive Together", enableInstallPrompt = false)
 @Theme(themeFolder = "mitfahrgelegenheit")
 @CssImport("/themes/mitfahrgelegenheit/views/main-view.css")
 @CssImport(value = "/themes/mitfahrgelegenheit/menu-bar-button.css", themeFor = "vaadin-menu-bar-button")
@@ -125,25 +130,29 @@ public class MainLayout extends AppLayout implements PageConfigurator {
                 new RouteParameters(new RouteParam("id",
                         userService.getCurrentUser().getId().toString()))));
 
-        MenuItem userGuide = usersSubMenu.addItem("Bedienungsanleitung");
-        userGuide.addClickListener(e->{
-            //TODO
-        });
+        MenuItem userGuide = usersSubMenu.addItem("");
 
-        
+        StreamResource res = new StreamResource("UserGuide_Laborordnung.pdf", () -> MainLayout.class.getClassLoader().getResourceAsStream("manuals/UserGuide.pdf"));
+        Anchor anchorUserManual = new Anchor();
+        anchorUserManual.setId("anchor_user_guide_light");
+        anchorUserManual.setHref(res);
+        anchorUserManual.setTarget("_blank");
+        anchorUserManual.setText("Bedienungsanleitung");
+        userGuide.add(anchorUserManual);
+
         MenuItem privacy = usersSubMenu.addItem("Datenschutzerklärung");
         privacy.addClickListener(e->{
             PrivacyDialog privacyDialog = new PrivacyDialog();
             privacyDialog.open();
         });
-        
+
         
         MenuItem logout = usersSubMenu.addItem("Abmelden");
         logout.getElement().getClassList().add("menuItems");
-        logout.addClickListener(e -> UI.getCurrent().getPage().setLocation("/logout"));
+        logout.addClickListener(e -> UI.getCurrent().getPage().setLocation("/drivetogether/logout"));
 
         //Button für dunkel/hellen Modus
-        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme(userService);
+        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme(userService, anchorUserManual);
 
         HorizontalLayout header = new HorizontalLayout();
         header.add(logoFH, menuBar, themeChangeButton);

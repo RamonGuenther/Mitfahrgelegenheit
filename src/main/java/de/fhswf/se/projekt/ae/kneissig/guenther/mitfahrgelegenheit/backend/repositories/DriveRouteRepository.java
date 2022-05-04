@@ -28,8 +28,6 @@ public interface DriveRouteRepository extends JpaRepository<DriveRoute, Long> {
     Optional<List<DriveRoute>>findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(
             DriveType driveType, String destinationPlace, String startPlace, String username);
 
-    Optional<List<DriveRoute>> findAllByDriverAndDrivingTimeBeforeAndAndBookings_Empty(User user, LocalDateTime dateTime);
-
     Optional<List<DriveRoute>> findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNull(User user);
 
     Optional<List<DriveRoute>> findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNotNull(User user);

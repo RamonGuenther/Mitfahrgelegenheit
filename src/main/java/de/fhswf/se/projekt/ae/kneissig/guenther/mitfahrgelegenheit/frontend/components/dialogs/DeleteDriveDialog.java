@@ -13,6 +13,8 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
 
+import javax.mail.MessagingException;
+
 /**
  * Die Klasse DeleteDriveDialog erstellt einen Dialog für den Fall,
  * dass ein Benutzer sein Fahrtangebot löschen möchte. Mit dem Dialog
@@ -44,12 +46,12 @@ public class DeleteDriveDialog extends Dialog {
         acceptButton.setEnabled(false);
 
         acceptButton.addClickListener(e -> {
-//            try {
+            try {
                 driveRouteService.delete(driveRoute);
-//                mailService.sendDriveDeleteMessage(driveRoute, optionalMessage.getValue());
-//            } catch (MessagingException ex) {
-//                ex.printStackTrace();
-//            }
+                mailService.sendDriveDeleteMessage(driveRoute, optionalMessage.getValue());
+            } catch (MessagingException ex) {
+                ex.printStackTrace();
+            }
             UI.getCurrent().getPage().reload();
         });
 

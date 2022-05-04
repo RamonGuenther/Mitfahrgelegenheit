@@ -26,6 +26,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationError;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.notifications.NotificationSuccess;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class DriveRequestDialog extends Dialog {
         textFieldAddress.setValue(currentUser.getAddress().toString());
         textFieldAddress.setErrorMessage("Abholadresse bitte angeben");
 
-        TextArea textAreaMessage = new TextArea("Nachricht");
+        TextArea textAreaMessage = new TextArea("Nachricht an den Fahrer (optional)");
         textAreaMessage.setId("drive-request-dialog-message");
 
         Button buttonRequest = new Button("Fahrt anfragen");
@@ -90,7 +91,7 @@ public class DriveRequestDialog extends Dialog {
 
                 /*  Wenn der User keine regelmäßige Fahrt sucht, aber eine Anfrage für eine Einzelfahrt bei einer regelmäßigen Fahrt stellt,
                     muss das gewünschte Datum für die Buchung später mit festgehalten werden. */
-                if(!isUserSearchsRegularDrive && driveRoute.getRegularDrive().getRegularDriveDateEnd() != null){
+                if (!isUserSearchsRegularDrive && driveRoute.getRegularDrive().getRegularDriveDateEnd() != null) {
                     newDriveRequest.setRegularDriveSingleDriveDate(singleDriveDate);
                 }
 
@@ -102,17 +103,17 @@ public class DriveRequestDialog extends Dialog {
 
                 close();
 
-//                mailService.sendSimpleMessage(
-//                        currentUser.getFullName(),
-//                        driveRoute.getBenutzer().getFirstName(),
-//                        textAreaMessage.getValue(),
-//                        driveRoute.getBenutzer().getEmail(),
-//                        routeString.getRoute()
-//                );
+                mailService.sendDriveRequestMail(
+                        currentUser.getFullName(),
+                        driveRoute.getDriver().getFirstName(),
+                        textAreaMessage.getValue(),
+                        driveRoute.getDriver().getEmail(),
+                        googleMapsLink
+                );
             } catch (DuplicateRequestException | InvalidAddressException ex) {
                 NotificationError.show(ex.getMessage());
                 ex.printStackTrace();
-            } catch (IOException | InterruptedException | ApiException otherException) {
+            } catch (IOException | InterruptedException | ApiException | MessagingException otherException) {
                 otherException.printStackTrace();
             }
         });

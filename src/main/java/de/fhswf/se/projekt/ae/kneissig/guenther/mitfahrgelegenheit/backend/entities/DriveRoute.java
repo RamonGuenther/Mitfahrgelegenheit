@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.ValidationUtility.nullCheck;
 
@@ -184,7 +185,7 @@ public class DriveRoute {
     }
 
     public List<DriveRequest> getDriveRequests() {
-        return driveRequests.stream().toList();
+        return new ArrayList<>(driveRequests);
     }
 
     public void setCurrentRouteLink(String currentRouteLink) {
@@ -204,7 +205,7 @@ public class DriveRoute {
     }
 
     public List<Booking> getBookings() {
-        return bookings.stream().toList();
+        return new ArrayList<>(bookings);
     }
 
     public LocalDateTime getDrivingTime() {
@@ -255,9 +256,7 @@ public class DriveRoute {
      */
     public void removeDriveRequest(DriveRequest driveRequest) {
         nullCheck(driveRequest);
-        System.out.println("Vor delete: " + driveRequests.size());
         driveRequests.remove(driveRequest);
-        System.out.println("Nach delete: " + driveRequests.size());
     }
 
     /**
@@ -285,9 +284,7 @@ public class DriveRoute {
      */
     public void removeBooking(Booking booking) {
         nullCheck(booking);
-        System.out.println("Vor delete: " + bookings.size());
         bookings.remove(booking);
-        System.out.println("Nach delete: " + this.bookings.size());
     }
 
     public LocalDateTime getRegularDriveDateEndDateTime(){

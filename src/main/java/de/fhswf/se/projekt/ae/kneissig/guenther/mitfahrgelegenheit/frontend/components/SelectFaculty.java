@@ -33,13 +33,25 @@ public class SelectFaculty extends Select<String> {
         }
         else{
             switch (fhLocation) {
-                case "Hagen" -> setItems("Elektrotechnik und Informationstechnik", "Technische Betriebswirtschaft");
-                case "Iserlohn" -> setItems("Informatik und Naturwissenschaften", "Maschinenbau");
-                case "Lüdenscheid" -> setItems("Maschinenbau", "Elektrotechnik und Informationstechnik", "Technische Betriebswirtschaft");
-                case "Meschede" -> setItems("Ingenieur- und Wirtschaftswissenschaften");
-                case "Soest" -> setItems("Agrarwirtschaft", "Bildungs- und Gesellschaftswissenschaften",
-                        "Elektrische Energietechnik", "Maschinenbau-Automatisierungstechnik");
-                default -> setItems("Kein Fachbereich auswählbar");
+                case "Hagen":
+                    setItems("Elektrotechnik und Informationstechnik", "Technische Betriebswirtschaft");
+                    break;
+                case "Iserlohn":
+                    setItems("Informatik und Naturwissenschaften", "Maschinenbau");
+                    break;
+                case "Lüdenscheid":
+                    setItems("Maschinenbau", "Elektrotechnik und Informationstechnik", "Technische Betriebswirtschaft");
+                    break;
+                case "Meschede":
+                    setItems("Ingenieur- und Wirtschaftswissenschaften");
+                    break;
+                case "Soest":
+                    setItems("Agrarwirtschaft", "Bildungs- und Gesellschaftswissenschaften",
+                            "Elektrische Energietechnik", "Maschinenbau-Automatisierungstechnik");
+                    break;
+                default:
+                    setItems("Kein Fachbereich auswählbar");
+                    break;
             }
         }
     }

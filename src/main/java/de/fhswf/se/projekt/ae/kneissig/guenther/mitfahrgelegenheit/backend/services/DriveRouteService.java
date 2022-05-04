@@ -31,7 +31,7 @@ public class DriveRouteService {
      * Die save-Methode speichert eine Fahrt in der Datenbank. Eine bereits bestehende
      * Fahrt wird aktualisiert.
      *
-     * @param driveRoute        Fahrt, die gespeichert werden soll
+     * @param driveRoute Fahrt, die gespeichert werden soll
      */
     public void save(DriveRoute driveRoute) {
         repository.save(driveRoute);
@@ -41,7 +41,7 @@ public class DriveRouteService {
     /**
      * Die delete-Methode löscht eine Fahrt aus der Datenbank.
      *
-     * @param driveRoute        Fahrt die gelöscht werden soll
+     * @param driveRoute Fahrt die gelöscht werden soll
      */
     public void delete(DriveRoute driveRoute) {
         repository.delete(driveRoute);
@@ -50,8 +50,8 @@ public class DriveRouteService {
     /**
      * Die Methode findById gibt die Fahrt mit der gegebenen Id zurück.
      *
-     * @param id                Id der gesuchten Fahrt
-     * @return                  Fahrt mit der gegebenen Id
+     * @param id Id der gesuchten Fahrt
+     * @return Fahrt mit der gegebenen Id
      */
     public Optional<DriveRoute> findById(Long id) {
         return repository.findById(id);
@@ -61,8 +61,8 @@ public class DriveRouteService {
      * Die Methode getDriveRoutesByUser gibt alle angebotenen Fahrten eines
      * bestimmten Benutzers zurück.
      *
-     * @param user              Benutzer dessen Fahrtangebote gesucht werden
-     * @return                  Liste der Fahrtangebote des Benutzers
+     * @param user Benutzer dessen Fahrtangebote gesucht werden
+     * @return Liste der Fahrtangebote des Benutzers
      */
     public Optional<List<DriveRoute>> getDriveRoutesByUser(User user) {
         return repository.findAllByDriver(user);
@@ -72,9 +72,9 @@ public class DriveRouteService {
      * Die Methode getByUserAndDriveType gibt die Fahrten eines Users mit einem bestimmten
      * Fahrtentyp zurück.
      *
-     * @param user              Benutzer dessen Fahrtangebote gesucht werden
-     * @param fahrtenTyp        Fahrtentyp, nach dem die Fahrtangebote gefiltert werden
-     * @return                  Liste der Fahrtangebote des Benutzers
+     * @param user       Benutzer dessen Fahrtangebote gesucht werden
+     * @param fahrtenTyp Fahrtentyp, nach dem die Fahrtangebote gefiltert werden
+     * @return Liste der Fahrtangebote des Benutzers
      */
     public Optional<List<DriveRoute>> getByUserAndDriveType(User user, DriveType fahrtenTyp) {
         return repository.findAllByDriverAndDriveType(user, fahrtenTyp);
@@ -84,11 +84,11 @@ public class DriveRouteService {
      * Die Methode getOtherUsersDriveRoutesByDriveType findet alle Fahrtangebote, die nicht die eigenen des
      * angemeldeten Benutzers sind. Die Fahrten werden außerdem nach Start- und Zieladresse und Fahrtentyp gefiltert.
      *
-     * @param driveType         Fahrtentyp, nach dem gefiltert wird
-     * @param startPlace        Startadresse, nach der gefiltert wird
-     * @param destinationPlace  Zieladresse, nach der gefiltert wird
-     * @param username  Benutzer, dessen Fahrtangebote bei der Suche ausgeschlossen werden
-     * @return                  Liste mit gefilterten Fahrtangeboten
+     * @param driveType        Fahrtentyp, nach dem gefiltert wird
+     * @param startPlace       Startadresse, nach der gefiltert wird
+     * @param destinationPlace Zieladresse, nach der gefiltert wird
+     * @param username         Benutzer, dessen Fahrtangebote bei der Suche ausgeschlossen werden
+     * @return Liste mit gefilterten Fahrtangeboten
      */
     public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveType(DriveType driveType, String startPlace, String destinationPlace, String username) {
         return repository.findAllByDriveTypeAndDestination_Address_PlaceAndStart_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, startPlace, username);
@@ -98,10 +98,10 @@ public class DriveRouteService {
      * Die Methode getOtherUsersDriveRoutesByDriveTypeAndStartPlace findet alle Fahrtangebote, die nicht die eigenen des
      * angemeldeten Benutzers sind. Die Fahrten werden außerdem nach Startadresse und Fahrtentyp gefiltert.
      *
-     * @param driveType         Fahrtentyp, nach dem gefiltert wird
-     * @param startPlace        Startadresse, nach der gefiltert wird
-     * @param username          Benutzer, dessen Fahrtangebote bei der Suche ausgeschlossen werden
-     * @return                  Liste mit gefilterten Fahrtangeboten
+     * @param driveType  Fahrtentyp, nach dem gefiltert wird
+     * @param startPlace Startadresse, nach der gefiltert wird
+     * @param username   Benutzer, dessen Fahrtangebote bei der Suche ausgeschlossen werden
+     * @return Liste mit gefilterten Fahrtangeboten
      */
     public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveTypeAndStartPlace(DriveType driveType, String startPlace, String username) {
         return repository.findAllByDriveTypeAndStart_Address_PlaceAndDriverUsernameNot(driveType, startPlace, username);
@@ -111,10 +111,10 @@ public class DriveRouteService {
      * Die Methode getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace findet alle Fahrtangebote, die nicht die eigenen des
      * angemeldeten Benutzers sind. Die Fahrten werden außerdem nach Zieladresse und Fahrtentyp gefiltert.
      *
-     * @param driveType         Fahrtentyp, nach dem gefiltert wird
-     * @param destinationPlace  Zieladresse, nach der gefiltert wird
-     * @param username          Benutzer, dessen Fahrtangebote bei der Suche ausgeschlossen werden
-     * @return                  Liste mit gefilterten Fahrtangeboten
+     * @param driveType        Fahrtentyp, nach dem gefiltert wird
+     * @param destinationPlace Zieladresse, nach der gefiltert wird
+     * @param username         Benutzer, dessen Fahrtangebote bei der Suche ausgeschlossen werden
+     * @return Liste mit gefilterten Fahrtangeboten
      */
     public Optional<List<DriveRoute>> getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(DriveType driveType, String destinationPlace, String username) {
         return repository.findAllByDriveTypeAndDestination_Address_PlaceAndDriverUsernameNot(driveType, destinationPlace, username);
@@ -125,21 +125,25 @@ public class DriveRouteService {
      * sowohl Start- als auch Zieladresse der Suche entsprechen. Wird keine passende Fahrt gefunden, wird als Grundlage,
      * je nachdem ob es sich um eine Hin- oder Rückfahrt handelt, nur nach passender Start- oder Zieladresse gesucht.
      *
-     * @param user              Benutzer, dessen eigene Fahrtangebote herausgefiltert werden
-     * @param driveType         Fahrtentyp, nach dem der Benutzer sucht
-     * @param destinationPlace  Zieladresse, nach der gesucht wird
-     * @param startPlace        Startadresse, nach der gesucht wird
-     * @return                  Liste mit passenden Fahrtangeboten
+     * @param user             Benutzer, dessen eigene Fahrtangebote herausgefiltert werden
+     * @param driveType        Fahrtentyp, nach dem der Benutzer sucht
+     * @param destinationPlace Zieladresse, nach der gesucht wird
+     * @param startPlace       Startadresse, nach der gesucht wird
+     * @return Liste mit passenden Fahrtangeboten
      */
     public Optional<List<DriveRoute>> findRouten(User user, DriveType driveType, String destinationPlace, String startPlace) {
-        Set <DriveRoute> driveRoutes = new HashSet<>(getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList()));
+        Set<DriveRoute> driveRoutes = new HashSet<>(getOtherUsersDriveRoutesByDriveType(driveType, startPlace, destinationPlace, user.getUsername()).orElse(Collections.emptyList()));
 
-        switch (driveType){
-            case OUTWARD_TRIP -> driveRoutes.addAll(getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, destinationPlace, user.getUsername()).orElse(Collections.emptyList()));
-            case RETURN_TRIP ->  driveRoutes.addAll(getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, startPlace, user.getUsername()).orElse(Collections.emptyList()));
+        switch (driveType) {
+            case OUTWARD_TRIP:
+                driveRoutes.addAll(getOtherUsersDriveRoutesByDriveTypeAndDestinationPlace(driveType, destinationPlace, user.getUsername()).orElse(Collections.emptyList()));
+                break;
+            case RETURN_TRIP:
+                driveRoutes.addAll(getOtherUsersDriveRoutesByDriveTypeAndStartPlace(driveType, startPlace, user.getUsername()).orElse(Collections.emptyList()));
+                break;
         }
 
-        return Optional.of(driveRoutes.stream().toList());
+        return Optional.of(new ArrayList<>(driveRoutes));
     }
 
     /**
@@ -149,14 +153,14 @@ public class DriveRouteService {
      * Dabei werden bei einer Einzelfahrtsuche auch regelmäßige Fahrten durchsucht, die ggf. das passende Datum
      * beinhalten.
      *
-     * @param driveType             Fahrtentyp, nach dem gefiltert wird
-     * @param startPlace            Startadresse des suchenden Benutzers
-     * @param destinationPlace      Zieladresse des suchenden Benutzers
-     * @param user                  Benutzer, der ein Fahrtangebot sucht
-     * @param datetime              Datum und Uhrzeit, nach dem der Benutzer sucht
-     * @param regularDrive          Gibt an, ob der Benutzer eine regelmäßige Fahrt oder eine Einzelfahrt such
-     * @param dayOfWeek             Gibt bei einer regelmäßigen Fahrt den gewünschten Wochentag an
-     * @return                      Liste mit passenden Fahrtangeboten
+     * @param driveType        Fahrtentyp, nach dem gefiltert wird
+     * @param startPlace       Startadresse des suchenden Benutzers
+     * @param destinationPlace Zieladresse des suchenden Benutzers
+     * @param user             Benutzer, der ein Fahrtangebot sucht
+     * @param datetime         Datum und Uhrzeit, nach dem der Benutzer sucht
+     * @param regularDrive     Gibt an, ob der Benutzer eine regelmäßige Fahrt oder eine Einzelfahrt such
+     * @param dayOfWeek        Gibt bei einer regelmäßigen Fahrt den gewünschten Wochentag an
+     * @return Liste mit passenden Fahrtangeboten
      */
     public List<DriveRoute> getDriveRoutesForSearchDrive(DriveType driveType, String startPlace, String destinationPlace, User user, LocalDateTime datetime, boolean regularDrive, DayOfWeek dayOfWeek) {
 
@@ -185,22 +189,23 @@ public class DriveRouteService {
         }
 
         switch (driveType) {
-            case OUTWARD_TRIP -> {
+            case OUTWARD_TRIP:
                 for (DriveRoute route : unfilteredRoutes) {
                     if (route.getDrivingTime().toLocalTime().isBefore(datetime.toLocalTime()) ||
                             route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
                         driveRoutes.add(route);
                     }
                 }
-            }
-            case RETURN_TRIP -> {
+                break;
+
+            case RETURN_TRIP:
                 for (DriveRoute route : unfilteredRoutes) {
                     if (route.getDrivingTime().toLocalTime().isAfter(datetime.toLocalTime()) ||
                             route.getDrivingTime().toLocalTime().equals(datetime.toLocalTime())) {
                         driveRoutes.add(route);
                     }
                 }
-            }
+                break;
         }
         driveRoutes = driveRoutes
                 .stream()
@@ -214,16 +219,16 @@ public class DriveRouteService {
      * Die Methode getNextSingleDriveRouteByUser gibt die nächste Einzelfahrt des Benutzers in der
      * Rolle als Fahrer zurück.
      *
-     * @param user              Benutzer, dessen nächste Fahrt gesucht wird
-     * @return                  Nächste Einzelfahrt des Benutzers
+     * @param user Benutzer, dessen nächste Fahrt gesucht wird
+     * @return Nächste Einzelfahrt des Benutzers
      */
     public Optional<DriveRoute> getNextSingleDriveRouteByUser(User user) {
         List<DriveRoute> outwardTrips = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNull(user).orElse(Collections.emptyList());
 
         outwardTrips = outwardTrips.stream().filter(driveRoute ->
-                driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDateTime.now().toLocalDate()) ||
-                driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
-                driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime()))
+                        driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDateTime.now().toLocalDate()) ||
+                                driveRoute.getDrivingTime().toLocalDate().equals(LocalDateTime.now().toLocalDate()) &&
+                                        driveRoute.getDrivingTime().toLocalTime().isAfter(LocalDateTime.now().toLocalTime()))
                 .collect(Collectors.toList());
 
         outwardTrips.sort(Comparator.comparing(DriveRoute::getDrivingTime));
@@ -235,17 +240,17 @@ public class DriveRouteService {
      * Die Methode getNextRegularDriveRouteByUser gibt die nächste regelmäßige Fahrt des Benutzers in der
      * Rolle als Fahrer zurück.
      *
-     * @param user          Benutzer, dessen nächste Fahrt gesucht wird
-     * @return              Nächste regelmäßige Fahrt des Benutzers
+     * @param user Benutzer, dessen nächste Fahrt gesucht wird
+     * @return Nächste regelmäßige Fahrt des Benutzers
      */
-    public Optional<DriveRoute> getNextRegularDriveRouteByUser(User user){
+    public Optional<DriveRoute> getNextRegularDriveRouteByUser(User user) {
         List<DriveRoute> outwardTrips = repository.findAllByDriverAndRegularDrive_RegularDriveDateEnd_IsNotNull(user).orElse(Collections.emptyList());
 
         outwardTrips = outwardTrips.stream().filter(driveRoute ->
                 driveRoute.getDrivingTime().toLocalDate().equals(LocalDate.now()) &&
-                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||
-                driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDate.now()) &&
-                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now())
+                        driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||
+                        driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDate.now()) &&
+                                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now())
         ).collect(Collectors.toList());
 
         outwardTrips.sort(Comparator.comparing(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay()));

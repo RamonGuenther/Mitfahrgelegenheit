@@ -65,7 +65,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
         formLayoutDriveRoute.removeClickListener();
         formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
 
-        note = new TextArea("Anmerkung");
+        note = new TextArea("Mitteilung an die Mitfahrer (optional)");
         note.setReadOnly(true);
         note.setValue(driveRoute.getNote());
         note.setId("own-drive-offers-edit-dialog-note");
@@ -80,7 +80,7 @@ public class OwnDriveOffersEditDialog extends Dialog {
             pending.getStyle().set("cursor", "pointer");
             pending.addClickListener(e -> {
                 UI.getCurrent().navigate(ProfileView.class,
-                        new RouteParameters(new RouteParam("username", booking.getPassenger().getUsername())));
+                        new RouteParameters(new RouteParam("username", booking.getPassenger().getId().toString())));
                 close();
             });
             passengerBadgeLayout.add(pending);

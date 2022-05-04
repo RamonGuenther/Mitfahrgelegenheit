@@ -47,20 +47,33 @@ import static de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backen
 @CssImport("/themes/mitfahrgelegenheit/components/form-layout-drive-route.css")
 public class FormLayoutDriveRoute extends FormLayout {
 
-    private final TextFieldAddress address;
-    private final SelectUniversityLocation fhLocation;
-    private final TimePicker driveTime;
-    private final Select<String> carSeatCount;
-    private final DatePicker driveDateStart;
-    private final DatePicker driveDateEnd;
-    private final Checkbox checkboxRegularDrive;
-    private final Button buttonDetourRoute;
-    private final Checkbox checkboxFuelParticipation;
-    private final RadioButtonGroup<String> driveDays;
-    private final H2 title;
-    private final Registration registration;
+    private TextFieldAddress address;
+    private SelectUniversityLocation fhLocation;
+    private TimePicker driveTime;
+    private Select<String> carSeatCount;
+    private DatePicker driveDateStart;
+    private DatePicker driveDateEnd;
+    private Checkbox checkboxRegularDrive;
+    private Button buttonDetourRoute;
+    private Checkbox checkboxFuelParticipation;
+    private RadioButtonGroup<String> driveDays;
+    private H2 title;
+    private Registration registration;
+
+    private DriveRoute driveRoute;
+    private AddressConverter converterStart;
+    private AddressConverter converterZiel;
+
+    public FormLayoutDriveRoute(DriveRoute driveRoute) {
+        createView(driveRoute.getDriveType());
+        this.driveRoute = driveRoute;
+    }
 
     public FormLayoutDriveRoute(DriveType driveType) { //FIXME String als Parameter
+        createView(driveType);
+    }
+
+    private void createView(DriveType driveType) {
 
         title = new H2("Hinfahrt erstellen");
 
@@ -157,22 +170,48 @@ public class FormLayoutDriveRoute extends FormLayout {
 
 
         registration = buttonDetourRoute.addClickListener(e -> {
-            try {
-                if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
-                    AddressConverter converterStart = new AddressConverter(address.getValue());
-                    AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
+            if (driveRoute != null) {
+                try {
+                    if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
+                        if (driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
+                            converterStart = new AddressConverter(driveRoute.getStart().getFullAddressToString());
+                            converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
+                        } else {
+                            converterStart = new AddressConverter(fhLocation.getUniversityLocationAddress());
+                            converterZiel = new AddressConverter(driveRoute.getDestination().getFullAddressToString());
+                        }
 
-                    RouteString routeString = new RouteString(
-                            new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber())),
-                            new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber())),
-                            Collections.emptyList());
+                        RouteString routeString = new RouteString(
+                                new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber())),
+                                new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber())),
+                                Collections.emptyList());
 
-                    UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
-                } else {
-                    NotificationError.show("Bitte Start- und Zieladresse eingeben.");
+                        UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
+                    } else {
+                        NotificationError.show("Bitte Start- und Zieladresse eingeben.");
+                    }
+                } catch (InvalidAddressException ex) {
+                    ex.printStackTrace();
                 }
-            } catch (InvalidAddressException ex) {
-                ex.printStackTrace();
+
+            } else {
+                try {
+                    if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
+                        AddressConverter converterStart = new AddressConverter(address.getValue());
+                        AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
+
+                        RouteString routeString = new RouteString(
+                                new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber())),
+                                new Destination(new Address(converterZiel.getPostalCode(), converterZiel.getPlace(), converterZiel.getStreet(), converterZiel.getNumber())),
+                                Collections.emptyList());
+
+                        UI.getCurrent().getPage().open(routeString.getRoute(), "_blank");
+                    } else {
+                        NotificationError.show("Bitte Start- und Zieladresse eingeben.");
+                    }
+                } catch (InvalidAddressException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }

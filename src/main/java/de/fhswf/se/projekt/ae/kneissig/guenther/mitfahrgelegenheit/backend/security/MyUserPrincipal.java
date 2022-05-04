@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Die Klasse MyUserPrincipal ist dafür da einen Benutzer aus der
@@ -34,7 +35,7 @@ public class MyUserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("USER");
-        return Arrays.asList(authority);
+        return List.of(authority);
     }
 
     @Override

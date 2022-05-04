@@ -66,9 +66,12 @@ public class RatingDialog extends Dialog {
                     role);
 
             switch (role) {
-                case DRIVER -> booking.setRatedByPassenger(true);
-                case PASSENGER -> booking.setRatedByDriver(true);
-
+                case DRIVER:
+                     booking.setRatedByPassenger(true);
+                     break;
+                case PASSENGER:
+                     booking.setRatedByDriver(true);
+                     break;
             }
 
             if (booking.isRatedByDriver() && booking.isRatedByPassenger()) {
