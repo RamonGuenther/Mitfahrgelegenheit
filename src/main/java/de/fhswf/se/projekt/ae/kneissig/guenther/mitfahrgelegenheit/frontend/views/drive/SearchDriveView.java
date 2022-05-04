@@ -106,7 +106,8 @@ public class SearchDriveView extends VerticalLayout {
                                         new RouteParam("fahrtentyp", radioDriveDirection.getValue()),
                                         new RouteParam("fhStandort", fhLocation.getValue()),
                                         new RouteParam("adresse", addressConverter.getPlace()),
-                                        new RouteParam("datum", date.isEmpty() || checkboxRegularDrive.getValue() ? LocalDate.now().toString() : date.getValue().toString()),
+                                        new RouteParam("datum", date.isEmpty() || checkboxRegularDrive.getValue() ?
+                                                LocalDate.now().toString() : date.getValue().toString()),
                                         new RouteParam("uhrzeit", time.getValue().toString()),
                                         new RouteParam("regelmaessig", checkboxRegularDrive.getValue().toString()),
                                         new RouteParam("wochentag", checkboxRegularDrive.getValue() ? dayOfWeek.getValue() : "keinTag")

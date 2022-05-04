@@ -63,9 +63,9 @@ public class DeleteDriveDialog extends Dialog {
         buttonLayout.setId("delete-dialog-button_layout");
 
 
-        VerticalLayout div = new VerticalLayout(header, optionalMessage, checkbox, buttonLayout);
+        VerticalLayout verticalLayout = new VerticalLayout(header, optionalMessage, checkbox, buttonLayout);
 
-        add(div);
+        add(verticalLayout);
 
         checkbox.addValueChangeListener(event -> acceptButton.setEnabled(event.getValue()));
     }

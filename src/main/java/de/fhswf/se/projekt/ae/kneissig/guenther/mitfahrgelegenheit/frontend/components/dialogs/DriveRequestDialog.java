@@ -44,7 +44,9 @@ public class DriveRequestDialog extends Dialog {
 
     private DriveRequest newDriveRequest;
 
-    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService, MailService mailService, DriveRequestService driveRequestService, boolean isUserSearchsRegularDrive, LocalDate singleDriveDate) {
+    public DriveRequestDialog(DriveRoute driveRoute, UserService userService, DriveRouteService driveRouteService,
+                              MailService mailService, DriveRequestService driveRequestService,
+                              boolean isUserSearchsRegularDrive, LocalDate singleDriveDate) {
         setCloseOnEsc(false);
         setCloseOnOutsideClick(false);
 

@@ -86,7 +86,8 @@ public class BookingsView extends VerticalLayout {
         gridBookings.addColumn(booking -> booking.getDriveRoute().getDriveType().equals(DriveType.OUTWARD_TRIP) ?
                 booking.getDriveRoute().getDestination().getFullAddressToString() :
                 booking.getStopover().getFullAddressToString()).setHeader("Nach");
-        gridBookings.addComponentColumn(booking -> new Anchor("/drivetogether/profil/" + booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
+        gridBookings.addComponentColumn(booking -> new Anchor("/drivetogether/profil/" +
+                booking.getDriveRoute().getDriver().getId(), booking.getDriveRoute().getDriver().getFullName())).setHeader("Fahrer");
         gridBookings.addComponentColumn(this::createLeaveDriveButton).setHeader("Weiter mitfahren?");
         gridBookings.getColumns().forEach(col -> col.setAutoWidth(true));
 

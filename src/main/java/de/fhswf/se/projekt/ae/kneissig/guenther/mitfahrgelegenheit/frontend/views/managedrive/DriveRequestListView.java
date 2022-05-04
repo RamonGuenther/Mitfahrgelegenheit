@@ -39,7 +39,8 @@ import java.util.Collections;
 @CssImport("/themes/mitfahrgelegenheit/views/drive-request-list-view.css")
 public class DriveRequestListView extends VerticalLayout {
 
-    DriveRequestListView(DriveRouteService driveRouteService, UserService userService, DriveRequestService driveRequestService, BookingService bookingService) {
+    DriveRequestListView(DriveRouteService driveRouteService, UserService userService,
+                         DriveRequestService driveRequestService, BookingService bookingService) {
         UI.getCurrent().setId(PageId.DRIVE_REQUEST_LIST_VIEW.label);
 
         Div verticalLayout = new Div();
@@ -94,7 +95,8 @@ public class DriveRequestListView extends VerticalLayout {
                 item.getDriveRoute().removeDriveRequest(item);
                 driveRouteService.save(item.getDriveRoute());
                 driveRequestService.delete(item);
-                passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser()).orElse(Collections.emptyList()));
+                passengerGrid.setItems(driveRequestService.findAllDriveRequestsPassenger(userService.getCurrentUser())
+                        .orElse(Collections.emptyList()));
             });
             return showDriveRequestButton;
         }).setHeader("");

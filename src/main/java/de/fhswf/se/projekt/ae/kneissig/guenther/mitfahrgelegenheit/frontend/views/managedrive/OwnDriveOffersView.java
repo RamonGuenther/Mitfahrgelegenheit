@@ -44,7 +44,8 @@ public class OwnDriveOffersView extends VerticalLayout {
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
      */
-    OwnDriveOffersView(DriveRouteService driveRouteService, UserService userService, MailService mailService, DriveRequestService driveRequestService) {
+    OwnDriveOffersView(DriveRouteService driveRouteService, UserService userService, MailService mailService,
+                       DriveRequestService driveRequestService) {
         this.driveRouteService = driveRouteService;
         this.mailService = mailService;
         this.userService = userService;
@@ -70,10 +71,12 @@ public class OwnDriveOffersView extends VerticalLayout {
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        DriveRouteGrid gridOutwardTrip = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService,driveRequestService, false, null);
+        DriveRouteGrid gridOutwardTrip = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService,
+                userService, mailService,driveRequestService, false, null);
         gridOutwardTrip.removeColumnByKey("Fahrer");
         gridOutwardTrip.setId("gridOwnOffersView");
-        DriveRouteGrid gridReturnTrip = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
+        DriveRouteGrid gridReturnTrip = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService,
+                userService, mailService, driveRequestService, false, null);
         gridReturnTrip.removeColumnByKey("Fahrer");
         gridReturnTrip.setId("gridOwnOffersView");
 

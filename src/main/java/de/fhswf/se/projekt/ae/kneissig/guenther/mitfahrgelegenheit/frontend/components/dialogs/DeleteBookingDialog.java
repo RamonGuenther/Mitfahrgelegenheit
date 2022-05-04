@@ -4,6 +4,7 @@ import com.google.maps.errors.ApiException;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -30,6 +31,7 @@ import java.util.List;
  *
  * @author Ramon Günther & Ivonne Kneißig
  */
+@CssImport("/themes/mitfahrgelegenheit/components/delete-dialog.css")
 public class DeleteBookingDialog extends Dialog {
     public DeleteBookingDialog(DriveRouteService driveRouteService, MailService mailService, BookingService bookingService, Booking booking) {
         setCloseOnEsc(false);
@@ -83,10 +85,9 @@ public class DeleteBookingDialog extends Dialog {
         HorizontalLayout buttonLayout = new HorizontalLayout(acceptButton, cancelButton);
         buttonLayout.setId("delete-dialog-button_layout");
 
+        VerticalLayout verticalLayout = new VerticalLayout(header, checkbox, buttonLayout);
 
-        VerticalLayout div = new VerticalLayout(header, checkbox, buttonLayout);
-
-        add(div);
+        add(verticalLayout);
 
         checkbox.addValueChangeListener(event -> acceptButton.setEnabled(event.getValue()));
     }

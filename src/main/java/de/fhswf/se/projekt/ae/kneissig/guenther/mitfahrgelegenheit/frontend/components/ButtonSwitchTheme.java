@@ -29,10 +29,6 @@ public class ButtonSwitchTheme extends Button {
 
     private final Anchor userGuide;
 
-    /**
-     * Der Konstruktor setzt die Attribute des Buttons und
-     * ruft das Event aus.
-     */
     public ButtonSwitchTheme(UserService userService, Anchor userGuide) {
         this.userService = userService;
         this.userGuide = userGuide;

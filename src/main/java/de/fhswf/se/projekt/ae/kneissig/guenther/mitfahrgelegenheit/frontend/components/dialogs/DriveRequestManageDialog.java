@@ -47,7 +47,8 @@ public class DriveRequestManageDialog extends Dialog {
     private final DriveRequest driveRequest;
     private final BookingService bookingService;
 
-    public DriveRequestManageDialog(DriveRequestService driveRequestService, DriveRouteService driveRouteService, DriveRequest driveRequest, BookingService bookingService) {
+    public DriveRequestManageDialog(DriveRequestService driveRequestService, DriveRouteService driveRouteService,
+                                    DriveRequest driveRequest, BookingService bookingService) {
         this.bookingService = bookingService;
         this.driveRequestService = driveRequestService;
         this.driveRouteService = driveRouteService;
@@ -162,7 +163,9 @@ public class DriveRequestManageDialog extends Dialog {
                 }
 
                 GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
-                String result = googleDistanceCalculation.calculate(driveRequest.getDriveRoute().getStart(), driveRequest.getDriveRoute().getDestination(), stopoverList);
+
+                String result = googleDistanceCalculation.calculate(driveRequest.getDriveRoute().getStart(),
+                        driveRequest.getDriveRoute().getDestination(), stopoverList);
 
                 driveRequest.getDriveRoute().setCurrentRouteLink(result);
 

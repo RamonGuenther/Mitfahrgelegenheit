@@ -63,7 +63,8 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
 
         addColumn(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDay() == null ?
                 driveRoute.getFormattedDate() + ", " + driveRoute.getFormattedTime() :
-                driveRoute.getRegularDrive().getRegularDriveDay().label + "s, " + driveRoute.getDrivingTime().toLocalTime().toString() + " Uhr").setHeader(zeitpunkt);
+                driveRoute.getRegularDrive().getRegularDriveDay().label + "s, " +
+                        driveRoute.getDrivingTime().toLocalTime().toString() + " Uhr").setHeader(zeitpunkt);
 
         addColumn(DriveRoute::getSeatCount).setHeader("Sitzplätze");
 
@@ -89,15 +90,29 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
             if (UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
                 OwnDriveOffersEditDialog ownDriveOffersEditDialog = new OwnDriveOffersEditDialog(driveRoute, driveRouteService, mailService);
             } else if (UI.getCurrent().getId().get().equals(PageId.SEARCH_DRIVE_RESULT_VIEW.label)) {
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, isUserSearchsRegularDrive, singleDriveDate);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(
+                        driveRoute,
+                        userService,
+                        driveRouteService,
+                        mailService,
+                        driveRequestService,
+                        isUserSearchsRegularDrive,
+                        singleDriveDate
+                );
             } else if (UI.getCurrent().getId().get().equals(PageId.PROFILE.label)) {
-                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(driveRoute, userService, driveRouteService, mailService, driveRequestService, isUserSearchsRegularDrive, singleDriveDate);
+                SearchDriveResultViewDialog searchDriveResultViewDialog = new SearchDriveResultViewDialog(
+                        driveRoute,
+                        userService,
+                        driveRouteService,
+                        mailService,
+                        driveRequestService,
+                        isUserSearchsRegularDrive,
+                        singleDriveDate
+                );
             } else {
                 throw new IllegalArgumentException("Fehler in " + getClass().getSimpleName() + "lol");
             }
-
         });
-
         return button;
     }
 }

@@ -132,13 +132,14 @@ public class MainLayout extends AppLayout implements PageConfigurator {
 
         MenuItem userGuide = usersSubMenu.addItem("");
 
-        StreamResource res = new StreamResource("UserGuide_Laborordnung.pdf", () -> MainLayout.class.getClassLoader().getResourceAsStream("manuals/UserGuide.pdf"));
-        Anchor anchorUserManual = new Anchor();
-        anchorUserManual.setId("anchor_user_guide_light");
-        anchorUserManual.setHref(res);
-        anchorUserManual.setTarget("_blank");
-        anchorUserManual.setText("Bedienungsanleitung");
-        userGuide.add(anchorUserManual);
+        StreamResource res = new StreamResource("UserGuide_Laborordnung.pdf",
+                () -> MainLayout.class.getClassLoader().getResourceAsStream("manuals/UserGuide.pdf"));
+        Anchor anchorUserGuide = new Anchor();
+        anchorUserGuide.setId("anchor_user_guide_light");
+        anchorUserGuide.setHref(res);
+        anchorUserGuide.setTarget("_blank");
+        anchorUserGuide.setText("Bedienungsanleitung");
+        userGuide.add(anchorUserGuide);
 
         MenuItem privacy = usersSubMenu.addItem("Datenschutzerklärung");
         privacy.addClickListener(e->{
@@ -152,7 +153,7 @@ public class MainLayout extends AppLayout implements PageConfigurator {
         logout.addClickListener(e -> UI.getCurrent().getPage().setLocation("/drivetogether/logout"));
 
         //Button für dunkel/hellen Modus
-        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme(userService, anchorUserManual);
+        ButtonSwitchTheme themeChangeButton = new ButtonSwitchTheme(userService, anchorUserGuide);
 
         HorizontalLayout header = new HorizontalLayout();
         header.add(logoFH, menuBar, themeChangeButton);

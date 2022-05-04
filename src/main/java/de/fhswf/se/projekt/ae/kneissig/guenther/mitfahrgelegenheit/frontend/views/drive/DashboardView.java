@@ -267,7 +267,9 @@ public class DashboardView extends VerticalLayout {
         bookingService.getNextRegularDriveBookingByPassenger(userService.getCurrentUser()).ifPresent(passengerRoute -> this.passengerRegularRoute = passengerRoute);
 
         if (passengerRegularRoute != null) {
-            passengerViewDateValue.setText(passengerRegularRoute.getDriveRoute().getRegularDrive().getRegularDriveDay().label + ", " + passengerRegularRoute.getDriveRoute().getFormattedTime());
+            passengerViewDateValue.setText(passengerRegularRoute.getDriveRoute().getRegularDrive().getRegularDriveDay().label +
+                    ", " + passengerRegularRoute.getDriveRoute().getFormattedTime());
+
             setPassengerValues(passengerRegularRoute);
         }
         else{

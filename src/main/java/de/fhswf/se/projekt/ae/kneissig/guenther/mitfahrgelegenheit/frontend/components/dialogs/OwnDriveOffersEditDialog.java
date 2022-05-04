@@ -50,9 +50,6 @@ public class OwnDriveOffersEditDialog extends Dialog {
     private final TextArea note;
     private final DriveRoute driveRoute;
     private final FormLayoutDriveRoute formLayoutDriveRoute;
-    private Address firstAddress;
-    private Address secondAddress;
-    private AddressConverter converter;
 
     public OwnDriveOffersEditDialog(DriveRoute driveRoute, DriveRouteService driveRouteService, MailService mailService) {
         setCloseOnOutsideClick(false);
@@ -72,7 +69,10 @@ public class OwnDriveOffersEditDialog extends Dialog {
         formLayoutDriveRoute.setData(driveRoute);
         formLayoutDriveRoute.setReadOnly(true);
         formLayoutDriveRoute.removeClickListener();
-        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent().getPage().open(driveRoute.getCurrentRouteLink(), "_blank"));
+        formLayoutDriveRoute.getButtonDetourRoute().addClickListener(e -> UI.getCurrent()
+                .getPage()
+                .open(driveRoute.getCurrentRouteLink(), "_blank")
+        );
 
         note = new TextArea("Mitteilung an die Mitfahrer (optional)");
         note.setReadOnly(true);
@@ -204,21 +204,21 @@ public class OwnDriveOffersEditDialog extends Dialog {
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, boolean fuelParticipation,
                            Integer carSeatCount, LocalDate driveDate, String note) {
         try {
+            Address firstAddress;
+            Address secondAddress;
+            AddressConverter converter;
+
             if(driveRoute.getDriveType().equals(DriveType.OUTWARD_TRIP)) {
                 converter = new AddressConverter(address);
                 firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
-
                 converter = new AddressConverter(fhLocation);
-                secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
             }
             else {
                 converter = new AddressConverter(fhLocation);
                 firstAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
-
                 converter = new AddressConverter(address);
-                secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
             }
-
+            secondAddress = new Address(converter.getPostalCode(), converter.getPlace(), converter.getStreet(), converter.getNumber());
 
             User user = driveRoute.getDriver();
 
@@ -235,7 +235,6 @@ public class OwnDriveOffersEditDialog extends Dialog {
                     note
             );
 
-
             if (formLayoutDriveRoute.getCheckboxRegularDriveValue()) {
                 updateDriveRoute.setRegularDrive(new RegularDrive(
                         DayOfWeek.getDayOfWeek(formLayoutDriveRoute.getDriveDays()),
@@ -243,7 +242,6 @@ public class OwnDriveOffersEditDialog extends Dialog {
                         formLayoutDriveRoute.getDriveDateEndValue())
                 );
             }
-
 
             driveRouteService.save(updateDriveRoute);
 

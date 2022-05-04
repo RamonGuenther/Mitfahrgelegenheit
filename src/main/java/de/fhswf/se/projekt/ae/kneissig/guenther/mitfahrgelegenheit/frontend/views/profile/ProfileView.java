@@ -165,10 +165,12 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
         radioButtonGroup.setItems("Hinfahrt", "Rückfahrt");
         radioButtonGroup.setValue("Hinfahrt");
 
-        DriveRouteGrid gridOutward = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService, userService, mailService, driveRequestService, false, null);
+        DriveRouteGrid gridOutward = new DriveRouteGrid("Ankunftszeit", driveListTo, driveRouteService,
+                userService, mailService, driveRequestService, false, null);
         gridOutward.removeColumnByKey("Fahrer");
         gridOutward.addClassName("profilegrid");
-        DriveRouteGrid gridReturn = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService, userService, mailService, driveRequestService, false, null);
+        DriveRouteGrid gridReturn = new DriveRouteGrid("Abfahrtzeit", driveListBack, driveRouteService,
+                userService, mailService, driveRequestService, false, null);
         gridReturn.removeColumnByKey("Fahrer");
         gridReturn.addClassName("profilegrid");
         Div div = new Div(labelProfileGrid, radioButtonGroup, gridOutward);

@@ -83,7 +83,8 @@ public class SearchDriveResultView extends VerticalLayout implements BeforeEnter
         div.setId("search-drive-result-view-content-div");
 
         H1 title = new H1(TITEL_GRID);
-        DriveRouteGrid grid = new DriveRouteGrid("Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService, isUserSearchsRegularDrive,
+        DriveRouteGrid grid = new DriveRouteGrid(
+                "Ankunftszeit", driveList, driveRouteService, userService, mailService, driveRequestService, isUserSearchsRegularDrive,
                 LocalDate.of(
                         Integer.parseInt(date.substring(0, 4)),
                         date.substring(5, 6).contains("0") ? Integer.parseInt(date.substring(6, 7)) : Integer.parseInt(date.substring(5, 7)),
