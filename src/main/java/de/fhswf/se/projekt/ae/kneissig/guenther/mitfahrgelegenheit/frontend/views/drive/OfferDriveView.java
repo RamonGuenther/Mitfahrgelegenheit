@@ -137,9 +137,11 @@ public class OfferDriveView extends VerticalLayout {
                     formLayoutOutwardTrip = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                     formLayoutOutwardTrip.setFhLocation(user.getUniversityLocation());
                     formLayoutOutwardTrip.getDriveDateStart().setMin(LocalDate.now());
+                    formLayoutOutwardTrip.setAddress(user.getAddress().toString());
                     formLayoutReturnTrip = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                     formLayoutReturnTrip.setFhLocation(user.getUniversityLocation());
                     formLayoutReturnTrip.getDriveDateStart().setMin(LocalDate.now());
+                    formLayoutReturnTrip.setAddress(user.getAddress().toString());
                     div.removeAll();
                     div.add(title, layoutOption, formLayoutOutwardTrip, formLayoutReturnTrip, buttonLayout);
                     break;
