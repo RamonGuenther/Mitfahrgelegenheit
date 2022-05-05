@@ -50,8 +50,8 @@ public class GoogleAddressAutocomplete implements GoogleApiKey{
                 .strictBounds(true)
                 .await();
 
-        for (AutocompletePrediction s : results) {
-            PlaceDetails placeDetails = PlacesApi.placeDetails(context, s.placeId, token).language("DE").await();
+        for (AutocompletePrediction prediction : results) {
+            PlaceDetails placeDetails = PlacesApi.placeDetails(context, prediction.placeId, token).language("DE").await();
             newPredictions.add(placeDetails.formattedAddress);
         }
 

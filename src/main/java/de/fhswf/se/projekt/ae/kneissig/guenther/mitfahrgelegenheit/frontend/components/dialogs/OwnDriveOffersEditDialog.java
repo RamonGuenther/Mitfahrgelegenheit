@@ -158,7 +158,8 @@ public class OwnDriveOffersEditDialog extends Dialog {
     }
 
     /**
-     * Die Methode saveFormLayoutTop speichert eine Hinfahrt.
+     * Die Methode saveFormLayout überprüft die Eingabefelder auf ihre Gültigkeit
+     * und ruft im Erfolgsfall die Methode saveDrive auf.
      */
     private void saveFormLayout() {
         try {

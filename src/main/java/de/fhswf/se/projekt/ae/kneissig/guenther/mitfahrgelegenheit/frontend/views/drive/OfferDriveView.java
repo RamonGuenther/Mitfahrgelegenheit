@@ -51,14 +51,13 @@ public class OfferDriveView extends VerticalLayout {
 
     private final DriveRouteService driveRouteService;
     private final UserService userService;
-    private FormLayoutDriveRoute formlayoutDriveRouteTop;
-    private FormLayoutDriveRoute formLayoutDriveRouteBottom;
+    private FormLayoutDriveRoute formLayoutOutwardTrip;
+    private FormLayoutDriveRoute formLayoutReturnTrip;
     private RadioButtonGroup<String> layoutOption;
     private Button createButton;
 
     /**
-     * Der Konstruktor ist für das Erstellen der View und den zugehörigen
-     * Listener zuständig.
+     * Der Konstruktor ist für das Erstellen der View zuständig.
      */
     public OfferDriveView(DriveRouteService driveRouteService, UserService userService) {
         UI.getCurrent().setId(PageId.OFFER_DRIVE_VIEW.label);
@@ -74,21 +73,21 @@ public class OfferDriveView extends VerticalLayout {
 
             switch (layoutOption.getValue()) {
                 case "Hinfahrt":
-                    saveFormLayoutTop();
+                    saveOutwardTrip();
                     break;
                 case "Rückfahrt":
-                    saveFormLayoutBottom();
+                    saveReturnTrip();
                     break;
                 case "Hin- & Rückfahrt":
-                    saveFormLayoutTop();
-                    saveFormLayoutBottom();
+                    saveOutwardTrip();
+                    saveReturnTrip();
                     break;
             }
         });
     }
 
     /**
-     * In der Methode createOfferDriveView werden die Komponenten #
+     * In der Methode createOfferDriveView werden die Komponenten
      * für das Layout, hinzugefügt.
      */
     private void createOfferDriveView() {
@@ -99,8 +98,8 @@ public class OfferDriveView extends VerticalLayout {
 
         H1 title = new H1("Fahrt anbieten");
 
-        formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-        formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+        formLayoutOutwardTrip = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+        formLayoutReturnTrip = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
 
         layoutOption = new RadioButtonGroup<>();
         layoutOption.setItems("Hinfahrt", "Rückfahrt", "Hin- & Rückfahrt");
@@ -119,30 +118,30 @@ public class OfferDriveView extends VerticalLayout {
         layoutOption.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt":
-                    formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formlayoutDriveRouteTop.getDriveDateStart().setMin(LocalDate.now());
-                    formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
-                    formlayoutDriveRouteTop.setAddress(user.getAddress().toString());
+                    formLayoutOutwardTrip = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formLayoutOutwardTrip.getDriveDateStart().setMin(LocalDate.now());
+                    formLayoutOutwardTrip.setFhLocation(user.getUniversityLocation());
+                    formLayoutOutwardTrip.setAddress(user.getAddress().toString());
                     div.removeAll();
-                    div.add(title, layoutOption, formlayoutDriveRouteTop, buttonLayout);
+                    div.add(title, layoutOption, formLayoutOutwardTrip, buttonLayout);
                     break;
                 case "Rückfahrt":
-                    formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                    formLayoutDriveRouteBottom.getDriveDateStart().setMin(LocalDate.now());
-                    formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
-                    formLayoutDriveRouteBottom.setAddress(user.getAddress().toString());
+                    formLayoutReturnTrip = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutReturnTrip.getDriveDateStart().setMin(LocalDate.now());
+                    formLayoutReturnTrip.setFhLocation(user.getUniversityLocation());
+                    formLayoutReturnTrip.setAddress(user.getAddress().toString());
                     div.removeAll();
-                    div.add(title, layoutOption, formLayoutDriveRouteBottom, buttonLayout);
+                    div.add(title, layoutOption, formLayoutReturnTrip, buttonLayout);
                     break;
                 case "Hin- & Rückfahrt":
-                    formlayoutDriveRouteTop = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formlayoutDriveRouteTop.setFhLocation(user.getUniversityLocation());
-                    formlayoutDriveRouteTop.getDriveDateStart().setMin(LocalDate.now());
-                    formLayoutDriveRouteBottom = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                    formLayoutDriveRouteBottom.setFhLocation(user.getUniversityLocation());
-                    formLayoutDriveRouteBottom.getDriveDateStart().setMin(LocalDate.now());
+                    formLayoutOutwardTrip = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
+                    formLayoutOutwardTrip.setFhLocation(user.getUniversityLocation());
+                    formLayoutOutwardTrip.getDriveDateStart().setMin(LocalDate.now());
+                    formLayoutReturnTrip = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
+                    formLayoutReturnTrip.setFhLocation(user.getUniversityLocation());
+                    formLayoutReturnTrip.getDriveDateStart().setMin(LocalDate.now());
                     div.removeAll();
-                    div.add(title, layoutOption, formlayoutDriveRouteTop, formLayoutDriveRouteBottom, buttonLayout);
+                    div.add(title, layoutOption, formLayoutOutwardTrip, formLayoutReturnTrip, buttonLayout);
                     break;
             }
         });
@@ -153,32 +152,33 @@ public class OfferDriveView extends VerticalLayout {
     }
 
     /**
-     * Die Methode saveFormLayoutTop speichert eine vom Benutzer erstellte Hinfahrt.
-     * Sie wird in der Methode saveDrive verwendet.
+     * Die Methode saveOutwardTrip überprüft die Eingabefelder auf ihre Gültigkeit
+     * und ruft im Erfolgsfall die Methode saveDrive auf. Wird verwendet, um eine Hinfahrt
+     * zu speichern.
      */
-    private void saveFormLayoutTop() {
+    private void saveOutwardTrip() {
         try {
-            if (formlayoutDriveRouteTop.checkInputFields()) {
+            if (formLayoutOutwardTrip.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveDrive(formlayoutDriveRouteTop.getAddressValue(), formlayoutDriveRouteTop.getFhLocation(),
-                    formlayoutDriveRouteTop.getDriveTime(), formlayoutDriveRouteTop.getCheckboxFuelParticipation(),
-                    formlayoutDriveRouteTop.getCarSeatCount(), DriveType.OUTWARD_TRIP,
-                    formlayoutDriveRouteTop.getDriveDateStartValue());
+            saveDrive(formLayoutOutwardTrip.getAddressValue(), formLayoutOutwardTrip.getFhLocation(),
+                    formLayoutOutwardTrip.getDriveTime(), formLayoutOutwardTrip.getCheckboxFuelParticipation(),
+                    formLayoutOutwardTrip.getCarSeatCount(), DriveType.OUTWARD_TRIP,
+                    formLayoutOutwardTrip.getDriveDateStartValue());
 
-            formlayoutDriveRouteTop.clearFields();
-            formlayoutDriveRouteTop.setInvalid(false);
+            formLayoutOutwardTrip.clearFields();
+            formLayoutOutwardTrip.setInvalid(false);
         } catch (InvalidAddressException ex) {
-            formlayoutDriveRouteTop.getAddress().setErrorMessage(ex.getMessage());
-            formlayoutDriveRouteTop.getAddress().setInvalid(true);
+            formLayoutOutwardTrip.getAddress().setErrorMessage(ex.getMessage());
+            formLayoutOutwardTrip.getAddress().setInvalid(true);
             ex.printStackTrace();
         } catch (InvalidRegularDrivePeriod ex) {
-            formlayoutDriveRouteTop.getDriveDateStart().setInvalid(true);
-            formlayoutDriveRouteTop.getDriveDateStart().setErrorMessage(ex.getMessage());
-            formlayoutDriveRouteTop.getDriveDateEnd().setInvalid(true);
-            formlayoutDriveRouteTop.getDriveDateEnd().setErrorMessage(ex.getMessage());
+            formLayoutOutwardTrip.getDriveDateStart().setInvalid(true);
+            formLayoutOutwardTrip.getDriveDateStart().setErrorMessage(ex.getMessage());
+            formLayoutOutwardTrip.getDriveDateEnd().setInvalid(true);
+            formLayoutOutwardTrip.getDriveDateEnd().setErrorMessage(ex.getMessage());
             ex.printStackTrace();
         } catch (InvalidDateException ex) {
             ex.printStackTrace();
@@ -186,32 +186,33 @@ public class OfferDriveView extends VerticalLayout {
     }
 
     /**
-     * Die Methode saveFormLayoutBottom speichert eine vom Benutzer erstellte Rückfahrt.
-     * Sie wird in der Methode saveDrive verwendet.
+     * Die Methode saveReturnTrip überprüft die Eingabefelder auf ihre Gültigkeit
+     * und ruft im Erfolgsfall die Methode saveDrive auf. Wird verwendet, um eine Rückfahrt
+     * zu speichern.
      */
-    private void saveFormLayoutBottom() {
+    private void saveReturnTrip() {
         try {
-            if (formLayoutDriveRouteBottom.checkInputFields()) {
+            if (formLayoutReturnTrip.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
                 return;
             }
 
-            saveDrive(formLayoutDriveRouteBottom.getFhLocation(), formLayoutDriveRouteBottom.getAddressValue(),
-                    formLayoutDriveRouteBottom.getDriveTime(), formLayoutDriveRouteBottom.getCheckboxFuelParticipation(),
-                    formLayoutDriveRouteBottom.getCarSeatCount(), DriveType.RETURN_TRIP,
-                    formLayoutDriveRouteBottom.getDriveDateStartValue());
+            saveDrive(formLayoutReturnTrip.getFhLocation(), formLayoutReturnTrip.getAddressValue(),
+                    formLayoutReturnTrip.getDriveTime(), formLayoutReturnTrip.getCheckboxFuelParticipation(),
+                    formLayoutReturnTrip.getCarSeatCount(), DriveType.RETURN_TRIP,
+                    formLayoutReturnTrip.getDriveDateStartValue());
 
-            formLayoutDriveRouteBottom.clearFields();
-            formLayoutDriveRouteBottom.setInvalid(false);
+            formLayoutReturnTrip.clearFields();
+            formLayoutReturnTrip.setInvalid(false);
         } catch (InvalidAddressException ex) {
-            formLayoutDriveRouteBottom.getAddress().setErrorMessage(ex.getMessage());
-            formLayoutDriveRouteBottom.getAddress().setInvalid(true);
+            formLayoutReturnTrip.getAddress().setErrorMessage(ex.getMessage());
+            formLayoutReturnTrip.getAddress().setInvalid(true);
             ex.printStackTrace();
         } catch (InvalidRegularDrivePeriod ex) {
-            formLayoutDriveRouteBottom.getDriveDateStart().setInvalid(true);
-            formLayoutDriveRouteBottom.getDriveDateStart().setErrorMessage(ex.getMessage());
-            formLayoutDriveRouteBottom.getDriveDateEnd().setInvalid(true);
-            formLayoutDriveRouteBottom.getDriveDateEnd().setErrorMessage(ex.getMessage());
+            formLayoutReturnTrip.getDriveDateStart().setInvalid(true);
+            formLayoutReturnTrip.getDriveDateStart().setErrorMessage(ex.getMessage());
+            formLayoutReturnTrip.getDriveDateEnd().setInvalid(true);
+            formLayoutReturnTrip.getDriveDateEnd().setErrorMessage(ex.getMessage());
             ex.printStackTrace();
         } catch (InvalidDateException ex) {
             ex.printStackTrace();
@@ -251,19 +252,19 @@ public class OfferDriveView extends VerticalLayout {
             );
 
             if (fahrtenTyp.equals(DriveType.OUTWARD_TRIP)) {
-                if (formlayoutDriveRouteTop.getCheckboxRegularDriveValue()) {
+                if (formLayoutOutwardTrip.getCheckboxRegularDriveValue()) {
                     newDriveRoute.setRegularDrive(new RegularDrive(
-                            DayOfWeek.getDayOfWeek(formlayoutDriveRouteTop.getDriveDays()),
-                            formlayoutDriveRouteTop.getDriveDateStartValue(),
-                            formlayoutDriveRouteTop.getDriveDateEndValue())
+                            DayOfWeek.getDayOfWeek(formLayoutOutwardTrip.getDriveDays()),
+                            formLayoutOutwardTrip.getDriveDateStartValue(),
+                            formLayoutOutwardTrip.getDriveDateEndValue())
                     );
                 }
             } else {
-                if (formLayoutDriveRouteBottom.getCheckboxRegularDriveValue()) {
+                if (formLayoutReturnTrip.getCheckboxRegularDriveValue()) {
                     newDriveRoute.setRegularDrive(new RegularDrive(
-                            DayOfWeek.getDayOfWeek(formLayoutDriveRouteBottom.getDriveDays()),
-                            formLayoutDriveRouteBottom.getDriveDateStartValue(),
-                            formLayoutDriveRouteBottom.getDriveDateEndValue())
+                            DayOfWeek.getDayOfWeek(formLayoutReturnTrip.getDriveDays()),
+                            formLayoutReturnTrip.getDriveDateStartValue(),
+                            formLayoutReturnTrip.getDriveDateEndValue())
                     );
                 }
             }

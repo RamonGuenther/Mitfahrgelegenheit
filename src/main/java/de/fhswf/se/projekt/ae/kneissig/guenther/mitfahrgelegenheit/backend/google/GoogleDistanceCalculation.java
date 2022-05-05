@@ -41,7 +41,7 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
      * @throws IOException             -
      * @throws InterruptedException    -
      * @throws ApiException            -
-     * @throws InvalidAddressException -
+     * @throws InvalidAddressException ungültige Adresse
      */
     public String calculate(Start start, Destination destination, List<Stopover> stopoverList) throws IOException, InterruptedException, ApiException, InvalidAddressException {
 

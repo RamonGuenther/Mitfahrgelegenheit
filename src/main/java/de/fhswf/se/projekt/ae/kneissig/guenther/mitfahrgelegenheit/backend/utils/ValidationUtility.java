@@ -43,8 +43,8 @@ public class ValidationUtility {
     /**
      * Prüft, ob die eingebende Adresse dem gewünschten Format entspricht.
      *
-     * @param address EIngabe des Benutzers
-     * @throws InvalidAddressException Wenn es dem Pattern nicht entspricht
+     * @param address Eingabe des Benutzers
+     * @throws InvalidAddressException Ungültige Adresse
      */
     public static void addressPatternCheck(String address) throws InvalidAddressException {
         address = address.replace(", Deutschland", "");
@@ -60,7 +60,7 @@ public class ValidationUtility {
      * Prüft, ob das eingebende Datum in der Vergangenheit liegt.
      *
      * @param input Eingabe des Benutzers
-     * @throws InvalidDateException Wenn das Datum in der Vergangenheit liegt
+     * @throws InvalidDateException Ungültiges Datum, wenn es in der Vergangenheit liegt
      */
     public static void localDateCheck(LocalDate input) throws InvalidDateException {
         if(input.isBefore(LocalDate.now())){
@@ -72,7 +72,7 @@ public class ValidationUtility {
      * Prüft, ob das eingebende Datum in der Vergangenheit liegt.
      *
      * @param input Eingabe des Benutzers
-     * @return boolean
+     * @return boolean, ob es in der Vergangenheit liegt
      */
     public static boolean localDateCheckBoolean(LocalDate input){
         return input.isBefore(LocalDate.now());
@@ -82,7 +82,7 @@ public class ValidationUtility {
      * Prüft, ob die eingebende Mail dem gewünschten Format entspricht.
      *
      * @param email Eingabe des Benutzers
-     * @throws InvalidMailException Wenn es dem Pattern nicht entspricht
+     * @throws InvalidMailException Ungültige Email
      */
     public static void emailPatternCheck(String email) throws InvalidMailException {
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
@@ -96,7 +96,7 @@ public class ValidationUtility {
      * Prüft, ob das eingebende Passwort dem gewünschten Format entspricht.
      *
      * @param password Eingabe des Benutzers
-     * @throws InvalidPasswordException Wenn es dem Pattern nicht entspricht
+     * @throws InvalidPasswordException Ungültiges Passwort
      */
     public static void passwordPatternCheck(String password) throws InvalidPasswordException {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
