@@ -308,7 +308,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteI4);
 
 
-        RegularDrive regularDriveI5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveI5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022, 4, 1), LocalDate.of(2022, 8, 30));
 
         start = new Start(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
         destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
@@ -329,7 +329,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteI5);
 
 
-        RegularDrive regularDriveI6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveI6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022, 4, 1), LocalDate.of(2022, 8, 30));
 
         start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("58089", "Hagen", "Diesterwegstraße", "6"));
@@ -428,8 +428,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM4);
 
 
-
-        RegularDrive regularDriveM5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveM5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022, 4, 1), LocalDate.of(2022, 8, 30));
 
         start = new Start(new Address("45145", "Essen", "Am Alfredspark", "7"));
         destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
@@ -450,7 +449,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteM5);
 
 
-        RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveM6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022, 4, 1), LocalDate.of(2022, 8, 30));
 
         start = new Start(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
         destination = new Destination(new Address("45145", "Essen", "Am Alfredspark", "7"));
@@ -548,7 +547,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteS4);
 
 
-        RegularDrive regularDriveS5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveS5 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022, 4, 1), LocalDate.of(2022, 8, 30));
 
         start = new Start(new Address("58840", "Plettenberg", "Eschener Weg", "45"));
         destination = new Destination(new Address("58095", "Hagen", "Haldener Str.", "128"));
@@ -569,7 +568,7 @@ public class TestDataInit {
         driveRouteService.save(driveRouteS5);
 
 
-        RegularDrive regularDriveS6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022,4,1), LocalDate.of(2022,8, 30));
+        RegularDrive regularDriveS6 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022, 4, 1), LocalDate.of(2022, 8, 30));
 
         start = new Start(new Address("58095", "Hagen", "Haldener Str.", "128"));
         destination = new Destination(new Address("58840", "Plettenberg", "Eschener Weg", "45"));
@@ -591,12 +590,12 @@ public class TestDataInit {
 
 
         /*-------------------------------------------------------------------------------------------------------------
-                                                      Bewertungen
+                                                      Bewertungen - Ramon
         -------------------------------------------------------------------------------------------------------------*/
 
-        Rating rating = new Rating(4, 5);
-
         UserRating userRating = new UserRating();
+
+        Rating rating = new Rating(4, 5);
 
         userRating.addDriverRating(rating);
 
@@ -612,9 +611,74 @@ public class TestDataInit {
 
         userService.save(ramon);
 
+
         /*-------------------------------------------------------------------------------------------------------------
-                                                      Fahrtanfragen
+                                                      Bewertungen - Ivonne
         -------------------------------------------------------------------------------------------------------------*/
+
+
+        userRating = new UserRating();
+
+        rating = new Rating(5, 5);
+
+        userRating.addDriverRating(rating);
+
+        rating = new Rating(5, 5);
+        userRating.addDriverRating(rating);
+
+        rating = new Rating(1, 1);
+        userRating.addDriverRating(rating);
+
+        userRating.addDriverRating(rating);
+
+        ivonne.setUserRating(userRating);
+
+        userService.save(ivonne);
+
+        /*-------------------------------------------------------------------------------------------------------------
+                                                      Bewertungen - Alina
+        -------------------------------------------------------------------------------------------------------------*/
+
+        userRating = new UserRating();
+
+        rating = new Rating(3, 5);
+
+        userRating.addDriverRating(rating);
+
+        rating = new Rating(5, 2);
+        userRating.addDriverRating(rating);
+
+        rating = new Rating(1, 1);
+        userRating.addDriverRating(rating);
+
+        userRating.addDriverRating(rating);
+
+        alina.setUserRating(userRating);
+
+        userService.save(alina);
+
+        /*-------------------------------------------------------------------------------------------------------------
+                                                      Bewertungen - Rolf
+        -------------------------------------------------------------------------------------------------------------*/
+
+        userRating = new UserRating();
+
+        rating = new Rating(3, 1);
+
+        userRating.addDriverRating(rating);
+
+        rating = new Rating(4, 2);
+        userRating.addDriverRating(rating);
+
+        rating = new Rating(4, 3);
+        userRating.addDriverRating(rating);
+
+        userRating.addDriverRating(rating);
+
+        rolf.setUserRating(userRating);
+
+        userService.save(rolf);
+
 
         /*-------------------------------------------------------------------------------------------------------------
                                                   Fahrtanfragen an Ramon
