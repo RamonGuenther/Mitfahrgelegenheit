@@ -3,8 +3,11 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.*;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DayOfWeek;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.RequestState;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.*;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateBookingException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.DuplicateRequestException;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -39,9 +42,12 @@ public class TestDataInit {
     @Autowired
     private DriveRequestService driveRequestService;
 
+    @Autowired
+    private BookingService bookingService;
+
 
     @PostConstruct
-    public void createUser() throws DuplicateRequestException {
+    public void createUser() throws DuplicateRequestException, DuplicateBookingException {
 
         /*-------------------------------------------------------------------------------------------------------------
                                                        User
@@ -113,7 +119,7 @@ public class TestDataInit {
         userService.save(rolf);
 
 
-        User emptyUser = new User(
+        User max = new User(
                 5L,
                 "mamus001",
                 passwordEncoder.encode("1234"),
@@ -128,7 +134,7 @@ public class TestDataInit {
                 false
         );
 
-        userService.save(emptyUser);
+        userService.save(max);
 
 
 
@@ -168,7 +174,7 @@ public class TestDataInit {
         DriveRoute driveRouteR2 = new DriveRoute(
                 start,
                 destination,
-                LocalDateTime.of(2022, 7, 1, 17, 0),
+                LocalDateTime.of(2022, 5, 1, 17, 0),
                 false,
                 4,
                 ramon,
@@ -228,6 +234,27 @@ public class TestDataInit {
         );
 
         driveRouteService.save(driveRouteR4);
+
+
+        RegularDrive regularDriveR1 = new RegularDrive(DayOfWeek.MONDAY, LocalDate.of(2022, 5, 1), LocalDate.of(2022, 8, 30));
+
+        start = new Start(new Address("58636", "Iserlohn", "Sundernallee", "75"));
+        destination = new Destination(new Address("58644", "Iserlohn", "Frauenstuhlweg", "31"));
+
+        DriveRoute driveRouteR5 = new DriveRoute(
+                start,
+                destination,
+                LocalDateTime.of(2022, 5, 1, 14, 0),
+                true,
+                1,
+                ivonne,
+                DriveType.OUTWARD_TRIP,
+                routeString.getRoute()
+        );
+
+        driveRouteR5.setRegularDrive(regularDriveR1);
+
+        driveRouteService.save(driveRouteR5);
 
 
        /*-------------------------------------------------------------------------------------------------------------
@@ -721,7 +748,34 @@ public class TestDataInit {
         driveRouteR1.addDriveRequest(driveRequest);
         driveRequestService.save(driveRequest);
         driveRouteService.save(driveRouteR1);
-    }
 
+
+        //Fahrtanfrage
+
+        driveRequest = new DriveRequest(
+                driveRouteR2,
+                max,
+                "",
+                "",
+                new Stopover(new Address("58636", "Iserlohn", "Zur Sonnenhöhe", "102"))
+        );
+
+        driveRouteR2.addDriveRequest(driveRequest);
+        driveRequestService.save(driveRequest);
+        driveRouteService.save(driveRouteR2);
+
+        //Buchung
+
+        driveRequest.setRequestState(RequestState.ACCEPTED);
+        driveRequestService.save(driveRequest);
+        Booking newBooking = new Booking(driveRequest.getDriveRoute(), driveRequest.getPassenger(), driveRequest.getStopover());
+        bookingService.save(newBooking);
+        driveRequest.getDriveRoute().addBooking(newBooking);
+        driveRouteService.save(driveRequest.getDriveRoute());
+
+
+    }
 }
+
+
 
