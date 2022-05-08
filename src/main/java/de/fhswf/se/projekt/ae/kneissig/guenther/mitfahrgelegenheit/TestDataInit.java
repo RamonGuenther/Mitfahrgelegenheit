@@ -247,7 +247,7 @@ public class TestDataInit {
                 LocalDateTime.of(2022, 5, 1, 14, 0),
                 true,
                 1,
-                ivonne,
+                ramon,
                 DriveType.OUTWARD_TRIP,
                 routeString.getRoute()
         );
