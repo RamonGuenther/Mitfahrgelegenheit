@@ -54,7 +54,9 @@ public class OfferDriveView extends VerticalLayout {
     private FormLayoutDriveRoute formLayoutOutwardTrip;
     private FormLayoutDriveRoute formLayoutReturnTrip;
     private RadioButtonGroup<String> layoutOption;
-    private Button createButton;
+    private Button saveButton;
+    private HorizontalLayout buttonLayout;
+    private Div layout;
 
     /**
      * Der Konstruktor ist für das Erstellen der View zuständig.
@@ -69,18 +71,28 @@ public class OfferDriveView extends VerticalLayout {
 
         layoutOption.setValue("Hinfahrt");
 
-        createButton.addClickListener(e -> {
+        saveButton.addClickListener(e -> {
 
             switch (layoutOption.getValue()) {
                 case "Hinfahrt":
-                    saveOutwardTrip();
+                    if(checkOutwardTrip()){
+                        saveOutwardTrip();
+                        clearOutwardTrip();
+                    }
                     break;
                 case "Rückfahrt":
-                    saveReturnTrip();
+                    if(checkReturnTrip()) {
+                        saveReturnTrip();
+                        clearReturnTrip();
+                    }
                     break;
                 case "Hin- & Rückfahrt":
-                    saveOutwardTrip();
-                    saveReturnTrip();
+                    if(checkOutwardTrip() && checkReturnTrip()){
+                        saveOutwardTrip();
+                        saveReturnTrip();
+                        clearOutwardTrip();
+                        clearReturnTrip();
+                    }
                     break;
             }
         });
@@ -90,11 +102,11 @@ public class OfferDriveView extends VerticalLayout {
      * In der Methode createOfferDriveView werden die Komponenten
      * für das Layout, hinzugefügt.
      */
-    private void createOfferDriveView() {
-        User user = userService.getCurrentUser();
+    private void createOfferDriveView(){
+        User currentUser = userService.getCurrentUser();
 
-        Div div = new Div();
-        div.setId("offer-drive-view-layout");
+        layout = new Div();
+        layout.setId("offer-drive-view-layout");
 
         H1 title = new H1("Fahrt anbieten");
 
@@ -104,127 +116,143 @@ public class OfferDriveView extends VerticalLayout {
         layoutOption = new RadioButtonGroup<>();
         layoutOption.setItems("Hinfahrt", "Rückfahrt", "Hin- & Rückfahrt");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout = new HorizontalLayout();
         buttonLayout.setId("offer-drive-view-button_layout");
-        createButton = new Button("Fahrt erstellen");
-        createButton.setId("offer-drive-view-create_button");
-        createButton.setClassName("offer-drive-view-buttons");
+        saveButton = new Button("Fahrt erstellen");
+        saveButton.setId("offer-drive-view-create_button");
+        saveButton.setClassName("offer-drive-view-buttons");
         Button cancelButton = new Button("Abbrechen");
         cancelButton.setId("offer-drive-view-cancel_button");
         cancelButton.setClassName("offer-drive-view-buttons");
 
-        buttonLayout.add(createButton, cancelButton);
+        buttonLayout.add(saveButton, cancelButton);
 
         layoutOption.addValueChangeListener(e -> {
             switch (e.getValue()) {
                 case "Hinfahrt":
                     formLayoutOutwardTrip = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
                     formLayoutOutwardTrip.getDriveDateStart().setMin(LocalDate.now());
-                    formLayoutOutwardTrip.setFhLocation(user.getUniversityLocation());
-                    formLayoutOutwardTrip.setAddress(user.getAddress().toString());
-                    div.removeAll();
-                    div.add(title, layoutOption, formLayoutOutwardTrip, buttonLayout);
+                    formLayoutOutwardTrip.setFhLocation(currentUser.getUniversityLocation());
+                    formLayoutOutwardTrip.setAddress(currentUser.getAddress().toString());
+                    layout.removeAll();
+                    layout.add(title, layoutOption, formLayoutOutwardTrip, buttonLayout);
                     break;
                 case "Rückfahrt":
                     formLayoutReturnTrip = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
                     formLayoutReturnTrip.getDriveDateStart().setMin(LocalDate.now());
-                    formLayoutReturnTrip.setFhLocation(user.getUniversityLocation());
-                    formLayoutReturnTrip.setAddress(user.getAddress().toString());
-                    div.removeAll();
-                    div.add(title, layoutOption, formLayoutReturnTrip, buttonLayout);
+                    formLayoutReturnTrip.setFhLocation(currentUser.getUniversityLocation());
+                    formLayoutReturnTrip.setAddress(currentUser.getAddress().toString());
+                    layout.removeAll();
+                    layout.add(title, layoutOption, formLayoutReturnTrip, buttonLayout);
                     break;
                 case "Hin- & Rückfahrt":
                     formLayoutOutwardTrip = new FormLayoutDriveRoute(DriveType.OUTWARD_TRIP);
-                    formLayoutOutwardTrip.setFhLocation(user.getUniversityLocation());
+                    formLayoutOutwardTrip.setFhLocation(currentUser.getUniversityLocation());
                     formLayoutOutwardTrip.getDriveDateStart().setMin(LocalDate.now());
-                    formLayoutOutwardTrip.setAddress(user.getAddress().toString());
+                    formLayoutOutwardTrip.setAddress(currentUser.getAddress().toString());
                     formLayoutReturnTrip = new FormLayoutDriveRoute(DriveType.RETURN_TRIP);
-                    formLayoutReturnTrip.setFhLocation(user.getUniversityLocation());
+                    formLayoutReturnTrip.setFhLocation(currentUser.getUniversityLocation());
                     formLayoutReturnTrip.getDriveDateStart().setMin(LocalDate.now());
-                    formLayoutReturnTrip.setAddress(user.getAddress().toString());
-                    div.removeAll();
-                    div.add(title, layoutOption, formLayoutOutwardTrip, formLayoutReturnTrip, buttonLayout);
+                    formLayoutReturnTrip.setAddress(currentUser.getAddress().toString());
+                    layout.removeAll();
+                    layout.add(title, layoutOption, formLayoutOutwardTrip, formLayoutReturnTrip, buttonLayout);
                     break;
             }
         });
 
         cancelButton.addClickListener(e -> UI.getCurrent().navigate(SearchDriveView.class));
 
-        add(div);
+        add(layout);
     }
 
     /**
-     * Die Methode saveOutwardTrip überprüft die Eingabefelder auf ihre Gültigkeit
-     * und ruft im Erfolgsfall die Methode saveDrive auf. Wird verwendet, um eine Hinfahrt
-     * zu speichern.
+     * Die Methode checkOutwardTrip wird für Hinfahrten verwendet und ruft
+     * die Methode checkFormLayout auf mit dem Formular einer Hinfahrt.
      */
-    private void saveOutwardTrip() {
+    private boolean checkOutwardTrip() {
+        return checkFormLayout(formLayoutOutwardTrip);
+    }
+
+    /**
+     * Die Methode checkReturnTrip wird für Rückfahrten verwendet und ruft
+     * die Methode checkFormLayout auf mit dem Formular einer Rückfahrt.
+     */
+    private boolean checkReturnTrip() {
+        return checkFormLayout(formLayoutReturnTrip);
+    }
+
+    /**
+     * Die Methode checkFormLayout überprüft die Eingabefelder auf ihre Gültigkeit und gibt
+     * true zurück, wenn alle Eingaben vollständig und gültig sind.
+     *
+     * @param formLayoutDriveRoute Hinfahrt- oder Rückfahrt-Formular
+     * @return true wenn alle Daten korrekt sind
+     */
+    private boolean checkFormLayout(FormLayoutDriveRoute formLayoutDriveRoute) {
         try {
-            if (formLayoutOutwardTrip.checkInputFields()) {
+            if (formLayoutDriveRoute.checkInputFields()) {
                 NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
-                return;
+                return false;
             }
+            return true;
 
-            saveDrive(formLayoutOutwardTrip.getAddressValue(), formLayoutOutwardTrip.getFhLocation(),
-                    formLayoutOutwardTrip.getDriveTime(), formLayoutOutwardTrip.getCheckboxFuelParticipation(),
-                    formLayoutOutwardTrip.getCarSeatCount(), DriveType.OUTWARD_TRIP,
-                    formLayoutOutwardTrip.getDriveDateStartValue());
-
-            formLayoutOutwardTrip.clearFields();
-            formLayoutOutwardTrip.setInvalid(false);
         } catch (InvalidAddressException ex) {
-            formLayoutOutwardTrip.getAddress().setErrorMessage(ex.getMessage());
-            formLayoutOutwardTrip.getAddress().setInvalid(true);
+            formLayoutDriveRoute.getAddress().setErrorMessage(ex.getMessage());
+            formLayoutDriveRoute.getAddress().setInvalid(true);
             ex.printStackTrace();
         } catch (InvalidRegularDrivePeriod ex) {
-            formLayoutOutwardTrip.getDriveDateStart().setInvalid(true);
-            formLayoutOutwardTrip.getDriveDateStart().setErrorMessage(ex.getMessage());
-            formLayoutOutwardTrip.getDriveDateEnd().setInvalid(true);
-            formLayoutOutwardTrip.getDriveDateEnd().setErrorMessage(ex.getMessage());
+            formLayoutDriveRoute.getDriveDateStart().setInvalid(true);
+            formLayoutDriveRoute.getDriveDateStart().setErrorMessage(ex.getMessage());
+            formLayoutDriveRoute.getDriveDateEnd().setInvalid(true);
+            formLayoutDriveRoute.getDriveDateEnd().setErrorMessage(ex.getMessage());
             ex.printStackTrace();
         } catch (InvalidDateException ex) {
             ex.printStackTrace();
         }
+        return false;
     }
 
+
     /**
-     * Die Methode saveReturnTrip überprüft die Eingabefelder auf ihre Gültigkeit
-     * und ruft im Erfolgsfall die Methode saveDrive auf. Wird verwendet, um eine Rückfahrt
-     * zu speichern.
+     * Die Methode saveOutwardTrip speichert eine Hinfahrt.
      */
-    private void saveReturnTrip() {
-        try {
-            if (formLayoutReturnTrip.checkInputFields()) {
-                NotificationError.show("Bitte alle Eingabefelder ausfüllen.");
-                return;
-            }
-
-            saveDrive(formLayoutReturnTrip.getFhLocation(), formLayoutReturnTrip.getAddressValue(),
-                    formLayoutReturnTrip.getDriveTime(), formLayoutReturnTrip.getCheckboxFuelParticipation(),
-                    formLayoutReturnTrip.getCarSeatCount(), DriveType.RETURN_TRIP,
-                    formLayoutReturnTrip.getDriveDateStartValue());
-
-            formLayoutReturnTrip.clearFields();
-            formLayoutReturnTrip.setInvalid(false);
-        } catch (InvalidAddressException ex) {
-            formLayoutReturnTrip.getAddress().setErrorMessage(ex.getMessage());
-            formLayoutReturnTrip.getAddress().setInvalid(true);
-            ex.printStackTrace();
-        } catch (InvalidRegularDrivePeriod ex) {
-            formLayoutReturnTrip.getDriveDateStart().setInvalid(true);
-            formLayoutReturnTrip.getDriveDateStart().setErrorMessage(ex.getMessage());
-            formLayoutReturnTrip.getDriveDateEnd().setInvalid(true);
-            formLayoutReturnTrip.getDriveDateEnd().setErrorMessage(ex.getMessage());
-            ex.printStackTrace();
-        } catch (InvalidDateException ex) {
-            ex.printStackTrace();
-        }
+    private void saveOutwardTrip(){
+        saveDrive(formLayoutOutwardTrip.getAddressValue(), formLayoutOutwardTrip.getFhLocation(),
+                formLayoutOutwardTrip.getDriveTime(), formLayoutOutwardTrip.getCheckboxFuelParticipation(),
+                formLayoutOutwardTrip.getCarSeatCount(), DriveType.OUTWARD_TRIP,
+                formLayoutOutwardTrip.getDriveDateStartValue());
     }
 
     /**
-     * Die Methode saveDrive speichert die Fahrt, die der Benutzer erstellen möchte. Dabei wird zwischen Hin-
-     * und Rückfahrten unterschieden. Durch die unterschiedlichen FormLayouts und save-Methoden, ist es für
-     * den Benutzer auch möglich, gleichzeitig eine Hin- und Rückfahrt zu erstellen.
+     * Die Methode saveReturnTrip speichert eine Rückfahrt.
+     */
+    private void saveReturnTrip(){
+        saveDrive(formLayoutReturnTrip.getFhLocation(), formLayoutReturnTrip.getAddressValue(),
+                formLayoutReturnTrip.getDriveTime(), formLayoutReturnTrip.getCheckboxFuelParticipation(),
+                formLayoutReturnTrip.getCarSeatCount(), DriveType.RETURN_TRIP,
+                formLayoutReturnTrip.getDriveDateStartValue());
+    }
+
+    /**
+     * Löscht alle Eingaben auf dem Hinfahrt-Formular und deaktiviert
+     * den ungültigen Status der einzelnen Felder.
+     */
+    private void clearOutwardTrip(){
+        formLayoutOutwardTrip.clearFields();
+        formLayoutOutwardTrip.setInvalid(false);
+    }
+
+    /**
+     * Löscht alle Eingaben auf dem Rückfahrt-Formular und deaktiviert
+     * den ungültigen Status der einzelnen Felder.
+     */
+    private void clearReturnTrip(){
+        formLayoutReturnTrip.clearFields();
+        formLayoutReturnTrip.setInvalid(false);
+    }
+
+    /**
+     * Die Methode saveDrive speichert das Fahrtangebot des Nutzers.
      */
     private void saveDrive(String address, String fhLocation, LocalTime driveTime, Boolean fuelParticipation,
                            Integer carSeatCount, DriveType fahrtenTyp, LocalDate driveDate) {

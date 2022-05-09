@@ -197,8 +197,14 @@ public class FormLayoutDriveRoute extends FormLayout {
             } else {
                 try {
                     if (!Objects.equals(address.getValue(), "") && !Objects.equals(fhLocation.getValue(), "")) {
-                        AddressConverter converterStart = new AddressConverter(address.getValue());
-                        AddressConverter converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
+
+                        if (driveType.equals(DriveType.OUTWARD_TRIP)) {
+                            converterStart = new AddressConverter(address.getValue());
+                            converterZiel = new AddressConverter(fhLocation.getUniversityLocationAddress());
+                        } else {
+                            converterStart = new AddressConverter(fhLocation.getUniversityLocationAddress());
+                            converterZiel = new AddressConverter(address.getValue());
+                        }
 
                         RouteString routeString = new RouteString(
                                 new Start(new Address(converterStart.getPostalCode(), converterStart.getPlace(), converterStart.getStreet(), converterStart.getNumber())),
