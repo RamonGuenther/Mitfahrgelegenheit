@@ -24,6 +24,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidTimeException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.RouteString;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.SelectUniversityLocation;
@@ -270,7 +271,7 @@ public class FormLayoutDriveRoute extends FormLayout {
      * Die Methode checkInputFields prüft, ob bei dem Formular alle Pflichteingaben
      * gemacht wurden.
      */
-    public boolean checkInputFields() throws InvalidDateException, InvalidRegularDrivePeriod, InvalidAddressException {
+    public boolean checkInputFields() throws InvalidDateException, InvalidRegularDrivePeriod, InvalidAddressException, InvalidTimeException {
         if (address.isReadOnly()) {
             return false;
         }
@@ -326,7 +327,7 @@ public class FormLayoutDriveRoute extends FormLayout {
      * @throws InvalidDateException    Ungültiges Datum
      * @throws InvalidAddressException Ungültige Adresse
      */
-    private void checkSingleDrive() throws InvalidDateException, InvalidAddressException {
+    private void checkSingleDrive() throws InvalidDateException, InvalidAddressException, InvalidTimeException {
         if (address.getValue().isEmpty()) {
             address.setErrorMessage("Adresse bitte eintragen");
             address.setInvalid(true);
@@ -356,6 +357,15 @@ public class FormLayoutDriveRoute extends FormLayout {
                     driveDateStart.setErrorMessage("Das Datum darf nicht in der Vergangenheit liegen");
                     driveDateStart.setInvalid(true);
                     throw new InvalidDateException("");
+                }
+                else{
+                    if(getDriveDateStartValue().equals(LocalDate.now())){
+                        if(driveTime.getValue().equals(LocalTime.now()) || driveTime.getValue().isBefore(LocalTime.now())){
+                            driveTime.setErrorMessage("Die Uhrzeit darf nicht in der Vergangenheit liegen");
+                            driveTime.setInvalid(true);
+                            throw new InvalidTimeException("");
+                        }
+                    }
                 }
             }
         }

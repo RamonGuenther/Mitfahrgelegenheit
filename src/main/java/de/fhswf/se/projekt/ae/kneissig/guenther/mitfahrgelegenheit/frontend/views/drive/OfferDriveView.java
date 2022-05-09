@@ -22,6 +22,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entit
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidAddressException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidDateException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidRegularDrivePeriod;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.exceptions.InvalidTimeException;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.utils.AddressConverter;
@@ -206,7 +207,7 @@ public class OfferDriveView extends VerticalLayout {
             formLayoutDriveRoute.getDriveDateEnd().setInvalid(true);
             formLayoutDriveRoute.getDriveDateEnd().setErrorMessage(ex.getMessage());
             ex.printStackTrace();
-        } catch (InvalidDateException ex) {
+        } catch (InvalidDateException | InvalidTimeException ex) {
             ex.printStackTrace();
         }
         return false;

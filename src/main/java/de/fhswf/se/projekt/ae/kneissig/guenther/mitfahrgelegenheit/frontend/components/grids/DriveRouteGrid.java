@@ -18,6 +18,7 @@ import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.comp
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,9 +49,11 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
         addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         setSelectionMode(SelectionMode.NONE);
 
-        setItems(driveList.stream().filter(driveRoute ->
+        driveList = driveList.stream().filter(driveRoute ->
                 driveRoute.getRegularDrive().getDriveDates().isEmpty() ? driveRoute.getDrivingTime().isAfter(LocalDateTime.now()) :
-                        driveRoute.getRegularDriveDateEndDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+                        driveRoute.getRegularDriveDateEndDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList());
+
+        setItems(driveList);
 
         if(UI.getCurrent().getId().get().equals(PageId.OWN_DRIVE_OFFERS_VIEW.label)) {
             addColumn(start -> start.getStart().getFullAddressToString()).setHeader("Startadresse");
