@@ -111,8 +111,11 @@ public class BookingService {
                 .thenComparing(booking -> booking.getDriveRoute().getDrivingTime().toLocalTime()));
 
         for (Booking booking : bookings) {
-            if (booking.getDriveRoute().getRegularDrive().getRegularDriveDay().ordinal() >= LocalDateTime.now().getDayOfWeek().getValue()) {
-                return Optional.of(booking);
+            if (booking.getDriveRoute().getRegularDrive().getRegularDriveDay().ordinal()+1 >= LocalDateTime.now().getDayOfWeek().getValue()) {
+                if(booking.getDriveRoute().getDrivingTime().toLocalTime().equals(LocalTime.now()) ||
+                        booking.getDriveRoute().getDrivingTime().toLocalTime().isAfter(LocalTime.now())){
+                    return Optional.of(booking);
+                }
             }
         }
 

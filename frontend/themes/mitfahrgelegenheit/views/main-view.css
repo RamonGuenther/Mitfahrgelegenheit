@@ -7,7 +7,7 @@
 
 #logoFH{
     height: 120px;
-    margin-right: 20%;
+    margin-right: 15%;
     margin-top: 45px;
     margin-bottom: -20px;
     cursor: pointer;
@@ -15,10 +15,8 @@
 
 #menuBar{
     margin-top: 60px;
-    margin-left: 8%;
     background-color: #e5e7e9;
 }
-
 
 #anchor_user_guide_light{
     text-decoration: none;

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -185,7 +186,7 @@ public class DriveRouteService {
                     .filter(driveRoute -> driveRoute.getRegularDrive().getRegularDriveDateEnd() == null &&              // wenn keine regelmäßige Fahrt
                             driveRoute.getDrivingTime().toLocalDate().equals(datetime.toLocalDate()) ||                 // und Tag der Fahrt entspricht Suchdatum
                             driveRoute.getRegularDrive().getRegularDriveDateEnd() != null &&                            // oder regelmäßige Fahrt
-                                    driveRoute.getRegularDrive().getDriveDates().contains(datetime.toLocalDate()))              // und Suchdatum liegt im Zeitraum
+                                    driveRoute.getRegularDrive().getDriveDates().contains(datetime.toLocalDate()))      // und Suchdatum liegt im Zeitraum
                     .collect(Collectors.toList());
         }
 
@@ -251,16 +252,20 @@ public class DriveRouteService {
                 driveRoute.getDrivingTime().toLocalDate().equals(LocalDate.now()) &&
                         driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||
                         driveRoute.getDrivingTime().toLocalDate().isBefore(LocalDate.now()) &&
-                                driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now())
+                        driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now()) ||
+                        driveRoute.getDrivingTime().toLocalDate().isAfter(LocalDate.now()) &&
+                        driveRoute.getRegularDrive().getRegularDriveDateEnd().isAfter(LocalDate.now())
         ).collect(Collectors.toList());
-
 
         driveRouteList.sort(Comparator.comparing((DriveRoute driveRoute) -> driveRoute.getRegularDrive().getRegularDriveDay())
                 .thenComparing(driveRoute -> driveRoute.getDrivingTime().toLocalTime()));
 
         for (DriveRoute driveRoute : driveRouteList) {
-            if (driveRoute.getRegularDrive().getRegularDriveDay().ordinal() >= LocalDateTime.now().getDayOfWeek().getValue()) {
-                return Optional.of(driveRoute);
+            if(driveRoute.getRegularDrive().getRegularDriveDay().ordinal()+1 >= LocalDateTime.now().getDayOfWeek().getValue()) {
+                if(driveRoute.getDrivingTime().toLocalTime().equals(LocalTime.now()) ||
+                        driveRoute.getDrivingTime().toLocalTime().isAfter(LocalTime.now())){
+                    return Optional.of(driveRoute);
+                }
             }
         }
 
