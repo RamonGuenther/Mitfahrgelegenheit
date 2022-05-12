@@ -165,7 +165,7 @@ public class DriveRequestManageDialog extends Dialog {
                 GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
 
                 String result = googleDistanceCalculation.calculate(driveRequest.getDriveRoute().getStart(),
-                        driveRequest.getDriveRoute().getDestination(), stopoverList);
+                        driveRequest.getDriveRoute().getDestination(), stopoverList, driveRequest.getDriveRoute().getDriveType());
 
                 driveRequest.getDriveRoute().setCurrentRouteLink(result);
 

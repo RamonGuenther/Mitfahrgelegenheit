@@ -260,6 +260,15 @@ public class DriveRoute {
     }
 
     /**
+     * Die Methode getSeatCountLeft gibt die verfügbaren Sitzplätze zurück.
+     *
+     * @return                          noch verfügbare Sitzplätze des Fahrtangebots
+     */
+    public int getSeatCountLeft(){
+        return seatCount - bookings.size();
+    }
+
+    /**
      * Die Methode addBooking fügt der Buchungsliste der Fahrt eine neue Buchung hinzu.
      *
      * @param newBooking                    Buchung eines Nutzers

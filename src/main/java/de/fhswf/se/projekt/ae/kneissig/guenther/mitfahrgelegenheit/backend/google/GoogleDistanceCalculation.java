@@ -5,6 +5,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.TravelMode;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Address;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Destination;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.valueobjects.Start;
@@ -43,23 +44,30 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
      * @throws ApiException            -
      * @throws InvalidAddressException ungültige Adresse
      */
-    public String calculate(Start start, Destination destination, List<Stopover> stopoverList) throws IOException, InterruptedException, ApiException, InvalidAddressException {
+    public String calculate(Start start, Destination destination, List<Stopover> stopoverList, DriveType driveType) throws IOException, InterruptedException, ApiException, InvalidAddressException {
 
-        String[] origins = new String[stopoverList.size() + 1];
-        origins[0] = start.getFullAddressToString();
+        String[] origins = new String[stopoverList.size()];
 
         String[] destinations = new String[1];
-        destinations[0] = destination.getFullAddressToString();
+
+        TreeMap<Double, String> sortedAddresses;
+
+        if (driveType.equals(DriveType.OUTWARD_TRIP)) {
+            destinations[0] = destination.getFullAddressToString();
+            sortedAddresses = new TreeMap<>(Collections.reverseOrder());
+        } else {
+            destinations[0] = start.getFullAddressToString();
+            sortedAddresses = new TreeMap<>();
+        }
 
         for (int i = 0; i < stopoverList.size(); i++) {
-            origins[i + 1] = stopoverList.get(i).getFullAddressToString();
+            origins[i] = stopoverList.get(i).getFullAddressToString();
         }
 
         DistanceMatrix matrix = DistanceMatrixApi.getDistanceMatrix(context, origins, destinations)
                 .mode(TravelMode.DRIVING)
                 .await();
 
-        TreeMap<Double, String> sortedAddresses = new TreeMap<>(Collections.reverseOrder());
 
         for (int i = 0; i < matrix.rows.length; i++) {
             sortedAddresses.put(Double.parseDouble(

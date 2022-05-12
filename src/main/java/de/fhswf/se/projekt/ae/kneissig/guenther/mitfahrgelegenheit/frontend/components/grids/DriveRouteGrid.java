@@ -69,7 +69,7 @@ public class DriveRouteGrid extends Grid<DriveRoute> {
                 driveRoute.getRegularDrive().getRegularDriveDay().label + "s, " +
                         driveRoute.getDrivingTime().toLocalTime().toString() + " Uhr").setHeader(zeitpunkt);
 
-        addColumn(DriveRoute::getSeatCount).setHeader("Sitzplätze");
+        addColumn(DriveRoute::getSeatCountLeft).setHeader("Verfügbare Sitzplätze");
 
         addComponentColumn(driver -> new Anchor("/drivetogether/profil/" + driver.getDriver().getId(),
                 driver.getDriver().getFullName())).setHeader("Fahrer");

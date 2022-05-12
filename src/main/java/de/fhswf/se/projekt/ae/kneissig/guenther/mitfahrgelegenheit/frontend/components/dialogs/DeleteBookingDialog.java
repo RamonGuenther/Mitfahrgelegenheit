@@ -62,7 +62,7 @@ public class DeleteBookingDialog extends Dialog {
                 }
 
                 GoogleDistanceCalculation googleDistanceCalculation = new GoogleDistanceCalculation();
-                String result = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList);
+                String result = googleDistanceCalculation.calculate(driveRoute.getStart(), driveRoute.getDestination(), stopoverList, driveRoute.getDriveType());
 
                 driveRoute.setCurrentRouteLink(result);
 
