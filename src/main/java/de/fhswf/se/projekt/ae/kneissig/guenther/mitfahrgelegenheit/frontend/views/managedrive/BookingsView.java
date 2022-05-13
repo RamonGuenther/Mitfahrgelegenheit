@@ -1,5 +1,6 @@
 package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.views.managedrive;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
@@ -15,6 +16,7 @@ import com.vaadin.flow.router.Route;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.User;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.DriveType;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
@@ -51,6 +53,8 @@ public class BookingsView extends VerticalLayout {
     private RadioButtonGroup<String> radioButtonGroup;
 
     public BookingsView(DriveRouteService driveRouteService, UserService userService, MailService mailService, BookingService bookingService) {
+        UI.getCurrent().setId(PageId.BOOKINGS_VIEW.label);
+
         this.driveRouteService = driveRouteService;
         this.mailService = mailService;
         this.bookingService = bookingService;

@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRequestService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.MailService;
@@ -72,9 +73,11 @@ public class SearchDriveResultViewDialog extends Dialog {
         profileButton.setText("Profil");
         profileButton.setId("search-drive-result-view-profile_button");
         profileButton.addClickListener(e -> {
-            UI.getCurrent().navigate(ProfileView.class,
-                    new RouteParameters(new RouteParam("id",
-                            driveRoute.getDriver().getId().toString())));
+            if(!UI.getCurrent().getId().get().equals(PageId.PROFILE.label)) {
+                UI.getCurrent().navigate(ProfileView.class,
+                        new RouteParameters(new RouteParam("id",
+                                driveRoute.getDriver().getId().toString())));
+            }
             close();
         });
 

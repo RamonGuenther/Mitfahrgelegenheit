@@ -20,6 +20,7 @@ import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.ButtonSwitchTheme;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.frontend.components.dialogs.PrivacyDialog;
@@ -55,7 +56,7 @@ public class MainLayout extends AppLayout implements PageConfigurator {
      */
     private final UserService userService;
 
-    public MainLayout(UserService userService){
+    public MainLayout(UserService userService) {
         this.userService = userService;
         createMenuBar();
     }
@@ -65,13 +66,13 @@ public class MainLayout extends AppLayout implements PageConfigurator {
      * zusammen. Außerdem weißt sie den RouterLinks die entsprechenden
      * Views zur Navigation zu.
      */
-    private void createMenuBar(){
+    private void createMenuBar() {
 
         StreamResource streamResource = new StreamResource("LogoDriveTogether.png",
                 () -> MainLayout.class.getClassLoader().
                         getResourceAsStream("images/LogoDriveTogether.png"));
 
-        Image logoFH = new Image (streamResource, "FH SWF");
+        Image logoFH = new Image(streamResource, "FH SWF");
         logoFH.addClickListener(e -> UI.getCurrent().navigate(DashboardView.class));
 
         logoFH.setId("logoFH");
@@ -125,10 +126,14 @@ public class MainLayout extends AppLayout implements PageConfigurator {
 
         MenuItem profile = usersSubMenu.addItem("Profil");
         profile.getElement().getClassList().add("menuItems");
-        profile.addClickListener(e ->
+        profile.addClickListener(e -> {
+            if (!UI.getCurrent().getId().get().equals(PageId.PROFILE.label)) {
                 UI.getCurrent().navigate(ProfileView.class,
-                new RouteParameters(new RouteParam("id",
-                        userService.getCurrentUser().getId().toString()))));
+                        new RouteParameters(new RouteParam("id",
+                                userService.getCurrentUser().getId().toString())));
+            }
+        });
+
 
         MenuItem userGuide = usersSubMenu.addItem("");
 
@@ -142,12 +147,12 @@ public class MainLayout extends AppLayout implements PageConfigurator {
         userGuide.add(anchorUserGuide);
 
         MenuItem privacy = usersSubMenu.addItem("Datenschutzerklärung");
-        privacy.addClickListener(e->{
+        privacy.addClickListener(e -> {
             PrivacyDialog privacyDialog = new PrivacyDialog();
             privacyDialog.open();
         });
 
-        
+
         MenuItem logout = usersSubMenu.addItem("Abmelden");
         logout.getElement().getClassList().add("menuItems");
         logout.addClickListener(e -> UI.getCurrent().getPage().setLocation("/drivetogether/logout"));

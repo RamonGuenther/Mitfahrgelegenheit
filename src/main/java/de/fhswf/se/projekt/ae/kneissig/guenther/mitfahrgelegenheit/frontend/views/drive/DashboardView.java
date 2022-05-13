@@ -14,6 +14,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.Booking;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.DriveRoute;
+import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.entities.enums.PageId;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.BookingService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.DriveRouteService;
 import de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.services.UserService;
@@ -56,6 +57,8 @@ public class DashboardView extends VerticalLayout {
     private Button buttonNewNote;
 
     public DashboardView(UserService userService, DriveRouteService driveRouteService, BookingService bookingService) {
+        UI.getCurrent().setId(PageId.DASHBOARD_VIEW.label);
+
         this.userService = userService;
         this.driveRouteService = driveRouteService;
         this.bookingService = bookingService;

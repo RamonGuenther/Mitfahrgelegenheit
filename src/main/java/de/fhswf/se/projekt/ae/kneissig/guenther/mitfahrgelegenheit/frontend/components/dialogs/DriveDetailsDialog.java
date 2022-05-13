@@ -44,7 +44,7 @@ public class DriveDetailsDialog extends Dialog {
         profileButton.addClickListener(e -> {
             close();
             UI.getCurrent().navigate(ProfileView.class,
-                    new RouteParameters(new RouteParam("username", driveRequest.getDriveRoute().getDriver().getUsername())));
+                    new RouteParameters(new RouteParam("id", driveRequest.getDriveRoute().getDriver().getId().toString())));
         });
 
         HorizontalLayout titleLayout = new HorizontalLayout(driverInformationLayout, profileButton);

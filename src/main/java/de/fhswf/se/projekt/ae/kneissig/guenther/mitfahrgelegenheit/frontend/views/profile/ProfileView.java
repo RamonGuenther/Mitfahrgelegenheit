@@ -292,7 +292,6 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver, 
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-
         if (beforeEnterEvent.getRouteParameters().get("id").isPresent()) {
             if (id != null && !id.equals(Long.parseLong(beforeEnterEvent.getRouteParameters().get("id").get()))) {
                 UI.getCurrent().getPage().reload();
