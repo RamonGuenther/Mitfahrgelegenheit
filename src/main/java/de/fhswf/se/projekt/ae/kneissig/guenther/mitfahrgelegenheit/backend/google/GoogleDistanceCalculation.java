@@ -82,8 +82,6 @@ public class GoogleDistanceCalculation implements GoogleApiKey {
             result.add(value);
         }
 
-        result.remove(start.getFullAddressToString());
-
         List<Stopover> newStopoverList = new ArrayList<>();
 
         for (String res : result) {
