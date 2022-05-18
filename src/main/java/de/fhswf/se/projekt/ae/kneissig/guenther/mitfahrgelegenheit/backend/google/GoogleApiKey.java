@@ -7,6 +7,6 @@ package de.fhswf.se.projekt.ae.kneissig.guenther.mitfahrgelegenheit.backend.goog
  * @author Ramon Günther & Ivonne Kneißig
  */
 public interface GoogleApiKey {
-    String API_KEY = "AIzaSyDIv-IsfDxr-PIXM94OTPIDgTPnB5EdK8E";
+    String API_KEY = "AIzaSyCljd-Tudk1Xrk3fPGNIr3FPGbpTnohadA";
 }
 
